@@ -63,7 +63,7 @@ int main()
     // Compile shaders
     Shader objectShader("D:/OpenGL_programming/projects/openGL_playground/shaders/second_demo/object.vs", "D:/OpenGL_programming/projects/openGL_playground/shaders/second_demo/object.fs"); 
     Shader lightShader("D:/OpenGL_programming/projects/openGL_playground/shaders/second_demo/lightsource.vs", "D:/OpenGL_programming/projects/openGL_playground/shaders/second_demo/lightsource.fs"); 
-
+    
     glEnable(GL_DEPTH_TEST);
 
     // Cube vertices, texture coordinates
@@ -157,9 +157,16 @@ int main()
     glm::mat4 view;
     glm::mat4 projection;
     
+    // Create maps with shader uniform locations for easy access
+    // ---------------------------------------------------------
+    std::map<std::string, int> objUniformLocs;
     std::vector<std::string> uniforms = {"model", "view", "projection", "lightCol", "objectCol"};
-    std::map<std::string, int> uniformLocs;
-    getUniformLocations(&uniformLocs, uniforms, objectShader.ID);
+    getUniformLocations(&objUniformLocs, uniforms, objectShader.ID);
+
+    std::map<std::string, int> lightUniformLocs;
+    uniforms = {"model", "view", "projection", "lightCol"};
+    getUniformLocations(&lightUniformLocs, uniforms, lightShader.ID);
+    // ---------------------------------------------------------
 
     // render loop
     // -----------
@@ -176,23 +183,30 @@ int main()
     
         // render object
         objectShader.use();
-        glUniform3f(uniformLocs.at("objectCol"), 0.0f, 1.0f, 0.0f);
-        glUniform3f(uniformLocs.at("lightCol"), 1.0f, 1.0f, 1.0f);
+        glUniform3f(objUniformLocs.at("objectCol"), 0.0f, 1.0f, 0.0f);
+        glUniform3f(objUniformLocs.at("lightCol"), 1.0f, 1.0f, 1.0f);
 
+        model = glm::mat4(1.0f);
         view = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-        glUniformMatrix4fv(uniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(uniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(uniformLocs.at("model"), 1, GL_FALSE, glm::value_ptr(model));
-
+        glUniformMatrix4fv(objUniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(objUniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(objUniformLocs.at("model"), 1, GL_FALSE, glm::value_ptr(model));
 
         glBindVertexArray(objectVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // render lightsource
         lightShader.use();
-        glBindVertexArray(objectVAO);
+        glUniform3f(lightUniformLocs.at("lightCol"), 1.0f, 1.0f, 1.0f);
+        glUniformMatrix4fv(lightUniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(lightUniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        model = glm::translate(model, glm::vec3(2.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.5f));
+        glUniformMatrix4fv(lightUniformLocs.at("model"), 1, GL_FALSE, glm::value_ptr(model));
+
+        glBindVertexArray(lightsourceVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
