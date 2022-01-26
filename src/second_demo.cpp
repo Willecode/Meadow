@@ -69,47 +69,47 @@ int main()
     // Cube vertices, texture coordinates
     // ------------------------------------------------------------------
     float cubeVertices[] = {
-        -0.5f, -0.5f, -0.5f,  //0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  //1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  //0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  //0.0f, 0.0f,
-//
-        -0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  //1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  //1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  //1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  //0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
-//
-        -0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
-//
-         0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
-//
-        -0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  //1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  //1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  //1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
-//
-        -0.5f,  0.5f, -0.5f,  //0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  //0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  //0.0f, 1.0f
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
 
     // Buffers
@@ -123,11 +123,14 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
     
     glBindVertexArray(objectVAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
 
     glBindVertexArray(lightsourceVAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     //-----------------
 
@@ -156,11 +159,14 @@ int main()
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view;
     glm::mat4 projection;
+    glm::vec3 lightCol;
+    glm::vec3 lightPos;
+    glm::vec3 objectCol;
     
     // Create maps with shader uniform locations for easy access
     // ---------------------------------------------------------
     std::map<std::string, int> objUniformLocs;
-    std::vector<std::string> uniforms = {"model", "view", "projection", "lightCol", "objectCol"};
+    std::vector<std::string> uniforms = {"model", "view", "projection", "lightCol", "objectCol", "lightPos", "viewPos"};
     getUniformLocations(&objUniformLocs, uniforms, objectShader.ID);
 
     std::map<std::string, int> lightUniformLocs;
@@ -180,11 +186,17 @@ int main()
         // ------
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
+        lightCol = glm::vec3(1.0f, 0.6f, 0.6f);
+        lightPos = glm::vec3(2.0f, 1.0f, 0.0f);
+        objectCol = glm::vec3(0.5f, 0.5f, 1.0f);
         // render object
+        // -------------
         objectShader.use();
-        glUniform3f(objUniformLocs.at("objectCol"), 0.0f, 1.0f, 0.0f);
-        glUniform3f(objUniformLocs.at("lightCol"), 1.0f, 1.0f, 1.0f);
+        glUniform3f(objUniformLocs.at("objectCol"), objectCol.r, objectCol.g, objectCol.b);
+        glUniform3f(objUniformLocs.at("lightCol"), lightCol.r, lightCol.g, lightCol.b);
+        glUniform3f(objUniformLocs.at("lightPos"), lightPos.x, lightCol.y, lightCol.z);
+        glUniform3f(objUniformLocs.at("viewPos"), cameraPos.x, cameraPos.y, cameraPos.z);
 
         model = glm::mat4(1.0f);
         view = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
@@ -198,18 +210,19 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // render lightsource
+        // ------------------
         lightShader.use();
-        glUniform3f(lightUniformLocs.at("lightCol"), 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightUniformLocs.at("lightCol"), lightCol.r, lightCol.g, lightCol.b);
         glUniformMatrix4fv(lightUniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(lightUniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        model = glm::translate(model, glm::vec3(2.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.5f));
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.3f));
         glUniformMatrix4fv(lightUniformLocs.at("model"), 1, GL_FALSE, glm::value_ptr(model));
 
         glBindVertexArray(lightsourceVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // glfw: swap buffers and poll IO events
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
