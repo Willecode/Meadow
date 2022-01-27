@@ -14,7 +14,7 @@ void main()
     // Ambient
     // -------
     float ambientFac = 0.1;
-    vec3 ambient = lightCol * ambientFac;
+    vec3 ambient = objectCol * ambientFac;
 
     // Diffuse
     // -------
@@ -27,7 +27,7 @@ void main()
     float specularFac = 0.5;
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, normalDir);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
     vec3 specular = spec * objectCol * lightCol;
 
     vec3 finalCol = (ambient + diffuse + specular) * objectCol;
