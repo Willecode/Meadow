@@ -9,4 +9,5 @@ For learning OpenGL with the help of https://learnopengl.com/. The project invol
 Involves camera movement, perspective projection, texture mixing, rotating objects randomly.
 
 # Second demo
-The second demo is going to involve lighting
+![](https://github.com/Willecode/OpenGL_playground/blob/75e4ed820efb91bd4aa46a51afe44852a004c8d0/light_demo_early.gif)
+Phong shading implemented. Still a work in progress...
