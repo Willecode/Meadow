@@ -13,14 +13,14 @@ void main()
 {
     // Ambient
     // -------
-    float ambientFac = 0.2;
+    float ambientFac = 0.1;
     vec3 ambient = lightCol * ambientFac;
 
     // Diffuse
     // -------
     vec3 normalDir = normalize(normal);
     vec3 lightDir = normalize(lightPos - fragPos);
-    vec3 diffuse = max(dot(normalDir, lightDir), 0.0) * lightCol;
+    vec3 diffuse = max(dot(lightDir, normalDir), 0.0) * lightCol;
 
     // Specular
     // --------
