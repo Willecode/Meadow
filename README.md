@@ -11,4 +11,4 @@ Involves camera movement, perspective projection, texture mixing, rotating objec
 # Second demo
 ![](https://github.com/Willecode/OpenGL_playground/blob/75e4ed820efb91bd4aa46a51afe44852a004c8d0/light_demo_early.gif)
 
-Phong shading implemented. Still a work in progress...
+Phong shading implemented. Next up probably lighting with base color maps and specular maps.
