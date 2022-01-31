@@ -135,6 +135,52 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    // load and create textures
+    // -------------------------
+    stbi_set_flip_vertically_on_load(true);
+    unsigned int diffuseMap, specularMap;
+    
+    glGenTextures(1, &diffuseMap);
+    glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    // load image, create texture and generate mipmaps
+    int width, height, nrChannels;
+ 
+    unsigned char *data = stbi_load("D:/OpenGL_programming/projects/openGL_playground/images/Wood066_1K_Color.jpg", &width, &height, &nrChannels, 0);
+    
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    glGenTextures(1, &specularMap);
+    glBindTexture(GL_TEXTURE_2D, specularMap);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    data = stbi_load("D:/OpenGL_programming/projects/openGL_playground/images/Fingerprints009_1K_Color.jpg", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    stbi_image_free(data);
+    // -------------------------
 
     // Draw loop variables
     // --------------------
@@ -152,7 +198,8 @@ int main()
                                         "lightCol", "lightPos",
                                         "viewPos", "material.baseCol", "material.diffuse",
                                         "material.specular", "material.shininess",
-                                        "light.ambient", "light.diffuse", "light.specular"};
+                                        "light.ambient", "light.diffuse", "light.specular",
+                                        "material.diffuse", "material.specular"};
     getUniformLocations(&objUniformLocs, uniforms, objectShader.ID);
     for(const auto& elem : objUniformLocs){
         std::cout << elem.first << " " << elem.second << "\n";
@@ -175,9 +222,9 @@ int main()
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float lightX = sin(glfwGetTime()) * 2;
-        float lightY = cos(glfwGetTime()) * 2;
-        float lightZ = sin(glfwGetTime()) * 2;
+        float lightX = sin(glfwGetTime() / 2) * 2;
+        float lightY = cos(glfwGetTime() / 2) * 2;
+        float lightZ = sin(glfwGetTime() / 2) * 2;
         lightCol = glm::vec3(1.0f, 1.0f, 1.0f);
         lightPos = glm::vec3(lightX, lightY, lightZ);
         objectCol = glm::vec3(0.5f, 0.5f, 1.0f);
@@ -186,11 +233,18 @@ int main()
         // -------------
         objectShader.use();
 
+        // Set texture
+        // -------------------
+        glUniform1i(objUniformLocs.at("material.diffuse"), 0);
+        glUniform1i(objUniformLocs.at("material.specular"), 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
+        // -------------------
+
         // Set material components
         // -----------------------
-        glUniform3f(objUniformLocs.at("material.baseCol"), 1.0f, 0.5f, 0.31f);
-        glUniform3f(objUniformLocs.at("material.diffuse"), 1.0f, 0.5f, 0.31f);
-        glUniform3f(objUniformLocs.at("material.specular"), 0.5f, 0.5f, 0.5f);
         glUniform1f(objUniformLocs.at("material.shininess"), 0.25f * 128.0f);
         // -----------------------
         // set lighting components
@@ -204,7 +258,7 @@ int main()
         glUniform3f(objUniformLocs.at("viewPos"), cameraPos.x, cameraPos.y, cameraPos.z);
 
         model = glm::mat4(1.0f);
-        view = glm::lookAt(cameraPos, glm::vec3(0.0f), cameraUp);
+        view = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.5f, 0.0f), cameraUp);
         projection = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
         glUniformMatrix4fv(objUniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(objUniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
