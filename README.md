@@ -20,5 +20,6 @@ Another obstacle was the more general - not OpenGL specific - mathematics involv
 TODO: write about texture mapping
 
 # Second demo
-![Light revealing fingerprints on surface](https://github.com/Willecode/OpenGL_playground/blob/0e81273231712c3ab79bfae00564bb24ccf23c84/specular-diffuse-map.gif)
-Uses phong shading with specular and diffuse maps and materials.
+![](https://github.com/Willecode/OpenGL_playground/blob/0e81273231712c3ab79bfae00564bb24ccf23c84/specular-diffuse-map.gif)
+
+Light revealing fingerprints on shiny wooden surface. Uses phong shading with specular and diffuse maps and materials.
