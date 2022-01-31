@@ -22,4 +22,4 @@ TODO: write about texture mapping
 # Second demo
 ![](https://github.com/Willecode/OpenGL_playground/blob/0e81273231712c3ab79bfae00564bb24ccf23c84/specular-diffuse-map.gif)
 
-Light revealing fingerprints on shiny wooden surface. Uses phong shading with specular and diffuse maps and materials.
+Light revealing fingerprints on a shiny wooden surface. Uses phong shading with specular and diffuse maps and materials.
