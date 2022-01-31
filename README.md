@@ -20,6 +20,5 @@ Another obstacle was the more general - not OpenGL specific - mathematics involv
 TODO: write about texture mapping
 
 # Second demo
-![](https://github.com/Willecode/OpenGL_playground/blob/75e4ed820efb91bd4aa46a51afe44852a004c8d0/light_demo_early.gif)
-
-Phong shading implemented. Next up probably lighting with base color maps and specular maps.
+![Light revealing fingerprints on surface](https://github.com/Willecode/OpenGL_playground/blob/0e81273231712c3ab79bfae00564bb24ccf23c84/specular-diffuse-map.gif)
+Uses phong shading with specular and diffuse maps and materials.
