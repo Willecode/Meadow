@@ -4,7 +4,6 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
 
 out vec3 normal;
-out vec3 lightPos;
 out vec3 fragPos;
 out vec2 TexCoords;
 

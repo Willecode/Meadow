@@ -113,6 +113,32 @@ int main()
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
 
+        glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f), 
+        glm::vec3( 2.0f,  2.0f, 2.0f), 
+        glm::vec3(-1.5f, -2.2f, -2.5f),  
+        glm::vec3(-3.8f, -2.0f, -1.3f),  
+        glm::vec3( 2.4f, -0.4f, -3.5f),  
+        glm::vec3(-1.7f,  3.0f, -7.5f),  
+        glm::vec3( 1.3f, -2.0f, -2.5f),  
+        glm::vec3( 1.5f,  2.0f, -2.5f), 
+        glm::vec3( 1.5f,  0.2f, -1.5f), 
+        glm::vec3(-1.3f,  1.0f, -1.5f)  
+    };
+
+    // Generate random vectors to rotate the cubes around
+    // ------
+    const int AXESCOUNT = 10;
+    glm::vec3 rotationAxes[AXESCOUNT] = {};
+    glm::vec3 randAxis = glm::vec3(1.0f);
+    for (int i = 0; i < AXESCOUNT; i++){
+        // Generate random vectors and normalize them
+        randAxis = glm::vec3((float)(rand() % 100) - 50, (float)(rand() % 100) - 50, (float)(rand() % 100) - 50);
+        randAxis = glm::normalize(randAxis);
+        rotationAxes[i] = randAxis;
+    }
+    // ------
+
     // Buffers
     // ---------------
     unsigned int VBO, objectVAO, lightsourceVAO;
@@ -195,11 +221,12 @@ int main()
     // ---------------------------------------------------------
     std::map<std::string, int> objUniformLocs;
     std::vector<std::string> uniforms = {"model", "view", "projection",
-                                        "lightCol", "lightPos",
+                                        "lightCol",
                                         "viewPos", "material.baseCol", "material.diffuse",
                                         "material.specular", "material.shininess",
                                         "light.ambient", "light.diffuse", "light.specular",
-                                        "material.diffuse", "material.specular"};
+                                        "material.diffuse", "material.specular", "light.position",
+                                        "light.constant", "light.linear", "light.quadratic"};
     getUniformLocations(&objUniformLocs, uniforms, objectShader.ID);
     for(const auto& elem : objUniformLocs){
         std::cout << elem.first << " " << elem.second << "\n";
@@ -226,7 +253,8 @@ int main()
         float lightY = cos(glfwGetTime() / 2) * 2;
         float lightZ = sin(glfwGetTime() / 2) * 2;
         lightCol = glm::vec3(1.0f, 1.0f, 1.0f);
-        lightPos = glm::vec3(lightX, lightY, lightZ);
+        //lightPos = glm::vec3(lightX, lightY, lightZ);
+        lightPos = glm::vec3(0.0f, 0.0f, 2.0f);
         objectCol = glm::vec3(0.5f, 0.5f, 1.0f);
 
         // render object
@@ -252,9 +280,14 @@ int main()
         glUniform3f(objUniformLocs.at("light.ambient"),  0.2f, 0.2f, 0.2f);
         glUniform3f(objUniformLocs.at("light.diffuse"),  0.5f, 0.5f, 0.5f);
         glUniform3f(objUniformLocs.at("light.specular"),  1.0f, 1.0f, 1.0f);
+        glUniform3f(objUniformLocs.at("light.position"),  lightPos.x, lightPos.y, lightPos.z);
+        glUniform1f(objUniformLocs.at("light.constant"), 1.0f);
+        glUniform1f(objUniformLocs.at("light.linear"), 0.09f);
+        glUniform1f(objUniformLocs.at("light.quadratic"), 0.032f);
+        
+        //glUniform3f(objUniformLocs.at("light.direction"),  0.0f, -1.0f, 0.0f);
         // -----------------------
 
-        glUniform3f(objUniformLocs.at("lightPos"), lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(objUniformLocs.at("viewPos"), cameraPos.x, cameraPos.y, cameraPos.z);
 
         model = glm::mat4(1.0f);
@@ -262,11 +295,18 @@ int main()
         projection = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
         glUniformMatrix4fv(objUniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(objUniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(objUniformLocs.at("model"), 1, GL_FALSE, glm::value_ptr(model));
 
+        // draw cubes
+        // ----------
         glBindVertexArray(objectVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        // -------------
+        for (int i = 0; i < sizeof(cubePositions)/sizeof(*cubePositions); i++){
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            model = glm::rotate(model, (float)glfwGetTime()/2, rotationAxes[i]);
+            glUniformMatrix4fv(objUniformLocs.at("model"), 1, GL_FALSE, glm::value_ptr(model));
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        // ----------
 
         // render lightsource
         // ------------------
@@ -274,6 +314,7 @@ int main()
         glUniform3f(lightUniformLocs.at("lightCol"), lightCol.r, lightCol.g, lightCol.b);
         glUniformMatrix4fv(lightUniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(lightUniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.3f));
         glUniformMatrix4fv(lightUniformLocs.at("model"), 1, GL_FALSE, glm::value_ptr(model));
