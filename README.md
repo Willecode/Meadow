@@ -23,3 +23,7 @@ TODO: write about texture mapping
 ![](https://github.com/Willecode/OpenGL_playground/blob/0e81273231712c3ab79bfae00564bb24ccf23c84/specular-diffuse-map.gif)
 
 Light revealing fingerprints on a shiny wooden surface. Uses phong shading with specular and diffuse maps and materials. Writing more about this soon.
+
+![](https://github.com/Willecode/OpenGL_playground/blob/bd6feb2621b91839c9fadd77c7c057bec973a0ca/point-light.gif)
+
+Point light with intensity depending on distance (attenuation)
