@@ -6,7 +6,7 @@ This is my OpenGL learning place, where I push demos I have made with the help o
 
 Each demo contains gif(s and some insight about what I found interesting or difficult, what time was spent on, what I learned etc. while making it.
 
-# First demo
+# First demo: General OpenGL stuff
 ![](https://github.com/Willecode/OpenGL_playground/blob/300d6c4c5e4c979e3984dc671672613facb80b16/movement_demo.gif)
 
 Involves **camera movement**, **perspective projection**, **texture mixing**, **rotating** objects randomly.
@@ -21,7 +21,7 @@ Another obstacle was the more general - not OpenGL specific - mathematics involv
 
 The textures objects, like the aforementioned buffer objects, need to be first created and then bound. After binding, they can be configurated with parameters to adjust texture wrapping and filtering, and the actual texture data can be passed on to it. To create the texture data from an image file, an image loader was used. The loader takes the path to the image file as an argument, and converts the image to the correct format to pass on to OpenGL. Once the texture is passed, the texture can be sampled from fragment shaders by associating a sampler2D uniform with the texture. This means, that the texture data can then be sampled in the fragment shader, which means that if texture coordinates are provided to the fragment shader, it can use those coordinates to take color information from the texture, and use it to color the final fragment. OpenGL makes passing texture coordinates very easy: the coordinates can be first passed to the vertex shader as attributes in the VBO. This means, that now the VBO will store texture coordinates in addition to the vertex coordinates. Therefore, now each vertex will have some texture coordinates associated with it. Now comes the magical part: when you pass variables from the vertex shader to the fragment shader, for each fragment, the fragment shader will receive values which are **interpolated from the vertex shaders associated with the vertices of the triangle that contains the fragment.** Theis means that if you have a square plane and want to map a texture onto it, you only need to specify which vertex of the plane should be in which corner of the triangle.
 
-# Second demo
+# Second demo: Lighting
 ![](https://github.com/Willecode/OpenGL_playground/blob/0e81273231712c3ab79bfae00564bb24ccf23c84/specular-diffuse-map.gif)
 
 Light revealing fingerprints on a shiny wooden surface. Uses phong shading with specular and diffuse maps and materials. Writing more about this soon.
