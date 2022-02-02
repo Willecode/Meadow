@@ -4,6 +4,8 @@
 
 This is my OpenGL learning place, where I push demos I have made with the help of https://learnopengl.com/. The project involves source code provided by the website. **My code is in src/*_demo.cpp and shaders/. This project is in it's early stages, more demos will come.**
 
+Each demo contains gif(s and some insight about what I found interesting or difficult, what time was spent on, what I learned etc. while making it.
+
 # First demo
 ![](https://github.com/Willecode/OpenGL_playground/blob/300d6c4c5e4c979e3984dc671672613facb80b16/movement_demo.gif)
 
@@ -15,9 +17,9 @@ The purpose of the VAO (vertex array object), is to provide information regardin
 
 EBOs (element buffer objects) are optional, and used for telling OpenGL which vertices should be connected with an edge (aka. a line). All shapes are drawn as combinations of triangles, and three vertices are needed to form a triangle. By default, OpenGL decides that the first three vertices in your VBO data are connected, so are the next three etc. This means that to create connected shapes you'd need to put vertices on top of each other, since each vertex can only be part of one triangle by default. This is where the EBO comes in. You may pass vertex indices to the EBO, telling OpenGL where to draw edges. This way, if you want to draw, say, a square plane, for which you need two triangles, you only need four vertices, and an EBO to tell how to connect these vertices to form the two triangles. Without the EBO you'd need six vertices: three for the first triangle and three for the other. Therefore, the EBO is excellent for optimization.
 
-Another obstacle was the more general - not OpenGL specific - mathematics involved in operations such as scaling, rotation and translation of objects, and transforming vertices to other coordinate systems. These operations are performed using vectors, matrices and trigonometry, and I won't be discussing them in detail for now.
+Another obstacle was the more general - not OpenGL specific - mathematics involved in operations such as scaling, rotation and translation of objects, and transforming vertices to other coordinate systems. These operations are performed using vectors, matrices and trigonometry, and I won't be discussing them in detail for now. The GLM-math library was used to ease these operations.
 
-TODO: write about texture mapping
+The textures objects, like the aforementioned buffer objects, need to be first created and then bound. After binding, they can be configurated with parameters to adjust texture wrapping and filtering, and the actual texture data can be passed on to it. To create the texture data from an image file, an image loader was used. The loader takes the path to the image file as an argument, and converts the image to the correct format to pass on to OpenGL. Once the texture is passed, the texture can be sampled from fragment shaders by associating a sampler2D uniform with the texture. This means, that the texture data can then be sampled in the fragment shader, which means that if texture coordinates are provided to the fragment shader, it can use those coordinates to take color information from the texture, and use it to color the final fragment. OpenGL makes passing texture coordinates very easy: the coordinates can be first passed to the vertex shader as attributes in the VBO. This means, that now the VBO will store texture coordinates in addition to the vertex coordinates. Therefore, now each vertex will have some texture coordinates associated with it. Now comes the magical part: when you pass variables from the vertex shader to the fragment shader, for each fragment, the fragment shader will receive values which are **interpolated from the vertex shaders associated with the vertices of the triangle that contains the fragment.** Theis means that if you have a square plane and want to map a texture onto it, you only need to specify which vertex of the plane should be in which corner of the triangle.
 
 # Second demo
 ![](https://github.com/Willecode/OpenGL_playground/blob/0e81273231712c3ab79bfae00564bb24ccf23c84/specular-diffuse-map.gif)
