@@ -219,28 +219,9 @@ int main()
     glm::mat4 view;
     glm::mat4 projection;
     glm::vec3 lightCol;
-    glm::vec3 lightPos;
+    glm::vec3 lightPos[4];
     glm::vec3 objectCol;
     
-    // // Create maps with shader uniform locations for easy access
-    // // ---------------------------------------------------------
-    // std::map<std::string, int> objUniformLocs;
-    // std::vector<std::string> uniforms = {"model", "view", "projection",
-    //                                     "lightCol",
-    //                                     "viewPos", "material.baseCol", "material.diffuse",
-    //                                     "material.specular", "material.shininess",
-    //                                     "light.ambient", "light.diffuse", "light.specular",
-    //                                     "material.diffuse", "material.specular", "light.position",
-    //                                     "light.constant", "light.linear", "light.quadratic"};
-    // getUniformLocations(&objUniformLocs, uniforms, objectShader.ID);
-    // for(const auto& elem : objUniformLocs){
-    //     std::cout << elem.first << " " << elem.second << "\n";
-    // }
-    // std::map<std::string, int> lightUniformLocs;
-    // uniforms = {"model", "view", "projection", "lightCol"};
-    // getUniformLocations(&lightUniformLocs, uniforms, lightShader.ID);
-    // ---------------------------------------------------------
-
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -259,7 +240,10 @@ int main()
         float lightZ = sin(glfwGetTime()) * 10;
         lightCol = glm::vec3(1.0f, 1.0f, 1.0f);
         //lightPos = glm::vec3(lightX, lightY, lightZ);
-        lightPos = glm::vec3(0.0f, -2.0f, 5.0f + lightZ);
+        lightPos[0] = glm::vec3(3.0f, 3.0f, 3.0f);
+        lightPos[1] = glm::vec3(-3.0f, -3.0f, -3.0f);
+        lightPos[2] = glm::vec3(100.f, 100.f, 100.f);
+        lightPos[3] = glm::vec3(100.f, 100.f, 100.f);
         objectCol = glm::vec3(0.5f, 0.5f, 1.0f);
 
         // render object
@@ -268,46 +252,41 @@ int main()
 
         // Set texture
         // -------------------
-        // glUniform1i(objUniformLocs.at("material.diffuse"), 0);
-        // glUniform1i(objUniformLocs.at("material.specular"), 1);
+
         objectShader.setInt("material.diffuse",  0);
         objectShader.setInt("material.specular", 1);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        glBindTexture(  GL_TEXTURE_2D, diffuseMap);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specularMap);
+        glBindTexture(  GL_TEXTURE_2D, specularMap);
         // -------------------
 
         // Set material uniforms
         // -----------------------
-        //glUniform1f(objUniformLocs.at("material.shininess"), 0.25f * 128.0f);
-        objectShader.setFloat("material.shininess", 0.25f * 128.0f);
+        objectShader.setFloat("material.shininess", 0.75f * 128.0f);
         // -----------------------
         // set lighting uniforms
         // -----------------------
         for (GLuint i = 0; i < 4; i++){
-            objectShader.setFloat3(fmt::format("pointLights[{}].ambient",   i), 0.2f, 0.2f, 0.2f);
+            objectShader.setFloat3(fmt::format("pointLights[{}].ambient",   i), 0.0f, 0.0f, 0.0f);
             objectShader.setFloat3(fmt::format("pointLights[{}].diffuse",   i), 0.5f, 0.5f, 0.5f);
             objectShader.setFloat3(fmt::format("pointLights[{}].specular",  i), 1.0f, 1.0f, 1.0f);
-            objectShader.setFloat3(fmt::format("pointLights[{}].position",  i), lightPos.x, lightPos.y, lightPos.z);
+            objectShader.setFloat3(fmt::format("pointLights[{}].position",  i), lightPos[i].x, lightPos[i].y, lightPos[i].z);
             objectShader.setFloat (fmt::format("pointLights[{}].constant",  i), 1.0f);
             objectShader.setFloat (fmt::format("pointLights[{}].linear",    i), 0.09f);
             objectShader.setFloat (fmt::format("pointLights[{}].quadratic", i), 0.032f);
         }
         objectShader.setFloat3("dirLight.direction", 0.0f,-1.0f, 0.0f);
-        objectShader.setFloat3("dirLight.ambient",   0.2f, 0.2f, 0.2f);
+        objectShader.setFloat3("dirLight.ambient",   0.0f, 0.0f, 0.0f);
         objectShader.setFloat3("dirLight.diffuse",   0.5f, 0.5f, 0.5f);
         objectShader.setFloat3("dirLight.specular",  1.0f, 1.0f, 1.0f);
         // -----------------------
 
-        //glUniform3f(objUniformLocs.at("viewPos"), cameraPos.x, cameraPos.y, cameraPos.z);
         objectShader.setFloat3("viewPos", cameraPos.x, cameraPos.y, cameraPos.z);
 
         model = glm::mat4(1.0f);
         view = glm::lookAt(cameraPos, glm::vec3(0.0f, -0.5f, 0.0f), cameraUp);
         projection = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
-        // glUniformMatrix4fv(objUniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(objUniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -326,20 +305,18 @@ int main()
         // render lightsource
         // ------------------
         lightShader.use();
-        // glUniform3f(lightUniformLocs.at("lightCol"), lightCol.r, lightCol.g, lightCol.b);
-        // glUniformMatrix4fv(lightUniformLocs.at("view"), 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(lightUniformLocs.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
         lightShader.setFloat3("lightCol", lightCol.r, lightCol.g, lightCol.b);
         glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "view"),       1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.3f));
-        glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
         glBindVertexArray(lightsourceVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (int i = 0; i < 4; i++){
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, lightPos[i]);
+            model = glm::scale(model, glm::vec3(0.3f));
+            glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         // glfw: swap buffers and poll IO events
         // -------------------------------------------------------------------------------

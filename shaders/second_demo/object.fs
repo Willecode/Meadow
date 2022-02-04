@@ -44,7 +44,7 @@ void main()
     vec3 viewDir = normalize(viewPos - fragPos);
     
     for (int i = 0; i < pointLights.length(); i++){
-        //outputCol += calcPointLight(pointLights[i], normal, fragPos, viewDir);
+        outputCol += calcPointLight(pointLights[i], normal, fragPos, viewDir);
     }
     outputCol += calcDirLight(dirLight, normal, fragPos, viewDir);
     
