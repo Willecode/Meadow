@@ -57,7 +57,8 @@
         "xlocbuf": "cpp",
         "xlocmes": "cpp",
         "xlocmon": "cpp",
-        "xloctime": "cpp"
+        "xloctime": "cpp",
+        "format": "cpp"
     },
     "cmake.configureOnOpen": false
 }
