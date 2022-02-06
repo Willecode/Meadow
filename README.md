@@ -29,3 +29,5 @@ Light revealing fingerprints on a shiny wooden surface. Uses phong shading with 
 ![](https://github.com/Willecode/OpenGL_playground/blob/bd6feb2621b91839c9fadd77c7c057bec973a0ca/point-light.gif)
 
 Point light with intensity depending on distance (attenuation)
+
+**Currently migrating this project into a Visual Studio solution
