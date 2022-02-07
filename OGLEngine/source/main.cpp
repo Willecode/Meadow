@@ -14,6 +14,9 @@
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
 //--------------------------------------
+// ASSET LOADING
+#include <assimp/Importer.hpp>
+//--------------------------------------
 
 #include "shader_s.h"
 
