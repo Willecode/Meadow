@@ -1,5 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+//--------------------------------------
+// IMAGE LOADER
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 //--------------------------------------
@@ -14,12 +16,7 @@
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
 //--------------------------------------
-// ASSET LOADING
-#include <assimp/Importer.hpp>
-//--------------------------------------
-
 #include "shader_s.h"
-
 #include <iostream>
 #include <map>
 #include <array>
