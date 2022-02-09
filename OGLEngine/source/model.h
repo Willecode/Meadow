@@ -13,11 +13,9 @@
 class Model
 {
 public:
-    Model(char* path)
-    {
-        loadModel(path);
-    }
-    void Draw(Shader& shader);
+    Model(char* path);
+
+    void draw(Shader& shader);
 private:
     // model data
     std::vector<Mesh> meshes;

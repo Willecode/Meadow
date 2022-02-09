@@ -1,3 +1,7 @@
+/*
+* An old main file, not in use, kept here for reference
+*/
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 //--------------------------------------
@@ -185,7 +189,7 @@ int main()
     //unsigned char* data = stbi_load("D:/OpenGL_programming/projects/openGL_playground/images/Bricks054_1K_Color.jpg", &width, &height, &nrChannels, 0);
     //"../../OGLEngine/images/"
     unsigned char* data = stbi_load("images/Bricks054_1K_Color.jpg",
-        &width, &height, &nrChannels, 0);
+                                    &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -207,7 +211,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     data = stbi_load("images/Fingerprints009_1K_Color.jpg",
-        &width, &height, &nrChannels, 0);
+                    &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -252,6 +256,17 @@ int main()
         // render object
         // -------------
         objectShader.use();
+
+        // Set texture
+        // -------------------
+
+        objectShader.setInt("material.diffuse", 0);
+        objectShader.setInt("material.specular", 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
+        // -------------------
 
         // Set material uniforms
         // -----------------------
