@@ -10,10 +10,16 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+// Mesh define for debugging
+struct Vertex;
+
 class Model
 {
 public:
-    Model(char* path);
+    Model(const char* path);
+
+    //Debug constructor for testing drawing
+    Model();
 
     void draw(Shader& shader);
 private:

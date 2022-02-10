@@ -1,14 +1,41 @@
 #include "model.h"
 
-Model::Model(char* path)
+Model::Model(const char* path)
 {
 	loadModel(path);
+}
+
+Model::Model()
+{	
+	std::vector<Vertex> verts;
+	Vertex vert1, vert2, vert3;
+	vert1.position = glm::vec3(1.0f, 0.0f, 0.0f);
+	vert1.normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vert1.texCoords = glm::vec2(0.0f, 0.0f);
+	verts.push_back(vert1);
+
+	vert2.position = glm::vec3(-1.0f, 0.0f, 0.0f);
+	vert2.normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vert2.texCoords = glm::vec2(0.0f, 0.0f);
+	verts.push_back(vert2);
+
+	vert3.position = glm::vec3(0.0f, 1.0f, 0.0f);
+	vert3.normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vert3.texCoords = glm::vec2(0.0f, 0.0f);
+	verts.push_back(vert3);
+
+	std::vector<unsigned int> indices = { 0, 1, 2 };
+	std::vector<Texture> textures;
+
+	Mesh debugMesh(verts, indices, textures);
+	meshes.push_back(debugMesh);
 }
 
 void Model::draw(Shader& shader)
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i].draw(shader);
+	return;
 }
 
 void Model::loadModel(std::string path)
@@ -38,6 +65,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 	{
 		processNode(node->mChildren[i], scene);
 	}
+	return;
 }
 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
@@ -47,7 +75,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<Texture> textures;
 
 	// Loop through vertices and copy position, normal, texturecoords
-	for (int i = 0; i < mesh->mNumVertices; i++) {
+	for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 		Vertex vertex;
 		glm::vec3 position;
 		position.x = mesh->mVertices[i].x;
@@ -72,13 +100,20 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 	// Loop through indices and copy their data
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-		for (unsigned int j = 0; j < mesh->mFaces[i].mNumIndices; j++) {
-			indices.push_back(mesh->mFaces[i].mIndices[j]);
+		// triangulated mesh expected
+		unsigned int indexCount = mesh->mFaces[i].mNumIndices;
+		if (indexCount == 3) {
+			indices.push_back(mesh->mFaces[i].mIndices[0]);
+			indices.push_back(mesh->mFaces[i].mIndices[1]);
+			indices.push_back(mesh->mFaces[i].mIndices[2]);
 		}
+		else
+			std::cout << "model encountered a non-triangulated face with vertex count of: " + indexCount << std::endl;
 	}
+
+	Mesh retmesh(vertices, indices, textures);
 	
-	
-	return Mesh(vertices, indices, textures);
+	return retmesh;
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)

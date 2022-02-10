@@ -48,6 +48,9 @@ void main()
     }
     outputCol += calcDirLight(dirLight, normal, fragPos, viewDir);
     
+    // REMOVE ***************************************
+    //outputCol = vec3(1.0, 1.0, 1.0);
+    // ***************************************
     FragColor = vec4(outputCol, 1.0);
 }
 
