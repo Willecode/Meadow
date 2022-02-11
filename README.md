@@ -30,3 +30,4 @@ Light revealing fingerprints on a shiny wooden surface. Uses phong shading with 
 
 Point light with intensity depending on distance (attenuation)
 
+Right now I'm integrating assimp model loader into the project so that I can render more exiting shapes, also doing major refactoring and designing...
