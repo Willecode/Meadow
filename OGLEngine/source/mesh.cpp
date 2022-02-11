@@ -31,7 +31,12 @@ void Mesh::draw(Shader& shader)
     //    glBindTexture(GL_TEXTURE_2D, textures[i].id);
     //}
     //glActiveTexture(GL_TEXTURE0);
-
+    for (unsigned int i = 0; i < textures.size(); i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        if (textures[i].type == "diffuse")
+        shader.setInt("material." + textures[i].type, i);
+        glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    }
     // draw mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);

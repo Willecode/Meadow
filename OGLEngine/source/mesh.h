@@ -12,6 +12,11 @@ struct Vertex {
 struct Texture {
 	unsigned int id;
 	std::string type;
+
+	Texture(unsigned int id = 0, std::string type = "") {
+		this->id = id;
+		this->type = type;
+	}
 };
 class Mesh
 {

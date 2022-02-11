@@ -3,6 +3,7 @@
 #include <string>
 #include "shader_s.h"
 #include "mesh.h"
+#include "ImageCache.h"
 
 //-------------
 // Asset loader
@@ -10,8 +11,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-// Mesh define for debugging
-struct Vertex;
 
 class Model
 {
@@ -27,9 +26,12 @@ private:
     std::vector<Mesh> meshes;
     std::string directory;
 
+    ImageCache cache;
+
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
         std::string typeName);
+    Texture loadTextureFromFile(std::string path);
 };

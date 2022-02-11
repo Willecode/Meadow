@@ -1,6 +1,5 @@
 #include "model.h"
-
-Model::Model(const char* path)
+Model::Model(const char* path): cache()
 {
 	loadModel(path);
 }
@@ -111,6 +110,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			std::cout << "model encountered a non-triangulated face with vertex count of: " + indexCount << std::endl;
 	}
 
+	textures = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, "texture_diffuse");
+
 	Mesh retmesh(vertices, indices, textures);
 	
 	return retmesh;
@@ -118,6 +119,45 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
-	std::vector<Texture> t;
-	return t;
+	std::vector<Texture> textures;
+	aiString path;
+	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
+		aiReturn ret = mat->GetTexture(type, i, &path);
+		if (ret != aiReturn_SUCCESS) {
+			std::cout << "GetTexture failed" << std::endl;
+		}
+		else {
+			std::cout << path.C_Str() << std::endl;
+			textures.push_back(loadTextureFromFile(std::string(path.C_Str())));
+		}
+	}
+	
+	return textures;
+}
+
+Texture Model::loadTextureFromFile(std::string path)
+{
+	unsigned int textureMap;
+	glGenTextures(1, &textureMap);
+	glBindTexture(GL_TEXTURE_2D, textureMap);
+	// -----------------------
+	// Set texture parameters here:
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// -----------------------
+	// image loading
+	//int width, height, nrChannels;
+	std::string fullpath = directory + "/" + path;
+	//unsigned char* data = stbi_load(fullpath.c_str(), &width, &height, &nrChannels, 0);
+	//if (data)
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	//else
+	//	std::cout << "Image loader failed" << std::endl;
+	//stbi_image_free(data);
+	
+	// Texture type is filename - 4 characters: diffuse.png -> diffuse
+	CacheData* cacheData = cache.loadImage(fullpath);
+	if (cacheData)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, cacheData->width, cacheData->height, 0, GL_RGB, GL_UNSIGNED_BYTE, cacheData->dataPtr);
+	return Texture(textureMap, path.substr(0, path.length() - 4));
 }

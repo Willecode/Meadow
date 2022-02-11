@@ -30,6 +30,9 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\ImageCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\lightsource.fs" />
@@ -62,6 +65,9 @@
     <Image Include="images\jellyfish.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="3dmodels\diffuse.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\shader_s.h">
@@ -74,6 +80,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ImageCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
