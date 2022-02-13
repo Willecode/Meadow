@@ -33,4 +33,5 @@ Point light with intensity depending on distance (attenuation)
 Right now I'm integrating assimp model loader into the project so that I can render more exiting shapes, also doing major refactoring and designing...
 # Third demo: 3d model loading and rendering
 ![](https://github.com/Willecode/OpenGL_playground/blob/12d66da38d8c9cf90866180bb0f67b7a598d0eb4/gifs/spec-diffuse-map-3dmodel.gif)
+
 Model loaded using Assimp library. 3d model by Berk Gedik, https://sketchfab.com/3d-models/survival-guitar-backpack-low-poly-799f8c4511f84fab8c3f12887f7e6b36.
