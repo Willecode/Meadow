@@ -190,8 +190,8 @@ int main()
         glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float lightX = sin(glfwGetTime() / 2) * 2;
-        float lightY = cos(glfwGetTime() / 2) * 2;
+        float lightX = sin(glfwGetTime());
+        float lightY = cos(glfwGetTime());
         float lightZ = sin(glfwGetTime()) * 10;
         //lightCol = glm::vec3(56.f / 255.f, 10.f / 255.f, 138.f / 255.f);
         lightCol = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -230,7 +230,8 @@ int main()
         objectShader.setFloat3("viewPos", cameraPos.x, cameraPos.y, cameraPos.z);
 
         modelMatrix = glm::mat4(1.0f);
-        viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, -0.5f, 0.0f), cameraUp);
+        modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime()/2, glm::vec3(0.0f, 1.0f, 0.0f));
+        viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
         projectionMatrix = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
         glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
         glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
