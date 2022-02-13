@@ -31,12 +31,18 @@ void Mesh::draw(Shader& shader)
     //    glBindTexture(GL_TEXTURE_2D, textures[i].id);
     //}
     //glActiveTexture(GL_TEXTURE0);
-    for (unsigned int i = 0; i < textures.size(); i++) {
-        glActiveTexture(GL_TEXTURE0 + i);
-        if (textures[i].type == "diffuse")
-        shader.setInt("material." + textures[i].type, i);
-        glBindTexture(GL_TEXTURE_2D, textures[i].id);
-    }
+    //for (unsigned int i = 0; i < textures.size(); i++) {
+    //    glActiveTexture(GL_TEXTURE0 + i);
+    //    //Pass material properties to shader
+    //    shader.setInt("material." + textures[i].type, i);
+    //    glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    //}
+    shader.setInt("material.diffuse_map", 0);
+    shader.setInt("material.specular_map", 1);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[0].id);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textures[1].id);
     // draw mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);

@@ -110,8 +110,12 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			std::cout << "model encountered a non-triangulated face with vertex count of: " + indexCount << std::endl;
 	}
 
-	textures = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, "texture_diffuse");
-
+	// Here we can choose what map types to load
+	std::vector<Texture> diffuseMaps = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, "diffuse_map");
+	std::vector<Texture> specularMaps = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_SPECULAR, "specular_map");
+	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+	
 	Mesh retmesh(vertices, indices, textures);
 	
 	return retmesh;
@@ -128,14 +132,14 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 		}
 		else {
 			std::cout << path.C_Str() << std::endl;
-			textures.push_back(loadTextureFromFile(std::string(path.C_Str())));
+			textures.push_back(loadTextureFromFile(std::string(path.C_Str()), typeName));
 		}
 	}
 	
 	return textures;
 }
 
-Texture Model::loadTextureFromFile(std::string path)
+Texture Model::loadTextureFromFile(std::string path, std::string typeName)
 {
 	unsigned int textureMap;
 	glGenTextures(1, &textureMap);
@@ -144,20 +148,14 @@ Texture Model::loadTextureFromFile(std::string path)
 	// Set texture parameters here:
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// -----------------------
 	// image loading
-	//int width, height, nrChannels;
 	std::string fullpath = directory + "/" + path;
-	//unsigned char* data = stbi_load(fullpath.c_str(), &width, &height, &nrChannels, 0);
-	//if (data)
-	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	//else
-	//	std::cout << "Image loader failed" << std::endl;
-	//stbi_image_free(data);
-	
-	// Texture type is filename - 4 characters: diffuse.png -> diffuse
 	CacheData* cacheData = cache.loadImage(fullpath);
 	if (cacheData)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, cacheData->width, cacheData->height, 0, GL_RGB, GL_UNSIGNED_BYTE, cacheData->dataPtr);
-	return Texture(textureMap, path.substr(0, path.length() - 4));
+
+	return Texture(textureMap, typeName);
 }

@@ -33,5 +33,5 @@ private:
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
         std::string typeName);
-    Texture loadTextureFromFile(std::string path);
+    Texture loadTextureFromFile(std::string path, std::string typeName);
 };
