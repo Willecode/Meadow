@@ -65,9 +65,6 @@
     <Image Include="images\jellyfish.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="3dmodels\diffuse.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\shader_s.h">

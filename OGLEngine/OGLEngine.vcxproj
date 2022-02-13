@@ -172,9 +172,6 @@
     <None Include="shaders\object.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="3dmodels\diffuse.jpg">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Image>
     <Image Include="images\black.png" />
     <Image Include="images\Bricks054_1K_Color.jpg" />
     <Image Include="images\Bricks054_1K_Roughness.jpg" />

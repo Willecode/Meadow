@@ -193,9 +193,10 @@ int main()
         float lightX = sin(glfwGetTime() / 2) * 2;
         float lightY = cos(glfwGetTime() / 2) * 2;
         float lightZ = sin(glfwGetTime()) * 10;
-        lightCol = glm::vec3(56.f / 255.f, 10.f / 255.f, 138.f / 255.f);
+        //lightCol = glm::vec3(56.f / 255.f, 10.f / 255.f, 138.f / 255.f);
+        lightCol = glm::vec3(1.0f, 1.0f, 1.0f);
         //lightPos = glm::vec3(lightX, lightY, lightZ);
-        lightPos[0] = glm::vec3(3.0f, 3.0f, 3.0f);
+        lightPos[0] = glm::vec3(glm::vec3(lightX, lightY, 0));
         lightPos[1] = glm::vec3(-3.0f, -3.0f, -3.0f);
         lightPos[2] = glm::vec3(100.f, 100.f, 100.f);
         lightPos[3] = glm::vec3(100.f, 100.f, 100.f);
@@ -220,9 +221,9 @@ int main()
             objectShader.setFloat(fmt::format("pointLights[{}].linear", i), 0.09f);
             objectShader.setFloat(fmt::format("pointLights[{}].quadratic", i), 0.032f);
         }
-        objectShader.setFloat3("dirLight.direction", 0.0f, -1.0f, 0.0f);
+        objectShader.setFloat3("dirLight.direction", 0.0f, 0.0f, -1.0f);
         objectShader.setFloat3("dirLight.ambient", 0.0f, 0.1f, 0.1f);
-        objectShader.setFloat3("dirLight.diffuse", 0.0f, 0.5f, 0.5f);
+        objectShader.setFloat3("dirLight.diffuse", 0.0f, 0.6f, 0.6f);
         objectShader.setFloat3("dirLight.specular", 0.0f, 1.0f, 1.0f);
         // -----------------------
 

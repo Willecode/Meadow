@@ -1,6 +1,6 @@
 #pragma once
 #include <unordered_map>
-#include <vector>
+#include <array>
 
 struct CacheData {
 	unsigned char* dataPtr;
@@ -28,9 +28,11 @@ private:
 	//	unsigned char* dataPtr;
 	//	int width, height, nrChannels;
 	//};
+	int MAX_CACHE_SIZE;
 	typedef std::unordered_map<std::string, CacheData*> cmap;
 	cmap cacheMap;
-	std::vector<CacheData> cacheVec;
+	std::array<CacheData, 8> cache;
+	int newestCacheIndex;
 
 };
 

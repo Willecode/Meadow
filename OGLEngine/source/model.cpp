@@ -111,6 +111,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 
 	// Here we can choose what map types to load
+	//std::vector<Texture> diffuseMaps = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, "diffuse_map");
 	std::vector<Texture> diffuseMaps = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, "diffuse_map");
 	std::vector<Texture> specularMaps = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_SPECULAR, "specular_map");
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
@@ -154,8 +155,18 @@ Texture Model::loadTextureFromFile(std::string path, std::string typeName)
 	// image loading
 	std::string fullpath = directory + "/" + path;
 	CacheData* cacheData = cache.loadImage(fullpath);
-	if (cacheData)
+	if (cacheData) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, cacheData->width, cacheData->height, 0, GL_RGB, GL_UNSIGNED_BYTE, cacheData->dataPtr);
+		if (typeName == "diffuse_map") {
+			unsigned char* p = cacheData->dataPtr;
+			for (int i = 0; i < 10; i++) {
+				/*std::cout << static_cast<unsigned int>(*p) << std::endl;*/
+				p++;
+			}
+		}
+		
+		
+	}
 
 	return Texture(textureMap, typeName);
 }

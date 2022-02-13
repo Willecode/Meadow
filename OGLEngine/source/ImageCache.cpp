@@ -1,7 +1,7 @@
 #include "ImageCache.h"
 #include <stb/stb_image.h>
 #include <iostream>
-ImageCache::ImageCache()
+ImageCache::ImageCache(): newestCacheIndex(0), MAX_CACHE_SIZE(8)
 {
 }
 
@@ -17,14 +17,22 @@ CacheData* ImageCache::loadImage(const std::string path)
             return nullptr;
         }
         else {
-            CacheData cData;
-            cData.dataPtr = data;
-            cData.height = height;
-            cData.width = width;
-            cData.nrChannels = nrChannels;
-            cacheVec.push_back(cData);
-            cacheMap.insert({ path, &(cacheVec.back())});
-            pos = cacheMap.find(path);
+            if (newestCacheIndex > MAX_CACHE_SIZE - 1) {
+                std::cout << "cache full. loaded image not cached." << std::endl;
+                return nullptr;
+            }
+            else {
+                CacheData cData;
+                cData.dataPtr = data;
+                cData.height = height;
+                cData.width = width;
+                cData.nrChannels = nrChannels;
+                cache[newestCacheIndex] = cData;
+                cacheMap.insert({ path, &(cache.at(newestCacheIndex)) });
+                newestCacheIndex++;
+                pos = cacheMap.find(path);
+            }
+            
         }
     }
     return pos->second;

@@ -49,7 +49,7 @@ void main()
     outputCol += calcDirLight(dirLight, normal, fragPos, viewDir);
     
     // REMOVE ***************************************
-    outputCol = vec3(texture(material.specular_map, TexCoords));
+    //outputCol = vec3(texture(material.diffuse_map, TexCoords));
     // ***************************************
     FragColor = vec4(outputCol, 1.0);
 }
