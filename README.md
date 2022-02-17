@@ -1,7 +1,5 @@
 # OpenGL_playground
 
-**Right now the project may not build on some machines, since the assimp dll file is built for my machine. I'll try to build assimp as a static library in the future, so that viewers may clone and run the project without hassle.**
-
 This is my OpenGL learning place, where I push demos I have made with the help of https://learnopengl.com/. The project involves some source code provided by the website. Right now this is just a sandbox, but it will potentially develop into a render engine.
 
 Each demo contains gif(s and some insight about what I found interesting or difficult, what time was spent on, what I learned etc. while making it.
