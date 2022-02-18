@@ -46,15 +46,12 @@ CacheData* ImageCache::loadImage(const std::string path)
     //}
 }
 
-void ImageCache::freeData(const std::string path)
-{
-    stbi_image_free(cacheMap.at(path)->dataPtr);
-}
-
 void ImageCache::freeAllData()
 {
     for (auto const& x : cacheMap) {
-        freeData(x.first);
+        stbi_image_free(cacheMap.at(x.first)->dataPtr);
     }
+    cacheMap.clear();
+    newestCacheIndex = 0;
 }
 

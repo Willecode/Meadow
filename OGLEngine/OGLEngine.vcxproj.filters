@@ -30,7 +30,16 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\ImageCache.cpp">
+    <ClCompile Include="source\imagecache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\object3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\primitive3d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -79,7 +88,19 @@
     <ClInclude Include="source\model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\ImageCache.h">
+    <ClInclude Include="source\imagecache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\object3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\lightsource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\primitive3d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
