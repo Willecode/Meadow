@@ -71,100 +71,6 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    //// Cube vertices, texture coordinates
-    //// ------------------------------------------------------------------
-    //float cubeVertices[] = {
-    //    // positions          // normals           // texture coords
-    //    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-    //     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
-    //     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-    //     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-    //    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
-    //    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-
-    //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-    //     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
-    //     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-    //     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-    //    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
-    //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-
-    //    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-    //    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-    //    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-    //    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-    //    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-    //    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-
-    //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-    //     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-    //     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-    //     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-    //     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-    //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-
-    //    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-    //     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
-    //     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-    //     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-    //    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
-    //    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-
-    //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
-    //     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
-    //     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-    //     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-    //    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
-    //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
-    //};
-
-    //glm::vec3 cubePositions[] = {
-    //glm::vec3(0.0f,  0.0f,  0.0f),
-    //glm::vec3(2.0f,  2.0f, 2.0f),
-    //glm::vec3(-1.5f, -2.2f, -2.5f),
-    //glm::vec3(-3.8f, -2.0f, -1.3f),
-    //glm::vec3(2.4f, -0.4f, -3.5f),
-    //glm::vec3(-1.7f,  3.0f, -7.5f),
-    //glm::vec3(1.3f, -2.0f, -2.5f),
-    //glm::vec3(1.5f,  2.0f, -2.5f),
-    //glm::vec3(1.5f,  0.2f, -1.5f),
-    //glm::vec3(-1.3f,  1.0f, -1.5f)
-    //};
-
-    //// Generate random vectors to rotate the cubes around
-    //// ------
-    //const int AXESCOUNT = 10;
-    //glm::vec3 rotationAxes[AXESCOUNT] = {};
-    //glm::vec3 randAxis = glm::vec3(1.0f);
-    //for (int i = 0; i < AXESCOUNT; i++) {
-    //    // Generate random vectors and normalize them
-    //    randAxis = glm::vec3((float)(rand() % 100) - 50, (float)(rand() % 100) - 50, (float)(rand() % 100) - 50);
-    //    randAxis = glm::normalize(randAxis);
-    //    rotationAxes[i] = randAxis;
-    //}
-    //// ------
-
-    //// Buffers
-    //// ---------------
-    //unsigned int VBO, objectVAO, lightsourceVAO;
-    //glGenVertexArrays(1, &objectVAO);
-    //glGenVertexArrays(1, &lightsourceVAO);
-    //glGenBuffers(1, &VBO);
-
-    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-
-    //glBindVertexArray(objectVAO);
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    //glEnableVertexAttribArray(0);
-    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    //glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    //glEnableVertexAttribArray(2);
-
-    //glBindVertexArray(lightsourceVAO);
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    //glEnableVertexAttribArray(0);
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -173,10 +79,15 @@ int main()
     glm::mat4 modelMatrix = glm::mat4(1.0f);
     glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;
-    glm::vec3 lightCol;
-    glm::vec3 lightPos[4];
-    glm::vec3 objectCol;
     Model model("3dmodels/backpack.obj");
+    
+    
+
+    //Object should have a pointer to each of it's meshes and lightsources
+    // Meshes contain: the mesh and it's material
+
+    
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -185,49 +96,7 @@ int main()
         // -----
         processInput(window);
 
-        // render
-        // ------
-        glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        float lightX = sin(glfwGetTime());
-        float lightY = cos(glfwGetTime());
-        float lightZ = sin(glfwGetTime()) * 10;
-        //lightCol = glm::vec3(56.f / 255.f, 10.f / 255.f, 138.f / 255.f);
-        lightCol = glm::vec3(1.0f, 1.0f, 1.0f);
-        //lightPos = glm::vec3(lightX, lightY, lightZ);
-        lightPos[0] = glm::vec3(glm::vec3(lightX, lightY, 0));
-        lightPos[1] = glm::vec3(-3.0f, -3.0f, -3.0f);
-        lightPos[2] = glm::vec3(100.f, 100.f, 100.f);
-        lightPos[3] = glm::vec3(100.f, 100.f, 100.f);
-        objectCol = glm::vec3(0.5f, 0.5f, 1.0f);
-
-        // render object
-        // -------------
-        objectShader.use();
-
-        // Set material uniforms
-        // -----------------------
-        objectShader.setFloat("material.shininess", 0.75f * 128.0f);
-        // -----------------------
-        // set lighting uniforms
-        // -----------------------
-        for (GLuint i = 0; i < 4; i++) {
-            objectShader.setFloat3(fmt::format("pointLights[{}].ambient", i), 0.0f, 0.0f, 0.0f);
-            objectShader.setFloat3(fmt::format("pointLights[{}].diffuse", i), lightCol.r * 0.5f, lightCol.g * 0.5f, lightCol.b * 0.5f);
-            objectShader.setFloat3(fmt::format("pointLights[{}].specular", i), lightCol.r, lightCol.g, lightCol.b);
-            objectShader.setFloat3(fmt::format("pointLights[{}].position", i), lightPos[i].x, lightPos[i].y, lightPos[i].z);
-            objectShader.setFloat(fmt::format("pointLights[{}].constant", i), 1.0f);
-            objectShader.setFloat(fmt::format("pointLights[{}].linear", i), 0.09f);
-            objectShader.setFloat(fmt::format("pointLights[{}].quadratic", i), 0.032f);
-        }
-        objectShader.setFloat3("dirLight.direction", 0.0f, 0.0f, -1.0f);
-        objectShader.setFloat3("dirLight.ambient", 0.0f, 0.1f, 0.1f);
-        objectShader.setFloat3("dirLight.diffuse", 0.0f, 0.6f, 0.6f);
-        objectShader.setFloat3("dirLight.specular", 0.0f, 1.0f, 1.0f);
-        // -----------------------
-
-        objectShader.setFloat3("viewPos", cameraPos.x, cameraPos.y, cameraPos.z);
+       
 
         modelMatrix = glm::mat4(1.0f);
         modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime()/2, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -239,33 +108,7 @@ int main()
         //Draw model
         model.draw(objectShader);
 
-        // // draw cubes
-        // ----------
-        /*glBindVertexArray(objectVAO);
-        for (int i = 0; i < sizeof(cubePositions) / sizeof(*cubePositions); i++) {
-            modelMatrix = glm::mat4(1.0f);
-            modelMatrix = glm::translate(modelMatrix, cubePositions[i]);
-            modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime() / 2, rotationAxes[i]);
-            glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }*/
-        // ----------
-        // render lightsource
-        // ------------------
-        //lightShader.use();
-        //lightShader.setFloat3("lightCol", lightCol.r, lightCol.g, lightCol.b);
-        //glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-        //glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-
-        /*glBindVertexArray(lightsourceVAO);
-        for (int i = 0; i < 4; i++) {
-            modelMatrix = glm::mat4(1.0f);
-            modelMatrix = glm::translate(modelMatrix, lightPos[i]);
-            modelMatrix = glm::scale(modelMatrix, glm::vec3(0.3f));
-            glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }*/
-
+       
         // glfw: swap buffers and poll IO events
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
