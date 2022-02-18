@@ -33,3 +33,8 @@ Right now I'm integrating assimp model loader into the project so that I can ren
 ![](https://github.com/Willecode/OpenGL_playground/blob/12d66da38d8c9cf90866180bb0f67b7a598d0eb4/gifs/spec-diffuse-map-3dmodel.gif)
 
 Model loaded using Assimp library. 3d model by Berk Gedik, https://sketchfab.com/3d-models/survival-guitar-backpack-low-poly-799f8c4511f84fab8c3f12887f7e6b36.
+
+# Architecture plan
+![](https://github.com/Willecode/OpenGL_playground/blob/109a2909ca449409d72d8ac9f93b0e5862684f39/Documents/classdiagram.jpg)
+
+First draft
