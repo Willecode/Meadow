@@ -1,6 +1,7 @@
 #pragma once
-#include <glm/glm.hpp>
-#include <string>
+#include <glad/glad.h>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 #include <vector>
 #include "shader_s.h"
 
@@ -9,28 +10,16 @@ struct Vertex {
 	glm::vec3 normal;
 	glm::vec2 texCoords;
 };
-struct Texture {
-	unsigned int id;
-	std::string type;
 
-	Texture(unsigned int id = 0, std::string type = "") {
-		this->id = id;
-		this->type = type;
-	}
-};
 class Mesh
 {
 public:
-	std::vector<Vertex>		vertices;
-	std::vector<unsigned int> indices;
-	std::vector<Texture>	    textures;
-
-	Mesh(	std::vector<Vertex>		vertices,
-			std::vector<unsigned int> indices,
-			std::vector<Texture>		textures);
-	void draw(Shader &shader);
+	std::vector<Vertex>	vertices;
+	std::vector<GLuint> indices;
+	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices);
+	void draw();
 private:
 	unsigned int VAO, VBO, EBO;
-	void setupMesh();
+	void setup();
 };
 

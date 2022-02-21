@@ -17,7 +17,12 @@
 #include <fmt/core.h>
 //--------------------------------------
 #include "shader_s.h"
-#include "model.h"
+#include "scene.h"
+#include "object3d.h"
+#include "texture.h"
+#include "material.h"
+#include "cube.h"
+
 #include <iostream>
 #include <map>
 #include <array>
@@ -66,48 +71,54 @@ int main()
     }
 
     // Compile shaders
-    Shader objectShader("shaders/object.vs", "shaders/object.fs");
-    Shader lightShader("shaders/lightsource.vs", "shaders/lightsource.fs");
-
+    /*Shader objectShader("shaders/object.vs", "shaders/object.fs");
+    Shader lightShader("shaders/lightsource.vs", "shaders/lightsource.fs");*/
+    Shader simpleShader("shaders/simple.vs", "shaders/simple.fs");
     glEnable(GL_DEPTH_TEST);
-
 
     stbi_set_flip_vertically_on_load(true);
 
-    // Draw loop variables
-    // --------------------
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
-    glm::mat4 viewMatrix;
-    glm::mat4 projectionMatrix;
-    Model model("3dmodels/backpack.obj");
+    // Set up textures
+    ImageCache cache;
+    Texture diffuseMap("images/jellyfish.png", GL_TEXTURE_2D, cache);
+    Texture specularMap("images/Fingerprints009_1K_Color.jpg", GL_TEXTURE_2D, cache);
     
-    
+    // Material
+    glm::vec3 color = glm::vec3(232.0f / 255, 100.0f / 255, 190.0f / 255);
+    Material cubeMat(color, color, color, &diffuseMap, &specularMap);
+    Scene scene;
+    Cube cube;
+    cube.setMaterial(&cubeMat);
+    cube.setShader(&simpleShader);
+    scene.addObject(&cube);
 
-    //Object should have a pointer to each of it's meshes and lightsources
-    // Meshes contain: the mesh and it's material
-
-    
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+        glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         // input
         // -----
         processInput(window);
 
-       
-
-        modelMatrix = glm::mat4(1.0f);
+        // Camera settings 
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
         modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime()/2, glm::vec3(0.0f, 1.0f, 0.0f));
-        viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
-        projectionMatrix = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
-        glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
-        //Draw model
-        model.draw(objectShader);
+        glm::mat4 viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
+        glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
 
+        // Set shader
+        simpleShader.use();
+
+        glUniformMatrix4fv(glGetUniformLocation(simpleShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(simpleShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+        //glUniformMatrix4fv(glGetUniformLocation(simpleShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+        cube.setModelMatrix(&modelMatrix);
+        simpleShader.setFloat3("lightCol", 1.0f, 1.0f, 1.0f);
+        scene.drawScene();
        
         // glfw: swap buffers and poll IO events
         // -------------------------------------------------------------------------------
@@ -115,14 +126,7 @@ int main()
         glfwPollEvents();
     }
 
-    // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
-    //glDeleteVertexArrays(1, &objectVAO);
-    //glDeleteVertexArrays(1, &lightsourceVAO);
-    //glDeleteBuffers(1, &VBO);
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
 }

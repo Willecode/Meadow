@@ -3,11 +3,12 @@
 #include <vector>
 class Scene
 {
+public:
 	void addObject(Object3D* obj);
 	void drawScene();
 
 private:
-	void gatherLightData();
 	std::vector<Object3D*> sceneObjects;
+	void gatherLightData();
 };
 

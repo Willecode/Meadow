@@ -5,7 +5,7 @@ ImageCache::ImageCache(): newestCacheIndex(0), MAX_CACHE_SIZE(8)
 {
 }
 
-CacheData* ImageCache::loadImage(const std::string path)
+ImageData* ImageCache::loadImage(const std::string path)
 {
     cmap::const_iterator pos = cacheMap.find(path);
     if (pos == cacheMap.end()) {
@@ -22,7 +22,7 @@ CacheData* ImageCache::loadImage(const std::string path)
                 return nullptr;
             }
             else {
-                CacheData cData;
+                ImageData cData;
                 cData.dataPtr = data;
                 cData.height = height;
                 cData.width = width;
@@ -36,14 +36,11 @@ CacheData* ImageCache::loadImage(const std::string path)
         }
     }
     return pos->second;
-    //    MAP::const_iterator pos = map.find("string");
-    //if (pos == map.end()) {
-    //    //handle the error
-    //}
-    //else {
-    //    std::string value = pos->second;
-    //    ...
-    //}
+}
+
+void ImageCache::freeData(const std::string path)
+{
+    stbi_image_free(cacheMap.at(path)->dataPtr);
 }
 
 void ImageCache::freeAllData()
