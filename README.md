@@ -37,4 +37,4 @@ Model loaded using Assimp library. 3d model by Berk Gedik, https://sketchfab.com
 # Architecture plan
 ![](https://github.com/Willecode/OpenGL_playground/blob/109a2909ca449409d72d8ac9f93b0e5862684f39/Documents/classdiagram.jpg)
 
-First draft
+First draft (UPDATE: already changed some stuff while implementing, ditched the Primitive3D class, shaders and materials separated from each other and part of object instead, mesh now only handles geo...)
