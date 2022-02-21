@@ -15,16 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\oldmain.cpp">
+    <ClCompile Include="source\old\oldmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\main.cpp">
@@ -39,7 +33,16 @@
     <ClCompile Include="source\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\primitive3d.cpp">
+    <ClCompile Include="source\material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,6 +51,8 @@
     <None Include="shaders\lightsource.vs" />
     <None Include="shaders\object.fs" />
     <None Include="shaders\object.vs" />
+    <None Include="shaders\simple.vs" />
+    <None Include="shaders\simple.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\Wood066_1K_Color.jpg">
@@ -82,12 +87,6 @@
     <ClInclude Include="source\stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\imagecache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -100,7 +99,16 @@
     <ClInclude Include="source\lightsource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\primitive3d.h">
+    <ClInclude Include="source\material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

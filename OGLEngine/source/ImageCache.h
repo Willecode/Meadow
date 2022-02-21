@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <array>
 
-struct CacheData {
+struct ImageData {
 	unsigned char* dataPtr;
 	int width, height, nrChannels;
 };
@@ -18,7 +18,7 @@ public:
 	nrChannels: pointer to where number of channels of the image will be outputted
 	return:pointer to CacheData containing metadata and actual data
 	*/
-	CacheData* loadImage(const std::string path);
+	ImageData* loadImage(const std::string path);
 	void freeData(const std::string path);
 	void freeAllData();
 
@@ -29,9 +29,9 @@ private:
 	//	int width, height, nrChannels;
 	//};
 	int MAX_CACHE_SIZE;
-	typedef std::unordered_map<std::string, CacheData*> cmap;
+	typedef std::unordered_map<std::string, ImageData*> cmap;
 	cmap cacheMap;
-	std::array<CacheData, 8> cache;
+	std::array<ImageData, 8> cache;
 	int newestCacheIndex;
 
 };

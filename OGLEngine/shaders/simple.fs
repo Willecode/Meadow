@@ -1,8 +1,9 @@
 #version 330 core
 out vec4 FragColor;
 
-//uniform vec3 lightCol;
-
+in vec3 normal;
+in vec3 fragPos;
+in vec2 TexCoords;
 
 void main()
 {
