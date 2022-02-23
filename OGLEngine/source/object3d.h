@@ -3,25 +3,31 @@
 #include "lightsource.h"
 #include <glm/glm.hpp>
 #include <vector>
-#include <memory>
+#include <string>
 #include "mesh.h"
 #include "material.h"
 
 class Object3D
 {
 public:
+	int id;
+
 	Object3D();
-	void draw();
-	void addLightSource(LightSource light);
+	void draw(std::unordered_map<Object3D*, LightSource*> sceneLights);
+	void addLightSource(LightSource* lightSrc);
+	void addMesh(const Mesh* mesh);
 	void setModelMatrix(const glm::mat4* model);
 	void setMaterial(Material* mat);
 	void setShader(Shader* sdr);
+	glm::vec3 getPosition();
+	LightSource* getLightSource();
 
 protected:
+	std::string name;
 	glm::mat4 modelMatrix;
 	std::vector<Object3D*> childObjects;
-	//std::shared_ptr<LightSource> light;
-	std::vector<Mesh> meshes;
+	LightSource* light;
+	std::vector<const Mesh*> meshes;
 	Material* material;
 	Shader* shader;
 };

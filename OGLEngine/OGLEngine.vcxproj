@@ -155,17 +155,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\mesh.cpp" />
-    <ClCompile Include="source\cube.cpp" />
     <ClCompile Include="source\material.cpp" />
+    <ClCompile Include="source\primitivecreation.cpp" />
     <ClCompile Include="source\scene.cpp" />
     <ClCompile Include="source\object3d.cpp" />
     <ClCompile Include="source\imagecache.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\glad.c" />
-    <ClCompile Include="source\old\oldmain.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,15 +184,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\mesh.h" />
-    <ClInclude Include="source\cube.h" />
     <ClInclude Include="source\material.h" />
     <ClInclude Include="source\lightsource.h" />
+    <ClInclude Include="source\primitivecreation.h" />
     <ClInclude Include="source\scene.h" />
     <ClInclude Include="source\object3d.h" />
     <ClInclude Include="source\imagecache.h" />
     <ClInclude Include="source\shader_s.h" />
     <ClInclude Include="source\stb\stb_image.h" />
     <ClInclude Include="source\texture.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="primitivedata\cube.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/vec3.hpp>
 
 #include <string>
 #include <fstream>
@@ -89,8 +90,8 @@ public:
     {
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
     }
-    void setFloat3(const std::string& name, float value1, float value2, float value3) {
-        glUniform3f(glGetUniformLocation(ID, name.c_str()), value1, value2, value3);
+    void setFloat3(const std::string& name, glm::vec3 value) {
+        glUniform3f(glGetUniformLocation(ID, name.c_str()), value.r, value.g, value.b);
     }
 
 private:

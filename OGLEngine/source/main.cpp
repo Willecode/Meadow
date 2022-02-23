@@ -21,7 +21,7 @@
 #include "object3d.h"
 #include "texture.h"
 #include "material.h"
-#include "cube.h"
+#include "primitivecreation.h"
 
 #include <iostream>
 #include <map>
@@ -69,10 +69,12 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    // Create primitive meshes
+    const Mesh MESH_CUBE = createCubeMesh();
 
     // Compile shaders
-    /*Shader objectShader("shaders/object.vs", "shaders/object.fs");
-    Shader lightShader("shaders/lightsource.vs", "shaders/lightsource.fs");*/
+    Shader objectShader("shaders/object.vs", "shaders/object.fs");
+    Shader lightShader("shaders/lightsource.vs", "shaders/lightsource.fs");
     Shader simpleShader("shaders/simple.vs", "shaders/simple.fs");
     glEnable(GL_DEPTH_TEST);
 
@@ -80,19 +82,38 @@ int main()
 
     // Set up textures
     ImageCache cache;
-    Texture diffuseMap("images/jellyfish.png", GL_TEXTURE_2D, cache);
+    Texture diffuseMap("images/Wood066_1K_Color.jpg", GL_TEXTURE_2D, cache);
     Texture specularMap("images/Fingerprints009_1K_Color.jpg", GL_TEXTURE_2D, cache);
     
-    // Material
-    glm::vec3 color = glm::vec3(232.0f / 255, 100.0f / 255, 190.0f / 255);
-    Material cubeMat(color, color, color, &diffuseMap, &specularMap);
     Scene scene;
-    Cube cube;
+    
+    glm::vec3 colorPink = glm::vec3(232.0f / 255, 100.0f / 255, 190.0f / 255);
+    Material cubeMat(colorPink, colorPink, colorPink, 0.75f * 128.0f, &diffuseMap, &specularMap);
+    Object3D cube;
+    cube.addMesh(&MESH_CUBE);
     cube.setMaterial(&cubeMat);
-    cube.setShader(&simpleShader);
+    cube.setShader(&objectShader);
     scene.addObject(&cube);
 
+    glm::vec3 colorWhite = glm::vec3(1.0f);
+    PointLight light;
+    light.ambient =   glm::vec3(0.0f, 0.0f, 0.0f);
+    light.diffuse =   glm::vec3(colorWhite.r * 0.5f, colorWhite.g * 0.5f, colorWhite.b * 0.5f);
+    light.specular =  glm::vec3(colorWhite.r, colorWhite.g, colorWhite.b);
+    light.constant = 1.0f;
+    light.linear = 0.09f;
+    light.quadratic = 0.032f;
 
+    Object3D lamp;
+    lamp.addMesh(&MESH_CUBE);
+    lamp.setMaterial(&cubeMat);
+    lamp.setShader(&objectShader);
+    glm::mat4 lampModelMat = glm::mat4(1.0f);
+    lampModelMat = glm::translate(lampModelMat, glm::vec3(2.0f, 0.0f, 0.0f));
+    lamp.setModelMatrix(&lampModelMat);
+    lamp.addLightSource(&light);
+    scene.addObject(&lamp);
+    scene.updateLighting();
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -105,19 +126,19 @@ int main()
         processInput(window);
 
         // Camera settings 
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime()/2, glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
         glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
 
-        // Set shader
-        simpleShader.use();
+        // Use shader
+        objectShader.use();
 
-        glUniformMatrix4fv(glGetUniformLocation(simpleShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(simpleShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-        //glUniformMatrix4fv(glGetUniformLocation(simpleShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
+        modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f));
         cube.setModelMatrix(&modelMatrix);
-        simpleShader.setFloat3("lightCol", 1.0f, 1.0f, 1.0f);
         scene.drawScene();
        
         // glfw: swap buffers and poll IO events
