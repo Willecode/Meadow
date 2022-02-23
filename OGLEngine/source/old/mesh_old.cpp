@@ -1,27 +1,33 @@
-#include "mesh.h"
+#include "Mesh.h"
+#include <glad/glad.h>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices):
-    vertices(vertices), indices(indices)
+Mesh::Mesh(std::vector<Vertex>        vertices,
+		   std::vector<unsigned int>  indices,
+		   std::vector<Texture>		textures) :
+	       vertices(vertices), indices(indices), textures(textures)
 {
-    setup();
+    this->vertices = vertices;
+    this->indices = indices;
+    this->textures = textures;
+    setupMesh();
 }
 
-Mesh::~Mesh()
+void Mesh::draw(Shader& shader)
 {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-}
-
-void Mesh::draw() const
-{
+    shader.setInt("material.diffuse_map", 0);
+    shader.setInt("material.specular_map", 1);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[0].id);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textures[1].id);
+    // draw mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
-void Mesh::setup()
-{
+void Mesh::setupMesh()
+{	
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);

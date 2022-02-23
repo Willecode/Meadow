@@ -5,7 +5,7 @@
 class Texture
 {
 public:
-	Texture(std::string imagePath, GLenum target, ImageCache &cache)
+	Texture(std::string imagePath, GLenum target, ImageCache &cache):target(target)
 	{
 		glGenTextures(1, &id);
 		glActiveTexture(GL_TEXTURE0);
@@ -27,13 +27,13 @@ public:
 	~Texture() {
 		glDeleteTextures(1, &id);
 	}
-	void bind(GLuint textureUnit, GLenum target) {
+	void bind(GLuint textureUnit) {
 		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(target, id);
 	}
 private:
 	GLuint id;
-
+	GLenum target;
 	
 };
 

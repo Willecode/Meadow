@@ -9,6 +9,12 @@ struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoords;
+
+	Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoords):
+		position(position), normal(normal), texCoords(texCoords)
+	{
+
+	}
 };
 
 class Mesh
@@ -17,7 +23,8 @@ public:
 	std::vector<Vertex>	vertices;
 	std::vector<GLuint> indices;
 	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices);
-	void draw();
+	~Mesh();
+	void draw() const;
 private:
 	unsigned int VAO, VBO, EBO;
 	void setup();
