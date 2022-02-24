@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "mesh.h"
-#include "material.h"
+#include "materials/material.h"
 
 class Object3D
 {

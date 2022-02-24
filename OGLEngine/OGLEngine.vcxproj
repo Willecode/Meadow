@@ -154,8 +154,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\materials\coloronlymaterial.cpp" />
+    <ClCompile Include="source\materials\colormaterial.cpp" />
+    <ClCompile Include="source\materials\phongmaterial.cpp" />
     <ClCompile Include="source\mesh.cpp" />
-    <ClCompile Include="source\material.cpp" />
+    <ClCompile Include="source\materials\material.cpp" />
     <ClCompile Include="source\primitivecreation.cpp" />
     <ClCompile Include="source\scene.cpp" />
     <ClCompile Include="source\object3d.cpp" />
@@ -167,10 +170,10 @@
   <ItemGroup>
     <None Include="shaders\lightsource.fs" />
     <None Include="shaders\lightsource.vs" />
-    <None Include="shaders\object.fs" />
+    <None Include="shaders\phongsolidcol.fs" />
+    <None Include="shaders\phongtex.fs" />
     <None Include="shaders\object.vs" />
-    <None Include="shaders\simple.fs" />
-    <None Include="shaders\simple.vs" />
+    <None Include="shaders\coloronly.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\black.png" />
@@ -183,8 +186,11 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\materials\coloronlymaterial.h" />
+    <ClInclude Include="source\materials\colormaterial.h" />
+    <ClInclude Include="source\materials\phongmaterial.h" />
     <ClInclude Include="source\mesh.h" />
-    <ClInclude Include="source\material.h" />
+    <ClInclude Include="source\materials\material.h" />
     <ClInclude Include="source\lightsource.h" />
     <ClInclude Include="source\primitivecreation.h" />
     <ClInclude Include="source\scene.h" />

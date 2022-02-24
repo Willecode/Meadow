@@ -11,6 +11,7 @@ Object3D::Object3D():
 void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights)
 {
 	if ((!meshes.empty()) && material && shader) {
+		shader->use();
 		material->passToShader(shader);
 		// THIS DOESN'T SUPPORT DIRLIGHTS
 		GLuint lightId = 0;
