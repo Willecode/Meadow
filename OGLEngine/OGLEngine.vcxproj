@@ -194,9 +194,6 @@
     <ClInclude Include="source\stb\stb_image.h" />
     <ClInclude Include="source\texture.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="primitivedata\cube.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
