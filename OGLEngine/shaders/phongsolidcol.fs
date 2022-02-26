@@ -25,14 +25,17 @@ struct PointLight {
 };
 struct Material {
     vec3 diffuse;
-    vec3 ambient;
     vec3 specular;
     float shininess;
 };
 
-#define NR_POINTS_LIGHTS 1
-uniform PointLight pointLights[NR_POINTS_LIGHTS];
-uniform DirectionalLight dirLight;
+#define MAX_POINT_LIGHTS 30
+#define MAX_DIR_LIGHTS 5
+uniform int pointLightCount;
+uniform int dirLightCount;
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform DirectionalLight dirLight[MAX_DIR_LIGHTS];
+
 uniform vec3 viewPos;
 uniform Material material;
 
@@ -44,10 +47,12 @@ void main()
     vec3 outputCol = vec3(0.0);
     vec3 viewDir = normalize(viewPos - fragPos);
     
-    for (int i = 0; i < pointLights.length(); i++){
+    for (int i = 0; i < pointLightCount; i++){
         outputCol += calcPointLight(pointLights[i], normal, fragPos, viewDir);
     }
-    outputCol += calcDirLight(dirLight, normal, fragPos, viewDir);
+    for (int i = 0; i < dirLightCount; i++){
+        outputCol += calcDirLight(dirLight[i], normal, fragPos, viewDir);
+    }
     
     // DEBUG ***************************************
     //outputCol = vec3(0.0, 1.0, 0.0);
@@ -59,7 +64,7 @@ void main()
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir){
     // Ambient
     // -------
-    vec3 ambient = material.ambient * light.ambient;
+    vec3 ambient = material.diffuse * light.ambient;
 
     // Diffuse
     // -------

@@ -74,9 +74,9 @@ int main()
     const Mesh MESH_CUBE = createCubeMesh();
 
     // Compile shaders
-    Shader objectShader("shaders/object.vs", "shaders/phongtex.fs");
-    //Shader lightShader("shaders/lightsource.vs", "shaders/lightsource.fs");
-    Shader colorOnly("shaders/object.vs", "shaders/coloronly.fs");
+    Shader phongTexShader("shaders/object.vs", "shaders/phongtex.fs");
+    Shader phongSolidColShader("shaders/object.vs", "shaders/phongsolidcol.fs");
+    Shader colorOnlyShader("shaders/object.vs", "shaders/coloronly.fs");
     glEnable(GL_DEPTH_TEST);
 
     stbi_set_flip_vertically_on_load(true);
@@ -91,34 +91,41 @@ int main()
     glm::vec3 colorPink = glm::vec3(232.0f / 255, 100.0f / 255, 190.0f / 255);
     //PhongMaterial cubeMat;
     
+    // Create objects
     PhongMaterial cubeMat(&diffuseMap, &specularMap);
+    PhongMaterial cubeMat2;
     Object3D cube;
     cube.addMesh(&MESH_CUBE);
-    cube.setMaterial(&cubeMat);
-    cube.setShader(&objectShader);
-    
+    cube.setMaterial(&cubeMat2);
+    cube.setShader(&phongSolidColShader);
 
-    PointLight light;
     glm::vec3 lampCol = glm::vec3(0.f, 153.f / 255.f, 0.f);
-    light.ambient =   glm::vec3(lampCol * 0.1f);
-    light.diffuse =   glm::vec3(lampCol.r * 0.5f, lampCol.g * 0.5f, lampCol.b * 0.5f);
-    light.specular =  glm::vec3(lampCol.r, lampCol.g, lampCol.b);
-    light.constant = 1.0f;
-    light.linear = 0.09f;
-    light.quadratic = 0.032f;
+    PointLight light;
+
+    Object3D dirLightObj;
+    DirectionalLight dirLight(glm::vec3(-0.5f, -0.5f, 0.0f));
+    dirLightObj.addLightSource(&dirLight);
 
     Object3D lamp;
     ColorOnlyMaterial lampMat(lampCol);
     lamp.addMesh(&MESH_CUBE);
     lamp.setMaterial(&lampMat);
-    lamp.setShader(&colorOnly);
+    lamp.setShader(&colorOnlyShader);
     glm::mat4 lampModelMat = glm::mat4(1.0f);
     lampModelMat = glm::translate(lampModelMat, glm::vec3(2.0f, 0.0f, 0.0f));
     lamp.setModelMatrix(&lampModelMat);
     lamp.addLightSource(&light);
 
+    Object3D lamp2 = lamp;
+    glm::mat4 lamp2ModelMat = glm::mat4(1.0f);
+    lamp2ModelMat = glm::translate(lamp2ModelMat, glm::vec3(-2.0f, 0.0f, 0.0f));
+    lamp2.setModelMatrix(&lamp2ModelMat);
+
+    // Add objects to scene
     scene.addObject(&lamp);
+    scene.addObject(&lamp2);
     scene.addObject(&cube);
+    scene.addObject(&dirLightObj);
 
     scene.updateLighting();
     // render loop
@@ -136,12 +143,12 @@ int main()
         glm::mat4 viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
         glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
 
-        objectShader.use();
-        glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(objectShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-        colorOnly.use();
-        glUniformMatrix4fv(glGetUniformLocation(colorOnly.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(colorOnly.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+        phongSolidColShader.use();
+        glUniformMatrix4fv(glGetUniformLocation(phongSolidColShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(phongSolidColShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+        colorOnlyShader.use();
+        glUniformMatrix4fv(glGetUniformLocation(colorOnlyShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(colorOnlyShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
         glm::mat4 modelMatrix = glm::mat4(1.0f);
         modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime() / 2, glm::vec3(0.0f, 1.0f, 0.0f));

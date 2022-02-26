@@ -11,8 +11,10 @@ public:
 
 private:
 	int objIdCounter;
-
 	std::vector<Object3D*> sceneObjects;
-	std::unordered_map<Object3D*, LightSource*> sceneLights; // TODO: make into non dynamic array
-};	
+
+	int pointLightCount;
+	int dirLightCount;
+	std::unordered_map<Object3D*, LightSource*> sceneLights; // TODO: optimize this?
+};
 

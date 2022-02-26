@@ -8,27 +8,38 @@ Object3D::Object3D():
 {
 }
 
-void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights)
+void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount)
 {
 	if ((!meshes.empty()) && material && shader) {
 		shader->use();
+		// Pass material
 		material->passToShader(shader);
-		// THIS DOESN'T SUPPORT DIRLIGHTS
-		GLuint lightId = 0;
+
+		// Pass lighting
+		shader->setInt("pointLightCount", pointLightCount);
+		shader->setInt("dirLightCount", dirLightCount);
+		int pointLightId = 0;
+		int dirLightId = 0;
 		for (auto const& x : sceneLights) {
+			// Lights don't affect the object they're attached to
 			if (!(x.first->id == id)) {
-				x.second->passToShader(shader, lightId, x.first->getPosition());
-				lightId++;
+				if (x.second->getType() == LightSource::LightType::POINTLIGHT) {
+					x.second->passToShader(shader, pointLightId, x.first->getPosition());
+					pointLightId++;
+				}
+				else if (x.second->getType() == LightSource::LightType::DIRLIGHT) {
+					x.second->passToShader(shader, dirLightId, x.first->getPosition());
+					dirLightId++;
+				}
 			}
 		}
+		// Pass model matrix
 		glUniformMatrix4fv(glGetUniformLocation(shader->ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		
 		for (int i = 0; i < meshes.size(); i++) {
 			meshes[i]->draw();
 		}
 	}
-	else
-		std::cout << "Tried to draw object without assigning shader and material\n";
-	
 }
 
 void Object3D::addLightSource(LightSource* lightSrc)
