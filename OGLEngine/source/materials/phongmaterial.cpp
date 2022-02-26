@@ -1,9 +1,8 @@
 #include "phongmaterial.h"
 
-PhongMaterial::PhongMaterial() :PhongMaterial(DEFAULT_COLOR, DEFAULT_COLOR, DEFAULT_COLOR, 0.75f * 128.0f) {}
+PhongMaterial::PhongMaterial() :PhongMaterial(DEFAULT_COLOR, DEFAULT_COLOR, 0.75f * 128.0f) {}
 
-PhongMaterial::PhongMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess) :
-	ambient(ambient),
+PhongMaterial::PhongMaterial(glm::vec3 diffuse, glm::vec3 specular, float shininess) :
 	diffuse(diffuse),
 	specular(specular),
 	shininess(shininess),
@@ -14,7 +13,6 @@ PhongMaterial::PhongMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 spe
 
 PhongMaterial::PhongMaterial(Texture* diffuseMap, Texture* specularMap,
 	float shininess):
-	ambient(DEFAULT_COLOR),
 	diffuse(DEFAULT_COLOR),
 	specular(DEFAULT_COLOR),
 	shininess(shininess),
@@ -34,7 +32,6 @@ void PhongMaterial::passToShader(Shader * shader)
 	}
 	else {
 		shader->setFloat3("material.diffuse", diffuse);
-		shader->setFloat3("material.ambient", ambient);
 		shader->setFloat3("material.specular", specular);
 	}
 }
