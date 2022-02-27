@@ -16,7 +16,7 @@ public:
 	void draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount);
 	void addLightSource(LightSource* lightSrc);
 	void addMesh(const Mesh* mesh);
-	void setModelMatrix(const glm::mat4* model);
+	void setModelMatrix(const glm::mat4& model);
 	void setMaterial(Material* mat);
 	void setShader(Shader* sdr);
 	glm::vec3 getPosition();
