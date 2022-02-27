@@ -113,19 +113,19 @@ int main()
     lamp.setShader(&colorOnlyShader);
     glm::mat4 lampModelMat = glm::mat4(1.0f);
     lampModelMat = glm::translate(lampModelMat, glm::vec3(2.0f, 0.0f, 0.0f));
-    lamp.setModelMatrix(&lampModelMat);
+    lamp.setModelMatrix(lampModelMat);
     lamp.addLightSource(&light);
 
     Object3D lamp2 = lamp;
     glm::mat4 lamp2ModelMat = glm::mat4(1.0f);
-    lamp2ModelMat = glm::translate(lamp2ModelMat, glm::vec3(-2.0f, 0.0f, 0.0f));
-    lamp2.setModelMatrix(&lamp2ModelMat);
+    lamp2ModelMat = glm::translate(lamp2ModelMat, glm::vec3(-5.0f, .0f, 0.0f));
+    lamp2.setModelMatrix(lamp2ModelMat);
 
     // Add objects to scene
-    scene.addObject(&lamp);
+    //scene.addObject(&lamp);
     scene.addObject(&lamp2);
     scene.addObject(&cube);
-    scene.addObject(&dirLightObj);
+    //scene.addObject(&dirLightObj);
 
     scene.updateLighting();
     // render loop
@@ -146,14 +146,17 @@ int main()
         phongSolidColShader.use();
         glUniformMatrix4fv(glGetUniformLocation(phongSolidColShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
         glUniformMatrix4fv(glGetUniformLocation(phongSolidColShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+        phongSolidColShader.setFloat3("viewPos", cameraPos);
         colorOnlyShader.use();
         glUniformMatrix4fv(glGetUniformLocation(colorOnlyShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
         glUniformMatrix4fv(glGetUniformLocation(colorOnlyShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+        colorOnlyShader.setFloat3("viewPos", cameraPos);
 
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f));
-        cube.setModelMatrix(&modelMatrix);
+
+        lamp2ModelMat = glm::mat4(1.0f);
+        lamp2ModelMat = glm::translate(lamp2ModelMat, glm::vec3(sin((float)glfwGetTime()) * 2, 0.0f, cos((float)glfwGetTime()) * 2));
+        lamp2ModelMat = glm::scale(lamp2ModelMat, glm::vec3(0.2f, 0.2f, 0.2f));
+        lamp2.setModelMatrix(lamp2ModelMat);
 
         scene.drawScene();
        

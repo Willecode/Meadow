@@ -47,9 +47,9 @@ void Object3D::addLightSource(LightSource* lightSrc)
 	light = lightSrc;
 }
 
-void Object3D::setModelMatrix(const glm::mat4* model)
+void Object3D::setModelMatrix(const glm::mat4& model)
 {
-	modelMatrix = *model;
+	modelMatrix = model;
 }
 
 void Object3D::setMaterial(Material* mat)
