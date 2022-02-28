@@ -21,6 +21,7 @@ public:
 	void setShader(Shader* sdr);
 	glm::vec3 getPosition();
 	LightSource* getLightSource();
+	Shader* getShader();
 
 protected:
 	std::string name;

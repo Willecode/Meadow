@@ -12,10 +12,10 @@ public:
 	float pitch;
 	float speed;
 	
-	
-
-
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f)) :
+	Camera(float aspect, float zNear, float zFar, glm::vec3 position = glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f)) :
+		aspect(aspect),
+		zNear(zNear),
+		zFar(zFar),
 		position(position),
 		yaw(-90.0f),
 		pitch(0.f),
@@ -40,6 +40,9 @@ public:
 
 		return glm::lookAt(position, position + direction, worldUp);
 	}
+	glm::mat4 getProjectionMatrix() {
+		return glm::perspective(glm::radians(fov), aspect, zNear, zFar);
+	}
 	void setFov(float fovIn) {
 		fov = fovIn;
 		if (fov < 1.0f)
@@ -51,6 +54,6 @@ public:
 		return fov;
 	}
 private:
-	float fov;
+	float fov, aspect, zNear, zFar;
 };
 

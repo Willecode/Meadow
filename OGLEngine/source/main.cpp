@@ -38,12 +38,13 @@ void mouseCallback(GLFWwindow* window, double xPosArg, double yPosArg);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 // settings
-const unsigned int SCR_WIDTH = 1000;
-const unsigned int SCR_HEIGHT = 800;
-float fov = 45.f;
+const float SCR_WIDTH = 1000.0;
+const float SCR_HEIGHT = 800.0f;
+const float ASPECT_RATIO = SCR_WIDTH / SCR_HEIGHT;
+const float ZNEAR = 0.1f;
+const float ZFAR = 100.0f;
 
-
-Camera camera;
+Camera camera(ASPECT_RATIO, ZNEAR, ZFAR);
 bool firstMouse = true;
 float lastMouseX = SCR_WIDTH / 2.0f;
 float lastMouseY = SCR_HEIGHT / 2.0f;
@@ -95,7 +96,7 @@ int main()
     Texture diffuseMap("images/Wood066_1K_Color.jpg", GL_TEXTURE_2D, cache);
     Texture specularMap("images/Fingerprints009_1K_Color.jpg", GL_TEXTURE_2D, cache);
     
-    Scene scene;
+    Scene scene(&camera);
     
     glm::vec3 colorPink = glm::vec3(232.0f / 255, 100.0f / 255, 190.0f / 255);
     //PhongMaterial cubeMat;
@@ -137,6 +138,7 @@ int main()
     //scene.addObject(&dirLightObj);
 
     scene.updateLighting();
+    scene.updateShaders();
 
     // render loop
     // -----------
@@ -145,23 +147,7 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // input
-        // -----
         processInput(window);
-
-        //glm::mat4 viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
-        glm::mat4 viewMatrix = camera.getViewMatrix();
-        glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera.getFov()), 1000.0f / 800.0f, 0.1f, 100.0f);
-
-        phongSolidColShader.use();
-        glUniformMatrix4fv(glGetUniformLocation(phongSolidColShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(phongSolidColShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-        phongSolidColShader.setFloat3("viewPos", camera.position);
-        colorOnlyShader.use();
-        glUniformMatrix4fv(glGetUniformLocation(colorOnlyShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(colorOnlyShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-        colorOnlyShader.setFloat3("viewPos", camera.position);
-
 
         lamp2ModelMat = glm::mat4(1.0f);
         lamp2ModelMat = glm::translate(lamp2ModelMat, glm::vec3(sin((float)glfwGetTime()) * 2, 0.0f, cos((float)glfwGetTime()) * 2));
@@ -175,7 +161,6 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
 
     glfwTerminate();
     return 0;

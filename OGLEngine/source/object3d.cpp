@@ -77,3 +77,8 @@ glm::vec3 Object3D::getPosition()
 	return glm::vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
 	return glm::vec3(0.0f, 0.0f, 0.0f);
 }
+
+Shader* Object3D::getShader()
+{
+	return shader;
+}
