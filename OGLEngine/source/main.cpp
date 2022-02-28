@@ -23,6 +23,7 @@
 #include "materials/phongmaterial.h"
 #include "materials/coloronlymaterial.h"
 #include "primitivecreation.h"
+#include "camera.h"
 
 #include <iostream>
 #include <map>
@@ -30,17 +31,22 @@
 #include <vector>
 
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void getUniformLocations(std::map<std::string, int>* m, std::vector<std::string> names, int shaderID);
+void mouseCallback(GLFWwindow* window, double xPosArg, double yPosArg);
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 // settings
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 800;
-float mixValue = 1.;
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+float fov = 45.f;
+
+
+Camera camera;
+bool firstMouse = true;
+float lastMouseX = SCR_WIDTH / 2.0f;
+float lastMouseY = SCR_HEIGHT / 2.0f;
 
 int main()
 {
@@ -53,7 +59,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL Demo", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "´Wilkan Engine", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -61,7 +67,10 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+    glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetScrollCallback(window, scrollCallback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -128,6 +137,7 @@ int main()
     //scene.addObject(&dirLightObj);
 
     scene.updateLighting();
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -139,18 +149,18 @@ int main()
         // -----
         processInput(window);
 
-        // Camera settings 
-        glm::mat4 viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
-        glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 1000.0f / 800.0f, 0.1f, 100.0f);
+        //glm::mat4 viewMatrix = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), cameraUp);
+        glm::mat4 viewMatrix = camera.getViewMatrix();
+        glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera.getFov()), 1000.0f / 800.0f, 0.1f, 100.0f);
 
         phongSolidColShader.use();
         glUniformMatrix4fv(glGetUniformLocation(phongSolidColShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
         glUniformMatrix4fv(glGetUniformLocation(phongSolidColShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-        phongSolidColShader.setFloat3("viewPos", cameraPos);
+        phongSolidColShader.setFloat3("viewPos", camera.position);
         colorOnlyShader.use();
         glUniformMatrix4fv(glGetUniformLocation(colorOnlyShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
         glUniformMatrix4fv(glGetUniformLocation(colorOnlyShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-        colorOnlyShader.setFloat3("viewPos", cameraPos);
+        colorOnlyShader.setFloat3("viewPos", camera.position);
 
 
         lamp2ModelMat = glm::mat4(1.0f);
@@ -178,41 +188,57 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        mixValue = 1;
-    }
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        mixValue = 0;
-    }
     const float cameraSpeed = 0.05f;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        cameraPos += cameraSpeed * cameraFront;
+        camera.position += cameraSpeed * camera.direction;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        cameraPos -= cameraSpeed * cameraFront;
+        camera.position -= cameraSpeed * camera.direction;
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.position -= glm::normalize(glm::cross(camera.direction, camera.worldUp)) * cameraSpeed;
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.position += glm::normalize(glm::cross(camera.direction, camera.worldUp)) * cameraSpeed;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        cameraPos += cameraUp * cameraSpeed;
+        camera.position += camera.worldUp * cameraSpeed;
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-        cameraPos += -cameraUp * cameraSpeed;
+        camera.position += -camera.worldUp * cameraSpeed;
     }
 
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void mouseCallback(GLFWwindow* window, double mouseXIn, double mouseYIn) {
+    float mouseX = static_cast<float>(mouseXIn);
+    float mouseY = static_cast<float>(mouseYIn);
+
+    if (firstMouse) {
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
+        firstMouse = false;
+    }
+    camera.processMouseMovement(mouseX - lastMouseX, mouseY - lastMouseY);
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+
+}
+
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    float fov = camera.getFov();
+    fov += static_cast<float>(-yoffset);
+    camera.setFov(fov);
 }
 
 void getUniformLocations(std::map<std::string, int>* m, std::vector<std::string> names, int shaderID) {

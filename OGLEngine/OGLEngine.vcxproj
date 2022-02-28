@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\camera.cpp" />
     <ClCompile Include="source\materials\coloronlymaterial.cpp" />
     <ClCompile Include="source\materials\colormaterial.cpp" />
     <ClCompile Include="source\materials\phongmaterial.cpp" />
@@ -186,6 +187,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\camera.h" />
     <ClInclude Include="source\materials\coloronlymaterial.h" />
     <ClInclude Include="source\materials\colormaterial.h" />
     <ClInclude Include="source\materials\phongmaterial.h" />
