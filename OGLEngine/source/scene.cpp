@@ -49,6 +49,8 @@ void Scene::updateShaders()
 {
 	sceneShaders.clear();
 	for (size_t i = 0; i < sceneObjects.size(); i++) {
-		sceneShaders.insert(sceneObjects[i]->getShader());
+		Shader* s = sceneObjects[i]->getShader();
+		if (s)
+			sceneShaders.insert(sceneObjects[i]->getShader());
 	}
 }
