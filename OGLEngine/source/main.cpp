@@ -45,9 +45,14 @@ const float ZNEAR = 0.1f;
 const float ZFAR = 100.0f;
 
 Camera camera(ASPECT_RATIO, ZNEAR, ZFAR);
+
+// Initialize global non-const variables
 bool firstMouse = true;
 float lastMouseX = SCR_WIDTH / 2.0f;
 float lastMouseY = SCR_HEIGHT / 2.0f;
+float lastFrameTime = 0.f;
+float currentFrameTime = 0.f;
+float deltaTime = 0.f;
 
 int main()
 {
@@ -147,6 +152,12 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Calculate deltatime ---
+        currentFrameTime = glfwGetTime();
+        deltaTime = currentFrameTime - lastFrameTime;
+        lastFrameTime = currentFrameTime;
+        //---
+
         processInput(window);
 
         lamp2ModelMat = glm::mat4(1.0f);
@@ -175,22 +186,22 @@ void processInput(GLFWwindow* window)
     }
     const float cameraSpeed = 0.05f;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        camera.position += cameraSpeed * camera.direction;
+        camera.inputMoveForward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        camera.position -= cameraSpeed * camera.direction;
+        camera.inputMoveBackward(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        camera.position -= glm::normalize(glm::cross(camera.direction, camera.worldUp)) * cameraSpeed;
+        camera.inputMoveLeft(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        camera.position += glm::normalize(glm::cross(camera.direction, camera.worldUp)) * cameraSpeed;
+        camera.inputMoveRight(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        camera.position += camera.worldUp * cameraSpeed;
+        camera.inputMoveUp(deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-        camera.position += -camera.worldUp * cameraSpeed;
+        camera.inputMoveDown(deltaTime);
     }
 
 }
@@ -213,7 +224,7 @@ void mouseCallback(GLFWwindow* window, double mouseXIn, double mouseYIn) {
         lastMouseY = mouseY;
         firstMouse = false;
     }
-    camera.processMouseMovement(mouseX - lastMouseX, mouseY - lastMouseY);
+    camera.processMouseMovement(mouseX - lastMouseX, mouseY - lastMouseY, deltaTime);
     lastMouseX = mouseX;
     lastMouseY = mouseY;
 

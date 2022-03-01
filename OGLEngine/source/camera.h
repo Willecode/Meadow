@@ -20,15 +20,15 @@ public:
 		yaw(-90.0f),
 		pitch(0.f),
 		worldUp(up),
-		speed(0.5f),
+		speed(2.0f),
 		direction(0.f, 0.f, -1.0f),
-		lookSensitivity(0.1f),
+		lookSensitivity(6.0f),
 		fov(45.f)
 	{
 	}
-	void processMouseMovement(float mouseOffsetX, float mouseOffsetY) {
-		yaw += mouseOffsetX * lookSensitivity;
-		pitch += -mouseOffsetY * lookSensitivity;
+	void processMouseMovement(float mouseOffsetX, float mouseOffsetY, float deltaTime) {
+		yaw += mouseOffsetX * lookSensitivity * deltaTime;
+		pitch += -mouseOffsetY * lookSensitivity * deltaTime;
 
 		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 		direction.y = sin(glm::radians(pitch));
@@ -52,6 +52,24 @@ public:
 	}
 	float getFov() {
 		return fov;
+	}
+	void inputMoveUp(float deltaTime) {
+		position += worldUp * speed * deltaTime;
+	}
+	void inputMoveDown(float deltaTime) {
+		position -= worldUp * speed * deltaTime;
+	}
+	void inputMoveLeft(float deltaTime) {
+		position -= glm::normalize(glm::cross(direction, worldUp)) * speed * deltaTime;
+	}
+	void inputMoveRight(float deltaTime) {
+		position += glm::normalize(glm::cross(direction, worldUp)) * speed * deltaTime;
+	}
+	void inputMoveForward(float deltaTime) {
+		position += direction * speed * deltaTime;
+	}
+	void inputMoveBackward(float deltaTime) {
+		position -= direction * speed * deltaTime;
 	}
 private:
 	float fov, aspect, zNear, zFar;
