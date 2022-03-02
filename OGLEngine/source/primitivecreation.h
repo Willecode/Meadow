@@ -1,4 +1,7 @@
 #pragma once
 #include "mesh.h"
-
-Mesh createCubeMesh();
+namespace PrimitiveCreation
+{
+	Mesh createCubeMesh();
+	Mesh createSphere(int sectorCount, int stackCount);
+}

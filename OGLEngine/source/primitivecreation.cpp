@@ -1,6 +1,9 @@
 #include "primitivecreation.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <glm/gtx/string_cast.hpp>
 
-Mesh createCubeMesh()
+Mesh PrimitiveCreation::createCubeMesh()
 {
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
@@ -45,4 +48,47 @@ Mesh createCubeMesh()
     };
     return Mesh(vertices, indices);
     
+}
+
+Mesh PrimitiveCreation::createSphere(int sectorCount, int stackCount)
+{
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    float pi = static_cast<float>(M_PI);
+    float sectorStep = 2 * pi / sectorCount;
+    float stackStep = pi / stackCount;
+    float sectorAngle, stackAngle;
+    float x, y, z;
+    //stackCount++; // Not sure why but this works
+    for (int i = 0; i <= stackCount; i++) { 
+        stackAngle = (-pi / 2) + i * stackStep;
+        y = sinf(stackAngle);
+        for (int j = 0; j <= sectorCount; j++) {
+            sectorAngle = j * sectorStep;
+
+            x = cosf(stackAngle) * cosf(sectorAngle);
+            z = cosf(stackAngle) * sinf(sectorAngle);
+
+            Vertex vert(
+                glm::vec3(x, y, z),
+                glm::vec3(x, y, z),
+                glm::vec2(((float)j) / sectorCount, ((float)i) / stackCount));
+            vertices.push_back(vert);
+            std::cout << glm::to_string(vert.texCoords) << std::endl;
+        }
+    }
+    for (int i = 0; i < stackCount; i++) {
+        int stackFirst = (sectorCount + 1) * i ;
+        int nextStackFirst = stackFirst + sectorCount + 1;
+        for (int j = 0; j < sectorCount; j++) {
+            indices.push_back(stackFirst + j);
+            indices.push_back(stackFirst + j + 1);
+            indices.push_back(nextStackFirst + j);
+
+            indices.push_back(stackFirst + j + 1);
+            indices.push_back(nextStackFirst + j);
+            indices.push_back(nextStackFirst + j + 1);
+        }
+    }
+    return Mesh(vertices, indices);
 }

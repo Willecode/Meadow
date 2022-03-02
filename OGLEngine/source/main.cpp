@@ -53,6 +53,8 @@ float lastMouseY = SCR_HEIGHT / 2.0f;
 float lastFrameTime = 0.f;
 float currentFrameTime = 0.f;
 float deltaTime = 0.f;
+bool wireframeMode = false;
+bool altPressLastFrame = false;
 
 int main()
 {
@@ -86,8 +88,8 @@ int main()
         return -1;
     }
     // Create primitive meshes
-    const Mesh MESH_CUBE = createCubeMesh();
-
+    const Mesh MESH_CUBE = PrimitiveCreation::createCubeMesh();
+    const Mesh MESH_SPHERE = PrimitiveCreation::createSphere(30,15);
     // Compile shaders
     Shader phongTexShader("shaders/object.vs", "shaders/phongtex.fs");
     Shader phongSolidColShader("shaders/object.vs", "shaders/phongsolidcol.fs");
@@ -108,18 +110,22 @@ int main()
     
     // Create objects
     PhongMaterial cubeMat(&diffuseMap, &specularMap);
-    PhongMaterial cubeMat2;
+    ColorOnlyMaterial cubeMat2;
     Object3D cube;
-    cube.addMesh(&MESH_CUBE);
-    cube.setMaterial(&cubeMat2);
-    cube.setShader(&phongSolidColShader);
+    cube.addMesh(&MESH_SPHERE);
+    cube.setMaterial(&cubeMat);
+    cube.setShader(&phongTexShader);
 
     glm::vec3 lampCol = glm::vec3(0.f, 153.f / 255.f, 0.f);
-    PointLight light;
+    PointLight light(lampCol * 0.0f, lampCol *0.5f, lampCol);
 
     Object3D dirLightObj;
     DirectionalLight dirLight(glm::vec3(-0.5f, -0.5f, 0.0f));
     dirLightObj.addLightSource(&dirLight);
+
+    Object3D dirLightObj2;
+    DirectionalLight dirLight2(glm::vec3(0.5f, -0.5f, 0.0f));
+    dirLightObj2.addLightSource(&dirLight2);
 
     Object3D lamp;
     ColorOnlyMaterial lampMat(lampCol);
@@ -140,7 +146,8 @@ int main()
     //scene.addObject(&lamp);
     scene.addObject(&lamp2);
     scene.addObject(&cube);
-    //scene.addObject(&dirLightObj);
+    scene.addObject(&dirLightObj);
+    scene.addObject(&dirLightObj2);
 
     scene.updateLighting();
     scene.updateShaders();
@@ -149,7 +156,8 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        
+        glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Calculate deltatime ---
@@ -202,6 +210,22 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
         camera.inputMoveDown(deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
+        if (!altPressLastFrame) {
+            if (wireframeMode) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                wireframeMode = false;
+            }
+            else {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                wireframeMode = true;
+            }
+        }
+        altPressLastFrame = true;
+    }
+    else {
+        altPressLastFrame = false;
     }
 
 }

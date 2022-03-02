@@ -17,12 +17,16 @@ Camera::Camera(float aspect, float zNear, float zFar, glm::vec3 position, glm::v
 void Camera::processMouseMovement(float mouseOffsetX, float mouseOffsetY, float deltaTime) {
 	yaw += mouseOffsetX * lookSensitivity * deltaTime;
 	pitch += -mouseOffsetY * lookSensitivity * deltaTime;
-
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+	else if (89.0f < pitch)
+		pitch = 89.0f;
 	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
 	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
 	direction = glm::normalize(direction);
+
 }
 glm::mat4 Camera::getViewMatrix() {
 

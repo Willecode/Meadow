@@ -37,7 +37,7 @@ public:
 		), constant(1.0f), linear(0.09f), quadratic(0.032f) {}
 
 	PointLight(
-		glm::vec3 ambient, glm::vec3 diffuse, glm::vec3,
+		glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
 		float constant = 1.0f, float linear = 0.09f, float quadratic = 0.032f
 	):
 		LightSource(ambient, diffuse, specular),

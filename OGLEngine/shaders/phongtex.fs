@@ -55,7 +55,7 @@ void main()
     }
     
     // DEBUG ***************************************
-    //outputCol = vec3(texture(material.specular_map, TexCoords));
+    //outputCol = vec3(texture(material.diffuse_map, TexCoords));
     //outputCol = vec3(0.0, 1.0, 0.0);
     //outputCol = pointLights[0].ambient;
     // ***************************************
