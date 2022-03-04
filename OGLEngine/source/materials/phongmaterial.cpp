@@ -11,7 +11,7 @@ PhongMaterial::PhongMaterial(glm::vec3 diffuse, glm::vec3 specular, float shinin
 	textured(false)
 {}
 
-PhongMaterial::PhongMaterial(Texture* diffuseMap, Texture* specularMap,
+PhongMaterial::PhongMaterial(std::shared_ptr<Texture> diffuseMap, std::shared_ptr<Texture> specularMap,
 	float shininess):
 	diffuse(DEFAULT_COLOR),
 	specular(DEFAULT_COLOR),

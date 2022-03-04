@@ -1,7 +1,7 @@
 #include "ImageCache.h"
 #include <stb/stb_image.h>
 #include <iostream>
-ImageCache::ImageCache(): newestCacheIndex(0), MAX_CACHE_SIZE(8)
+ImageCache::ImageCache(): newestCacheIndex(0), MAX_CACHE_SIZE(8), cache({})
 {
 }
 

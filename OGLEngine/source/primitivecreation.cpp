@@ -3,7 +3,7 @@
 #include <math.h>
 #include <glm/gtx/string_cast.hpp>
 
-Mesh PrimitiveCreation::createCubeMesh()
+std::shared_ptr<Mesh> PrimitiveCreation::createCubeMesh()
 {
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
@@ -46,11 +46,11 @@ Mesh PrimitiveCreation::createCubeMesh()
         16, 17, 18, 16, 18, 19,
         20, 21, 22, 20, 22, 23
     };
-    return Mesh(vertices, indices);
+    return std::make_shared<Mesh>(vertices, indices);
     
 }
 
-Mesh PrimitiveCreation::createSphere(int sectorCount, int stackCount)
+std::shared_ptr<Mesh> PrimitiveCreation::createSphere(int sectorCount, int stackCount)
 {
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
@@ -74,7 +74,6 @@ Mesh PrimitiveCreation::createSphere(int sectorCount, int stackCount)
                 glm::vec3(x, y, z),
                 glm::vec2(((float)j) / sectorCount, ((float)i) / stackCount));
             vertices.push_back(vert);
-            std::cout << glm::to_string(vert.texCoords) << std::endl;
         }
     }
     for (int i = 0; i < stackCount; i++) {
@@ -90,5 +89,5 @@ Mesh PrimitiveCreation::createSphere(int sectorCount, int stackCount)
             indices.push_back(nextStackFirst + j + 1);
         }
     }
-    return Mesh(vertices, indices);
+    return std::make_shared<Mesh>(vertices, indices);
 }

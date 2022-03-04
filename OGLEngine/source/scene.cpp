@@ -1,10 +1,14 @@
 #include "scene.h"
 #include <glm/gtc/type_ptr.hpp>
-Scene::Scene(Camera* camera): objIdCounter(0), pointLightCount(0), dirLightCount(0), sceneCamera(camera)
+Scene::Scene(Camera* camera):
+	objIdCounter(0),
+	pointLightCount(0),
+	dirLightCount(0),
+	sceneCamera(camera)
 {
 }
 
-void Scene::addObject(Object3D* obj)
+void Scene::addObject(std::shared_ptr<Object3D> obj)
 {
 	// if object is new, give it an ID and add it
 	obj->id = objIdCounter;
@@ -36,7 +40,7 @@ void Scene::updateLighting()
 	sceneLights.clear();
 	for (size_t i = 0; i < sceneObjects.size(); i++) {
 		if (sceneObjects[i]->getLightSource()) {
-			sceneLights.insert(std::pair<Object3D*, LightSource*>(sceneObjects[i], sceneObjects[i]->getLightSource()));
+			sceneLights.insert(std::pair<Object3D*, LightSource*>(sceneObjects[i].get(), sceneObjects[i]->getLightSource()));
 			if (sceneObjects[i]->getLightSource()->getType() == LightSource::LightType::POINTLIGHT)
 				pointLightCount++;
 			else if (sceneObjects[i]->getLightSource()->getType() == LightSource::LightType::DIRLIGHT)

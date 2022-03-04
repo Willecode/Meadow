@@ -4,7 +4,8 @@
 Object3D::Object3D(): 
 	modelMatrix(glm::mat4(1.0f)),
 	name("none"),
-	id(-1)
+	id(-1),
+	shader(nullptr)
 {
 }
 
@@ -42,7 +43,7 @@ void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int
 	}
 }
 
-void Object3D::addLightSource(LightSource* lightSrc)
+void Object3D::addLightSource(std::shared_ptr<LightSource> lightSrc)
 {
 	light = lightSrc;
 }
@@ -52,7 +53,7 @@ void Object3D::setModelMatrix(const glm::mat4& model)
 	modelMatrix = model;
 }
 
-void Object3D::setMaterial(Material* mat)
+void Object3D::setMaterial(std::shared_ptr<Material> mat)
 {
 	material = mat;
 }
@@ -62,14 +63,19 @@ void Object3D::setShader(Shader* sdr)
 	shader = sdr;
 }
 
-void Object3D::addMesh(const Mesh* mesh)
+void Object3D::addMesh(std::shared_ptr<Mesh> mesh)
 {
 	meshes.push_back(mesh);
 }
 
-LightSource* Object3D::getLightSource()
+std::shared_ptr<LightSource> Object3D::getLightSourceOwnerhip()
 {
 	return light;
+}
+
+LightSource* Object3D::getLightSource()
+{
+	return light.get();
 }
 
 glm::vec3 Object3D::getPosition()

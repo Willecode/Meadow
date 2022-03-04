@@ -160,6 +160,9 @@
     <ClCompile Include="source\materials\phongmaterial.cpp" />
     <ClCompile Include="source\mesh.cpp" />
     <ClCompile Include="source\materials\material.cpp" />
+    <ClCompile Include="source\modelimporting.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\primitivecreation.cpp" />
     <ClCompile Include="source\scene.cpp" />
     <ClCompile Include="source\object3d.cpp" />
@@ -194,6 +197,9 @@
     <ClInclude Include="source\mesh.h" />
     <ClInclude Include="source\materials\material.h" />
     <ClInclude Include="source\lightsource.h" />
+    <ClInclude Include="source\modelimporting.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\primitivecreation.h" />
     <ClInclude Include="source\scene.h" />
     <ClInclude Include="source\object3d.h" />

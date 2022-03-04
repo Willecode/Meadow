@@ -1,7 +1,8 @@
 #pragma once
 #include "mesh.h"
+#include <memory>
 namespace PrimitiveCreation
 {
-	Mesh createCubeMesh();
-	Mesh createSphere(int sectorCount, int stackCount);
+	std::shared_ptr<Mesh> createCubeMesh();
+	std::shared_ptr<Mesh> createSphere(int sectorCount, int stackCount);
 }

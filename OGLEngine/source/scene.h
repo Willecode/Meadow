@@ -7,13 +7,13 @@ class Scene
 {
 public:
 	Scene(Camera* camera);
-	void addObject(Object3D* obj);
+	void addObject(std::shared_ptr<Object3D>);
 	void drawScene();
 	void updateLighting();
 	void updateShaders();
 private:
 	int objIdCounter;
-	std::vector<Object3D*> sceneObjects;
+	std::vector<std::shared_ptr<Object3D>> sceneObjects;
 
 	int pointLightCount;
 	int dirLightCount;
