@@ -1,6 +1,8 @@
 #include "ImageCache.h"
 #include <stb/stb_image.h>
 #include <iostream>
+#define FMT_HEADER_ONLY
+#include <fmt/core.h>
 ImageCache::ImageCache(): newestCacheIndex(0), MAX_CACHE_SIZE(8), cache({})
 {
 }
@@ -9,11 +11,11 @@ ImageData* ImageCache::loadImage(const std::string path)
 {
     cmap::const_iterator pos = cacheMap.find(path);
     if (pos == cacheMap.end()) {
-        std::cout << "loading image" << std::endl;
+        fmt::print(stdout, "Loading image {}\n", path);
         int width, height, nrChannels;
         unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
         if (!data) {
-            std::cout << "image loader failed" << std::endl;
+            fmt::print(stdout, "stb failed to load image {}\n", path);
             return nullptr;
         }
         else {

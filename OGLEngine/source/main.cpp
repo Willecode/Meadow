@@ -59,6 +59,8 @@ bool altPressLastFrame = false;
 
 int main()
 {
+    // Create a cache for loaded images
+    ImageCache textureCache;
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -100,7 +102,6 @@ int main()
     stbi_set_flip_vertically_on_load(true);
 
     // Set up textures
-    ImageCache textureCache;
     auto diffuseMap = std::make_shared<Texture>("images/Wood066_1K_Color.jpg", GL_TEXTURE_2D, textureCache);
     auto specularMap = std::make_shared<Texture>("images/Fingerprints009_1K_Color.jpg", GL_TEXTURE_2D, textureCache);
     
@@ -231,6 +232,9 @@ void processInput(GLFWwindow* window)
     else {
         altPressLastFrame = false;
     }
+    if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
 
 }
 
@@ -263,11 +267,4 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     float fov = camera.getFov();
     fov += static_cast<float>(-yoffset);
     camera.setFov(fov);
-}
-
-void getUniformLocations(std::map<std::string, int>* m, std::vector<std::string> names, int shaderID) {
-    // Populates m with argument name:location
-    for (int i = 0; i < names.size(); i++) {
-        m->insert(std::pair<std::string, int>(names.at(i), glGetUniformLocation(shaderID, names.at(i).c_str())));
-    }
 }

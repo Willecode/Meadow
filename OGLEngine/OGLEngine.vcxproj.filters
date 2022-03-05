@@ -91,6 +91,9 @@
     <Image Include="images\jellyfish.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="images\cursor.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\shader_s.h">

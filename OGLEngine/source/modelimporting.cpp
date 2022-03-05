@@ -36,7 +36,6 @@ static std::shared_ptr<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureT
 		return nullptr;
 	}
 	else {
-		std::cout << path.C_Str() << std::endl;
 		//textures.push_back(loadTextureFromFile(std::string(path.C_Str()), typeName));
 		return std::make_shared<Texture>(
 			std::string(directory + "/" + path.C_Str()),
