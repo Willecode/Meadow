@@ -59,8 +59,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\lightsource.fs" />
-    <None Include="shaders\lightsource.vs" />
     <None Include="shaders\phongtex.fs" />
     <None Include="shaders\object.vs" />
     <None Include="shaders\coloronly.fs" />
@@ -89,9 +87,6 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="images\jellyfish.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="images\cursor.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

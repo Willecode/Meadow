@@ -39,8 +39,8 @@ void mouseCallback(GLFWwindow* window, double xPosArg, double yPosArg);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 // settings
-const float SCR_WIDTH = 1000.0;
-const float SCR_HEIGHT = 800.0f;
+const float SCR_WIDTH = 1920.0;
+const float SCR_HEIGHT = 1080.0f;
 const float ASPECT_RATIO = SCR_WIDTH / SCR_HEIGHT;
 const float ZNEAR = 0.1f;
 const float ZFAR = 100.0f;
@@ -92,7 +92,7 @@ int main()
     }
     // Create primitive meshes
     std::shared_ptr<Mesh> MESH_CUBE = PrimitiveCreation::createCubeMesh();
-    std::shared_ptr<Mesh> MESH_SPHERE = PrimitiveCreation::createSphere(30, 15);
+    std::shared_ptr<Mesh> MESH_SPHERE = PrimitiveCreation::createSphere(100, 10);
     // Compile shaders
     Shader phongTexShader("shaders/object.vs", "shaders/phongtex.fs");
     Shader phongSolidColShader("shaders/object.vs", "shaders/phongsolidcol.fs");
@@ -121,12 +121,19 @@ int main()
     // From obj file
     auto importObj = ModelImporting::importWavefront("./3dmodels/backpack/backpack.obj", textureCache);
     importObj->setShader(&phongTexShader);
-    //glm::vec3 lampCol = glm::vec3(0.f, 153.f / 255.f, 0.f);
+    glm::vec3 lampCol = glm::vec3(0.f, 153.f / 255.f, 0.f);
     //PointLight light(lampCol * 0.0f, lampCol *0.5f, lampCol);
 
     auto dirLightObj = std::make_shared<Object3D>();
     dirLightObj->addLightSource(std::make_shared<DirectionalLight>(glm::vec3(-0.5f, -0.5f, 0.0f)));
 
+    auto pointLightObj = std::make_shared<Object3D>();
+    auto pointlight = std::make_shared<PointLight>(lampCol * 0.0f, lampCol * 0.5f, lampCol);
+    auto mat = std::make_shared<ColorOnlyMaterial>();
+    pointLightObj->addLightSource(pointlight);
+    pointLightObj->addMesh(MESH_CUBE);
+    pointLightObj->setShader(&colorOnlyShader);
+    pointLightObj->setMaterial(mat);
     //Object3D dirLightObj2;
     //DirectionalLight dirLight2(glm::vec3(0.5f, -0.5f, 0.0f));
     //dirLightObj2.addLightSource(&dirLight2);
@@ -149,11 +156,11 @@ int main()
     // Add objects to scene
     //scene.addObject(&lamp);
     //scene.addObject(&lamp2);
-    //scene.addObject(cube);
-    scene.addObject(importObj);
+    scene.addObject(cube);
+    //scene.addObject(importObj);
     scene.addObject(dirLightObj);
     //scene.addObject(&dirLightObj2);
-
+    scene.addObject(pointLightObj);
     scene.updateLighting();
     scene.updateShaders();
 
@@ -173,10 +180,10 @@ int main()
 
         processInput(window);
 
-        /*lamp2ModelMat = glm::mat4(1.0f);
-        lamp2ModelMat = glm::translate(lamp2ModelMat, glm::vec3(sin((float)glfwGetTime()) * 2, 0.0f, cos((float)glfwGetTime()) * 2));
-        lamp2ModelMat = glm::scale(lamp2ModelMat, glm::vec3(0.2f, 0.2f, 0.2f));
-        lamp2.setModelMatrix(lamp2ModelMat);*/
+        glm::mat4 modelMat = glm::mat4(1.0f);
+        modelMat = glm::translate(modelMat, glm::vec3(sin((float)glfwGetTime()) * 2, 0.0f, cos((float)glfwGetTime()) * 2));
+        modelMat = glm::scale(modelMat, glm::vec3(0.2f));
+        pointLightObj->setModelMatrix(modelMat);
 
         scene.drawScene();
        

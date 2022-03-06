@@ -172,8 +172,6 @@
     <ClCompile Include="source\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\lightsource.fs" />
-    <None Include="shaders\lightsource.vs" />
     <None Include="shaders\phongsolidcol.fs" />
     <None Include="shaders\phongtex.fs" />
     <None Include="shaders\object.vs" />
@@ -184,7 +182,6 @@
     <Image Include="images\Bricks054_1K_Color.jpg" />
     <Image Include="images\Bricks054_1K_Roughness.jpg" />
     <Image Include="images\checkerboard8bit.png" />
-    <Image Include="images\cursor.jpg" />
     <Image Include="images\Fingerprints009_1K_Color.jpg" />
     <Image Include="images\Fingerprints009_1K_Roughness.jpg" />
     <Image Include="images\jellyfish.png" />
