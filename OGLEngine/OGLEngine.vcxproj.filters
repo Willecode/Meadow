@@ -30,9 +30,6 @@
     <ClCompile Include="source\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\materials\material.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,6 +84,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="images\jellyfish.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\cooltile.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\squares.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

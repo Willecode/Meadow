@@ -159,7 +159,6 @@
     <ClCompile Include="source\materials\colormaterial.cpp" />
     <ClCompile Include="source\materials\phongmaterial.cpp" />
     <ClCompile Include="source\mesh.cpp" />
-    <ClCompile Include="source\materials\material.cpp" />
     <ClCompile Include="source\modelimporting.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -182,9 +181,11 @@
     <Image Include="images\Bricks054_1K_Color.jpg" />
     <Image Include="images\Bricks054_1K_Roughness.jpg" />
     <Image Include="images\checkerboard8bit.png" />
+    <Image Include="images\cooltile.jpg" />
     <Image Include="images\Fingerprints009_1K_Color.jpg" />
     <Image Include="images\Fingerprints009_1K_Roughness.jpg" />
     <Image Include="images\jellyfish.png" />
+    <Image Include="images\squares.jpg" />
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>

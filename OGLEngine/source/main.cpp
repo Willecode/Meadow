@@ -103,63 +103,40 @@ int main()
 
     // Set up textures
     auto diffuseMap = std::make_shared<Texture>("images/Wood066_1K_Color.jpg", GL_TEXTURE_2D, textureCache);
-    auto specularMap = std::make_shared<Texture>("images/Fingerprints009_1K_Color.jpg", GL_TEXTURE_2D, textureCache);
+    auto specularMap = std::make_shared<Texture>("images/squares.jpg", GL_TEXTURE_2D, textureCache);
     
+    // Create scene
     Scene scene(&camera);
-    
-    glm::vec3 colorPink = glm::vec3(232.0f / 255, 100.0f / 255, 190.0f / 255);
-    //PhongMaterial cubeMat;
     
     // Create objects
     auto cubeMat = std::make_shared<PhongMaterial>(diffuseMap, specularMap);
-    //ColorOnlyMaterial cubeMat2;
     auto cube = std::make_shared<Object3D>();
-    cube->addMesh(MESH_SPHERE);
-    cube->setMaterial(cubeMat);
+    cube->addMesh(MESH_SPHERE, 0);
+    cube->setMaterial(cubeMat, 0);
     cube->setShader(&phongTexShader);
 
     // From obj file
-    auto importObj = ModelImporting::importWavefront("./3dmodels/backpack/backpack.obj", textureCache);
+    auto importObj = ModelImporting::importWavefront("./3dmodels/testmodel/testfile.obj", textureCache);
     importObj->setShader(&phongTexShader);
-    glm::vec3 lampCol = glm::vec3(0.f, 153.f / 255.f, 0.f);
-    //PointLight light(lampCol * 0.0f, lampCol *0.5f, lampCol);
+    importObj->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
 
+    // Create some lightsource objects
     auto dirLightObj = std::make_shared<Object3D>();
     dirLightObj->addLightSource(std::make_shared<DirectionalLight>(glm::vec3(-0.5f, -0.5f, 0.0f)));
 
+    glm::vec3 lampCol = glm::vec3(0.f, 153.f / 255.f, 0.f);
     auto pointLightObj = std::make_shared<Object3D>();
     auto pointlight = std::make_shared<PointLight>(lampCol * 0.0f, lampCol * 0.5f, lampCol);
     auto mat = std::make_shared<ColorOnlyMaterial>();
     pointLightObj->addLightSource(pointlight);
-    pointLightObj->addMesh(MESH_CUBE);
+    pointLightObj->addMesh(MESH_CUBE, 0);
     pointLightObj->setShader(&colorOnlyShader);
-    pointLightObj->setMaterial(mat);
-    //Object3D dirLightObj2;
-    //DirectionalLight dirLight2(glm::vec3(0.5f, -0.5f, 0.0f));
-    //dirLightObj2.addLightSource(&dirLight2);
-
-    //Object3D lamp;
-    //ColorOnlyMaterial lampMat(lampCol);
-    //lamp.addMesh(&MESH_CUBE);
-    //lamp.setMaterial(&lampMat);
-    //lamp.setShader(&colorOnlyShader);
-    //glm::mat4 lampModelMat = glm::mat4(1.0f);
-    //lampModelMat = glm::translate(lampModelMat, glm::vec3(2.0f, 0.0f, 0.0f));
-    //lamp.setModelMatrix(lampModelMat);
-    //lamp.addLightSource(&light);
-
-    //Object3D lamp2 = lamp;
-    //glm::mat4 lamp2ModelMat = glm::mat4(1.0f);
-    //lamp2ModelMat = glm::translate(lamp2ModelMat, glm::vec3(-5.0f, .0f, 0.0f));
-    //lamp2.setModelMatrix(lamp2ModelMat);
+    pointLightObj->setMaterial(mat, 0);
 
     // Add objects to scene
-    //scene.addObject(&lamp);
-    //scene.addObject(&lamp2);
     scene.addObject(cube);
-    //scene.addObject(importObj);
+    scene.addObject(importObj);
     scene.addObject(dirLightObj);
-    //scene.addObject(&dirLightObj2);
     scene.addObject(pointLightObj);
     scene.updateLighting();
     scene.updateShaders();

@@ -9,7 +9,7 @@
 TODO:
 Refactor/clean up this mess of a file
 */
-static std::shared_ptr<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, ImageCache& textureCache, std::string directory)
+static std::shared_ptr<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ImageCache& textureCache, std::string directory)
 {
 	// Implement this comment block if you want to load multiple textures of the same type.
 	// Remember to use imagecache.h to prevent loading the same texture multiple times!
@@ -32,7 +32,7 @@ static std::shared_ptr<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureT
 	aiString path;
 	aiReturn ret = mat->GetTexture(type, 0, &path);
 	if (ret != aiReturn_SUCCESS) {
-		std::cout << "GetTexture failed" << std::endl;
+		fmt::print("Failed to load material type {} texture in folder: {}/\n", type, directory);
 		return nullptr;
 	}
 	else {
@@ -98,20 +98,37 @@ static std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene, Ima
 }
 static void processNode(Object3D* obj, aiNode* node, const aiScene* scene, ImageCache &textureCache, std::string directory)
 {
+	std::vector<unsigned int> addedMaterials;
+	std::vector<unsigned int>::iterator it;
+	int materialCount = 0;
+	int materialSlot = 0;
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
+		it = std::find(addedMaterials.begin(), addedMaterials.end(), aimesh->mMaterialIndex);
+		if (it == addedMaterials.end()) {
+			if (materialCount < obj->MAX_MATERIAL_SLOTS) {
+				// Encountered a new material, create new material slot for object
+				addedMaterials.push_back(aimesh->mMaterialIndex);
+				obj->setMaterial(std::make_shared<PhongMaterial>(
+					loadMaterialTextures(scene->mMaterials[aimesh->mMaterialIndex], aiTextureType_DIFFUSE, textureCache, directory),
+					loadMaterialTextures(scene->mMaterials[aimesh->mMaterialIndex], aiTextureType_SPECULAR, textureCache, directory)), materialCount);
+				materialCount++;
+			}
+			else {
+				fmt::print(
+					"ERROR: Tried to import object with more than the max of {} materials",
+					obj->MAX_MATERIAL_SLOTS);
+			}
 
-		obj->addMesh(processMesh(aimesh, scene, textureCache));
 
-		// Materials are mesh specific, right now wilkan engine supports only one material for object,
-		// so just take the first mesh's material
-		if (i == 0) {
-			obj->setMaterial(std::make_shared<PhongMaterial>(
-				loadMaterialTextures(scene->mMaterials[aimesh->mMaterialIndex], aiTextureType_DIFFUSE, "diffuse_map", textureCache, directory),
-				loadMaterialTextures(scene->mMaterials[aimesh->mMaterialIndex], aiTextureType_SPECULAR, "specular_map", textureCache, directory)));
 		}
+		else {
+			materialSlot = std::distance(addedMaterials.begin(), it);
+		}
+
+		obj->addMesh(processMesh(aimesh, scene, textureCache), materialSlot);
 		
 	}
 	// then do the same for each of its children

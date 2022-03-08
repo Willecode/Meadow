@@ -5,16 +5,14 @@ Object3D::Object3D():
 	modelMatrix(glm::mat4(1.0f)),
 	name("none"),
 	id(-1),
-	shader(nullptr)
-{
-}
+	shader(nullptr),
+	light(nullptr)
+{}
 
 void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount)
 {
-	if ((!meshes.empty()) && material && shader) {
+	if ((!meshes.empty()) && shader) {
 		shader->use();
-		// Pass material
-		material->passToShader(shader);
 
 		// Pass lighting
 		shader->setInt("pointLightCount", pointLightCount);
@@ -38,7 +36,8 @@ void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int
 		glUniformMatrix4fv(glGetUniformLocation(shader->ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
 		
 		for (int i = 0; i < meshes.size(); i++) {
-			meshes[i]->draw();
+			materialSlots[meshes[i].materialSlot]->passToShader(shader);
+			meshes[i].mesh->draw();
 		}
 	}
 }
@@ -53,9 +52,21 @@ void Object3D::setModelMatrix(const glm::mat4& model)
 	modelMatrix = model;
 }
 
-void Object3D::setMaterial(std::shared_ptr<Material> mat)
+void Object3D::setMaterial(std::shared_ptr<Material> mat, int materialSlot)
 {
-	material = mat;
+	if (mat != nullptr) {
+		if (materialSlot < MAX_MATERIAL_SLOTS) {
+			materialSlots[materialSlot] = mat;
+		}
+		else {
+			fmt::print("ERROR: Tried to set to an out of bounds material slot in Object \"{}\"", name);
+		}
+	}
+	else
+	{
+		fmt::print("ERROR: Tried to pass null material to Object \"{}\"", name);
+	}
+
 }
 
 void Object3D::setShader(Shader* sdr)
@@ -63,9 +74,15 @@ void Object3D::setShader(Shader* sdr)
 	shader = sdr;
 }
 
-void Object3D::addMesh(std::shared_ptr<Mesh> mesh)
+void Object3D::addMesh(std::shared_ptr<Mesh> mesh, int materialSlot)
 {
-	meshes.push_back(mesh);
+	if (mesh != nullptr) {
+		MeshStruct newMesh;
+		newMesh.mesh = mesh;
+		newMesh.materialSlot = materialSlot;
+		meshes.push_back(newMesh);
+	}
+	
 }
 
 std::shared_ptr<LightSource> Object3D::getLightSourceOwnerhip()

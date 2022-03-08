@@ -15,7 +15,7 @@ ImageData* ImageCache::loadImage(const std::string path)
         int width, height, nrChannels;
         unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
         if (!data) {
-            fmt::print(stdout, "stb failed to load image {}\n", path);
+            fmt::print(stdout, "ImageCache: stb failed to load image {}, returning nullptr\n", path);
             return nullptr;
         }
         else {
