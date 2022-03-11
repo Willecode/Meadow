@@ -48,6 +48,7 @@ const float ZFAR = 100.0f;
 Camera camera(ASPECT_RATIO, ZNEAR, ZFAR);
 
 // Initialize global non-const variables
+bool mouseLock = true;
 bool firstMouse = true;
 float lastMouseX = SCR_WIDTH / 2.0f;
 float lastMouseY = SCR_HEIGHT / 2.0f;
@@ -56,6 +57,7 @@ float currentFrameTime = 0.f;
 float deltaTime = 0.f;
 bool wireframeMode = false;
 bool altPressLastFrame = false;
+bool tabPressLastFrame = false;
 
 int main()
 {
@@ -90,16 +92,22 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+
     // Create primitive meshes
     std::shared_ptr<Mesh> MESH_CUBE = PrimitiveCreation::createCubeMesh();
-    std::shared_ptr<Mesh> MESH_SPHERE = PrimitiveCreation::createSphere(100, 10);
+    std::shared_ptr<Mesh> MESH_SPHERE = PrimitiveCreation::createSphere(4, 4);
     // Compile shaders
     Shader phongTexShader("shaders/object.vs", "shaders/phongtex.fs");
     Shader phongSolidColShader("shaders/object.vs", "shaders/phongsolidcol.fs");
     Shader colorOnlyShader("shaders/object.vs", "shaders/coloronly.fs");
-    glEnable(GL_DEPTH_TEST);
+    
 
-    stbi_set_flip_vertically_on_load(true);
+    //stbi_set_flip_vertically_on_load(true);
 
     // Set up textures
     auto diffuseMap = std::make_shared<Texture>("images/Wood066_1K_Color.jpg", GL_TEXTURE_2D, textureCache);
@@ -107,26 +115,32 @@ int main()
     
     // Create scene
     Scene scene(&camera);
-    
+    camera.speed *= 2;
     // Create objects
-    auto cubeMat = std::make_shared<PhongMaterial>(diffuseMap, specularMap);
+    auto cubeMat = std::make_shared<PhongMaterial>(diffuseMap);
     auto cube = std::make_shared<Object3D>();
     cube->addMesh(MESH_SPHERE, 0);
     cube->setMaterial(cubeMat, 0);
     cube->setShader(&phongTexShader);
 
     // From obj file
-    auto importObj = ModelImporting::importWavefront("./3dmodels/testmodel/testfile.obj", textureCache);
+    auto importObj = ModelImporting::importWavefront("./3dmodels/Stone_church_of_kakskerta_isle_Turku_Finland/Stone_church_of_kakskerta_isle_Turku_Finland.obj", textureCache);
     importObj->setShader(&phongTexShader);
-    importObj->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
-
+    glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, -10.0f, -5.0f));
+    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    importObj->setModelMatrix(modelMat);
+    PhongMaterial* impMat = dynamic_cast<PhongMaterial*>(importObj->getMaterial(0));
+    impMat->shininess = 10.0f;
+    impMat->specular *= 0.1;
     // Create some lightsource objects
     auto dirLightObj = std::make_shared<Object3D>();
     dirLightObj->addLightSource(std::make_shared<DirectionalLight>(glm::vec3(-0.5f, -0.5f, 0.0f)));
 
     glm::vec3 lampCol = glm::vec3(0.f, 153.f / 255.f, 0.f);
     auto pointLightObj = std::make_shared<Object3D>();
-    auto pointlight = std::make_shared<PointLight>(lampCol * 0.0f, lampCol * 0.5f, lampCol);
+    auto pointlight = std::make_shared<PointLight>();
+    pointlight->linear = 0.045f;
+    pointlight->quadratic = 0.0075f;
     auto mat = std::make_shared<ColorOnlyMaterial>();
     pointLightObj->addLightSource(pointlight);
     pointLightObj->addMesh(MESH_CUBE, 0);
@@ -145,8 +159,6 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        
-        glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Calculate deltatime ---
@@ -158,10 +170,11 @@ int main()
         processInput(window);
 
         glm::mat4 modelMat = glm::mat4(1.0f);
-        modelMat = glm::translate(modelMat, glm::vec3(sin((float)glfwGetTime()) * 2, 0.0f, cos((float)glfwGetTime()) * 2));
+        glm::vec3 lightStartPos = glm::vec3(10.f, 12.0f, 0.0f);
+        modelMat = glm::translate(modelMat, lightStartPos + glm::vec3(sin((float)glfwGetTime()) * 2, 0.0f, cos((float)glfwGetTime()) * 2)* 6);
         modelMat = glm::scale(modelMat, glm::vec3(0.2f));
         pointLightObj->setModelMatrix(modelMat);
-
+        dirLightObj->getLightSource()->rotate((float)glfwGetTime() / 100, glm::vec3(0.f, -1.f, 0.f));
         scene.drawScene();
        
         // glfw: swap buffers and poll IO events
@@ -181,7 +194,6 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
-    const float cameraSpeed = 0.05f;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         camera.inputMoveForward(deltaTime);
     }
@@ -217,7 +229,21 @@ void processInput(GLFWwindow* window)
         altPressLastFrame = false;
     }
     if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        if (!tabPressLastFrame) {
+            if (mouseLock) {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                mouseLock = false;
+            }
+            else {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                mouseLock = true;
+            }
+        }
+        tabPressLastFrame = true;
+    }
+    else
+    {
+        tabPressLastFrame = false;
     }
 
 }

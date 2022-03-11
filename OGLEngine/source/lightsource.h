@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include "shader_s.h"
 //--------------------------------------
 // STRING FORMATTING
@@ -14,11 +15,12 @@ public:
 	glm::vec3 diffuse;
 	glm::vec3 specular;
 	enum class LightType {POINTLIGHT, DIRLIGHT};
-
+	
 	LightSource(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) :
 		ambient(ambient), diffuse(diffuse), specular(specular){}
 	virtual void passToShader(Shader* shader, GLuint lightID, glm::vec3 position) = 0;
 	virtual LightType getType() = 0;
+	virtual void rotate(float angle, glm::vec3 axis) = 0;
 protected:
 
 };
@@ -58,6 +60,9 @@ public:
 	LightType getType() override {
 		return LightType::POINTLIGHT;
 	}
+	void rotate(float angle, glm::vec3 axis) override {
+		return;
+	}
 };
 
 class DirectionalLight : public LightSource {
@@ -83,5 +88,8 @@ public:
 	}
 	LightType getType() override {
 		return LightType::DIRLIGHT;
+	}
+	void rotate(float angle, glm::vec3 axis) override {
+		direction = glm::rotate(direction, glm::radians(angle), axis);
 	}
 };

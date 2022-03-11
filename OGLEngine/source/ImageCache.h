@@ -31,7 +31,7 @@ private:
 	int MAX_CACHE_SIZE;
 	typedef std::unordered_map<std::string, ImageData*> cmap;
 	cmap cacheMap;
-	std::array<ImageData, 8> cache;
+	std::array<ImageData, 30> cache;
 	int newestCacheIndex;
 
 };

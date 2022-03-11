@@ -1,6 +1,6 @@
 #include "coloronlymaterial.h"
 
-ColorOnlyMaterial::ColorOnlyMaterial(): ColorOnlyMaterial(DEFAULT_COLOR)
+ColorOnlyMaterial::ColorOnlyMaterial(): ColorOnlyMaterial(MaterialConstants::DEFAULT_COLOR)
 {
 }
 

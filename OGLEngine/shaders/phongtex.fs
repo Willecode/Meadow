@@ -75,7 +75,8 @@ void main()
     // DEBUG ***************************************
     //outputCol = vec3(texture(material.diffuse_map, TexCoords));
     //outputCol = vec3(0.0, 1.0, 0.0);
-    //outputCol = pointLights[0].ambient;
+    //outputCol = normalDir;
+
     // ***************************************
     FragColor = vec4(outputCol, 1.0);
 }
@@ -111,6 +112,8 @@ vec3 calcDiffuse(vec3 lightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 no
     return diffuse;
 }
 vec3 calcSpecular(vec3 lightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 viewDir){
+    if (dot(-lightDir, normalDir) > 0)
+        return vec3(0.0);
     vec3 reflectDir = reflect(-lightDir, normalDir);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = lightSpecular *  spec * materialSpecular;

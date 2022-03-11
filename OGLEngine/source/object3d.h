@@ -22,6 +22,7 @@ public:
 	void setModelMatrix(const glm::mat4& model);
 	void setMaterial(std::shared_ptr<Material> mat, int materialSlot);
 	void setShader(Shader* sdr);
+	Material* getMaterial(int materialSlot);
 
 	std::shared_ptr<LightSource> getLightSourceOwnerhip();
 	LightSource* getLightSource();

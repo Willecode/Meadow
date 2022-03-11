@@ -356,7 +356,7 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
         mixValue = 0;
     }
-    const float cameraSpeed = 0.05f;
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         cameraPos += cameraSpeed * cameraFront;
     }

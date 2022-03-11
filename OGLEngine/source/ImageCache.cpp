@@ -3,7 +3,7 @@
 #include <iostream>
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
-ImageCache::ImageCache(): newestCacheIndex(0), MAX_CACHE_SIZE(8), cache({})
+ImageCache::ImageCache(): newestCacheIndex(0), MAX_CACHE_SIZE(30), cache({})
 {
 }
 

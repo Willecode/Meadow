@@ -4,6 +4,9 @@
 class PhongMaterial: public Material
 {
 public:
+	float shininess;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
 	PhongMaterial(glm::vec3 diffuse, glm::vec3 specular, float shininess);
 	PhongMaterial(
 		std::shared_ptr<Texture> diffuseMap = nullptr,
@@ -12,10 +15,8 @@ public:
 	void passToShader(Shader* shader) override;
 
 private:
-	glm::vec3 diffuse;
-	glm::vec3 specular;
 	std::shared_ptr<Texture> diffuseMap;
 	std::shared_ptr<Texture> specularMap;
-	float shininess;
+	
 };
 

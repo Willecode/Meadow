@@ -32,7 +32,7 @@ static std::shared_ptr<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureT
 	aiString path;
 	aiReturn ret = mat->GetTexture(type, 0, &path);
 	if (ret != aiReturn_SUCCESS) {
-		fmt::print("Failed to load material type {} texture in folder: {}/\n", type, directory);
+		fmt::print("Assimp failed to get texture type {} texture in folder: {}/\n", type, directory);
 		return nullptr;
 	}
 	else {

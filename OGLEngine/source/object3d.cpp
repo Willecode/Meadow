@@ -74,6 +74,16 @@ void Object3D::setShader(Shader* sdr)
 	shader = sdr;
 }
 
+Material* Object3D::getMaterial(int materialSlot)
+{
+	if (materialSlot < MAX_MATERIAL_SLOTS) {
+		if (materialSlots[materialSlot] != nullptr)
+			return materialSlots[materialSlot].get();
+		
+	}
+	return nullptr;
+}
+
 void Object3D::addMesh(std::shared_ptr<Mesh> mesh, int materialSlot)
 {
 	if (mesh != nullptr) {
