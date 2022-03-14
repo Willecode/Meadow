@@ -11,5 +11,5 @@ ColorOnlyMaterial::ColorOnlyMaterial(glm::vec3 color):
 
 void ColorOnlyMaterial::passToShader(Shader* shader)
 {
-	shader->setFloat3("objectColor", color);
+	shader->setFloat3("color", color);
 }

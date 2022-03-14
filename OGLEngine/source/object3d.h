@@ -13,7 +13,7 @@ class Object3D
 {
 public:
 	static constexpr int MAX_MATERIAL_SLOTS = 10;
-	int id;
+	int id; // unique id managed by the scene.
 
 	Object3D();
 	void draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount);
@@ -23,6 +23,8 @@ public:
 	void setMaterial(std::shared_ptr<Material> mat, int materialSlot);
 	void setShader(Shader* sdr);
 	Material* getMaterial(int materialSlot);
+	glm::mat4 getModelMatrix();
+	std::vector<Mesh*> getMeshes();
 
 	std::shared_ptr<LightSource> getLightSourceOwnerhip();
 	LightSource* getLightSource();

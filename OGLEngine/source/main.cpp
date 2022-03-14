@@ -93,20 +93,24 @@ int main()
         return -1;
     }
 
+    // Depth test config
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
+    // Stencil test config
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // Create primitive meshes
     std::shared_ptr<Mesh> MESH_CUBE = PrimitiveCreation::createCubeMesh();
-    std::shared_ptr<Mesh> MESH_SPHERE = PrimitiveCreation::createSphere(4, 4);
+    std::shared_ptr<Mesh> MESH_SPHERE = PrimitiveCreation::createSphere(30, 25);
     // Compile shaders
     Shader phongTexShader("shaders/object.vs", "shaders/phongtex.fs");
-    Shader phongSolidColShader("shaders/object.vs", "shaders/phongsolidcol.fs");
     Shader colorOnlyShader("shaders/object.vs", "shaders/coloronly.fs");
     
-
+    
     //stbi_set_flip_vertically_on_load(true);
 
     // Set up textures
@@ -152,6 +156,9 @@ int main()
     scene.addObject(importObj);
     scene.addObject(dirLightObj);
     scene.addObject(pointLightObj);
+
+    scene.selectObject(0);
+
     scene.updateLighting();
     scene.updateShaders();
 
@@ -159,7 +166,7 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // Calculate deltatime ---
         currentFrameTime = glfwGetTime();

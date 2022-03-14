@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <glm/vec3.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <fstream>
@@ -92,6 +93,10 @@ public:
     }
     void setFloat3(const std::string& name, glm::vec3 value) {
         glUniform3f(glGetUniformLocation(ID, name.c_str()), value.r, value.g, value.b);
+    }
+    void setMat4f(const std::string& name, glm::mat4 value) {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+
     }
 
 private:

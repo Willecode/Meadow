@@ -171,7 +171,7 @@
     <ClCompile Include="source\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\phongsolidcol.fs" />
+    <None Include="shaders\messingaround.fs" />
     <None Include="shaders\phongtex.fs" />
     <None Include="shaders\object.vs" />
     <None Include="shaders\coloronly.fs" />

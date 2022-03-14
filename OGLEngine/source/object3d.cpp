@@ -33,7 +33,8 @@ void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int
 			}
 		}
 		// Pass model matrix
-		glUniformMatrix4fv(glGetUniformLocation(shader->ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		shader->setMat4f("model", modelMatrix);
+		//glUniformMatrix4fv(glGetUniformLocation(shader->ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
 		
 		for (int i = 0; i < meshes.size(); i++) {
 			materialSlots[meshes[i].materialSlot]->passToShader(shader);
@@ -82,6 +83,20 @@ Material* Object3D::getMaterial(int materialSlot)
 		
 	}
 	return nullptr;
+}
+
+glm::mat4 Object3D::getModelMatrix()
+{
+	return modelMatrix;
+}
+
+std::vector<Mesh*> Object3D::getMeshes()
+{
+	std::vector<Mesh*> retVec;
+	for (size_t i = 0; i < meshes.size(); i++) {
+		retVec.push_back(meshes[i].mesh.get());
+	}
+	return retVec;
 }
 
 void Object3D::addMesh(std::shared_ptr<Mesh> mesh, int materialSlot)
