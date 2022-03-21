@@ -18,6 +18,8 @@ public:
 	void updateLighting();
 	void updateShaders();
 	void selectObject(int objId);
+	void deselectObject(int objId);
+	void deselectAllObjects();
 private:
 	int objIdCounter;
 	//std::vector<std::shared_ptr<Object3D>> sceneObjects;

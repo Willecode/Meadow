@@ -33,7 +33,7 @@
 
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, Scene* scene);
 void getUniformLocations(std::map<std::string, int>* m, std::vector<std::string> names, int shaderID);
 void mouseCallback(GLFWwindow* window, double xPosArg, double yPosArg);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
@@ -58,6 +58,8 @@ float deltaTime = 0.f;
 bool wireframeMode = false;
 bool altPressLastFrame = false;
 bool tabPressLastFrame = false;
+bool fPressLastFrame = false;
+bool selected = false;
 
 int main()
 {
@@ -121,14 +123,32 @@ int main()
     Scene scene(&camera);
     camera.speed *= 2;
     // Create objects
-    auto cubeMat = std::make_shared<PhongMaterial>(diffuseMap);
-    auto cube = std::make_shared<Object3D>();
-    cube->addMesh(MESH_SPHERE, 0);
-    cube->setMaterial(cubeMat, 0);
-    cube->setShader(&phongTexShader);
+    auto sphereMat = std::make_shared<PhongMaterial>(diffuseMap);
+    auto sphere = std::make_shared<Object3D>();
+    sphere->addMesh(MESH_SPHERE, 0);
+    sphere->setMaterial(sphereMat, 0);
+    sphere->setShader(&phongTexShader);
 
     // From obj file
-    auto importObj = ModelImporting::importWavefront("./3dmodels/Stone_church_of_kakskerta_isle_Turku_Finland/Stone_church_of_kakskerta_isle_Turku_Finland.obj", textureCache);
+    //auto importObj = ModelImporting::importWavefront("./3dmodels/Stone_church_of_kakskerta_isle_Turku_Finland/Stone_church_of_kakskerta_isle_Turku_Finland.obj", textureCache);
+    //importObj->setShader(&phongTexShader);
+    //glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, -10.0f, -5.0f));
+    //modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    //importObj->setModelMatrix(modelMat);
+    //PhongMaterial* impMat = dynamic_cast<PhongMaterial*>(importObj->getMaterial(0));
+    //impMat->shininess = 10.0f;
+    //impMat->specular *= 0.1;
+
+    //auto importObj2 = ModelImporting::importWavefront("./3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", textureCache);
+    //importObj2->setShader(&phongTexShader);
+    //glm::mat4 modelMat2 = glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, -10.0f, -5.0f));
+    //modelMat2 = glm::rotate(modelMat2, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    //importObj2->setModelMatrix(modelMat2);
+    //PhongMaterial* impMat2 = dynamic_cast<PhongMaterial*>(importObj2->getMaterial(0));
+    //impMat2->shininess = 10.0f;
+    //impMat2->specular *= 0.1;
+
+    auto importObj = ModelImporting::importWavefront("./3dmodels/modular-lowpoly-medieval-environment/MediEval Scene.fbx", textureCache);
     importObj->setShader(&phongTexShader);
     glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, -10.0f, -5.0f));
     modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -136,6 +156,7 @@ int main()
     PhongMaterial* impMat = dynamic_cast<PhongMaterial*>(importObj->getMaterial(0));
     impMat->shininess = 10.0f;
     impMat->specular *= 0.1;
+
     // Create some lightsource objects
     auto dirLightObj = std::make_shared<Object3D>();
     dirLightObj->addLightSource(std::make_shared<DirectionalLight>(glm::vec3(-0.5f, -0.5f, 0.0f)));
@@ -152,12 +173,11 @@ int main()
     pointLightObj->setMaterial(mat, 0);
 
     // Add objects to scene
-    scene.addObject(cube);
+    scene.addObject(sphere);
     scene.addObject(importObj);
     scene.addObject(dirLightObj);
     scene.addObject(pointLightObj);
-
-    scene.selectObject(0);
+    //scene.addObject(importObj2);
 
     scene.updateLighting();
     scene.updateShaders();
@@ -174,7 +194,7 @@ int main()
         lastFrameTime = currentFrameTime;
         //---
 
-        processInput(window);
+        processInput(window, &scene);
 
         glm::mat4 modelMat = glm::mat4(1.0f);
         glm::vec3 lightStartPos = glm::vec3(10.f, 12.0f, 0.0f);
@@ -196,7 +216,7 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, Scene* scene)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
@@ -251,6 +271,24 @@ void processInput(GLFWwindow* window)
     else
     {
         tabPressLastFrame = false;
+    }
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+
+        if (!fPressLastFrame) {
+            if (!selected) {
+                scene->selectObject(0);
+                selected = true;
+            }
+            else {
+                scene->deselectAllObjects();
+                selected = false;
+            }
+        }
+        fPressLastFrame = true;
+    }
+    else
+    {
+        fPressLastFrame = false;
     }
 
 }

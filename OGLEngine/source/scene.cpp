@@ -31,7 +31,7 @@ void Scene::drawScene()
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+	
 
 	// Draw non selected (no outline)
 	glStencilMask(0x00);
@@ -41,6 +41,7 @@ void Scene::drawScene()
 
 	// Draw selected (outline effect)
 	// Write selected obj fragments to stencil buffer for outline effect
+	glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
 	for (auto it = sceneObjectsSelected.begin(); it != sceneObjectsSelected.end(); it++) {
@@ -124,5 +125,23 @@ void Scene::selectObject(int objId)
 		sceneObjectsSelected.insert({ objId, std::move(it->second) });
 		sceneObjectsUnselected.erase(it);
 	}
+}
+
+void Scene::deselectObject(int objId)
+{
+	auto it = sceneObjectsSelected.find(objId);
+	if (it != sceneObjectsSelected.end()) {
+		sceneObjectsUnselected.insert({ objId, std::move(it->second) });
+		sceneObjectsUnselected.erase(it);
+	}
+}
+
+void Scene::deselectAllObjects()
+{
+	for (auto const& pair : sceneObjectsSelected)
+	{
+		sceneObjectsUnselected.insert({ pair.first, pair.second });
+	}
+	sceneObjectsSelected.clear();
 }
 
