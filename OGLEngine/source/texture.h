@@ -20,7 +20,7 @@ public:
 		// image loading
 		ImageData* image = cache.loadImage(imagePath);
 		if (image) {
-			glTexImage2D(target, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->dataPtr);
+			glTexImage2D(target, 0, GL_RGB, image->width, image->height, 0, image->format, GL_UNSIGNED_BYTE, image->dataPtr);
 		}
 		glBindTexture(target, 0);
 	}

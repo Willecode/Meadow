@@ -128,7 +128,25 @@ int main()
     sphere->addMesh(MESH_SPHERE, 0);
     sphere->setMaterial(sphereMat, 0);
     sphere->setShader(&phongTexShader);
+    glm::mat4 sphereModelMat = glm::mat4(1.0f);
+    //sphereModelMat = glm::scale(sphereModelMat, glm::vec3(.1f));
+    
+    sphere->setModelMatrix(sphereModelMat);
 
+    // Create objects
+    auto sphere2 = std::make_shared<Object3D>();
+    sphere2->addMesh(MESH_SPHERE, 0);
+    sphere2->setMaterial(sphereMat, 0);
+    sphere2->setShader(&phongTexShader);
+    sphere2->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(4.0f, 0.0f, 0.0f)));
+    sphere->addChild(sphere2);
+
+
+    auto cube = std::make_shared<Object3D>();
+    cube->addMesh(MESH_CUBE, 0);
+    cube->setMaterial(sphereMat, 0);
+    cube->setShader(&phongTexShader);
+    cube->setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, 0.0f, 0.0f)));
     // From obj file
     //auto importObj = ModelImporting::importWavefront("./3dmodels/Stone_church_of_kakskerta_isle_Turku_Finland/Stone_church_of_kakskerta_isle_Turku_Finland.obj", textureCache);
     //importObj->setShader(&phongTexShader);
@@ -148,14 +166,12 @@ int main()
     //impMat2->shininess = 10.0f;
     //impMat2->specular *= 0.1;
 
-    auto importObj = ModelImporting::importWavefront("./3dmodels/modular-lowpoly-medieval-environment/MediEval Scene.fbx", textureCache);
+    auto importObj = ModelImporting::objsFromFile("./3dmodels/medieval-market/market.fbx", textureCache);
     importObj->setShader(&phongTexShader);
-    glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, -10.0f, -5.0f));
-    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    importObj->setModelMatrix(modelMat);
-    PhongMaterial* impMat = dynamic_cast<PhongMaterial*>(importObj->getMaterial(0));
+    importObj->setModelMatrix(glm::scale(importObj->getModelMatrix(), glm::vec3(0.1)));
+    /*PhongMaterial* impMat = dynamic_cast<PhongMaterial*>(importObj->getMaterial(0));
     impMat->shininess = 10.0f;
-    impMat->specular *= 0.1;
+    impMat->specular *= 0.1;*/
 
     // Create some lightsource objects
     auto dirLightObj = std::make_shared<Object3D>();
@@ -173,11 +189,12 @@ int main()
     pointLightObj->setMaterial(mat, 0);
 
     // Add objects to scene
-    scene.addObject(sphere);
-    scene.addObject(importObj);
+    //scene.addObject(sphere);
     scene.addObject(dirLightObj);
     scene.addObject(pointLightObj);
-    //scene.addObject(importObj2);
+    //scene.addObject(cube);
+    scene.addObject(importObj);
+    
 
     scene.updateLighting();
     scene.updateShaders();
@@ -202,6 +219,10 @@ int main()
         modelMat = glm::scale(modelMat, glm::vec3(0.2f));
         pointLightObj->setModelMatrix(modelMat);
         dirLightObj->getLightSource()->rotate((float)glfwGetTime() / 100, glm::vec3(0.f, -1.f, 0.f));
+
+        //sphereModelMat = glm::rotate(sphereModelMat, .1f, glm::vec3(0.f, 0.f, 1.0f));
+        //sphere->setModelMatrix(sphereModelMat);
+        
         scene.drawScene();
        
         // glfw: swap buffers and poll IO events

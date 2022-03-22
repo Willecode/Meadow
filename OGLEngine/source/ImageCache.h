@@ -1,10 +1,12 @@
 #pragma once
 #include <unordered_map>
 #include <array>
+#include <glad/glad.h>
 
 struct ImageData {
 	unsigned char* dataPtr;
 	int width, height, nrChannels;
+	GLenum format;
 };
 class ImageCache
 {
@@ -33,6 +35,9 @@ private:
 	cmap cacheMap;
 	std::array<ImageData, 30> cache;
 	int newestCacheIndex;
+	typedef std::unordered_map<std::string, GLenum> formatMap;
+	formatMap imageFormats;
 
+	formatMap::const_iterator getFormatIt(std::string path);
 };
 

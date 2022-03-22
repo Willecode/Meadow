@@ -9,6 +9,14 @@
 TODO:
 Refactor/clean up this mess of a file
 */
+
+glm::mat4 matAssimpToGlm(aiMatrix4x4 aimat) {
+	return glm::transpose(glm::mat4(
+		aimat[0][0], aimat[0][1], aimat[0][2], aimat[0][3],
+		aimat[1][0], aimat[1][1], aimat[1][2], aimat[1][3],
+		aimat[2][0], aimat[2][1], aimat[2][2], aimat[2][3],
+		aimat[3][0], aimat[3][1], aimat[3][2], aimat[3][3]));
+}
 static std::shared_ptr<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ImageCache& textureCache, std::string directory)
 {
 	// Implement this comment block if you want to load multiple textures of the same type.
@@ -96,8 +104,11 @@ static std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene, Ima
 	// ----
 	return std::make_shared<Mesh>(vertices, indices);
 }
-static void processNode(Object3D* obj, aiNode* node, const aiScene* scene, ImageCache &textureCache, std::string directory)
+static void processNode(std::shared_ptr<Object3D> parent, aiNode* node, const aiScene* scene, ImageCache &textureCache, std::string directory)
 {
+	auto objptr = std::make_shared<Object3D>(); // assimp node => wilkan engine object
+	parent->addChild(objptr);
+	objptr->setModelMatrix(matAssimpToGlm(node->mTransformation)); //fbx imports in huge scale for some reason
 	std::vector<unsigned int> addedMaterials;
 	std::vector<unsigned int>::iterator it;
 	int materialCount = 0;
@@ -108,10 +119,10 @@ static void processNode(Object3D* obj, aiNode* node, const aiScene* scene, Image
 		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
 		it = std::find(addedMaterials.begin(), addedMaterials.end(), aimesh->mMaterialIndex);
 		if (it == addedMaterials.end()) {
-			if (materialCount < obj->MAX_MATERIAL_SLOTS) {
+			if (materialCount < objptr->MAX_MATERIAL_SLOTS) {
 				// Encountered a new material, create new material slot for object
 				addedMaterials.push_back(aimesh->mMaterialIndex);
-				obj->setMaterial(std::make_shared<PhongMaterial>(
+				objptr->setMaterial(std::make_shared<PhongMaterial>(
 					loadMaterialTextures(scene->mMaterials[aimesh->mMaterialIndex], aiTextureType_DIFFUSE, textureCache, directory),
 					loadMaterialTextures(scene->mMaterials[aimesh->mMaterialIndex], aiTextureType_SPECULAR, textureCache, directory)), materialCount);
 				materialCount++;
@@ -119,22 +130,20 @@ static void processNode(Object3D* obj, aiNode* node, const aiScene* scene, Image
 			else {
 				fmt::print(
 					"ERROR: Tried to import object with more than the max of {} materials",
-					obj->MAX_MATERIAL_SLOTS);
+					objptr->MAX_MATERIAL_SLOTS);
 			}
-
-
 		}
 		else {
 			materialSlot = std::distance(addedMaterials.begin(), it);
 		}
 
-		obj->addMesh(processMesh(aimesh, scene, textureCache), materialSlot);
+		objptr->addMesh(processMesh(aimesh, scene, textureCache), materialSlot);
 		
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		processNode(obj, node->mChildren[i], scene, textureCache, directory);
+		processNode(objptr, node->mChildren[i], scene, textureCache, directory);
 	}
 
 	
@@ -145,6 +154,26 @@ std::shared_ptr<Object3D> ModelImporting::importWavefront(std::string path, Imag
 {
 	auto objptr = std::make_shared<Object3D>();
 
+	//ImageCache cache;
+	//Assimp::Importer importer;
+	//const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	//if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	//{
+	//	std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+	//	return nullptr;
+	//}
+	//std::string directory = path.substr(0, path.find_last_of('/'));
+
+	//processNode(objptr.get(), scene->mRootNode, scene, textureCache, directory);
+	//// free image cache since all textures of the model are loaded at this point
+	//cache.freeAllData();
+
+	return objptr;
+}
+
+std::shared_ptr<Object3D> ModelImporting::objsFromFile(std::string path, ImageCache& textureCache)
+{
+	auto objptr = std::make_shared<Object3D>();
 	ImageCache cache;
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -155,7 +184,7 @@ std::shared_ptr<Object3D> ModelImporting::importWavefront(std::string path, Imag
 	}
 	std::string directory = path.substr(0, path.find_last_of('/'));
 
-	processNode(objptr.get(), scene->mRootNode, scene, textureCache, directory);
+	processNode(objptr, scene->mRootNode, scene, textureCache, directory);
 	// free image cache since all textures of the model are loaded at this point
 	cache.freeAllData();
 

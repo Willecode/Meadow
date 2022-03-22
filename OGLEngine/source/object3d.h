@@ -16,9 +16,10 @@ public:
 	int id; // unique id managed by the scene.
 
 	Object3D();
-	void draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount);
+	void draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount, glm::mat4 accTransform = glm::mat4(1.0f));
 	void addLightSource(std::shared_ptr<LightSource> lightSrc);
 	void addMesh(std::shared_ptr<Mesh> mesh, int materialSlot);
+	void addChild(std::shared_ptr<Object3D> child);
 	void setModelMatrix(const glm::mat4& model);
 	void setMaterial(std::shared_ptr<Material> mat, int materialSlot);
 	void setShader(Shader* sdr);
@@ -39,7 +40,7 @@ protected:
 
 	std::string name;
 	glm::mat4 modelMatrix;
-	//std::vector<std::shared_ptr<Object3D>> childObjects;
+	std::vector<std::shared_ptr<Object3D>> childObjects;
 	std::shared_ptr<LightSource> light;
 	std::vector<MeshStruct> meshes;
 	std::array<std::shared_ptr<Material>, MAX_MATERIAL_SLOTS - 1> materialSlots;

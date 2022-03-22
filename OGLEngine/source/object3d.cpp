@@ -9,7 +9,7 @@ Object3D::Object3D():
 	light(nullptr)
 {}
 
-void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount)
+void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount, glm::mat4 accTransform)
 {
 	if ((!meshes.empty()) && shader) {
 		shader->use();
@@ -33,13 +33,16 @@ void Object3D::draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int
 			}
 		}
 		// Pass model matrix
-		shader->setMat4f("model", modelMatrix);
+		shader->setMat4f("model", accTransform * modelMatrix);
 		//glUniformMatrix4fv(glGetUniformLocation(shader->ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
 		
 		for (int i = 0; i < meshes.size(); i++) {
 			materialSlots[meshes[i].materialSlot]->passToShader(shader);
 			meshes[i].mesh->draw();
 		}
+	}
+	for (auto obj : childObjects) {
+		obj->draw(sceneLights, pointLightCount, dirLightCount, accTransform * modelMatrix);
 	}
 }
 
@@ -73,6 +76,9 @@ void Object3D::setMaterial(std::shared_ptr<Material> mat, int materialSlot)
 void Object3D::setShader(Shader* sdr)
 {
 	shader = sdr;
+	for (auto child : childObjects) {
+		child->setShader(sdr);
+	}
 }
 
 Material* Object3D::getMaterial(int materialSlot)
@@ -108,6 +114,12 @@ void Object3D::addMesh(std::shared_ptr<Mesh> mesh, int materialSlot)
 		meshes.push_back(newMesh);
 	}
 	
+}
+
+void Object3D::addChild(std::shared_ptr<Object3D> child)
+{
+	childObjects.push_back(child);
+	return;
 }
 
 std::shared_ptr<LightSource> Object3D::getLightSourceOwnerhip()
