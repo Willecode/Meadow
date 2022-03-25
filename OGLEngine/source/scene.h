@@ -2,6 +2,8 @@
 #include "Object3D.h"
 #include "camera.h"
 #include "materials/coloronlymaterial.h"
+#include "windowmanager.h"
+
 #include <vector>
 #include <unordered_set>
 
@@ -12,7 +14,8 @@ namespace SceneConstants {
 class Scene
 {
 public:
-	Scene(Camera* camera);
+	Scene();
+	
 	void addObject(std::shared_ptr<Object3D>);
 	void drawScene();
 	void updateLighting();
@@ -27,10 +30,11 @@ private:
 	int pointLightCount;
 	int dirLightCount;
 	std::unordered_map<Object3D*, LightSource*> sceneLights; // TODO: optimize this?
-
 	std::unordered_set<Shader*> sceneShaders;
 	Shader outlineShader;
 	ColorOnlyMaterial outlineMaterial;
-	Camera* sceneCamera;
+	Camera sceneCamera;
+
+	void setupDefaultScene();
 };
 

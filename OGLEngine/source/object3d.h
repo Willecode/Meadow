@@ -14,6 +14,7 @@ class Object3D
 public:
 	static constexpr int MAX_MATERIAL_SLOTS = 10;
 	int id; // unique id managed by the scene.
+	std::string name;
 
 	Object3D();
 	void draw(std::unordered_map<Object3D*, LightSource*> sceneLights, int pointLightCount, int dirLightCount, glm::mat4 accTransform = glm::mat4(1.0f));
@@ -38,7 +39,6 @@ protected:
 		unsigned int materialSlot;
 	};
 
-	std::string name;
 	glm::mat4 modelMatrix;
 	std::vector<std::shared_ptr<Object3D>> childObjects;
 	std::shared_ptr<LightSource> light;

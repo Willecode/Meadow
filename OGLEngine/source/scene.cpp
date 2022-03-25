@@ -1,13 +1,18 @@
 #include "scene.h"
 #include <glm/gtc/type_ptr.hpp>
-Scene::Scene(Camera* camera) :
+#include "materials/phongmaterial.h"
+#include "primitivecreation.h"
+#include "shadermanager.h"
+
+Scene::Scene() :
 	objIdCounter(0),
 	pointLightCount(0),
 	dirLightCount(0),
-	sceneCamera(camera),
+	sceneCamera(Camera((float)WindowManager::width / (float)WindowManager::height, 0.1f, 100.f)),
 	outlineShader(Shader("shaders/object.vs", "shaders/coloronly.fs")),
 	outlineMaterial(ColorOnlyMaterial(SceneConstants::DEFAULT_OUTLINE_COLOR))
 {
+	this->setupDefaultScene();
 }
 
 void Scene::addObject(std::shared_ptr<Object3D> obj)
@@ -24,9 +29,9 @@ void Scene::drawScene()
 	// Send shaders camera uniforms
 	for (auto shader: sceneShaders) {
 		shader->use();
-		glUniformMatrix4fv(glGetUniformLocation(shader->ID, "view"), 1, GL_FALSE, glm::value_ptr(sceneCamera->getViewMatrix()));
-		glUniformMatrix4fv(glGetUniformLocation(shader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(sceneCamera->getProjectionMatrix()));
-		shader->setFloat3("viewPos", sceneCamera->position); 
+		glUniformMatrix4fv(glGetUniformLocation(shader->ID, "view"), 1, GL_FALSE, glm::value_ptr(sceneCamera.getViewMatrix()));
+		glUniformMatrix4fv(glGetUniformLocation(shader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(sceneCamera.getProjectionMatrix()));
+		shader->setFloat3("viewPos", sceneCamera.position); 
 
 	}
 
@@ -54,8 +59,8 @@ void Scene::drawScene()
 
 	outlineShader.use();
 	outlineMaterial.passToShader(&outlineShader);
-	outlineShader.setMat4f("view", sceneCamera->getViewMatrix());
-	outlineShader.setMat4f("projection", sceneCamera->getProjectionMatrix());
+	outlineShader.setMat4f("view", sceneCamera.getViewMatrix());
+	outlineShader.setMat4f("projection", sceneCamera.getProjectionMatrix());
 	//Draw outlines
 	for (auto it = sceneObjectsSelected.begin(); it != sceneObjectsSelected.end(); it++) {
 		glm::mat4 mat = it->second->getModelMatrix();
@@ -143,5 +148,20 @@ void Scene::deselectAllObjects()
 		sceneObjectsUnselected.insert({ pair.first, pair.second });
 	}
 	sceneObjectsSelected.clear();
+}
+
+void Scene::setupDefaultScene()
+{
+	auto sphere = std::make_shared<Object3D>();
+	auto sphereMat = std::make_shared<PhongMaterial>();
+	sphere->addMesh(PrimitiveCreation::createSphere(10, 15), 0);
+	sphere->setMaterial(sphereMat, 0);
+	sphere->setShader(ShaderManager::getPhongShader());
+
+	auto dirLightObj = std::make_shared<Object3D>();
+	dirLightObj->addLightSource(std::make_shared<DirectionalLight>(glm::vec3(-0.5f, -0.5f, 0.0f)));
+
+	this->addObject(sphere);
+	this->addObject(dirLightObj);
 }
 

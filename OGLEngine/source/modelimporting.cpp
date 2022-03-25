@@ -107,6 +107,7 @@ static std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene, Ima
 static void processNode(std::shared_ptr<Object3D> parent, aiNode* node, const aiScene* scene, ImageCache &textureCache, std::string directory)
 {
 	auto objptr = std::make_shared<Object3D>(); // assimp node => wilkan engine object
+	objptr->name = node->mName.C_Str();
 	parent->addChild(objptr);
 	objptr->setModelMatrix(matAssimpToGlm(node->mTransformation)); //fbx imports in huge scale for some reason
 	std::vector<unsigned int> addedMaterials;
@@ -173,8 +174,6 @@ std::shared_ptr<Object3D> ModelImporting::importWavefront(std::string path, Imag
 
 std::shared_ptr<Object3D> ModelImporting::objsFromFile(std::string path, ImageCache& textureCache)
 {
-	auto objptr = std::make_shared<Object3D>();
-	ImageCache cache;
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -182,6 +181,10 @@ std::shared_ptr<Object3D> ModelImporting::objsFromFile(std::string path, ImageCa
 		std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
 		return nullptr;
 	}
+
+	auto objptr = std::make_shared<Object3D>();
+	objptr->name = path;
+	ImageCache cache;
 	std::string directory = path.substr(0, path.find_last_of('/'));
 
 	processNode(objptr, scene->mRootNode, scene, textureCache, directory);

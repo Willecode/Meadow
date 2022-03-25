@@ -154,7 +154,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\shadermanager.cpp" />
+    <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\camera.cpp" />
+    <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\materials\coloronlymaterial.cpp" />
     <ClCompile Include="source\materials\phongmaterial.cpp" />
     <ClCompile Include="source\mesh.cpp" />
@@ -165,9 +168,9 @@
     <ClCompile Include="source\scene.cpp" />
     <ClCompile Include="source\object3d.cpp" />
     <ClCompile Include="source\imagecache.cpp" />
-    <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\glad.c" />
     <ClCompile Include="source\texture.cpp" />
+    <ClCompile Include="source\windowmanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\messingaround.fs" />
@@ -188,6 +191,8 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\shadermanager.h" />
+    <ClInclude Include="source\application.h" />
     <ClInclude Include="source\camera.h" />
     <ClInclude Include="source\materials\coloronlymaterial.h" />
     <ClInclude Include="source\materials\phongmaterial.h" />
@@ -204,6 +209,7 @@
     <ClInclude Include="source\shader_s.h" />
     <ClInclude Include="source\stb\stb_image.h" />
     <ClInclude Include="source\texture.h" />
+    <ClInclude Include="source\windowmanager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
