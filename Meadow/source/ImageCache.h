@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <array>
-#include <glad/glad.h>
+#include <glad\glad.h>
 
 struct ImageData {
 	unsigned char* dataPtr;

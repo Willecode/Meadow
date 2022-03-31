@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a7a96cc6-bc1e-495e-839c-73c5848f5c13}</ProjectGuid>
-    <RootNamespace>OGLEngine</RootNamespace>
+    <ProjectGuid>{c965db2f-4cc1-451f-ab98-95baef19299b}</ProjectGuid>
+    <RootNamespace>Glad</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Meadow</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -41,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -121,16 +120,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)external\glfw\lib-vc2022;$(SolutionDir)external\assimp\lib\debug;%(AdditionalLibraryDirectories);$(SolutionDir)external\glad\build\$(Platform)-$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;assimp-vc143-mtd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <IgnoreSpecificDefaultLibraries>MSVCRT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,83 +135,21 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)external\glfw\lib-vc2022;$(SolutionDir)external\assimp\lib\release;%(AdditionalLibraryDirectories);$(SolutionDir)external\glad\build\$(Platform)-$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;assimp-vc143-mt.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>MSVCRT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\service_locator\locator.cpp" />
-    <ClCompile Include="source\renderer\openglrenderer.cpp" />
-    <ClCompile Include="source\renderer\renderer.cpp" />
-    <ClCompile Include="source\shadermanager.cpp" />
-    <ClCompile Include="source\application.cpp" />
-    <ClCompile Include="source\camera.cpp" />
-    <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\materials\coloronlymaterial.cpp" />
-    <ClCompile Include="source\materials\phongmaterial.cpp" />
-    <ClCompile Include="source\mesh.cpp" />
-    <ClCompile Include="source\modelimporting.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\primitivecreation.cpp" />
-    <ClCompile Include="source\scene.cpp" />
-    <ClCompile Include="source\object3d.cpp" />
-    <ClCompile Include="source\imagecache.cpp" />
-    <ClCompile Include="source\texture.cpp" />
-    <ClCompile Include="source\windowmanager.cpp" />
+    <ClInclude Include="include\glad\glad.h" />
+    <ClInclude Include="include\KHR\khrplatform.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\messingaround.fs" />
-    <None Include="shaders\phongtex.fs" />
-    <None Include="shaders\object.vs" />
-    <None Include="shaders\coloronly.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="images\black.png" />
-    <Image Include="images\Bricks054_1K_Color.jpg" />
-    <Image Include="images\Bricks054_1K_Roughness.jpg" />
-    <Image Include="images\checkerboard8bit.png" />
-    <Image Include="images\cooltile.jpg" />
-    <Image Include="images\Fingerprints009_1K_Color.jpg" />
-    <Image Include="images\Fingerprints009_1K_Roughness.jpg" />
-    <Image Include="images\jellyfish.png" />
-    <Image Include="images\squares.jpg" />
-    <Image Include="images\Wood066_1K_Color.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="source\service_locator\locator.h" />
-    <ClInclude Include="source\renderer\openglrenderer.h" />
-    <ClInclude Include="source\renderer\renderer.h" />
-    <ClInclude Include="source\shadermanager.h" />
-    <ClInclude Include="source\application.h" />
-    <ClInclude Include="source\camera.h" />
-    <ClInclude Include="source\materials\coloronlymaterial.h" />
-    <ClInclude Include="source\materials\phongmaterial.h" />
-    <ClInclude Include="source\mesh.h" />
-    <ClInclude Include="source\materials\material.h" />
-    <ClInclude Include="source\lightsource.h" />
-    <ClInclude Include="source\modelimporting.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\primitivecreation.h" />
-    <ClInclude Include="source\scene.h" />
-    <ClInclude Include="source\object3d.h" />
-    <ClInclude Include="source\imagecache.h" />
-    <ClInclude Include="source\shader_s.h" />
-    <ClInclude Include="source\stb\stb_image.h" />
-    <ClInclude Include="source\texture.h" />
-    <ClInclude Include="source\windowmanager.h" />
+    <ClCompile Include="src\glad.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
