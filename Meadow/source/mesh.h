@@ -1,9 +1,7 @@
 #pragma once
-#include <glad/glad.h>
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <vector>
-#include "shader_s.h"
 
 struct Vertex {
 	glm::vec3 position;
@@ -20,13 +18,14 @@ struct Vertex {
 class Mesh
 {
 public:
+	int id;
 	std::vector<Vertex>	vertices;
-	std::vector<GLuint> indices;
-	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices);
+	std::vector<unsigned int> indices;
+	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, int id = -1);
 	~Mesh();
 	void draw() const;
-private:
-	unsigned int VAO, VBO, EBO;
-	void setup();
+	void generateBuffers(); // Generate graphics memory buffers for this mesh
+	void buffersPushData(); // Push vertex data and indices into previously generated buffers
+	
 };
 

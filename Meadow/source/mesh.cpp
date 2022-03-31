@@ -1,49 +1,28 @@
 #include "mesh.h"
+#include "service_locator/locator.h"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices):
-    vertices(vertices), indices(indices)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, int id):
+    vertices(vertices), indices(indices), id(id)
 {
-    setup();
+
 }
 
 Mesh::~Mesh()
 {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+    Locator::getRenderer()->meshBuffersDelete(id);
 }
 
 void Mesh::draw() const
 {
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    Locator::getRenderer()->draw(id);
 }
 
-void Mesh::setup()
+void Mesh::generateBuffers()
 {
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    Locator::getRenderer()->meshBuffersGenerate(id);
+}
 
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
-        &indices[0], GL_STATIC_DRAW);
-
-    // vertex positions
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-    // vertex normals
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-    // vertex texture coords
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
-
-    glBindVertexArray(0);
+void Mesh::buffersPushData()
+{
+    Locator::getRenderer()->meshBuffersPushData(id, vertices, indices);
 }

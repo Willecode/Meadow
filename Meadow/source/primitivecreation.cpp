@@ -6,7 +6,7 @@
 std::shared_ptr<Mesh> PrimitiveCreation::createCubeMesh()
 {
     std::vector<Vertex> vertices;
-    std::vector<GLuint> indices;
+    std::vector<unsigned int> indices;
                                        //pos                           //normal                       //texCoord
     vertices.push_back(Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f)));
     vertices.push_back(Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f)));
@@ -53,7 +53,7 @@ std::shared_ptr<Mesh> PrimitiveCreation::createCubeMesh()
 std::shared_ptr<Mesh> PrimitiveCreation::createSphere(int sectorCount, int stackCount)
 {
     std::vector<Vertex> vertices;
-    std::vector<GLuint> indices;
+    std::vector<unsigned int> indices;
     float pi = static_cast<float>(M_PI);
     float sectorStep = 2 * pi / sectorCount;
     float stackStep = pi / stackCount;
