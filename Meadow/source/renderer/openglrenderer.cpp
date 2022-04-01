@@ -1,5 +1,4 @@
 #include "openglrenderer.h"
-#include "glad/glad.h"
 #include <fmt/format.h>
 #include "../service_locator/locator.h"
 
