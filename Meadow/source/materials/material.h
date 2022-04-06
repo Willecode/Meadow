@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/vec3.hpp>
 #include "../texture.h"
-#include "../shader_s.h"
+#include "../shader.h"
 
 
 namespace MaterialConstants {
@@ -11,8 +11,5 @@ namespace MaterialConstants {
 class Material
 {
 public:
-	virtual void passToShader(Shader* shader) {};
-protected:
-	
+	virtual void passToRenderer() = 0;
 };
-

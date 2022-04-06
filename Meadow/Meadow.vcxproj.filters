@@ -15,18 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\imagecache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\object3d.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,7 +30,7 @@
     <ClCompile Include="source\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\modelimporting.cpp">
+    <ClCompile Include="source\resource_management\modelimporting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\application.cpp">
@@ -54,7 +42,7 @@
     <ClCompile Include="source\windowmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\shadermanager.cpp">
+    <ClCompile Include="source\resource_management\shadermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\renderer.cpp">
@@ -64,6 +52,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\service_locator\locator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\worldentity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\resource_management\resourcemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\resource_management\imageloader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -106,28 +118,13 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\shader_s.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\stb\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\imagecache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\object3d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\lightsource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\materials\material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\mesh.h">
@@ -145,7 +142,7 @@
     <ClInclude Include="source\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\modelimporting.h">
+    <ClInclude Include="source\resource_management\modelimporting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\application.h">
@@ -154,7 +151,7 @@
     <ClInclude Include="source\windowmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\shadermanager.h">
+    <ClInclude Include="source\resource_management\shadermanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\renderer.h">
@@ -164,6 +161,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\service_locator\locator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\worldentity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource_management\resourcemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource_management\imageloader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

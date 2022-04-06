@@ -4,8 +4,8 @@
 #include "shader_s.h"
 //--------------------------------------
 // STRING FORMATTING
-#define FMT_HEADER_ONLY
-#include <fmt/core.h>
+//#define FMT_HEADER_ONLY
+//#include <fmt/core.h>
 //--------------------------------------
 #define DEFAULT_LIGHT_COLOR glm::vec3(1.0f)
 class LightSource

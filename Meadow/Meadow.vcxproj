@@ -119,9 +119,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;$(SolutionDir)external\spdlog\include;$(ProjectDir)source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -139,9 +139,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;$(SolutionDir)external\spdlog\include;$(ProjectDir)source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -157,25 +157,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\logger.cpp" />
+    <ClCompile Include="source\resource_management\imageloader.cpp" />
+    <ClCompile Include="source\resource_management\resourcemanager.cpp" />
+    <ClCompile Include="source\shader.cpp" />
+    <ClCompile Include="source\model.cpp" />
+    <ClCompile Include="source\scene.cpp" />
     <ClCompile Include="source\service_locator\locator.cpp" />
     <ClCompile Include="source\renderer\openglrenderer.cpp" />
     <ClCompile Include="source\renderer\renderer.cpp" />
-    <ClCompile Include="source\shadermanager.cpp" />
+    <ClCompile Include="source\resource_management\shadermanager.cpp" />
     <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\camera.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\materials\coloronlymaterial.cpp" />
     <ClCompile Include="source\materials\phongmaterial.cpp" />
     <ClCompile Include="source\mesh.cpp" />
-    <ClCompile Include="source\modelimporting.cpp">
+    <ClCompile Include="source\resource_management\modelimporting.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\primitivecreation.cpp" />
-    <ClCompile Include="source\scene.cpp" />
-    <ClCompile Include="source\object3d.cpp" />
-    <ClCompile Include="source\imagecache.cpp" />
-    <ClCompile Include="source\texture.cpp" />
     <ClCompile Include="source\windowmanager.cpp" />
+    <ClCompile Include="source\worldentity.cpp" />
+    <ClCompile Include="source\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\messingaround.fs" />
@@ -196,10 +200,16 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\logger.h" />
+    <ClInclude Include="source\resource_management\imageloader.h" />
+    <ClInclude Include="source\resource_management\resourcemanager.h" />
+    <ClInclude Include="source\shader.h" />
+    <ClInclude Include="source\model.h" />
+    <ClInclude Include="source\scene.h" />
     <ClInclude Include="source\service_locator\locator.h" />
     <ClInclude Include="source\renderer\openglrenderer.h" />
     <ClInclude Include="source\renderer\renderer.h" />
-    <ClInclude Include="source\shadermanager.h" />
+    <ClInclude Include="source\resource_management\shadermanager.h" />
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\camera.h" />
     <ClInclude Include="source\materials\coloronlymaterial.h" />
@@ -207,17 +217,14 @@
     <ClInclude Include="source\mesh.h" />
     <ClInclude Include="source\materials\material.h" />
     <ClInclude Include="source\lightsource.h" />
-    <ClInclude Include="source\modelimporting.h">
+    <ClInclude Include="source\resource_management\modelimporting.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\primitivecreation.h" />
-    <ClInclude Include="source\scene.h" />
-    <ClInclude Include="source\object3d.h" />
-    <ClInclude Include="source\imagecache.h" />
-    <ClInclude Include="source\shader_s.h" />
     <ClInclude Include="source\stb\stb_image.h" />
-    <ClInclude Include="source\texture.h" />
     <ClInclude Include="source\windowmanager.h" />
+    <ClInclude Include="source\worldentity.h" />
+    <ClInclude Include="source\texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

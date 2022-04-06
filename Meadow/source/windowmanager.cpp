@@ -1,6 +1,6 @@
 #include "windowmanager.h"
 #include "service_locator/locator.h"
-#include <fmt/printf.h>
+//#include <fmt/core.h>
 
 namespace WindowConf {
     const float DEFAULT_SCR_WIDTH = 1920.0f;
@@ -23,7 +23,7 @@ bool WindowManager::createWindow(std::string title)
     // glfw: initialize and configure
 // ------------------------------
     if (!glfwInit()) {
-        fmt::print("Failed to initialize glfw\n");
+        Locator::getLogger()->getLogger()->info("Failed to initialize glfw\n");
         return false;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -35,7 +35,7 @@ bool WindowManager::createWindow(std::string title)
     m_window = glfwCreateWindow(WindowConf::DEFAULT_SCR_WIDTH, WindowConf::DEFAULT_SCR_HEIGHT, title.c_str(), NULL, NULL);
     if (m_window == NULL)
     {
-        fmt::print("Failed to create GLFW window\n");
+        Locator::getLogger()->getLogger()->info("Failed to create GLFW window\n");
         glfwTerminate();
         return false;
     }

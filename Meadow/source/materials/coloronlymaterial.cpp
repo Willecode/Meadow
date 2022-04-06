@@ -1,4 +1,6 @@
 #include "coloronlymaterial.h"
+#include "service_locator/locator.h"
+#include "resource_management/shadermanager.h"
 
 ColorOnlyMaterial::ColorOnlyMaterial(): ColorOnlyMaterial(MaterialConstants::DEFAULT_COLOR)
 {
@@ -9,7 +11,12 @@ ColorOnlyMaterial::ColorOnlyMaterial(glm::vec3 color):
 {
 }
 
-void ColorOnlyMaterial::passToShader(Shader* shader)
+void ColorOnlyMaterial::passToRenderer()
 {
-	shader->setFloat3("color", color);
+	Locator::getRenderer()->setFloat3(ShaderManager::getColorShader()->getId(), "color", color);
 }
+
+//void ColorOnlyMaterial::passToShader(Shader* shader)
+//{
+//	//shader->setFloat3("color", color);
+//}

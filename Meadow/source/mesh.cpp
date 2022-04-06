@@ -1,7 +1,7 @@
 #include "mesh.h"
 #include "service_locator/locator.h"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, int id):
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, int id):
     vertices(vertices), indices(indices), id(id)
 {
 
@@ -14,7 +14,7 @@ Mesh::~Mesh()
 
 void Mesh::draw() const
 {
-    Locator::getRenderer()->draw(id);
+    Locator::getRenderer()->drawMesh(id);
 }
 
 void Mesh::generateBuffers()

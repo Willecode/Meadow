@@ -1,39 +1,21 @@
 #pragma once
-#include <glad/glad.h>
-#include <string>
-#include "imagecache.h"
+#include <memory>
+#include "service_locator/locator.h"
 class Texture
 {
 public:
-	Texture(std::string imagePath, GLenum target, ImageCache &cache):target(target)
-	{
-		glGenTextures(1, &id);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(target, id);
-		// -----------------------
-		// Set texture parameters here:
-		glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		// -----------------------
-		// image loading
-		ImageData* image = cache.loadImage(imagePath);
-		if (image) {
-			glTexImage2D(target, 0, GL_RGB, image->width, image->height, 0, image->format, GL_UNSIGNED_BYTE, image->dataPtr);
-		}
-		glBindTexture(target, 0);
-	}
-	~Texture() {
-		glDeleteTextures(1, &id);
-	}
-	void bind(GLuint textureUnit) {
-		glActiveTexture(GL_TEXTURE0 + textureUnit);
-		glBindTexture(target, id);
-	}
+	unsigned int id;
+	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height, Renderer::ImageFormat format);
+	void loadToGPU(); // Generate buffers in graphics memory and push image texture data to them
+	void bindToSampler(const unsigned int& samplerId);
+	void deleteFromGPU();
 private:
-	GLuint id;
-	GLenum target;
+	
+	std::unique_ptr<std::vector<unsigned char>> m_img;
+	unsigned int m_imgWidth;
+	unsigned int m_imgHeight;
+	Renderer::ImageFormat m_imgFormat;
+	
 	
 };
 
