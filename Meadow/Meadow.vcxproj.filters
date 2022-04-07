@@ -54,9 +54,6 @@
     <ClCompile Include="source\service_locator\locator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\worldentity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,6 +73,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\scenenode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\asset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\materials\material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -163,9 +169,6 @@
     <ClInclude Include="source\service_locator\locator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\worldentity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -185,6 +188,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\scenenode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\asset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

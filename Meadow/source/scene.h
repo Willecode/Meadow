@@ -1,5 +1,5 @@
 #pragma once
-#include "worldentity.h"
+#include "scenenode.h"
 #include <unordered_map>
 /*
 * Scene graph class
@@ -7,14 +7,16 @@
 class Scene
 {
 public:
-	Scene() = default;
+	Scene();
+	void update();
+	unsigned int addNode(unsigned int parent = 0);
+	SceneNode* getNode(unsigned int id);
+	
 private:
-	struct Node {
-		WorldEntity* entity;
-		Node* parent;
-	};
-
-	std::vector<WorldEntity> m_entities;
-	std::unordered_map<unsigned int, Node> m_nodeMap;
+	// Map for accessing nodes with id. Rootnode is always 0 and added in initialization
+	std::unordered_map<unsigned int, std::shared_ptr<SceneNode>> m_nodeMap;
+	unsigned int m_nodeIdCtr;
+private:
+	void updateNode(SceneNode* node);
 };
 

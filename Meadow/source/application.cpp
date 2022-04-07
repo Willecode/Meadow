@@ -31,7 +31,7 @@
 //*******************
 Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_scene(nullptr), appFailed(false)
 {   
-    m_windowManager.createWindow("Meadow Program");
+    m_windowManager.createWindow("Meadow");
     appFailed = m_renderer.initialize();
     m_logger.init();
     Locator::provide(&m_logger);
@@ -44,6 +44,26 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
 
 #if 1
 
+    unsigned int nodeId = m_scene->addNode();
+    SceneNode* node = m_scene->getNode(nodeId);
+    std::unique_ptr<Model> model = std::make_unique<Model>();
+    
+    auto mat = std::make_unique<ColorOnlyMaterial>();
+    auto matid = manager.storeMaterial(std::move(mat));
+    auto mat2 = manager.getMaterial(matid);
+
+    auto m = PrimitiveCreation::createCubeMesh();
+    m->setId(1);
+    m->generateBuffers();
+    m->buffersPushData();
+    unsigned int meshid = manager.storeMesh(std::move(m));
+    Mesh* mesh = manager.getMesh(meshid);
+
+    model->setMaterial(mat2);
+    model->addMesh(mesh);
+    node->setModel(std::move(model));
+
+
     Camera c(1920.0f / 1080.0f, 0.1f, 100.0f);
     sdrId = ShaderManager::getColorShader()->getId();
     auto renderer = Locator::getRenderer();
@@ -52,12 +72,8 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
     renderer->setMat4f(sdrId, "projection", c.getProjectionMatrix());
     renderer->setMat4f(sdrId, "model", glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.f)));
     renderer->useShaderProgram(sdrId);
-    m = PrimitiveCreation::createCubeMesh();
-    m->id = 1;
-    m->generateBuffers();
-    m->buffersPushData();
-    ColorOnlyMaterial mat(glm::vec3(1.0f, 0.0f, 0.0f));
-    mat.passToRenderer();
+    //ColorOnlyMaterial mat(glm::vec3(1.0f, 0.0f, 0.0f));
+    //mat.passToRenderer();
     ImageLoader loader;
     ImageData imgdata = loader.loadImage("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg");
 
@@ -106,8 +122,8 @@ void Application::run()
     while (!m_windowManager.shouldClose())
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        //m_scene->drawScene();
-        m->draw();
+        m_scene->update();
+        //m->draw();
         Locator::getRenderer()->setMat4f(sdrId, "model", glm::rotate(glm::mat4(1.0f),(float)glfwGetTime(), glm::vec3(0.f,1.f,0.f)));
         // glfw: swap buffers and poll IO events
         // -------------------------------------------------------------------------------

@@ -46,6 +46,6 @@ private:
 
 private:
 	ResourceManager();
-	static unsigned int generateUniqueId(ResourceType);
+	static unsigned int generateUniqueId(Asset::AssetType type);
 };
 

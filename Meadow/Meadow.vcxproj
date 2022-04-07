@@ -157,9 +157,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\asset.cpp" />
     <ClCompile Include="source\logger.cpp" />
+    <ClCompile Include="source\materials\material.cpp" />
     <ClCompile Include="source\resource_management\imageloader.cpp" />
     <ClCompile Include="source\resource_management\resourcemanager.cpp" />
+    <ClCompile Include="source\scenenode.cpp" />
     <ClCompile Include="source\shader.cpp" />
     <ClCompile Include="source\model.cpp" />
     <ClCompile Include="source\scene.cpp" />
@@ -178,7 +181,6 @@
     </ClCompile>
     <ClCompile Include="source\primitivecreation.cpp" />
     <ClCompile Include="source\windowmanager.cpp" />
-    <ClCompile Include="source\worldentity.cpp" />
     <ClCompile Include="source\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -200,9 +202,11 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\asset.h" />
     <ClInclude Include="source\logger.h" />
     <ClInclude Include="source\resource_management\imageloader.h" />
     <ClInclude Include="source\resource_management\resourcemanager.h" />
+    <ClInclude Include="source\scenenode.h" />
     <ClInclude Include="source\shader.h" />
     <ClInclude Include="source\model.h" />
     <ClInclude Include="source\scene.h" />
@@ -223,7 +227,6 @@
     <ClInclude Include="source\primitivecreation.h" />
     <ClInclude Include="source\stb\stb_image.h" />
     <ClInclude Include="source\windowmanager.h" />
-    <ClInclude Include="source\worldentity.h" />
     <ClInclude Include="source\texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

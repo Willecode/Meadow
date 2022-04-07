@@ -4,6 +4,6 @@
 class PrimitiveCreation
 {
 public:
-	static std::shared_ptr<Mesh> createCubeMesh();
-	static std::shared_ptr<Mesh> createSphere(int sectorCount, int stackCount);
+	static std::unique_ptr<Mesh> createCubeMesh();
+	static std::unique_ptr<Mesh> createSphere(int sectorCount, int stackCount);
 };

@@ -22,7 +22,6 @@ private:
 	/*
 	* Debug thingies, delete these when no longer used
 	*/
-	std::shared_ptr<Mesh> m;
 	unsigned int sdrId;
 };
 
