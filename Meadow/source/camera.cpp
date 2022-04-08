@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "service_locator/locator.h"
 
 Camera::Camera(float aspect, float zNear, float zFar, glm::vec3 position, glm::vec3 up) :
 	aspect(aspect),
@@ -45,6 +46,7 @@ void Camera::setFov(float fovIn) {
 float Camera::getFov() {
 	return fov;
 }
+
 void Camera::inputMoveUp(float deltaTime) {
 	position += worldUp * speed * deltaTime;
 }

@@ -121,6 +121,13 @@ void Application::run()
     // -----------
     while (!m_windowManager.shouldClose())
     {
+        /* Clear framebuffer */
+        /* Get all objects that glow */
+        /* Set up glow shader */
+        /* Render */
+        /* Get all objects that are lit */
+        /* Set up light shader */
+        /* Render */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         m_scene->update();
         //m->draw();

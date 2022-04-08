@@ -2,7 +2,8 @@
 
 Scene::Scene():
 	m_nodeMap({ {0, std::make_shared<SceneNode>()} }),
-	m_nodeIdCtr(1)
+	m_nodeIdCtr(1),
+	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f))
 {
 }
 
