@@ -7,7 +7,7 @@
 #include "shader.h"
 #include "materials/material.h"
 /*
-*  Singleton resource manager
+*  Singleton resource manager. For now meshes and textures stored here will be loaded to graphics memory
 */
 
 class ResourceManager
@@ -20,9 +20,6 @@ public:
 
 	static unsigned int storeMesh(std::unique_ptr<Mesh> mesh);
 	static Mesh* getMesh(unsigned int meshId);
-
-	static unsigned int storeShader(std::unique_ptr<Shader> shader);
-	static Shader* getShader(unsigned int shaderId);
 
 	static unsigned int storeMaterial(std::unique_ptr<Material> material);
 	static Material* getMaterial(unsigned int materialId);

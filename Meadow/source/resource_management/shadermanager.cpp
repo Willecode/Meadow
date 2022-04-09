@@ -13,8 +13,11 @@ ShaderManager::ShaderManager() :
 	m_intMapFrame(),
 	m_floatMapFrame(),
 	m_vec3MapFrame(),
-	m_mat4MapFrame()
+	m_mat4MapFrame(),
+	m_texSamplerMap()
 {
+	m_texSamplerMap.insert({ Texture::TextureType::DIFFUSE_MAP, 0 });
+	m_texSamplerMap.insert({ Texture::TextureType::SPECULAR_MAP, 1 });
 }
 
 
@@ -112,4 +115,9 @@ void ShaderManager::forwardFrameUniforms()
 		Locator::getRenderer()->setFloat3(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_mat4MapFrame)
 		Locator::getRenderer()->setMat4f(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+}
+
+unsigned int ShaderManager::getTexSamplerId(Texture::TextureType type)
+{
+	return m_texSamplerMap.at(type);
 }

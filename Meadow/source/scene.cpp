@@ -9,6 +9,19 @@ Scene::Scene():
 
 void Scene::update(ShaderManager* sdrMan)
 {
+	/*
+	* Set camera uniforms
+	*/
+	sdrMan->setFrameUniform("view", m_camera.getViewMatrix());
+	sdrMan->setFrameUniform("projection", m_camera.getProjectionMatrix());
+	/*
+	* This is a good spot to forward frame constant uniforms to GPU
+	*/
+	sdrMan->forwardFrameUniforms();
+
+	/*
+	* Update each node, starting from root
+	*/
 	updateNode(m_nodeMap[0].get(), sdrMan);
 }
 

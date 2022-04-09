@@ -1,5 +1,6 @@
 #pragma once
 #include "shader.h"
+#include "texture.h"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -31,6 +32,8 @@ public:
 
 	void forwardUniformsDrawSpecific();
 	void forwardFrameUniforms();
+
+	unsigned int getTexSamplerId(Texture::TextureType type);
 private:
 	std::unordered_map<std::string, std::unique_ptr<Shader>> m_shaderMap;
 	Shader* m_currentShader;
@@ -51,5 +54,11 @@ private:
 	std::unordered_map<std::string, float>	   m_floatMapFrame;
 	std::unordered_map<std::string, glm::vec3> m_vec3MapFrame;
 	std::unordered_map<std::string, glm::mat4> m_mat4MapFrame;
+
+	/*
+	* Maps texture type to the associated sampler.
+	*/
+	std::unordered_map<Texture::TextureType, unsigned int> m_texSamplerMap;
+
 };
 

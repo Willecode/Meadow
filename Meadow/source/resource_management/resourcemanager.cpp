@@ -35,6 +35,7 @@ unsigned int ResourceManager::storeTexture(std::unique_ptr<Texture> texture)
 {
 	unsigned int newId = generateUniqueId(Asset::AssetType::TEXTURE);
 	texture->setId(newId);
+	texture->loadToGPU();
 	m_texMap.insert({ newId, std::move(texture) });
 	return newId;
 }
@@ -53,6 +54,8 @@ unsigned int ResourceManager::storeMesh(std::unique_ptr<Mesh> mesh)
 {
 	unsigned int newId = generateUniqueId(Asset::AssetType::MESH);
 	mesh->setId(newId);
+	mesh->generateBuffers();
+	mesh->buffersPushData();
 	m_meshMap.insert({ newId, std::move(mesh) });
 	return newId;
 }

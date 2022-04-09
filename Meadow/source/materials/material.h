@@ -13,21 +13,28 @@ public:
 	void passToShader(ShaderManager* sdrMan);
 	
 	/*
-	* Could use restricted templates here with std::enable_if, std::is:same or somthing
+	* Material property setters.
 	*/
 	void setProperty(std::string name, bool value);
 	void setProperty(std::string name, int value);
 	void setProperty(std::string name, float value);
 	void setProperty(std::string name, glm::vec3 value);
 	void setProperty(std::string name, glm::mat4 value);
+
+	/*
+	* Texture map setter. Pass in nullptr to disable map.
+	*/
+	void setTexture(Texture* tex, Texture::TextureType type);
 private:
 	/*
 	* Material property maps. These will be passed to shadermanager as 
-	* uniforms before drawing an object with this material.
+	* uniforms when drawing an object with this material.
 	*/
 	std::unordered_map<std::string, bool> m_boolMap;
 	std::unordered_map<std::string, int> m_intMap;
 	std::unordered_map<std::string, float> m_floatMap;
 	std::unordered_map<std::string, glm::vec3> m_vec3Map;
 	std::unordered_map<std::string, glm::mat4> m_mat4Map;
+
+	std::unordered_map<Texture::TextureType, Texture*> m_textures;
 };
