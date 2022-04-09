@@ -7,9 +7,9 @@ Scene::Scene():
 {
 }
 
-void Scene::update()
+void Scene::update(ShaderManager* sdrMan)
 {
-	updateNode(m_nodeMap[0].get());
+	updateNode(m_nodeMap[0].get(), sdrMan);
 }
 
 unsigned int Scene::addNode(unsigned int parent)
@@ -30,10 +30,10 @@ SceneNode* Scene::getNode(unsigned int id)
 	return nullptr;
 }
 
-void Scene::updateNode(SceneNode* node)
+void Scene::updateNode(SceneNode* node, ShaderManager* sdrMan)
 {
-	node->update();
+	node->update(sdrMan);
 	for (auto child : node->children) {
-		updateNode(child);
+		updateNode(child, sdrMan);
 	}
 }

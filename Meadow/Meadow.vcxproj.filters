@@ -21,12 +21,6 @@
     <ClCompile Include="source\primitivecreation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\materials\phongmaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\materials\coloronlymaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -137,12 +131,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\primitivecreation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\materials\phongmaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\materials\coloronlymaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\camera.h">

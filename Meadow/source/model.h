@@ -2,6 +2,7 @@
 #include "mesh.h"
 #include "materials/material.h"
 #include <glm/glm.hpp>
+#include "resource_management/shadermanager.h"
 class Model
 {
 public:
@@ -11,7 +12,7 @@ public:
 	Model();
 	void addMesh(Mesh* mesh);
 	void setMaterial(Material* material);
-	void draw(glm::mat4 modelMat);
+	void draw(glm::mat4 modelMat, ShaderManager* sdrMan);
 private:
 	std::vector<Mesh*> m_meshes;
 	Material* m_material;

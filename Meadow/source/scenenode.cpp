@@ -14,10 +14,10 @@ void SceneNode::setModel(std::unique_ptr<Model> model)
 	m_model = std::move(model);
 }
 
-void SceneNode::update()
+void SceneNode::update(ShaderManager* sdrMan)
 {
 	if (m_model != nullptr)
-		m_model->draw(createModelMatrix());
+		m_model->draw(createModelMatrix(), sdrMan);
 }
 
 glm::mat4 SceneNode::createModelMatrix()

@@ -16,9 +16,11 @@ void Model::setMaterial(Material* material)
 	m_material = material;
 }
 
-void Model::draw(glm::mat4 modelMat)
+void Model::draw(glm::mat4 modelMat, ShaderManager* sdrMan)
 {
-	m_material->passToRenderer();
+	sdrMan->setUniformDrawSpecific("model", modelMat);
+	m_material->passToShader(sdrMan);
+	sdrMan->forwardUniformsDrawSpecific();
 	for (auto m : m_meshes) {
 		m->draw();
 	}

@@ -1,6 +1,7 @@
 #pragma once
 #include "model.h"
 #include <glm/glm.hpp>
+#include "resource_management/shadermanager.h"
 /*
 * Represents an entity in 3D space. Attach these to scene graph nodes.
 */
@@ -22,7 +23,7 @@ public:
 public:
 	SceneNode();
 	void setModel(std::unique_ptr<Model> model);
-	void update();
+	void update(ShaderManager* sdrMan);
 
 private:
 	std::unique_ptr<Model>m_model;

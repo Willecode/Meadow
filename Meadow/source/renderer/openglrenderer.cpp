@@ -143,6 +143,7 @@ void OpenGLRenderer::setBool(const unsigned int& sdrId, const char* name, bool v
     shader_prog_map::iterator it;
     if (findInshaderProgMap(sdrId, it)) {
         glUniform1i(glGetUniformLocation(it->second, name), (int)value);
+        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
     }
 }
 
@@ -151,6 +152,7 @@ void OpenGLRenderer::setInt(const unsigned int& sdrId, const char* name, int val
     shader_prog_map::iterator it;
     if (findInshaderProgMap(sdrId, it)) {
         glUniform1i(glGetUniformLocation(it->second, name), value);
+        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
     }
 }
 
@@ -159,6 +161,7 @@ void OpenGLRenderer::setFloat(const unsigned int& sdrId, const char* name, float
     shader_prog_map::iterator it;
     if (findInshaderProgMap(sdrId, it)) {
         glUniform1f(glGetUniformLocation(it->second, name), value);
+        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
     }
 }
 
@@ -167,6 +170,7 @@ void OpenGLRenderer::setFloat3(const unsigned int& sdrId, const char* name, glm:
     shader_prog_map::iterator it;
     if (findInshaderProgMap(sdrId, it)) {
         glUniform3f(glGetUniformLocation(it->second, name), value.r, value.g, value.b);
+        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
     }
 }
 
@@ -175,6 +179,7 @@ void OpenGLRenderer::setMat4f(const unsigned int& sdrId, const char* name, glm::
     shader_prog_map::iterator it;
     if (findInshaderProgMap(sdrId, it)) {
         glUniformMatrix4fv(glGetUniformLocation(it->second, name), 1, GL_FALSE, glm::value_ptr(value));
+        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
     }
 }
 

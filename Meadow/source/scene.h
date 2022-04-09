@@ -2,6 +2,7 @@
 #include "scenenode.h"
 #include "camera.h"
 #include <unordered_map>
+#include "resource_management/shadermanager.h"
 /*
 * Scene graph class
 */
@@ -9,7 +10,7 @@ class Scene
 {
 public:
 	Scene();
-	void update();
+	void update(ShaderManager* sdrMan);
 	unsigned int addNode(unsigned int parent = 0);
 	SceneNode* getNode(unsigned int id);
 	
@@ -19,6 +20,6 @@ private:
 	std::unordered_map<unsigned int, std::shared_ptr<SceneNode>> m_nodeMap;
 	unsigned int m_nodeIdCtr;
 private:
-	void updateNode(SceneNode* node);
+	void updateNode(SceneNode* node, ShaderManager* sdrMan);
 };
 

@@ -25,32 +25,53 @@
 * Debug includes
 * ******************/
 #include "primitivecreation.h"
-#include "materials/coloronlymaterial.h"
 #include "camera.h"
 #include "texture.h"
 //*******************
-Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_scene(nullptr), appFailed(false)
+Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
 {   
+
+    /*
+    * Provide service locator the addresses of the items it needs to locate
+    */
     m_windowManager.createWindow("Meadow");
     appFailed = m_renderer.initialize();
     m_logger.init();
     Locator::provide(&m_logger);
     Locator::provide(&m_windowManager);
     Locator::provide(&m_renderer);
-    ShaderManager::initShaderManager();
-    ResourceManager manager = ResourceManager::getInstance();
 
+    /*
+    * Get a resourceman instance
+    */
+    ResourceManager manager = ResourceManager::getInstance();
+    
+    /*
+    * Provide shaderman some shaders
+    */
+    auto phongSdr = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/phongtex.fs");
+    auto colorSdr = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
+    m_shaderManager.provideShader("phong", std::move(phongSdr));
+    m_shaderManager.provideShader("color", std::move(colorSdr));
+    m_shaderManager.setCurrentShader("color"); // Set current shader to prevent nullptr
+    /*
+    * Create a scene for entities
+    */
     m_scene = std::make_unique<Scene>();
 
+    
 #if 1
 
+    //********************************** Stuff under this worked with the mahogany box
     unsigned int nodeId = m_scene->addNode();
     SceneNode* node = m_scene->getNode(nodeId);
     std::unique_ptr<Model> model = std::make_unique<Model>();
     
-    auto mat = std::make_unique<ColorOnlyMaterial>();
+    auto mat = std::make_unique<Material>();
     auto matid = manager.storeMaterial(std::move(mat));
     auto mat2 = manager.getMaterial(matid);
+
+    mat2->setProperty("color", glm::vec3(.0f, 1.f, 0.f));
 
     auto m = PrimitiveCreation::createCubeMesh();
     m->setId(1);
@@ -63,15 +84,19 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
     model->addMesh(mesh);
     node->setModel(std::move(model));
 
-
     Camera c(1920.0f / 1080.0f, 0.1f, 100.0f);
-    sdrId = ShaderManager::getColorShader()->getId();
     auto renderer = Locator::getRenderer();
-    renderer->useShaderProgram(sdrId);
-    renderer->setMat4f(sdrId, "view", c.getViewMatrix());
+    //renderer->useShaderProgram(sdrId);
+    unsigned int sdrId = m_shaderManager.getCurrentShader()->getId();
+    /*renderer->setMat4f(sdrId, "view", c.getViewMatrix());
     renderer->setMat4f(sdrId, "projection", c.getProjectionMatrix());
-    renderer->setMat4f(sdrId, "model", glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.f)));
-    renderer->useShaderProgram(sdrId);
+    renderer->setMat4f(sdrId, "model", glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.f)));*/
+    m_shaderManager.setFrameUniform("view", c.getViewMatrix());
+    m_shaderManager.setFrameUniform("projection", c.getProjectionMatrix());
+    //m_shaderManager.setFrameUniform("model", glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.f)));
+    //renderer->useShaderProgram(sdrId);
+
+#if 0
     //ColorOnlyMaterial mat(glm::vec3(1.0f, 0.0f, 0.0f));
     //mat.passToRenderer();
     ImageLoader loader;
@@ -110,6 +135,7 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
 
 
 #endif
+#endif
 }
 
 void Application::run()
@@ -129,9 +155,10 @@ void Application::run()
         /* Set up light shader */
         /* Render */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        m_scene->update();
+        m_shaderManager.forwardFrameUniforms();
+        m_scene->update(&m_shaderManager);
         //m->draw();
-        Locator::getRenderer()->setMat4f(sdrId, "model", glm::rotate(glm::mat4(1.0f),(float)glfwGetTime(), glm::vec3(0.f,1.f,0.f)));
+        //Locator::getRenderer()->setMat4f(sdrId, "model", glm::rotate(glm::mat4(1.0f),(float)glfwGetTime(), glm::vec3(0.f,1.f,0.f)));
         // glfw: swap buffers and poll IO events
         // -------------------------------------------------------------------------------
         m_windowManager.swapBuffers();

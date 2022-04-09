@@ -5,6 +5,7 @@ void Locator::initialize()
 {
 	m_renderer = nullptr;
 	m_renderer = nullptr;
+	m_logger = nullptr;
 }
 
 WindowManager* Locator::getWindowMan()

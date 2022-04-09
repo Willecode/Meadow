@@ -173,8 +173,6 @@
     <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\camera.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\materials\coloronlymaterial.cpp" />
-    <ClCompile Include="source\materials\phongmaterial.cpp" />
     <ClCompile Include="source\mesh.cpp" />
     <ClCompile Include="source\resource_management\modelimporting.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -216,8 +214,6 @@
     <ClInclude Include="source\resource_management\shadermanager.h" />
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\camera.h" />
-    <ClInclude Include="source\materials\coloronlymaterial.h" />
-    <ClInclude Include="source\materials\phongmaterial.h" />
     <ClInclude Include="source\mesh.h" />
     <ClInclude Include="source\materials\material.h" />
     <ClInclude Include="source\lightsource.h" />

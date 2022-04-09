@@ -17,11 +17,8 @@ private:
 	std::unique_ptr<Scene> m_scene;
 	WindowManager m_windowManager;
 	OpenGLRenderer m_renderer;
+	ShaderManager m_shaderManager;
 	Logger m_logger;
 
-	/*
-	* Debug thingies, delete these when no longer used
-	*/
-	unsigned int sdrId;
 };
 

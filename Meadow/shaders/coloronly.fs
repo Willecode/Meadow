@@ -10,8 +10,8 @@ uniform sampler2D texture_map;
 
 void main()
 {
-    vec3 red = vec3(0.1, 0.0, 0.0);
-    //FragColor = vec4(fragPos, 1.0);
-    FragColor = vec4(vec3(texture(texture_map, TexCoords)), 1.0);
+    vec3 red = vec3(1.0, 0.0, 0.0);
+    FragColor = vec4(color, 1.0);
+    //FragColor = vec4(vec3(texture(texture_map, TexCoords)), 1.0);
     
 }
