@@ -41,52 +41,52 @@ Shader* ShaderManager::getCurrentShader()
 
 void ShaderManager::setUniformDrawSpecific(std::string uName, bool uValue)
 {
-	m_boolMapDraw.insert({ uName, uValue });
+	m_boolMapDraw[uName] = uValue;
 }
 
 void ShaderManager::setUniformDrawSpecific(std::string uName, int uValue)
 {
-	m_intMapDraw.insert({ uName, uValue });
+	m_intMapDraw[uName] = uValue;
 }
 
 void ShaderManager::setUniformDrawSpecific(std::string uName, float uValue)
 {
-	m_floatMapDraw.insert({ uName, uValue });
+	m_floatMapDraw[uName] = uValue;
 }
 
 void ShaderManager::setUniformDrawSpecific(std::string uName, glm::vec3 uValue)
 {
-	m_vec3MapDraw.insert({ uName, uValue });
+	m_vec3MapDraw[uName] = uValue;
 }
 
 void ShaderManager::setUniformDrawSpecific(std::string uName, glm::mat4 uValue)
 {
-	m_mat4MapDraw.insert({ uName, uValue });
+	m_mat4MapDraw[uName] = uValue;
 }
 
 void ShaderManager::setFrameUniform(std::string uName, bool uValue)
 {
-	m_boolMapFrame.insert({ uName, uValue });
+	m_boolMapFrame[uName] = uValue;
 }
 
 void ShaderManager::setFrameUniform(std::string uName, int uValue)
 {
-	m_intMapFrame.insert({ uName, uValue });
+	m_intMapFrame[uName] = uValue;
 }
 
 void ShaderManager::setFrameUniform(std::string uName, float uValue)
 {
-	m_floatMapFrame.insert({ uName, uValue });
+	m_floatMapFrame[uName] = uValue;
 }
 
 void ShaderManager::setFrameUniform(std::string uName, glm::vec3 uValue)
 {
-	m_vec3MapFrame.insert({ uName, uValue });
+	m_vec3MapFrame[uName] = uValue;
 }
 
 void ShaderManager::setFrameUniform(std::string uName, glm::mat4 uValue)
 {
-	m_mat4MapFrame.insert({ uName, uValue });
+	m_mat4MapFrame[uName] = uValue;
 }
 
 void ShaderManager::forwardUniformsDrawSpecific()

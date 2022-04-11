@@ -2,8 +2,8 @@
 * An old main file, not in use, kept here for reference
 */
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+//#include <glad/glad.h>
+//#include <GLFW/glfw3.h>
 //--------------------------------------
 // IMAGE LOADER
 #define STB_IMAGE_IMPLEMENTATION

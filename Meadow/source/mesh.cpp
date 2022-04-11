@@ -7,11 +7,6 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices):
 
 }
 
-Mesh::~Mesh()
-{
-    Locator::getRenderer()->meshBuffersDelete(getId());
-}
-
 void Mesh::draw()
 {
     Locator::getRenderer()->drawMesh(getId());
@@ -25,6 +20,11 @@ void Mesh::generateBuffers()
 void Mesh::buffersPushData()
 {
     Locator::getRenderer()->meshBuffersPushData(getId(), vertices, indices);
+}
+
+void Mesh::deleteBuffers()
+{
+    Locator::getRenderer()->meshBuffersDelete(getId());
 }
 
 Mesh::AssetType Mesh::getAssetType()

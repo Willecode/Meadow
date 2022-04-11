@@ -59,10 +59,14 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
     */
     m_scene = std::make_unique<Scene>();
 
-    
+    /*
+    * Add some stuff into the scene
+    */
 #if 1
 
-    //********************************** Stuff under this worked with the mahogany box
+    /*
+    * Add one node with all sorts of stuff in it
+    */
     unsigned int nodeId = m_scene->addNode();
     SceneNode* node = m_scene->getNode(nodeId);
     std::unique_ptr<Model> model = std::make_unique<Model>();
@@ -75,8 +79,7 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
 
     auto m = PrimitiveCreation::createCubeMesh();
     m->setId(1);
-    //m->generateBuffers();
-    //m->buffersPushData();
+
     unsigned int meshid = manager.storeMesh(std::move(m));
     Mesh* mesh = manager.getMesh(meshid);
 
@@ -91,9 +94,6 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
     ImageLoader loader;
     ImageData imgdata = loader.loadImage("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg");
     
-    /*
-    * converting to std::vector 
-    */
     auto vecptr = std::make_unique<std::vector<unsigned char>>();
     for (int i = 0; i < imgdata.width * imgdata.height * imgdata.nrChannels; i++) {
         vecptr->push_back(imgdata.bytes[i]);
@@ -109,20 +109,30 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
     unsigned int texId = manager.storeTexture(std::move(texPtr));
     Texture* tex = manager.getTexture(texId);
     mat2->setTexture(tex, Texture::TextureType::DIFFUSE_MAP);
-    //tex->loadToGPU();
-    //tex->bindToSampler(0);
 
-    //renderer->setInt(sdrId, "texture_map", 0);
+    /*
+    * Add some transform to the node
+    */
+    node->scale = glm::vec3(0.1f);
+    node->position = glm::vec3(1.0f, 0.0f, 0.0f);
+    /*
+    * Add another node
+    */
+    unsigned int node2Id = m_scene->addNode();
+    SceneNode* node2 = m_scene->getNode(node2Id);
+    (*node2) = *node;
+    /*
+    * Transform the second node 
+    */
+    node2->position = glm::vec3(0.f);
+    
 
 #endif
 }
 
 void Application::run()
 {
-    //m_scene->updateLighting();
-    //m_scene->updateShaders();
-    
-    // render loop
+    // Update loop
     // -----------
     while (!m_windowManager.shouldClose())
     {
@@ -134,7 +144,8 @@ void Application::run()
         /* Set up light shader */
         /* Render */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        m_scene->update(&m_shaderManager);
+        m_scene->update();
+        m_scene->render(&m_shaderManager);
         // glfw: swap buffers and poll IO events
         // -------------------------------------------------------------------------------
         m_windowManager.swapBuffers();

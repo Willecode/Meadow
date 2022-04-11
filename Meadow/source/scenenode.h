@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include "resource_management/shadermanager.h"
 /*
-* Represents an entity in 3D space. Attach these to scene graph nodes.
+* Represents a node in scene
 */
 class SceneNode
 {
@@ -12,7 +12,7 @@ public:
 	* Scene hierarchy
 	*/
 	std::vector<SceneNode*> children;
-
+		
 	/*
 	* 3D transform
 	*/
@@ -22,19 +22,38 @@ public:
 
 public:
 	SceneNode();
+	/*
+	* Copy constructor
+	*/
+	SceneNode(const SceneNode& n1);
+
+	/*
+	* Set and get
+	*/
 	void setModel(std::unique_ptr<Model> model);
-	void update(ShaderManager* sdrMan);
+	glm::mat4* getModelMatrix();
+	/*
+	* Update node transform
+	*/
+	void update(SceneNode* parent);
+
+	/*
+	* Render this node's model with set transform
+	*/
+	void render(ShaderManager* sdrMan);
 
 private:
-	std::unique_ptr<Model>m_model;
+	std::shared_ptr<Model>m_model;
 	//Controllercomponent m_controller;
 	//PhysicsComponent m_physics;
+
+	glm::mat4 m_modelMatrix;
 
 private:
 	
 	/*
-	* Utility
+	* Update m_modelMatrix from position, scale, rotation members
 	*/
-	glm::mat4 createModelMatrix();
+	void updateModelMatrix(glm::mat4* accumulate);
 };
 

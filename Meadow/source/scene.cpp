@@ -7,7 +7,15 @@ Scene::Scene():
 {
 }
 
-void Scene::update(ShaderManager* sdrMan)
+void Scene::update()
+{
+	/*
+	* Update each node, starting from root with root also as parent (root doesn't have transforms so it's ok)
+	*/
+	updateNode(m_nodeMap[0].get(), m_nodeMap[0].get());
+}
+
+void Scene::render(ShaderManager* sdrMan)
 {
 	/*
 	* Set camera uniforms
@@ -20,9 +28,9 @@ void Scene::update(ShaderManager* sdrMan)
 	sdrMan->forwardFrameUniforms();
 
 	/*
-	* Update each node, starting from root
+	* Render each node, starting from root
 	*/
-	updateNode(m_nodeMap[0].get(), sdrMan);
+	renderNode(m_nodeMap[0].get(), sdrMan);
 }
 
 unsigned int Scene::addNode(unsigned int parent)
@@ -43,10 +51,18 @@ SceneNode* Scene::getNode(unsigned int id)
 	return nullptr;
 }
 
-void Scene::updateNode(SceneNode* node, ShaderManager* sdrMan)
+void Scene::updateNode(SceneNode* node, SceneNode* parent)
 {
-	node->update(sdrMan);
+	node->update(parent);
 	for (auto child : node->children) {
-		updateNode(child, sdrMan);
+		updateNode(child, node);
+	}
+}
+
+void Scene::renderNode(SceneNode* node, ShaderManager* sdrMan)
+{
+	node->render(sdrMan);
+	for (auto child : node->children) {
+		renderNode(child, sdrMan);
 	}
 }

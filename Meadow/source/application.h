@@ -1,6 +1,7 @@
 #pragma once
 #include "resource_management/imageloader.h"
 #include "scene.h"
+//#include "logger.h"
 #include "windowmanager.h"
 #include "renderer/openglrenderer.h"
 
