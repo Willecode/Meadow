@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\mesh.cpp">
+    <ClCompile Include="source\assets\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\primitivecreation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\camera.cpp">
+    <ClCompile Include="source\scene\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\resource_management\modelimporting.cpp">
@@ -48,10 +48,10 @@
     <ClCompile Include="source\service_locator\locator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\scene.cpp">
+    <ClCompile Include="source\scene\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\model.cpp">
+    <ClCompile Include="source\scene\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\shader.cpp">
@@ -60,7 +60,7 @@
     <ClCompile Include="source\resource_management\resourcemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\texture.cpp">
+    <ClCompile Include="source\assets\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\resource_management\imageloader.cpp">
@@ -69,13 +69,13 @@
     <ClCompile Include="source\logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\scenenode.cpp">
+    <ClCompile Include="source\assets\asset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\asset.cpp">
+    <ClCompile Include="source\assets\material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\materials\material.cpp">
+    <ClCompile Include="source\scene\scenenode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -124,16 +124,16 @@
     <ClInclude Include="source\lightsource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\materials\material.h">
+    <ClInclude Include="source\assets\material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\mesh.h">
+    <ClInclude Include="source\assets\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\primitivecreation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\camera.h">
+    <ClInclude Include="source\scene\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resource_management\modelimporting.h">
@@ -157,10 +157,10 @@
     <ClInclude Include="source\service_locator\locator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\scene.h">
+    <ClInclude Include="source\scene\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\model.h">
+    <ClInclude Include="source\scene\model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\shader.h">
@@ -169,7 +169,7 @@
     <ClInclude Include="source\resource_management\resourcemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\texture.h">
+    <ClInclude Include="source\assets\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resource_management\imageloader.h">
@@ -178,10 +178,10 @@
     <ClInclude Include="source\logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\scenenode.h">
+    <ClInclude Include="source\assets\asset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\asset.h">
+    <ClInclude Include="source\scene\scenenode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

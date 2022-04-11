@@ -1,5 +1,5 @@
 #pragma once
-#include "../texture.h"
+#include "texture.h"
 #include "resource_management/shadermanager.h"
 
 

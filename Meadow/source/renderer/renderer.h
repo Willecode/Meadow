@@ -1,5 +1,5 @@
 #pragma once
-#include "../mesh.h"
+#include "assets/mesh.h"
 #include <glm/mat4x4.hpp>
 /*
 * I only know OpenGL as I'm writing this class, so this may need to be

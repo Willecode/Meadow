@@ -2,10 +2,10 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-#include "texture.h"
-#include "mesh.h"
+#include "assets/texture.h"
+#include "assets/mesh.h"
 #include "shader.h"
-#include "materials/material.h"
+#include "assets/material.h"
 /*
 *  Singleton resource manager. For now meshes and textures stored here will be loaded to graphics memory
 */

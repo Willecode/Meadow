@@ -1,5 +1,5 @@
 #pragma once
-#include "mesh.h"
+#include "assets/mesh.h"
 #include <memory>
 class PrimitiveCreation
 {

@@ -1,6 +1,6 @@
 #pragma once
-#include "mesh.h"
-#include "materials/material.h"
+#include "assets/mesh.h"
+#include "assets/material.h"
 #include <glm/glm.hpp>
 #include "resource_management/shadermanager.h"
 class Model

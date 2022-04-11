@@ -25,8 +25,8 @@
 * Debug includes
 * ******************/
 #include "primitivecreation.h"
-#include "camera.h"
-#include "texture.h"
+#include "scene/camera.h"
+#include "assets/texture.h"
 //*******************
 Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
 {   

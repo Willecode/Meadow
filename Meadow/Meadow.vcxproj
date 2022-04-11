@@ -157,29 +157,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\asset.cpp" />
+    <ClCompile Include="source\assets\asset.cpp" />
+    <ClCompile Include="source\assets\material.cpp" />
     <ClCompile Include="source\logger.cpp" />
-    <ClCompile Include="source\materials\material.cpp" />
     <ClCompile Include="source\resource_management\imageloader.cpp" />
     <ClCompile Include="source\resource_management\resourcemanager.cpp" />
-    <ClCompile Include="source\scenenode.cpp" />
+    <ClCompile Include="source\scene\scenenode.cpp" />
     <ClCompile Include="source\shader.cpp" />
-    <ClCompile Include="source\model.cpp" />
-    <ClCompile Include="source\scene.cpp" />
+    <ClCompile Include="source\scene\model.cpp" />
+    <ClCompile Include="source\scene\scene.cpp" />
     <ClCompile Include="source\service_locator\locator.cpp" />
     <ClCompile Include="source\renderer\openglrenderer.cpp" />
     <ClCompile Include="source\renderer\renderer.cpp" />
     <ClCompile Include="source\resource_management\shadermanager.cpp" />
     <ClCompile Include="source\application.cpp" />
-    <ClCompile Include="source\camera.cpp" />
+    <ClCompile Include="source\scene\camera.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\mesh.cpp" />
+    <ClCompile Include="source\assets\mesh.cpp" />
     <ClCompile Include="source\resource_management\modelimporting.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\primitivecreation.cpp" />
     <ClCompile Include="source\windowmanager.cpp" />
-    <ClCompile Include="source\texture.cpp" />
+    <ClCompile Include="source\assets\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\messingaround.fs" />
@@ -200,22 +200,22 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\asset.h" />
+    <ClInclude Include="source\assets\asset.h" />
     <ClInclude Include="source\logger.h" />
     <ClInclude Include="source\resource_management\imageloader.h" />
     <ClInclude Include="source\resource_management\resourcemanager.h" />
-    <ClInclude Include="source\scenenode.h" />
+    <ClInclude Include="source\scene\scenenode.h" />
     <ClInclude Include="source\shader.h" />
-    <ClInclude Include="source\model.h" />
-    <ClInclude Include="source\scene.h" />
+    <ClInclude Include="source\scene\model.h" />
+    <ClInclude Include="source\scene\scene.h" />
     <ClInclude Include="source\service_locator\locator.h" />
     <ClInclude Include="source\renderer\openglrenderer.h" />
     <ClInclude Include="source\renderer\renderer.h" />
     <ClInclude Include="source\resource_management\shadermanager.h" />
     <ClInclude Include="source\application.h" />
-    <ClInclude Include="source\camera.h" />
-    <ClInclude Include="source\mesh.h" />
-    <ClInclude Include="source\materials\material.h" />
+    <ClInclude Include="source\scene\camera.h" />
+    <ClInclude Include="source\assets\mesh.h" />
+    <ClInclude Include="source\assets\material.h" />
     <ClInclude Include="source\lightsource.h" />
     <ClInclude Include="source\resource_management\modelimporting.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -223,7 +223,7 @@
     <ClInclude Include="source\primitivecreation.h" />
     <ClInclude Include="source\stb\stb_image.h" />
     <ClInclude Include="source\windowmanager.h" />
-    <ClInclude Include="source\texture.h" />
+    <ClInclude Include="source\assets\texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
