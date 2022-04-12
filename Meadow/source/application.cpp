@@ -28,7 +28,7 @@
 #include "scene/camera.h"
 #include "assets/texture.h"
 //*******************
-Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
+Application::Application(): m_windowManager(), m_inputGather(), m_dispatcher(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
 {   
 
     /*
@@ -40,6 +40,12 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
     Locator::provide(&m_logger);
     Locator::provide(&m_windowManager);
     Locator::provide(&m_renderer);
+
+    /*
+    * Input gathering needs to locate logger and windowman so lazy init it here
+    */
+    m_inputGather.init(&m_dispatcher);
+    
 
     /*
     * Get a resourceman instance
@@ -57,7 +63,7 @@ Application::Application(): m_windowManager(WindowManager()), m_renderer(OpenGLR
     /*
     * Create a scene for entities
     */
-    m_scene = std::make_unique<Scene>();
+    m_scene = std::make_unique<Scene>(&m_dispatcher);
 
     /*
     * Add some stuff into the scene
@@ -134,8 +140,19 @@ void Application::run()
 {
     // Update loop
     // -----------
+    float deltatime;
+    float time;
+    float lastFrameTime = 0.f;
+
     while (!m_windowManager.shouldClose())
     {
+        /*
+        * Calculate deltatime
+        */
+        time = m_windowManager.getTime();
+        deltatime = time - lastFrameTime;
+        lastFrameTime = time;
+        m_windowManager.pollEvents();
         /* Clear framebuffer */
         /* Get all objects that glow */
         /* Set up glow shader */
@@ -144,12 +161,10 @@ void Application::run()
         /* Set up light shader */
         /* Render */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        m_scene->update();
+        m_scene->update(deltatime, &m_inputGather);
         m_scene->render(&m_shaderManager);
-        // glfw: swap buffers and poll IO events
-        // -------------------------------------------------------------------------------
+
         m_windowManager.swapBuffers();
-        glfwPollEvents();
     }
 
     glfwTerminate();

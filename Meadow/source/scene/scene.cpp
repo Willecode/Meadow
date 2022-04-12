@@ -1,14 +1,31 @@
 #include "scene.h"
-
-Scene::Scene():
+#include "input/inputevent.h"
+Scene::Scene(Dispatcher* disp):
 	m_nodeMap({ {0, std::make_shared<SceneNode>()} }),
 	m_nodeIdCtr(1),
-	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f))
+	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f)),
+	m_dispatcher(disp),
+	m_deltatime(0.f)
 {
+	std::function<void(const char*)> f = std::bind(&Scene::eventHandler, this, std::placeholders::_1);
+	m_dispatcher->subscribe(CameraUpEvent::EVENT_TYPE, f);
+	m_dispatcher->subscribe(CameraDownEvent::EVENT_TYPE, f);
+	m_dispatcher->subscribe(CameraLeftEvent::EVENT_TYPE, f);
+	m_dispatcher->subscribe(CameraRightEvent::EVENT_TYPE, f);
+	m_dispatcher->subscribe(CameraForwardEvent::EVENT_TYPE, f);
+	m_dispatcher->subscribe(CameraBackwardEvent::EVENT_TYPE, f);
 }
 
-void Scene::update()
+void Scene::update(float deltatime, InputGather* input)
 {
+	/*
+	* Update deltatime
+	*/
+	m_deltatime = deltatime;
+
+	input->pollInputs();
+	handleCameraMovement(m_deltatime, input);
+
 	/*
 	* Update each node, starting from root with root also as parent (root doesn't have transforms so it's ok)
 	*/
@@ -51,6 +68,11 @@ SceneNode* Scene::getNode(unsigned int id)
 	return nullptr;
 }
 
+void Scene::eventHandler(const char* eventType)
+{
+	Locator::getLogger()->getLogger()->info("Scene event handler processing event: {}", eventType);
+}
+
 void Scene::updateNode(SceneNode* node, SceneNode* parent)
 {
 	node->update(parent);
@@ -65,4 +87,20 @@ void Scene::renderNode(SceneNode* node, ShaderManager* sdrMan)
 	for (auto child : node->children) {
 		renderNode(child, sdrMan);
 	}
+}
+
+void Scene::handleCameraMovement(float deltatime, InputGather* input)
+{
+	if (input->getInputFlag(InputGather::InputFlag::CameraUp))
+		m_camera.inputMoveUp(m_deltatime);
+	if (input->getInputFlag(InputGather::InputFlag::CameraDown))
+		m_camera.inputMoveDown(deltatime);
+	if (input->getInputFlag(InputGather::InputFlag::CameraForward))
+		m_camera.inputMoveForward(deltatime);
+	if (input->getInputFlag(InputGather::InputFlag::CameraBackward))
+		m_camera.inputMoveBackward(deltatime);
+	if (input->getInputFlag(InputGather::InputFlag::CameraLeft))
+		m_camera.inputMoveLeft(deltatime);
+	if (input->getInputFlag(InputGather::InputFlag::CameraRight))
+		m_camera.inputMoveRight(deltatime);
 }

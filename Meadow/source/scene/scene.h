@@ -3,18 +3,21 @@
 #include "camera.h"
 #include <unordered_map>
 #include "resource_management/shadermanager.h"
+#include "input/observer.h"
+#include "input/inputgather.h"
+#include "input/dispatcher.h"
 /*
 * Scene graph class
 */
-class Scene
+class Scene : public Observer
 {
 public:
-	Scene();
+	Scene(Dispatcher* disp);
 
 	/*
 	* Update state of all nodes in the scene
 	*/
-	void update();
+	void update(float deltatime, InputGather* input);
 
 	/*
 	* Render all nodes in the scene
@@ -25,14 +28,20 @@ public:
 	
 private:
 	Camera m_camera;
-
+	Dispatcher* m_dispatcher;
+	float m_deltatime;
 	/*
 	* Map for accessing nodes with id. Rootnode is always 0 and added in initialization
 	*/
 	std::unordered_map<unsigned int, std::shared_ptr<SceneNode>> m_nodeMap;
 	unsigned int m_nodeIdCtr;
 private:
+	/*
+	* Override Observer class input handler func
+	*/
+	void eventHandler(const char* eventType) override;
 	void updateNode(SceneNode* node, SceneNode* parent);
 	void renderNode(SceneNode* node, ShaderManager* sdrMan);
+	void handleCameraMovement(float deltatime, InputGather* input);
 };
 

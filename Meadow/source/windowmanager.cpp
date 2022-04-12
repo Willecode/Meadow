@@ -63,6 +63,21 @@ WindowManager::GLProc WindowManager::getProcAddress()
     return (GLProc)glfwGetProcAddress;
 }
 
+GLFWwindow* WindowManager::getWindow()
+{
+    return m_window;
+}
+
+float WindowManager::getTime()
+{
+    return (float)glfwGetTime();
+}
+
+void WindowManager::pollEvents()
+{
+    glfwPollEvents();
+}
+
 void WindowManager::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
     Locator::getRenderer()->setViewportSize(width, height);

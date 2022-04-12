@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -157,6 +157,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\input\observer.cpp" />
+    <ClCompile Include="source\input\inputevent.cpp" />
+    <ClCompile Include="source\input\inputgather.cpp" />
+    <ClCompile Include="source\input\dispatcher.cpp" />
+    <ClCompile Include="source\input\inputmap.cpp" />
     <ClCompile Include="source\assets\asset.cpp" />
     <ClCompile Include="source\assets\material.cpp" />
     <ClCompile Include="source\logger.cpp" />
@@ -200,6 +205,11 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\input\observer.h" />
+    <ClInclude Include="source\input\inputevent.h" />
+    <ClInclude Include="source\input\inputgather.h" />
+    <ClInclude Include="source\input\dispatcher.h" />
+    <ClInclude Include="source\input\inputmap.h" />
     <ClInclude Include="source\assets\asset.h" />
     <ClInclude Include="source\logger.h" />
     <ClInclude Include="source\resource_management\imageloader.h" />
