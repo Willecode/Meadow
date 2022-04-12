@@ -29,7 +29,7 @@ public:
 	/*
 	* Input
 	*/
-	void processMouseMovement(float mouseOffsetX, float mouseOffsetY, float deltaTime);
+	void processMouseMovement(float mouseX, float mouseY, float deltaTime);
 	void inputMoveUp(float deltaTime);
 	void inputMoveDown(float deltaTime);
 	void inputMoveLeft(float deltaTime);
@@ -37,6 +37,6 @@ public:
 	void inputMoveForward(float deltaTime);
 	void inputMoveBackward(float deltaTime);
 private:
-	float fov, aspect, zNear, zFar;
+	float fov, aspect, zNear, zFar, lastMouseX, lastMouseY;
 };
 

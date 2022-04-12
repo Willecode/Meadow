@@ -14,6 +14,8 @@ Scene::Scene(Dispatcher* disp):
 	m_dispatcher->subscribe(CameraRightEvent::EVENT_TYPE, f);
 	m_dispatcher->subscribe(CameraForwardEvent::EVENT_TYPE, f);
 	m_dispatcher->subscribe(CameraBackwardEvent::EVENT_TYPE, f);
+	std::function<void(const char*, float, float)> mousefunc = std::bind(&Scene::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	m_dispatcher->subscribe2f(MouseMoveEvent::EVENT_TYPE, mousefunc);
 }
 
 void Scene::update(float deltatime, InputGather* input)
@@ -71,6 +73,11 @@ SceneNode* Scene::getNode(unsigned int id)
 void Scene::eventHandler(const char* eventType)
 {
 	Locator::getLogger()->getLogger()->info("Scene event handler processing event: {}", eventType);
+}
+
+void Scene::mousePosHandler(const char* eventType, float x, float y)
+{
+	m_camera.processMouseMovement(x, y, m_deltatime);
 }
 
 void Scene::updateNode(SceneNode* node, SceneNode* parent)

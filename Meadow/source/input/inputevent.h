@@ -71,3 +71,13 @@ private:
 		return EVENT_TYPE;
 	}
 };
+
+class MouseMoveEvent : public InputEvent
+{
+public:
+	static constexpr const char* EVENT_TYPE = "MouseMoveEvent";
+private:
+	const char* returnType() override {
+		return EVENT_TYPE;
+	}
+};

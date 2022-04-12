@@ -19,6 +19,7 @@ void InputGather::init(Dispatcher* disp)
 	* Register InputGather::callback as a keypress callback function
 	*/
 	glfwSetKeyCallback(Locator::getWindowMan()->getWindow(), InputGather::callback);
+	glfwSetCursorPosCallback(Locator::getWindowMan()->getWindow(), InputGather::mouseCallback);
 	m_dispatcher = disp;
 	/*
 	* Create input map
@@ -72,4 +73,10 @@ void InputGather::callback(GLFWwindow* window, int key, int scancode, int action
 		}
 	}
 
+}
+
+void InputGather::mouseCallback(GLFWwindow* window, double mouseXIn, double mouseYIn)
+{
+	//Locator::getLogger()->getLogger()->info("Mouse x:{} y:{}", mouseXIn, mouseYIn);
+	m_dispatcher->notify2f(MouseMoveEvent::EVENT_TYPE, mouseXIn, mouseYIn);
 }

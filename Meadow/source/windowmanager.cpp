@@ -40,7 +40,7 @@ bool WindowManager::createWindow(std::string title)
         return false;
     }
     glfwMakeContextCurrent(m_window);
-    //glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     /*glfwSetCursorPosCallback(window, &mouseCallback);
     glfwSetScrollCallback(window, &scrollCallback);*/
     glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);

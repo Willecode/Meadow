@@ -30,7 +30,7 @@ private:
 	static inline std::map<InputFlag, bool> m_inputFlags;
 private:
 	static void callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
+	static void mouseCallback(GLFWwindow* window, double mouseXIn, double mouseYIn);
 
 };
 

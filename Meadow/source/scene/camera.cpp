@@ -12,10 +12,16 @@ Camera::Camera(float aspect, float zNear, float zFar, glm::vec3 position, glm::v
 	speed(2.0f),
 	direction(0.f, 0.f, -1.0f),
 	lookSensitivity(10.0f),
-	fov(45.f)
+	fov(45.f),
+	lastMouseX(0.f),
+	lastMouseY(0.f)
 {
 }
-void Camera::processMouseMovement(float mouseOffsetX, float mouseOffsetY, float deltaTime) {
+void Camera::processMouseMovement(float mouseX, float mouseY, float deltaTime) {
+	float mouseOffsetX = mouseX - lastMouseX;
+	float mouseOffsetY = mouseY - lastMouseY;
+	lastMouseX = mouseX;
+	lastMouseY = mouseY;
 	yaw += mouseOffsetX * lookSensitivity * deltaTime;
 	pitch += -mouseOffsetY * lookSensitivity * deltaTime;
 	if (pitch < -89.0f)

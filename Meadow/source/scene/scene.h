@@ -40,6 +40,7 @@ private:
 	* Override Observer class input handler func
 	*/
 	void eventHandler(const char* eventType) override;
+	void mousePosHandler(const char* eventType, float x, float y);
 	void updateNode(SceneNode* node, SceneNode* parent);
 	void renderNode(SceneNode* node, ShaderManager* sdrMan);
 	void handleCameraMovement(float deltatime, InputGather* input);
