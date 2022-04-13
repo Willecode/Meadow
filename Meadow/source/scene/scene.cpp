@@ -7,13 +7,11 @@ Scene::Scene(Dispatcher* disp):
 	m_dispatcher(disp),
 	m_deltatime(0.f)
 {
-	std::function<void(const char*)> f = std::bind(&Scene::eventHandler, this, std::placeholders::_1);
-	m_dispatcher->subscribe(CameraUpEvent::EVENT_TYPE, f);
-	m_dispatcher->subscribe(CameraDownEvent::EVENT_TYPE, f);
-	m_dispatcher->subscribe(CameraLeftEvent::EVENT_TYPE, f);
-	m_dispatcher->subscribe(CameraRightEvent::EVENT_TYPE, f);
-	m_dispatcher->subscribe(CameraForwardEvent::EVENT_TYPE, f);
-	m_dispatcher->subscribe(CameraBackwardEvent::EVENT_TYPE, f);
+	/*
+	* Subscribe to relevant events
+	*/
+	//std::function<void(const char*)> f = std::bind(&Scene::eventHandler, this, std::placeholders::_1);
+	//m_dispatcher->subscribe(CameraUpEvent::EVENT_TYPE, f);
 	std::function<void(const char*, float, float)> mousefunc = std::bind(&Scene::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 	m_dispatcher->subscribe2f(MouseMoveEvent::EVENT_TYPE, mousefunc);
 }

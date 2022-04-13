@@ -14,23 +14,18 @@ InputGather::InputGather()
 
 void InputGather::init(Dispatcher* disp)
 {
-
+	//glfwSetScrollCallback(window, &scrollCallback);
 	/*
 	* Register InputGather::callback as a keypress callback function
 	*/
 	glfwSetKeyCallback(Locator::getWindowMan()->getWindow(), InputGather::callback);
-	glfwSetCursorPosCallback(Locator::getWindowMan()->getWindow(), InputGather::mouseCallback);
+	glfwSetCursorPosCallback(Locator::getWindowMan()->getWindow(), InputGather::mousePosCallback);
 	m_dispatcher = disp;
 	/*
-	* Create input map
+	* Create input map for input events
 	*/
 	std::map<int, std::unique_ptr<InputEvent>> newMap;
-	newMap[GLFW_KEY_W] = std::make_unique<CameraForwardEvent>();
-	newMap[GLFW_KEY_A] = std::make_unique<CameraLeftEvent>();
-	newMap[GLFW_KEY_S] = std::make_unique<CameraBackwardEvent>();
-	newMap[GLFW_KEY_D] = std::make_unique<CameraRightEvent>();
-	newMap[GLFW_KEY_SPACE] = std::make_unique<CameraUpEvent>();
-	newMap[GLFW_KEY_LEFT_CONTROL] = std::make_unique<CameraDownEvent>();
+	newMap[GLFW_KEY_ESCAPE] = std::make_unique<CloseWindowEvent>();
 	InputMap iMap(std::move(newMap));
 
 	/*
@@ -75,8 +70,8 @@ void InputGather::callback(GLFWwindow* window, int key, int scancode, int action
 
 }
 
-void InputGather::mouseCallback(GLFWwindow* window, double mouseXIn, double mouseYIn)
+void InputGather::mousePosCallback(GLFWwindow* window, double mouseXIn, double mouseYIn)
 {
-	//Locator::getLogger()->getLogger()->info("Mouse x:{} y:{}", mouseXIn, mouseYIn);
+	Locator::getLogger()->getLogger()->info("Mouse x:{} y:{}", mouseXIn, mouseYIn);
 	m_dispatcher->notify2f(MouseMoveEvent::EVENT_TYPE, mouseXIn, mouseYIn);
 }

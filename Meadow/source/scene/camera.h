@@ -38,5 +38,6 @@ public:
 	void inputMoveBackward(float deltaTime);
 private:
 	float fov, aspect, zNear, zFar, lastMouseX, lastMouseY;
+	bool firstMouseMove;
 };
 

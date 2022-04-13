@@ -34,7 +34,7 @@ Application::Application(): m_windowManager(), m_inputGather(), m_dispatcher(), 
     /*
     * Provide service locator the addresses of the items it needs to locate
     */
-    m_windowManager.createWindow("Meadow");
+    m_windowManager.createWindow("Meadow", &m_dispatcher);
     appFailed = m_renderer.initialize();
     m_logger.init();
     Locator::provide(&m_logger);

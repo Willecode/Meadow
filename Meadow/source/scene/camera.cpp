@@ -13,11 +13,18 @@ Camera::Camera(float aspect, float zNear, float zFar, glm::vec3 position, glm::v
 	direction(0.f, 0.f, -1.0f),
 	lookSensitivity(10.0f),
 	fov(45.f),
-	lastMouseX(0.f),
-	lastMouseY(0.f)
+	lastMouseX(-1.f),
+	lastMouseY(-1.f),
+	firstMouseMove(true)
 {
 }
 void Camera::processMouseMovement(float mouseX, float mouseY, float deltaTime) {
+	if (firstMouseMove) {
+		lastMouseX = mouseX;
+		lastMouseY = mouseY;
+		firstMouseMove = false;
+		return;
+	}
 	float mouseOffsetX = mouseX - lastMouseX;
 	float mouseOffsetY = mouseY - lastMouseY;
 	lastMouseX = mouseX;

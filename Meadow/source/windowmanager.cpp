@@ -1,6 +1,5 @@
 #include "windowmanager.h"
 #include "service_locator/locator.h"
-//#include <fmt/core.h>
 
 namespace WindowConf {
     const float DEFAULT_SCR_WIDTH = 1920.0f;
@@ -18,7 +17,7 @@ WindowManager::~WindowManager()
     glfwDestroyWindow(m_window);
 }
 
-bool WindowManager::createWindow(std::string title)
+bool WindowManager::createWindow(std::string title, Dispatcher* disp)
 {
     // glfw: initialize and configure
 // ------------------------------
@@ -41,9 +40,13 @@ bool WindowManager::createWindow(std::string title)
     }
     glfwMakeContextCurrent(m_window);
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    /*glfwSetCursorPosCallback(window, &mouseCallback);
-    glfwSetScrollCallback(window, &scrollCallback);*/
     glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);
+
+    /*
+    * Subscribe to windowclose event
+    */
+    std::function<void(const char*)> f = std::bind(&WindowManager::closeWindowEventHandler, this, std::placeholders::_1);
+    disp->subscribe(CloseWindowEvent::EVENT_TYPE, f);
     return true;
 }
 
@@ -81,4 +84,9 @@ void WindowManager::pollEvents()
 void WindowManager::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
     Locator::getRenderer()->setViewportSize(width, height);
+}
+
+void WindowManager::closeWindowEventHandler(const char* eventType)
+{
+    glfwSetWindowShouldClose(m_window, true);
 }

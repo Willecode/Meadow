@@ -81,3 +81,14 @@ private:
 		return EVENT_TYPE;
 	}
 };
+
+class CloseWindowEvent : public InputEvent
+{
+public:
+	static constexpr const char* EVENT_TYPE = "CloseWindowEvent";
+private:
+	const char* returnType() override {
+		return EVENT_TYPE;
+	}
+};
+
