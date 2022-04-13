@@ -27,6 +27,7 @@
 #include "primitivecreation.h"
 #include "scene/camera.h"
 #include "assets/texture.h"
+#include <imgui/imgui.h>
 //*******************
 Application::Application(): m_windowManager(), m_inputGather(), m_dispatcher(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
 {   

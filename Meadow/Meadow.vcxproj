@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;$(SolutionDir)external\spdlog\include;$(ProjectDir)source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\imgui\include;$(ProjectDir)source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -141,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;$(SolutionDir)external\spdlog\include;$(ProjectDir)source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\glfw\include;$(SolutionDir)external\glad\include;$(SolutionDir)external\assimp\include;$(SolutionDir)external\fmt\include;$(SolutionDir)external\glm\include;$(SolutionDir)external\stb\include;$(SolutionDir)external\spdlog\include;$(SolutionDir)external\imgui\include;$(ProjectDir)source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
