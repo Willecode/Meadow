@@ -4,11 +4,12 @@
 #include <glad/glad.h>
 #include <glm/fwd.hpp>
 
+
 class OpenGLRenderer : public Renderer
 {
 public:
 	OpenGLRenderer();
-	bool initialize() override;
+	bool initialize(WindowManager* windowMan) override;
 	void setViewportSize(int width, int height) override;
 
 	/*

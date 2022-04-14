@@ -1,6 +1,7 @@
 #pragma once
 #include "assets/mesh.h"
 #include <glm/mat4x4.hpp>
+#include "windowmanager.h"
 /*
 * I only know OpenGL as I'm writing this class, so this may need to be
 * modified to provide a more general Graphics api wrapper.
@@ -8,7 +9,7 @@
 class Renderer
 {
 public:
-	virtual bool initialize() = 0;
+	virtual bool initialize(WindowManager* windowMan) = 0;
 	virtual void setViewportSize(int width, int height) = 0;
 	
 	/*

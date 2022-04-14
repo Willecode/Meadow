@@ -1,9 +1,8 @@
 #pragma once
-#include <GLFW/glfw3.h>
 #include <memory>
-#include "renderer/renderer.h"
 #include <string>
 #include "input/dispatcher.h"
+#include <GLFW/glfw3.h>
 /*
 * Manages one window
 */
@@ -31,6 +30,7 @@ private:
 	* glfw callbacks
 	*/
 	static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
+	static void errorCallback(int error, const char* description);
 	/*
 	* Meadow input event callbacks
 	*/

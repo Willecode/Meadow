@@ -1,14 +1,27 @@
 #pragma once
+#include <memory>
+#include "logger.h"
 #include "resource_management/imageloader.h"
 #include "scene/scene.h"
-//#include "logger.h"
-#include "windowmanager.h"
 #include "input/inputgather.h"
 #include "input/dispatcher.h"
 #include "renderer/openglrenderer.h"
+#include "resource_management/imageloader.h"
 
-#include <memory>
+#include "resource_management/shadermanager.h"
+#include "resource_management/resourcemanager.h"
 
+/*
+* Debug includes
+* ******************/
+#include "primitivecreation.h"
+#include "scene/camera.h"
+#include "assets/texture.h"
+//*******************
+
+#include "ui/ui.h"
+#include "service_locator/locator.h"
+#include "windowmanager.h"
 class Application
 {
 public:
@@ -24,6 +37,6 @@ private:
 	OpenGLRenderer m_renderer;
 	ShaderManager m_shaderManager;
 	Logger m_logger;
-
+	UI m_ui;
 };
 

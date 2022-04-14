@@ -1,6 +1,6 @@
 #pragma once
-#include "inputevent.h"
 #include <functional>
+#include "inputevent.h"
 /*
 * Register input events and callback functions.
 */

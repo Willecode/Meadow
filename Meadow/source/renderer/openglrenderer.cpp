@@ -12,11 +12,11 @@ OpenGLRenderer::OpenGLRenderer():
 {
 }
 
-bool OpenGLRenderer::initialize()
+bool OpenGLRenderer::initialize(WindowManager* windowMan)
 {
     // glad: load all OpenGL function pointers
 // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)Locator::getWindowMan()->getProcAddress()))
+    if (!gladLoadGLLoader((GLADloadproc)windowMan->getProcAddress()))
     {
         Locator::getLogger()->getLogger()->info("Failed to initialize GLAD\n");
         return true;

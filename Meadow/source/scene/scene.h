@@ -1,7 +1,7 @@
 #pragma once
+#include <unordered_map>
 #include "scenenode.h"
 #include "camera.h"
-#include <unordered_map>
 #include "resource_management/shadermanager.h"
 #include "input/observer.h"
 #include "input/inputgather.h"

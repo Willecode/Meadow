@@ -1,9 +1,9 @@
 #pragma once
-#include "shader.h"
-#include "assets/texture.h"
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include "shader.h"
+#include "assets/texture.h"
 class ShaderManager
 {
 public:

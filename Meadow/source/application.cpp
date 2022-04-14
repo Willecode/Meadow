@@ -1,51 +1,27 @@
 #include "application.h"
-#include "resource_management/imageloader.h"
 
-//--------------------------------------
-// IMAGE LOADER
-//#define STB_IMAGE_IMPLEMENTATION
-//#include <stb/stb_image.h>
-//--------------------------------------
-// MATH FUNCTIONS
-//#define GLM_ENABLE_EXPERIMENTAL // for glm/ext.hpp
-//#include <glm/glm.hpp>
-//#include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
-//#include <glm/ext.hpp> // For printing glm vectors
-//--------------------------------------
-// STRING FORMATTING
-//#define FMT_HEADER_ONLY
-//#include <fmt/core.h>
-//--------------------------------------
-#include "resource_management/shadermanager.h"
-#include "resource_management/resourcemanager.h"
-#include "service_locator/locator.h"
-
-/*
-* Debug includes
-* ******************/
-#include "primitivecreation.h"
-#include "scene/camera.h"
-#include "assets/texture.h"
-#include <imgui/imgui.h>
-//*******************
-Application::Application(): m_windowManager(), m_inputGather(), m_dispatcher(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
+Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispatcher(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
 {   
 
     /*
     * Provide service locator the addresses of the items it needs to locate
     */
     m_windowManager.createWindow("Meadow", &m_dispatcher);
-    appFailed = m_renderer.initialize();
+    appFailed = m_renderer.initialize(&m_windowManager);
     m_logger.init();
     Locator::provide(&m_logger);
-    Locator::provide(&m_windowManager);
+    //Locator::provide(&m_windowManager);
     Locator::provide(&m_renderer);
+
+    /*
+    * Initialize ui
+    */
+    m_ui.init(&m_windowManager);
 
     /*
     * Input gathering needs to locate logger and windowman so lazy init it here
     */
-    m_inputGather.init(&m_dispatcher);
+    m_inputGather.init(&m_dispatcher, &m_windowManager);
     
 
     /*
@@ -164,6 +140,7 @@ void Application::run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         m_scene->update(deltatime, &m_inputGather);
         m_scene->render(&m_shaderManager);
+        m_ui.renderInterface();
 
         m_windowManager.swapBuffers();
     }

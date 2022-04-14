@@ -1,7 +1,8 @@
 #include "inputgather.h"
 #include "inputevent.h"
 
-InputGather::InputGather()
+InputGather::InputGather():
+	m_windowMan(nullptr)
 {
 	initialized = false;
 	m_inputFlags[InputFlag::CameraUp] = false;
@@ -12,14 +13,15 @@ InputGather::InputGather()
 	m_inputFlags[InputFlag::CameraRight] = false;
 }
 
-void InputGather::init(Dispatcher* disp)
+void InputGather::init(Dispatcher* disp, WindowManager* windowMan)
 {
 	//glfwSetScrollCallback(window, &scrollCallback);
+	m_windowMan = windowMan;
 	/*
 	* Register InputGather::callback as a keypress callback function
 	*/
-	glfwSetKeyCallback(Locator::getWindowMan()->getWindow(), InputGather::callback);
-	glfwSetCursorPosCallback(Locator::getWindowMan()->getWindow(), InputGather::mousePosCallback);
+	glfwSetKeyCallback(m_windowMan->getWindow(), InputGather::callback);
+	glfwSetCursorPosCallback(m_windowMan->getWindow(), InputGather::mousePosCallback);
 	m_dispatcher = disp;
 	/*
 	* Create input map for input events
@@ -41,7 +43,7 @@ void InputGather::init(Dispatcher* disp)
 
 void InputGather::pollInputs()
 {
-	GLFWwindow* window = Locator::getWindowMan()->getWindow();
+	GLFWwindow* window = m_windowMan->getWindow();
 	m_inputFlags[InputFlag::CameraUp] = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
 	m_inputFlags[InputFlag::CameraDown] = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS;
 	m_inputFlags[InputFlag::CameraForward] = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;

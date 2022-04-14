@@ -21,8 +21,8 @@ bool WindowManager::createWindow(std::string title, Dispatcher* disp)
 {
     // glfw: initialize and configure
 // ------------------------------
+    glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
-        Locator::getLogger()->getLogger()->info("Failed to initialize glfw\n");
         return false;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -34,13 +34,13 @@ bool WindowManager::createWindow(std::string title, Dispatcher* disp)
     m_window = glfwCreateWindow(WindowConf::DEFAULT_SCR_WIDTH, WindowConf::DEFAULT_SCR_HEIGHT, title.c_str(), NULL, NULL);
     if (m_window == NULL)
     {
-        Locator::getLogger()->getLogger()->info("Failed to create GLFW window\n");
         glfwTerminate();
         return false;
     }
     glfwMakeContextCurrent(m_window);
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);
+    
 
     /*
     * Subscribe to windowclose event
@@ -84,6 +84,11 @@ void WindowManager::pollEvents()
 void WindowManager::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
     Locator::getRenderer()->setViewportSize(width, height);
+}
+
+void WindowManager::errorCallback(int error, const char* description)
+{
+    Locator::getLogger()->getLogger()->error("WindowManager: glfw error: {} {}", error, description);
 }
 
 void WindowManager::closeWindowEventHandler(const char* eventType)

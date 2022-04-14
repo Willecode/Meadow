@@ -1,7 +1,7 @@
 #pragma once
-#include "inputevent.h"
 #include <map>
 #include <memory>
+#include "inputevent.h"
 /*
 * Recieve glfw key input and convert it into input events.
 * Read key input mapping from a file (in the future).

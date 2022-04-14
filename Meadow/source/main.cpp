@@ -1,5 +1,5 @@
-#include "application.h"
 #include <memory>
+#include "application.h"
 
 int main()
 {
