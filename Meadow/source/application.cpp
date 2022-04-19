@@ -16,7 +16,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispat
     /*
     * Initialize ui
     */
-    m_ui.init(&m_windowManager);
+    m_ui.init(&m_windowManager, &m_dispatcher);
 
     /*
     * Input gathering needs to locate logger and windowman so lazy init it here

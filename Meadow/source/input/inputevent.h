@@ -92,3 +92,32 @@ private:
 	}
 };
 
+class MouseButtonLeftPressedEvent : public InputEvent
+{
+public:
+	static constexpr const char* EVENT_TYPE = "MouseButtonLeftPressedEvent";
+private:
+	const char* returnType() override {
+		return EVENT_TYPE;
+	}
+};
+
+class MouseButtonLeftReleasedEvent : public InputEvent
+{
+public:
+	static constexpr const char* EVENT_TYPE = "MouseButtonLeftReleasedEvent";
+private:
+	const char* returnType() override {
+		return EVENT_TYPE;
+	}
+};
+
+class ToggleMouseLockEvent : public InputEvent
+{
+public:
+	static constexpr const char* EVENT_TYPE = "ToggleMouseLockEvent";
+private:
+	const char* returnType() override {
+		return EVENT_TYPE;
+	}
+};

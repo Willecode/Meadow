@@ -20,14 +20,19 @@ void InputGather::init(Dispatcher* disp, WindowManager* windowMan)
 	/*
 	* Register InputGather::callback as a keypress callback function
 	*/
-	glfwSetKeyCallback(m_windowMan->getWindow(), InputGather::callback);
+	glfwSetKeyCallback(m_windowMan->getWindow(), InputGather::keyCallback);
 	glfwSetCursorPosCallback(m_windowMan->getWindow(), InputGather::mousePosCallback);
+	glfwSetMouseButtonCallback(m_windowMan->getWindow(), InputGather::mouseButtonCallback);
+
 	m_dispatcher = disp;
 	/*
 	* Create input map for input events
 	*/
-	std::map<int, std::unique_ptr<InputEvent>> newMap;
-	newMap[GLFW_KEY_ESCAPE] = std::make_unique<CloseWindowEvent>();
+	std::map<std::pair<int, bool>, std::unique_ptr<InputEvent>> newMap;
+	newMap[std::make_pair(GLFW_KEY_ESCAPE, true)] = std::make_unique<CloseWindowEvent>();
+	newMap[std::make_pair(GLFW_MOUSE_BUTTON_LEFT, true)] = std::make_unique<MouseButtonLeftPressedEvent>();
+	newMap[std::make_pair(GLFW_MOUSE_BUTTON_LEFT, false)] = std::make_unique<MouseButtonLeftReleasedEvent>();
+	newMap[std::make_pair(GLFW_KEY_LEFT_ALT, true)] = std::make_unique<ToggleMouseLockEvent>();
 	InputMap iMap(std::move(newMap));
 
 	/*
@@ -57,11 +62,11 @@ bool InputGather::getInputFlag(InputFlag flag)
 	return m_inputFlags.at(flag);
 }
 
-void InputGather::callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void InputGather::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (initialized) {
 		//Locator::getLogger()->getLogger()->info("Pressed key: {}", key);
-		InputEvent* iEvent = m_inputMap.getEvent(key);
+		InputEvent* iEvent = m_inputMap.getEvent(key, action == GLFW_PRESS);
 		if (iEvent != nullptr) {
 			/*
 			* We should construct an actual event here with an associated value.
@@ -76,4 +81,17 @@ void InputGather::mousePosCallback(GLFWwindow* window, double mouseXIn, double m
 {
 	Locator::getLogger()->getLogger()->info("Mouse x:{} y:{}", mouseXIn, mouseYIn);
 	m_dispatcher->notify2f(MouseMoveEvent::EVENT_TYPE, mouseXIn, mouseYIn);
+}
+
+void InputGather::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (initialized) {
+		InputEvent* iEvent = m_inputMap.getEvent(button, action == GLFW_PRESS);
+		if (iEvent != nullptr) {
+			/*
+			* We should construct an actual event here with an associated value.
+			*/
+			m_dispatcher->notify(iEvent->getType());
+		}
+	}
 }

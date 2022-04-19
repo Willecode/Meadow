@@ -24,6 +24,7 @@ public:
 	void pollEvents();
 private:
 	GLFWwindow* m_window;
+	bool m_mouseLock;
 
 private:
 	/*
@@ -35,5 +36,6 @@ private:
 	* Meadow input event callbacks
 	*/
 	void closeWindowEventHandler(const char* eventType);
+	void toggleMouseLockHandler(const char* eventType);
 };
 

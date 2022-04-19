@@ -7,7 +7,7 @@ namespace WindowConf {
 }
 float WindowManager::width = WindowConf::DEFAULT_SCR_WIDTH;
 float WindowManager::height = WindowConf::DEFAULT_SCR_HEIGHT;
-WindowManager::WindowManager(): m_window(nullptr)
+WindowManager::WindowManager(): m_window(nullptr), m_mouseLock(false)
 {
 }
 
@@ -38,15 +38,34 @@ bool WindowManager::createWindow(std::string title, Dispatcher* disp)
         return false;
     }
     glfwMakeContextCurrent(m_window);
-    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    /*
+    * Lock cursor to screen
+    */
+    if (m_mouseLock) {
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    /*
+    * Window resize callback
+    */
     glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);
-    
 
     /*
     * Subscribe to windowclose event
     */
     std::function<void(const char*)> f = std::bind(&WindowManager::closeWindowEventHandler, this, std::placeholders::_1);
     disp->subscribe(CloseWindowEvent::EVENT_TYPE, f);
+
+    /*
+    * Subscribe to mouse lock/unlock event
+    */
+    std::function<void(const char*)> fml = std::bind(&WindowManager::toggleMouseLockHandler, this, std::placeholders::_1);
+    disp->subscribe(ToggleMouseLockEvent::EVENT_TYPE, fml);
+
+    /*
+    * Initialization succesful
+    */
     return true;
 }
 
@@ -94,4 +113,21 @@ void WindowManager::errorCallback(int error, const char* description)
 void WindowManager::closeWindowEventHandler(const char* eventType)
 {
     glfwSetWindowShouldClose(m_window, true);
+}
+
+void WindowManager::toggleMouseLockHandler(const char* eventType)
+{
+    /*
+    * Lock cursor to screen
+    */
+    if (m_mouseLock) {
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+    /*
+   * Unlock cursor
+   */
+    if (!m_mouseLock) {
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    m_mouseLock = !m_mouseLock;
 }

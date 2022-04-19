@@ -37,8 +37,8 @@ private:
 	/*
 	* glfw callback functions
 	*/
-	static void callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void mousePosCallback(GLFWwindow* window, double mouseXIn, double mouseYIn);
-
+	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 };
 
