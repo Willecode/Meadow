@@ -32,7 +32,8 @@ void InputGather::init(Dispatcher* disp, WindowManager* windowMan)
 	newMap[std::make_pair(GLFW_KEY_ESCAPE, true)] = std::make_unique<CloseWindowEvent>();
 	newMap[std::make_pair(GLFW_MOUSE_BUTTON_LEFT, true)] = std::make_unique<MouseButtonLeftPressedEvent>();
 	newMap[std::make_pair(GLFW_MOUSE_BUTTON_LEFT, false)] = std::make_unique<MouseButtonLeftReleasedEvent>();
-	newMap[std::make_pair(GLFW_KEY_LEFT_ALT, true)] = std::make_unique<ToggleMouseLockEvent>();
+	newMap[std::make_pair(GLFW_MOUSE_BUTTON_RIGHT, true)] = std::make_unique<MouseLockEvent>();
+	newMap[std::make_pair(GLFW_MOUSE_BUTTON_RIGHT, false)] = std::make_unique<MouseUnlockEvent>();
 	InputMap iMap(std::move(newMap));
 
 	/*

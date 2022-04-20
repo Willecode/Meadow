@@ -16,7 +16,7 @@ public:
 	/*
 	* Render UI
 	*/
-	void renderInterface();
+	void renderInterface(const std::vector<std::string> &dataVec);
 
 private:
 	void mouseButtonReleaseHandler(const char* eventType);

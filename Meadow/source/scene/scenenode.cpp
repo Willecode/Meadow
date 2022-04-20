@@ -6,7 +6,8 @@ SceneNode::SceneNode() :
 	scale(1.0f),
 	rotations({}),
 	m_model(nullptr),
-	m_modelMatrix(glm::mat4(1.0f))
+	m_modelMatrix(glm::mat4(1.0f)),
+	m_name("Nameless Node")
 {
 }
 
@@ -27,6 +28,16 @@ void SceneNode::setModel(std::unique_ptr<Model> model)
 glm::mat4* SceneNode::getModelMatrix()
 {
 	return &m_modelMatrix;
+}
+
+void SceneNode::setName(const std::string& name)
+{
+	m_name = name;
+}
+
+std::string SceneNode::getName()
+{
+	return m_name;
 }
 
 void SceneNode::update(SceneNode* parent)

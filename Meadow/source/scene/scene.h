@@ -25,9 +25,11 @@ public:
 	void render(ShaderManager* sdrMan);
 	unsigned int addNode(unsigned int parent = 0);
 	SceneNode* getNode(unsigned int id);
+	void scrapeData(std::vector<std::string>* dataVec);
 	
 private:
 	Camera m_camera;
+	bool m_cameraLock;
 	Dispatcher* m_dispatcher;
 	float m_deltatime;
 	/*
@@ -37,12 +39,18 @@ private:
 	unsigned int m_nodeIdCtr;
 private:
 	/*
-	* Override Observer class input handler func
+	* Event handlers
 	*/
 	void eventHandler(const char* eventType) override;
 	void mousePosHandler(const char* eventType, float x, float y);
+	void mouseLockHandler(const char* eventType);
+	void mouseUnlockHandler(const char* eventType);
+	/*
+	* Other funcs
+	*/
 	void updateNode(SceneNode* node, SceneNode* parent);
 	void renderNode(SceneNode* node, ShaderManager* sdrMan);
 	void handleCameraMovement(float deltatime, InputGather* input);
+	void scrapeNode(SceneNode* node,std::vector<std::string>* dataVec);
 };
 

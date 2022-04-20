@@ -7,7 +7,7 @@ namespace WindowConf {
 }
 float WindowManager::width = WindowConf::DEFAULT_SCR_WIDTH;
 float WindowManager::height = WindowConf::DEFAULT_SCR_HEIGHT;
-WindowManager::WindowManager(): m_window(nullptr), m_mouseLock(false)
+WindowManager::WindowManager(): m_window(nullptr)
 {
 }
 
@@ -40,11 +40,10 @@ bool WindowManager::createWindow(std::string title, Dispatcher* disp)
     glfwMakeContextCurrent(m_window);
 
     /*
-    * Lock cursor to screen
+    * Set cursor mode to unlocked
     */
-    if (m_mouseLock) {
-        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
 
     /*
     * Window resize callback
@@ -60,8 +59,9 @@ bool WindowManager::createWindow(std::string title, Dispatcher* disp)
     /*
     * Subscribe to mouse lock/unlock event
     */
-    std::function<void(const char*)> fml = std::bind(&WindowManager::toggleMouseLockHandler, this, std::placeholders::_1);
-    disp->subscribe(ToggleMouseLockEvent::EVENT_TYPE, fml);
+    std::function<void(const char*)> fml = std::bind(&WindowManager::MouseLockHandler, this, std::placeholders::_1);
+    disp->subscribe(MouseLockEvent::EVENT_TYPE, fml);
+    disp->subscribe(MouseUnlockEvent::EVENT_TYPE, fml);
 
     /*
     * Initialization succesful
@@ -115,19 +115,18 @@ void WindowManager::closeWindowEventHandler(const char* eventType)
     glfwSetWindowShouldClose(m_window, true);
 }
 
-void WindowManager::toggleMouseLockHandler(const char* eventType)
+void WindowManager::MouseLockHandler(const char* eventType)
 {
     /*
     * Lock cursor to screen
     */
-    if (m_mouseLock) {
+    if (eventType == MouseLockEvent::EVENT_TYPE) {
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     /*
    * Unlock cursor
    */
-    if (!m_mouseLock) {
+    else if (eventType == MouseUnlockEvent::EVENT_TYPE) {
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
-    m_mouseLock = !m_mouseLock;
 }

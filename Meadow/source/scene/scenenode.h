@@ -32,6 +32,8 @@ public:
 	*/
 	void setModel(std::unique_ptr<Model> model);
 	glm::mat4* getModelMatrix();
+	void setName(const std::string &name);
+	std::string getName();
 	/*
 	* Update node transform
 	*/
@@ -48,6 +50,7 @@ private:
 	//PhysicsComponent m_physics;
 
 	glm::mat4 m_modelMatrix;
+	std::string m_name;
 
 private:
 	

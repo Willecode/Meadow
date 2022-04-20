@@ -11,7 +11,7 @@ Camera::Camera(float aspect, float zNear, float zFar, glm::vec3 position, glm::v
 	worldUp(up),
 	speed(2.0f),
 	direction(0.f, 0.f, -1.0f),
-	lookSensitivity(10.0f),
+	lookSensitivity(20.0f),
 	fov(45.f),
 	lastMouseX(-1.f),
 	lastMouseY(-1.f),

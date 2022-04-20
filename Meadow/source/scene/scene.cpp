@@ -5,7 +5,8 @@ Scene::Scene(Dispatcher* disp):
 	m_nodeIdCtr(1),
 	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f)),
 	m_dispatcher(disp),
-	m_deltatime(0.f)
+	m_deltatime(0.f),
+	m_cameraLock(true)
 {
 	/*
 	* Subscribe to relevant events
@@ -14,6 +15,12 @@ Scene::Scene(Dispatcher* disp):
 	//m_dispatcher->subscribe(CameraUpEvent::EVENT_TYPE, f);
 	std::function<void(const char*, float, float)> mousefunc = std::bind(&Scene::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 	m_dispatcher->subscribe2f(MouseMoveEvent::EVENT_TYPE, mousefunc);
+
+	std::function<void(const char*)> mouseLockfunc = std::bind(&Scene::mouseLockHandler, this, std::placeholders::_1);
+	disp->subscribe(MouseLockEvent::EVENT_TYPE, mouseLockfunc);
+
+	std::function<void(const char*)> mouseUnlockfunc = std::bind(&Scene::mouseUnlockHandler, this, std::placeholders::_1);
+	disp->subscribe(MouseUnlockEvent::EVENT_TYPE, mouseUnlockfunc);
 }
 
 void Scene::update(float deltatime, InputGather* input)
@@ -68,6 +75,12 @@ SceneNode* Scene::getNode(unsigned int id)
 	return nullptr;
 }
 
+void Scene::scrapeData(std::vector<std::string>* dataVec)
+{
+	dataVec->clear();
+	scrapeNode(m_nodeMap[0].get(), dataVec);
+}
+
 void Scene::eventHandler(const char* eventType)
 {
 	Locator::getLogger()->getLogger()->info("Scene event handler processing event: {}", eventType);
@@ -75,7 +88,21 @@ void Scene::eventHandler(const char* eventType)
 
 void Scene::mousePosHandler(const char* eventType, float x, float y)
 {
-	m_camera.processMouseMovement(x, y, m_deltatime);
+	if (!m_cameraLock)
+		m_camera.processMouseMovement(x, y, m_deltatime);
+}
+
+void Scene::mouseLockHandler(const char* eventType)
+{
+	m_cameraLock = false;
+	Locator::getLogger()->getLogger()->info("scene {}", eventType);
+}
+
+
+void Scene::mouseUnlockHandler(const char* eventType)
+{
+	m_cameraLock = true;
+	Locator::getLogger()->getLogger()->info("scene {}", eventType);
 }
 
 void Scene::updateNode(SceneNode* node, SceneNode* parent)
@@ -96,6 +123,8 @@ void Scene::renderNode(SceneNode* node, ShaderManager* sdrMan)
 
 void Scene::handleCameraMovement(float deltatime, InputGather* input)
 {
+	if (m_cameraLock)
+		return;
 	if (input->getInputFlag(InputGather::InputFlag::CameraUp))
 		m_camera.inputMoveUp(m_deltatime);
 	if (input->getInputFlag(InputGather::InputFlag::CameraDown))
@@ -108,4 +137,12 @@ void Scene::handleCameraMovement(float deltatime, InputGather* input)
 		m_camera.inputMoveLeft(deltatime);
 	if (input->getInputFlag(InputGather::InputFlag::CameraRight))
 		m_camera.inputMoveRight(deltatime);
+}
+
+void Scene::scrapeNode(SceneNode* node, std::vector<std::string>* dataVec)
+{
+	dataVec->push_back(node->getName());
+	for (auto child : node->children) {
+		scrapeNode(child, dataVec);
+	}
 }

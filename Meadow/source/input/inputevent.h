@@ -112,10 +112,20 @@ private:
 	}
 };
 
-class ToggleMouseLockEvent : public InputEvent
+class MouseLockEvent : public InputEvent
 {
 public:
-	static constexpr const char* EVENT_TYPE = "ToggleMouseLockEvent";
+	static constexpr const char* EVENT_TYPE = "MouseLockEvent";
+private:
+	const char* returnType() override {
+		return EVENT_TYPE;
+	}
+};
+
+class MouseUnlockEvent : public InputEvent
+{
+public:
+	static constexpr const char* EVENT_TYPE = "MouseUnlockEvent";
 private:
 	const char* returnType() override {
 		return EVENT_TYPE;

@@ -120,7 +120,7 @@ void Application::run()
     float deltatime;
     float time;
     float lastFrameTime = 0.f;
-
+    std::vector<std::string> dataVec;
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -130,6 +130,25 @@ void Application::run()
         deltatime = time - lastFrameTime;
         lastFrameTime = time;
         m_windowManager.pollEvents();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        m_scene->update(deltatime, &m_inputGather);
+        m_scene->render(&m_shaderManager);
+
+        /*
+        * Render UI
+        */
+        m_scene->scrapeData(&dataVec);
+        m_ui.renderInterface(dataVec);
+
+        m_windowManager.swapBuffers();
+    }
+
+    glfwTerminate();
+    /////////////////////
+    // Update loop sketching
+    /////////////////////
+    // 
+    // rendering
         /* Clear framebuffer */
         /* Get all objects that glow */
         /* Set up glow shader */
@@ -137,13 +156,8 @@ void Application::run()
         /* Get all objects that are lit */
         /* Set up light shader */
         /* Render */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        m_scene->update(deltatime, &m_inputGather);
-        m_scene->render(&m_shaderManager);
-        m_ui.renderInterface();
-
-        m_windowManager.swapBuffers();
-    }
-
-    glfwTerminate();
+    // Scrape Scene data for UI
+    // Provide scene data to UI
+    // Render UI
+    /////////////////////
 }
