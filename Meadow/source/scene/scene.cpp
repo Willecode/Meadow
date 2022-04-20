@@ -1,12 +1,13 @@
 #include "scene.h"
 #include "input/inputevent.h"
 Scene::Scene(Dispatcher* disp):
-	m_nodeMap({ {0, std::make_shared<SceneNode>()} }),
+	m_nodeMap({ {0, std::make_shared<SceneNode>("root")}}), // Initialize scene graph as just the root node
 	m_nodeIdCtr(1),
 	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f)),
 	m_dispatcher(disp),
 	m_deltatime(0.f),
-	m_cameraLock(true)
+	m_cameraLock(true),
+	m_uiNodes()
 {
 	/*
 	* Subscribe to relevant events
@@ -75,10 +76,9 @@ SceneNode* Scene::getNode(unsigned int id)
 	return nullptr;
 }
 
-void Scene::scrapeData(std::vector<std::string>* dataVec)
+void Scene::scrapeData(SceneNodeUI &uiNode)
 {
-	dataVec->clear();
-	scrapeNode(m_nodeMap[0].get(), dataVec);
+	scrapeNode(m_nodeMap[0].get(), uiNode, 0);
 }
 
 void Scene::eventHandler(const char* eventType)
@@ -90,6 +90,9 @@ void Scene::mousePosHandler(const char* eventType, float x, float y)
 {
 	if (!m_cameraLock)
 		m_camera.processMouseMovement(x, y, m_deltatime);
+	else
+		m_camera.updateMousePos(x, y);
+
 }
 
 void Scene::mouseLockHandler(const char* eventType)
@@ -139,10 +142,16 @@ void Scene::handleCameraMovement(float deltatime, InputGather* input)
 		m_camera.inputMoveRight(deltatime);
 }
 
-void Scene::scrapeNode(SceneNode* node, std::vector<std::string>* dataVec)
+void Scene::scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId)
 {
-	dataVec->push_back(node->getName());
+	uiNode = SceneNodeUI();
+	uiNode.id = uiElemId;
+	uiNode.name = &node->name;
+	uiNode.scale = &node->scale;
+	uiNode.pos = &node->position;
 	for (auto child : node->children) {
-		scrapeNode(child, dataVec);
+		SceneNodeUI uiChild;
+		uiNode.children.push_back(uiChild);
+		scrapeNode(child, uiNode.children.back(), uiElemId++);
 	}
 }

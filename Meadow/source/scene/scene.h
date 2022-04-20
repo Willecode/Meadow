@@ -6,6 +6,7 @@
 #include "input/observer.h"
 #include "input/inputgather.h"
 #include "input/dispatcher.h"
+#include "ui/ui.h"
 /*
 * Scene graph class
 */
@@ -25,7 +26,7 @@ public:
 	void render(ShaderManager* sdrMan);
 	unsigned int addNode(unsigned int parent = 0);
 	SceneNode* getNode(unsigned int id);
-	void scrapeData(std::vector<std::string>* dataVec);
+	void scrapeData(SceneNodeUI &uiNode);
 	
 private:
 	Camera m_camera;
@@ -37,6 +38,11 @@ private:
 	*/
 	std::unordered_map<unsigned int, std::shared_ptr<SceneNode>> m_nodeMap;
 	unsigned int m_nodeIdCtr;
+
+	/*
+	* Data to provide to UI
+	*/
+	std::vector<SceneNodeUI> m_uiNodes;
 private:
 	/*
 	* Event handlers
@@ -51,6 +57,6 @@ private:
 	void updateNode(SceneNode* node, SceneNode* parent);
 	void renderNode(SceneNode* node, ShaderManager* sdrMan);
 	void handleCameraMovement(float deltatime, InputGather* input);
-	void scrapeNode(SceneNode* node,std::vector<std::string>* dataVec);
+	void scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId);
 };
 

@@ -8,6 +8,7 @@
 class SceneNode
 {
 public:
+	std::string name;
 	/*
 	* Scene hierarchy
 	*/
@@ -21,7 +22,7 @@ public:
 	std::vector<std::pair<float, glm::vec3>> rotations; // switch to quaternions at some point
 
 public:
-	SceneNode();
+	SceneNode(std::string name = "Nameless Node");
 	/*
 	* Copy constructor
 	*/
@@ -32,8 +33,6 @@ public:
 	*/
 	void setModel(std::unique_ptr<Model> model);
 	glm::mat4* getModelMatrix();
-	void setName(const std::string &name);
-	std::string getName();
 	/*
 	* Update node transform
 	*/
@@ -50,7 +49,6 @@ private:
 	//PhysicsComponent m_physics;
 
 	glm::mat4 m_modelMatrix;
-	std::string m_name;
 
 private:
 	

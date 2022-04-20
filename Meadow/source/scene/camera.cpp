@@ -60,6 +60,12 @@ float Camera::getFov() {
 	return fov;
 }
 
+void Camera::updateMousePos(float mouseX, float mouseY)
+{
+	lastMouseX = mouseX;
+	lastMouseY = mouseY;
+}
+
 void Camera::inputMoveUp(float deltaTime) {
 	position += worldUp * speed * deltaTime;
 }

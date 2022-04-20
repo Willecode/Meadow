@@ -120,7 +120,7 @@ void Application::run()
     float deltatime;
     float time;
     float lastFrameTime = 0.f;
-    std::vector<std::string> dataVec;
+    SceneNodeUI uiNode;
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -137,8 +137,8 @@ void Application::run()
         /*
         * Render UI
         */
-        m_scene->scrapeData(&dataVec);
-        m_ui.renderInterface(dataVec);
+        m_scene->scrapeData(uiNode);
+        m_ui.renderInterface(&uiNode);
 
         m_windowManager.swapBuffers();
     }

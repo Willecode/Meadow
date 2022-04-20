@@ -1,13 +1,13 @@
 #include "scenenode.h"
 #include <glm/gtc/matrix_transform.hpp>
-SceneNode::SceneNode() :
+SceneNode::SceneNode(std::string name) :
 	children({}),
 	position(glm::vec3(0.f)),
 	scale(1.0f),
 	rotations({}),
 	m_model(nullptr),
 	m_modelMatrix(glm::mat4(1.0f)),
-	m_name("Nameless Node")
+	name(name)
 {
 }
 
@@ -30,16 +30,6 @@ glm::mat4* SceneNode::getModelMatrix()
 	return &m_modelMatrix;
 }
 
-void SceneNode::setName(const std::string& name)
-{
-	m_name = name;
-}
-
-std::string SceneNode::getName()
-{
-	return m_name;
-}
-
 void SceneNode::update(SceneNode* parent)
 {
 	updateModelMatrix(parent->getModelMatrix());
@@ -58,5 +48,5 @@ void SceneNode::updateModelMatrix(glm::mat4* accumulate)
 		m_modelMatrix = glm::rotate(m_modelMatrix, rot.first, rot.second);
 	}
 	m_modelMatrix = glm::scale(m_modelMatrix, scale);
-	m_modelMatrix = m_modelMatrix * (*accumulate);
+	m_modelMatrix = (*accumulate) * m_modelMatrix;
 }

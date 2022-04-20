@@ -27,9 +27,13 @@ public:
 	float getFov();
 
 	/*
-	* Input
+	* Input funcs
 	*/
 	void processMouseMovement(float mouseX, float mouseY, float deltaTime);
+	/*
+	* updateMousePos should be called before using processMouseMovement, if processMouseMovement wasn't called last frame
+	*/
+	void updateMousePos(float mouseX, float mouseY);
 	void inputMoveUp(float deltaTime);
 	void inputMoveDown(float deltaTime);
 	void inputMoveLeft(float deltaTime);
