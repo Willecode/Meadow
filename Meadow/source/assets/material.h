@@ -9,6 +9,7 @@ namespace MaterialConstants {
 class Material : public Asset
 {
 public:
+	Material(std::string name = "Nameless material");
 	AssetType getAssetType() override;
 	void passToShader(ShaderManager* sdrMan);
 	

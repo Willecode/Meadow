@@ -26,6 +26,10 @@ public:
 	void render(ShaderManager* sdrMan);
 	unsigned int addNode(unsigned int parent = 0);
 	SceneNode* getNode(unsigned int id);
+
+	/*
+	* Get a UI representation of the scene graph with references to the real data
+	*/
 	void scrapeData(SceneNodeUI &uiNode);
 	
 private:
@@ -34,7 +38,9 @@ private:
 	Dispatcher* m_dispatcher;
 	float m_deltatime;
 	/*
-	* Map for accessing nodes with id. Rootnode is always 0 and added in initialization
+	* Map for accessing nodes with id.
+	* Scenenodes only exist in a scene, and are unique
+	* Rootnode is always 0 and added in initialization
 	*/
 	std::unordered_map<unsigned int, std::shared_ptr<SceneNode>> m_nodeMap;
 	unsigned int m_nodeIdCtr;

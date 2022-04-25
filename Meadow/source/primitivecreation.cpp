@@ -2,6 +2,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <glm/gtx/string_cast.hpp>
+#include "service_locator/locator.h"
 
 std::unique_ptr<Mesh> PrimitiveCreation::createCubeMesh()
 {
@@ -46,7 +47,7 @@ std::unique_ptr<Mesh> PrimitiveCreation::createCubeMesh()
         16, 17, 18, 16, 18, 19,
         20, 21, 22, 20, 22, 23
     };
-    return std::make_unique<Mesh>(vertices, indices);
+    return std::make_unique<Mesh>(vertices, indices, "Cube");
     
 }
 
@@ -89,5 +90,6 @@ std::unique_ptr<Mesh> PrimitiveCreation::createSphere(int sectorCount, int stack
             indices.push_back(nextStackFirst + j + 1);
         }
     }
-    return std::make_unique<Mesh>(vertices, indices);
+    Locator::getLogger()->getLogger()->info("created a sphere with {} vertices", vertices.size());
+    return std::make_unique<Mesh>(vertices, indices, "Sphere");
 }

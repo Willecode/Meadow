@@ -14,7 +14,7 @@ public:
 		SPECULAR_MAP
 	};
 public:
-	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height, Renderer::ImageFormat format);
+	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height, Renderer::ImageFormat format, std::string name = "Nameless texture");
 	
 	void loadToGPU(); // Generate buffers in graphics memory and push image texture data to them
 	void bindToSampler(const unsigned int& samplerId);

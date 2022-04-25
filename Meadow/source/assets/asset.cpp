@@ -1,6 +1,6 @@
 #include "asset.h"
 
-Asset::Asset(): m_id(0)
+Asset::Asset(std::string name): m_id(0), name(name)
 {
 }
 

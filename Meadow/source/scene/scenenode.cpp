@@ -16,13 +16,28 @@ SceneNode::SceneNode(const SceneNode& n1)
 	position = n1.position;
 	scale = n1.scale;
 	rotations = n1.rotations;
-	m_model = n1.m_model;
+	m_model = std::make_unique<Model>(*(n1.m_model.get()));
 	m_modelMatrix = n1.m_modelMatrix;
+}
+
+SceneNode& SceneNode::operator=(const SceneNode& n1)
+{
+	position = n1.position;
+	scale = n1.scale;
+	rotations = n1.rotations;
+	m_model = std::make_unique<Model>(*(n1.m_model.get()));
+	m_modelMatrix = n1.m_modelMatrix;
+	return *this;
 }
 
 void SceneNode::setModel(std::unique_ptr<Model> model)
 {
 	m_model = std::move(model);
+}
+
+Model* SceneNode::getModel()
+{
+	return m_model.get();
 }
 
 glm::mat4* SceneNode::getModelMatrix()

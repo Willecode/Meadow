@@ -1,11 +1,23 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM 
-#include "windowmanager.h"
 #include <glm/glm.hpp>
+#include "windowmanager.h"
+#include "assets/asset.h"
 
 /*
-* Containst the data for a UI element representing a single UI node (links to other nodes through children)
+* Contains the data for a UI element representing an asset 
+*/
+struct AssetUI {
+	std::string name;
+	const Asset::AssetType type;
+	const unsigned int id;
+	AssetUI(std::string name, const Asset::AssetType type, const unsigned int id):
+		name(name), type(type), id(id)
+	{}
+};
+/*
+* Containst the data for a UI element representing a single scene node (links to other nodes through children)
 */
 struct SceneNodeUI {
 	int id;
@@ -13,7 +25,11 @@ struct SceneNodeUI {
 	glm::vec3* scale;
 	glm::vec3* pos;
 	std::vector<SceneNodeUI> children;
+	bool hasGraphics;
+	std::vector<std::string> meshes;
+	std::string material;
 };
+
 class UI
 {
 public:
@@ -28,7 +44,7 @@ public:
 	/*
 	* Render UI
 	*/
-	void renderInterface(SceneNodeUI* node);
+	void renderInterface(SceneNodeUI* node, std::vector<AssetUI>* uiAssets);
 
 private:
 	/*

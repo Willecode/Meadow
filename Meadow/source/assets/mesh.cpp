@@ -1,8 +1,8 @@
 #include "mesh.h"
 #include "service_locator/locator.h"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices):
-    vertices(vertices), indices(indices)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string name):
+    vertices(vertices), indices(indices), Asset(name)
 {
 
 }

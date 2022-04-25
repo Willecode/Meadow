@@ -21,7 +21,7 @@ class Mesh: public Asset
 public:
 	std::vector<Vertex>	vertices;
 	std::vector<unsigned int> indices;
-	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string name = "Nameless mesh");
 	void draw();
 	void generateBuffers(); // Generate graphics memory buffers for this mesh
 	void buffersPushData(); // Push vertex data and indices into previously generated buffers

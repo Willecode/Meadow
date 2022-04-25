@@ -1,5 +1,8 @@
 #include "material.h"
 #include "resource_management/shadermanager.h"
+Material::Material(std::string name): Asset(name)
+{
+}
 Material::AssetType Material::getAssetType()
 {
 	return AssetType::MATERIAL;

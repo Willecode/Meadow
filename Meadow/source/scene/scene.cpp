@@ -149,6 +149,15 @@ void Scene::scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId)
 	uiNode.name = &node->name;
 	uiNode.scale = &node->scale;
 	uiNode.pos = &node->position;
+	Model* model = node->getModel();
+	if (model != nullptr) {
+		uiNode.hasGraphics = true;
+		for (auto const& x : model->meshes)
+			uiNode.meshes.push_back(x->name);
+		uiNode.material = model->material->name;
+	}
+	else
+		uiNode.hasGraphics = false;
 	for (auto child : node->children) {
 		SceneNodeUI uiChild;
 		uiNode.children.push_back(uiChild);

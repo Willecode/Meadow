@@ -24,14 +24,16 @@ public:
 public:
 	SceneNode(std::string name = "Nameless Node");
 	/*
-	* Copy constructor
+	* Copy constr and assignment op
 	*/
 	SceneNode(const SceneNode& n1);
+	SceneNode& operator=(const SceneNode& n1);
 
 	/*
 	* Set and get
 	*/
 	void setModel(std::unique_ptr<Model> model);
+	Model* getModel();
 	glm::mat4* getModelMatrix();
 	/*
 	* Update node transform
@@ -44,7 +46,7 @@ public:
 	void render(ShaderManager* sdrMan);
 
 private:
-	std::shared_ptr<Model>m_model;
+	std::unique_ptr<Model>m_model;
 	//Controllercomponent m_controller;
 	//PhysicsComponent m_physics;
 

@@ -3,9 +3,10 @@ Texture::Texture(
 	std::unique_ptr<std::vector<unsigned char>> img,
 	unsigned int width,
 	unsigned int height,
-	Renderer::ImageFormat format
+	Renderer::ImageFormat format,
+	std::string name
 ):
-	m_img(std::move(img)), m_imgWidth(width), m_imgHeight(height), m_imgFormat(format)
+	m_img(std::move(img)), m_imgWidth(width), m_imgHeight(height), m_imgFormat(format), Asset(name)
 {
 }
 

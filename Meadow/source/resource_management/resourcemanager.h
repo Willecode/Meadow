@@ -6,6 +6,7 @@
 #include "assets/mesh.h"
 #include "shader.h"
 #include "assets/material.h"
+#include "ui/ui.h"
 /*
 *  Singleton resource manager. For now meshes and textures stored here will be loaded to graphics memory
 */
@@ -24,6 +25,7 @@ public:
 	static unsigned int storeMaterial(std::unique_ptr<Material> material);
 	static Material* getMaterial(unsigned int materialId);
 	
+	static void scrapeData(std::vector<AssetUI> &assets);
 private:
 	enum class ResourceType {
 		TEXTURE = 0,

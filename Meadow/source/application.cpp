@@ -54,7 +54,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispat
     SceneNode* node = m_scene->getNode(nodeId);
     std::unique_ptr<Model> model = std::make_unique<Model>();
     
-    auto mat = std::make_unique<Material>();
+    auto mat = std::make_unique<Material>("Woodblock");
     auto matid = manager.storeMaterial(std::move(mat));
     auto mat2 = manager.getMaterial(matid);
 
@@ -66,8 +66,8 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispat
     unsigned int meshid = manager.storeMesh(std::move(m));
     Mesh* mesh = manager.getMesh(meshid);
 
-    model->setMaterial(mat2);
-    model->addMesh(mesh);
+    model->material = mat2;
+    model->meshes.push_back(mesh);
     node->setModel(std::move(model));
 
     Camera c(1920.0f / 1080.0f, 0.1f, 100.0f);
@@ -88,7 +88,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispat
     else if (imgdata.nrChannels = 4) {
         imgForm = Renderer::ImageFormat::RGBA;
     }
-    auto texPtr = std::make_unique<Texture>(std::move(vecptr), imgdata.width, imgdata.height, imgForm);
+    auto texPtr = std::make_unique<Texture>(std::move(vecptr), imgdata.width, imgdata.height, imgForm, "Woodtex");
     unsigned int texId = manager.storeTexture(std::move(texPtr));
     Texture* tex = manager.getTexture(texId);
     mat2->setTexture(tex, Texture::TextureType::DIFFUSE_MAP);
@@ -103,7 +103,15 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispat
     */
     unsigned int node2Id = m_scene->addNode();
     SceneNode* node2 = m_scene->getNode(node2Id);
+
     (*node2) = *node;
+    node2->getModel()->meshes.clear();
+    auto m2 = PrimitiveCreation::createSphere(15, 20);
+    unsigned int mesh2id = manager.storeMesh(std::move(m2));
+    Mesh* mesh2 = manager.getMesh(mesh2id);
+
+    node2->getModel()->meshes.clear();
+    node2->getModel()->meshes.push_back(mesh2);
     /*
     * Transform the second node 
     */
@@ -121,6 +129,7 @@ void Application::run()
     float time;
     float lastFrameTime = 0.f;
     SceneNodeUI uiNode;
+    std::vector<AssetUI> AssetsUI;
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -138,7 +147,8 @@ void Application::run()
         * Render UI
         */
         m_scene->scrapeData(uiNode);
-        m_ui.renderInterface(&uiNode);
+        ResourceManager::scrapeData(AssetsUI);
+        m_ui.renderInterface(&uiNode, &AssetsUI);
 
         m_windowManager.swapBuffers();
     }

@@ -10,6 +10,7 @@ OpenGLRenderer::OpenGLRenderer():
     m_shaderProgMap({}),
     m_texIdMap({})
 {
+    
 }
 
 bool OpenGLRenderer::initialize(WindowManager* windowMan)

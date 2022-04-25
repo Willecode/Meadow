@@ -37,69 +37,24 @@ void UI::init(WindowManager* winMan, Dispatcher* disp)
 
 }
 
-//static void ShowPlaceholderObject(const char* name, int uid)
-//{
-//    // Use object uid as identifier. Most commonly you could also use the object pointer as a base ID.
-//    ImGui::PushID(uid);
-//
-//    // Text and Tree nodes are less high than framed widgets, using AlignTextToFramePadding() we add vertical spacing to make the tree lines equal high.
-//    ImGui::TableNextRow();
-//    ImGui::TableSetColumnIndex(0);
-//    ImGui::AlignTextToFramePadding();
-//    bool node_open = ImGui::TreeNode("Object", "%s", name);
-//    ImGui::TableSetColumnIndex(1);
-//    //ImGui::Text("some text");
-//
-//    if (node_open)
-//    {
-//        static float placeholder_members[8] = { 0.0f, 0.0f, 1.0f, 3.1416f, 100.0f, 999.0f };
-//        for (int i = 0; i < 8; i++)
-//        {
-//            ImGui::PushID(i); // Use field index as identifier.
-//            if (i < 2)
-//            {
-//                ShowPlaceholderObject("Child", 424242);
-//            }
-//            else
-//            {
-//                // Here we use a TreeNode to highlight on hover (we could use e.g. Selectable as well)
-//                ImGui::TableNextRow();
-//                ImGui::TableSetColumnIndex(0);
-//                ImGui::AlignTextToFramePadding();
-//                ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet;
-//                ImGui::TreeNodeEx("Field", flags, "Field_%d", i);
-//
-//                ImGui::TableSetColumnIndex(1);
-//                ImGui::SetNextItemWidth(-FLT_MIN);
-//                ImGui::InputFloat("##value", &placeholder_members[i], 1.0f);
-//
-//                ImGui::NextColumn();
-//            }
-//            ImGui::PopID();
-//        }
-//        ImGui::TreePop();
-//    }
-//    ImGui::PopID();
-//}
-
-void UI::renderInterface(SceneNodeUI* node)
+void UI::renderInterface(SceneNodeUI* node, std::vector<AssetUI>* uiAssets)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    bool show_demo_window = false;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    /*
+    * Display demo window for reference?
+    */
+    bool show_demo_window = true;
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
-    static float f = 0.0f;
-    static int counter = 0;
+
 
     //////////////////////
     //Create a UI window for scene objects
     //////////////////////
-    ImGui::Begin("Scene");                          // Create a window called "Hello, world!" and append into it.
+    ImGui::Begin("Scene");
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
     if (ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
     {
@@ -109,6 +64,26 @@ void UI::renderInterface(SceneNodeUI* node)
     ImGui::PopStyleVar();
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();
+    //////////////////////
+    
+    //////////////////////
+    //Create a UI window asset viewing
+    //////////////////////
+    ImGui::Begin("Assets");
+    
+    if (ImGui::Button("Add asset")) {
+        ImGui::Text("Assets here");
+    }
+    for (auto const &ass : *uiAssets) {
+        if (ass.type == Asset::AssetType::TEXTURE)
+            ImGui::Text("Texture: %s",ass.name.c_str());
+        if (ass.type == Asset::AssetType::MATERIAL)
+            ImGui::Text("Material: %s",ass.name.c_str());
+        if (ass.type == Asset::AssetType::MESH)
+            ImGui::Text("Mesh: %s",ass.name.c_str());
+
+    }
     ImGui::End();
     //////////////////////
 
@@ -169,6 +144,25 @@ void UI::processNode(SceneNodeUI* node)
         ImGui::SetNextItemWidth(-FLT_MIN);
         ImGui::DragFloat3("Scale", &node->scale->x, sliderSpeed);
         
+        if (node->hasGraphics) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::AlignTextToFramePadding();
+            ImGui::TreeNodeEx("Material", flags);
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SetNextItemWidth(-FLT_MIN);
+            ImGui::Text("%s", node->material.c_str());
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::AlignTextToFramePadding();
+            ImGui::TreeNodeEx("Meshes", flags);
+            for (auto const& mesh : node->meshes) {
+                ImGui::TableSetColumnIndex(1);
+                ImGui::SetNextItemWidth(-FLT_MIN);
+                ImGui::Text("%s", mesh.c_str());
+            }
+        }
         for (auto child : node->children)
         {
             processNode(&child);
