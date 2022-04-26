@@ -1,6 +1,5 @@
 #include "inputgather.h"
-#include "inputevent.h"
-
+#include "inputevents.h"
 InputGather::InputGather():
 	m_windowMan(nullptr)
 {
@@ -13,7 +12,7 @@ InputGather::InputGather():
 	m_inputFlags[InputFlag::CameraRight] = false;
 }
 
-void InputGather::init(Dispatcher* disp, WindowManager* windowMan)
+void InputGather::init(WindowManager* windowMan)
 {
 	//glfwSetScrollCallback(window, &scrollCallback);
 	m_windowMan = windowMan;
@@ -24,16 +23,15 @@ void InputGather::init(Dispatcher* disp, WindowManager* windowMan)
 	glfwSetCursorPosCallback(m_windowMan->getWindow(), InputGather::mousePosCallback);
 	glfwSetMouseButtonCallback(m_windowMan->getWindow(), InputGather::mouseButtonCallback);
 
-	m_dispatcher = disp;
 	/*
 	* Create input map for input events
 	*/
-	std::map<std::pair<int, bool>, std::unique_ptr<InputEvent>> newMap;
-	newMap[std::make_pair(GLFW_KEY_ESCAPE, true)] = std::make_unique<CloseWindowEvent>();
-	newMap[std::make_pair(GLFW_MOUSE_BUTTON_LEFT, true)] = std::make_unique<MouseButtonLeftPressedEvent>();
-	newMap[std::make_pair(GLFW_MOUSE_BUTTON_LEFT, false)] = std::make_unique<MouseButtonLeftReleasedEvent>();
-	newMap[std::make_pair(GLFW_MOUSE_BUTTON_RIGHT, true)] = std::make_unique<MouseLockEvent>();
-	newMap[std::make_pair(GLFW_MOUSE_BUTTON_RIGHT, false)] = std::make_unique<MouseUnlockEvent>();
+	std::map<std::pair<int, bool>, std::function<void()>> newMap;
+	newMap[std::make_pair(GLFW_KEY_ESCAPE, true)] = InputEvents::CloseWindowEvent::notify;
+	newMap[std::make_pair(GLFW_MOUSE_BUTTON_LEFT, true)] = InputEvents::MouseButtonLeftPressedEvent::notify;
+	newMap[std::make_pair(GLFW_MOUSE_BUTTON_LEFT, false)] = InputEvents::MouseButtonLeftReleasedEvent::notify;
+	newMap[std::make_pair(GLFW_MOUSE_BUTTON_RIGHT, true)] = InputEvents::MouseLockEvent::notify;
+	newMap[std::make_pair(GLFW_MOUSE_BUTTON_RIGHT, false)] = InputEvents::MouseUnlockEvent::notify;
 	InputMap iMap(std::move(newMap));
 
 	/*
@@ -66,14 +64,8 @@ bool InputGather::getInputFlag(InputFlag flag)
 void InputGather::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (initialized) {
-		//Locator::getLogger()->getLogger()->info("Pressed key: {}", key);
-		InputEvent* iEvent = m_inputMap.getEvent(key, action == GLFW_PRESS);
-		if (iEvent != nullptr) {
-			/*
-			* We should construct an actual event here with an associated value.
-			*/
-			m_dispatcher->notify(iEvent->getType());
-		}
+		auto func = m_inputMap.getEventFunc(key, action == GLFW_PRESS);
+		func();
 	}
 
 }
@@ -81,18 +73,13 @@ void InputGather::keyCallback(GLFWwindow* window, int key, int scancode, int act
 void InputGather::mousePosCallback(GLFWwindow* window, double mouseXIn, double mouseYIn)
 {
 	Locator::getLogger()->getLogger()->info("Mouse x:{} y:{}", mouseXIn, mouseYIn);
-	m_dispatcher->notify2f(MouseMoveEvent::EVENT_TYPE, mouseXIn, mouseYIn);
+	InputEvents::MouseMoveEvent::notify(mouseXIn, mouseYIn);
 }
 
 void InputGather::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (initialized) {
-		InputEvent* iEvent = m_inputMap.getEvent(button, action == GLFW_PRESS);
-		if (iEvent != nullptr) {
-			/*
-			* We should construct an actual event here with an associated value.
-			*/
-			m_dispatcher->notify(iEvent->getType());
-		}
+		auto func = m_inputMap.getEventFunc(button, action == GLFW_PRESS);
+		func();
 	}
 }

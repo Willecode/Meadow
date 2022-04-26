@@ -1,12 +1,12 @@
 #include "application.h"
 
-Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispatcher(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
+Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
 {   
 
     /*
     * Provide service locator the addresses of the items it needs to locate
     */
-    m_windowManager.createWindow("Meadow", &m_dispatcher);
+    m_windowManager.createWindow("Meadow");
     appFailed = m_renderer.initialize(&m_windowManager);
     m_logger.init();
     Locator::provide(&m_logger);
@@ -16,12 +16,12 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispat
     /*
     * Initialize ui
     */
-    m_ui.init(&m_windowManager, &m_dispatcher);
+    m_ui.init(&m_windowManager);
 
     /*
     * Input gathering needs to locate logger and windowman so lazy init it here
     */
-    m_inputGather.init(&m_dispatcher, &m_windowManager);
+    m_inputGather.init(&m_windowManager);
     
 
     /*
@@ -40,7 +40,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_dispat
     /*
     * Create a scene for entities
     */
-    m_scene = std::make_unique<Scene>(&m_dispatcher);
+    m_scene = std::make_unique<Scene>();
 
     /*
     * Add some stuff into the scene

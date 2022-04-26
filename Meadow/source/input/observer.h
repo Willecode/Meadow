@@ -3,6 +3,6 @@
 class Observer
 {
 private:
-	virtual void eventHandler(const char* eventType) = 0;
+	virtual void eventHandler() = 0;
 };
 

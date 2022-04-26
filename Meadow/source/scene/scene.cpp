@@ -1,10 +1,9 @@
 #include "scene.h"
-#include "input/inputevent.h"
-Scene::Scene(Dispatcher* disp):
+#include "input/inputevents.h"
+Scene::Scene():
 	m_nodeMap({ {0, std::make_shared<SceneNode>("root")}}), // Initialize scene graph as just the root node
 	m_nodeIdCtr(1),
 	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f)),
-	m_dispatcher(disp),
 	m_deltatime(0.f),
 	m_cameraLock(true),
 	m_uiNodes()
@@ -14,14 +13,17 @@ Scene::Scene(Dispatcher* disp):
 	*/
 	//std::function<void(const char*)> f = std::bind(&Scene::eventHandler, this, std::placeholders::_1);
 	//m_dispatcher->subscribe(CameraUpEvent::EVENT_TYPE, f);
-	std::function<void(const char*, float, float)> mousefunc = std::bind(&Scene::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-	m_dispatcher->subscribe2f(MouseMoveEvent::EVENT_TYPE, mousefunc);
+	std::function<void(float, float)> mousefunc = std::bind(&Scene::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2);
+	//m_dispatcher->subscribe2f(MouseMoveEvent::EVENT_TYPE, mousefunc);
+	InputEvents::MouseMoveEvent::subscribe(mousefunc);
 
-	std::function<void(const char*)> mouseLockfunc = std::bind(&Scene::mouseLockHandler, this, std::placeholders::_1);
-	disp->subscribe(MouseLockEvent::EVENT_TYPE, mouseLockfunc);
+	std::function<void()> mouseLockfunc = std::bind(&Scene::mouseLockHandler, this);
+	//disp->subscribe(MouseLockEvent::EVENT_TYPE, mouseLockfunc);
+	InputEvents::MouseLockEvent::subscribe(mouseLockfunc);
 
-	std::function<void(const char*)> mouseUnlockfunc = std::bind(&Scene::mouseUnlockHandler, this, std::placeholders::_1);
-	disp->subscribe(MouseUnlockEvent::EVENT_TYPE, mouseUnlockfunc);
+	std::function<void()> mouseUnlockfunc = std::bind(&Scene::mouseUnlockHandler, this);
+	//disp->subscribe(MouseUnlockEvent::EVENT_TYPE, mouseUnlockfunc);
+	InputEvents::MouseUnlockEvent::subscribe(mouseUnlockfunc);
 }
 
 void Scene::update(float deltatime, InputGather* input)
@@ -81,12 +83,12 @@ void Scene::scrapeData(SceneNodeUI &uiNode)
 	scrapeNode(m_nodeMap[0].get(), uiNode, 0);
 }
 
-void Scene::eventHandler(const char* eventType)
+void Scene::eventHandler()
 {
-	Locator::getLogger()->getLogger()->info("Scene event handler processing event: {}", eventType);
+	//Locator::getLogger()->getLogger()->info("Scene event handler processing event: {}", eventType);
 }
 
-void Scene::mousePosHandler(const char* eventType, float x, float y)
+void Scene::mousePosHandler(float x, float y)
 {
 	if (!m_cameraLock)
 		m_camera.processMouseMovement(x, y, m_deltatime);
@@ -95,17 +97,15 @@ void Scene::mousePosHandler(const char* eventType, float x, float y)
 
 }
 
-void Scene::mouseLockHandler(const char* eventType)
+void Scene::mouseLockHandler()
 {
 	m_cameraLock = false;
-	Locator::getLogger()->getLogger()->info("scene {}", eventType);
 }
 
 
-void Scene::mouseUnlockHandler(const char* eventType)
+void Scene::mouseUnlockHandler()
 {
 	m_cameraLock = true;
-	Locator::getLogger()->getLogger()->info("scene {}", eventType);
 }
 
 void Scene::updateNode(SceneNode* node, SceneNode* parent)

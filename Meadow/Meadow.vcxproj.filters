@@ -78,16 +78,10 @@
     <ClCompile Include="source\scene\scenenode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\input\dispatcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\input\inputmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\input\inputgather.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\input\inputevent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\input\observer.cpp">
@@ -223,22 +217,19 @@
     <ClInclude Include="source\scene\scenenode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\input\dispatcher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\input\inputmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\input\inputgather.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\input\inputevent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\input\observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ui\ui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\input\inputevents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

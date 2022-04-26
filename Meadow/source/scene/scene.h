@@ -13,7 +13,7 @@
 class Scene : public Observer
 {
 public:
-	Scene(Dispatcher* disp);
+	Scene();
 
 	/*
 	* Update state of all nodes in the scene
@@ -35,7 +35,6 @@ public:
 private:
 	Camera m_camera;
 	bool m_cameraLock;
-	Dispatcher* m_dispatcher;
 	float m_deltatime;
 	/*
 	* Map for accessing nodes with id.
@@ -53,10 +52,10 @@ private:
 	/*
 	* Event handlers
 	*/
-	void eventHandler(const char* eventType) override;
-	void mousePosHandler(const char* eventType, float x, float y);
-	void mouseLockHandler(const char* eventType);
-	void mouseUnlockHandler(const char* eventType);
+	void eventHandler() override;
+	void mousePosHandler(float x, float y);
+	void mouseLockHandler();
+	void mouseUnlockHandler();
 	/*
 	* Other funcs
 	*/

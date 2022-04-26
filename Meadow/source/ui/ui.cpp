@@ -3,17 +3,21 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include "service_locator/locator.h"
+#include "input/inputevents.h"
+UI::UI()
+{
+}
 UI::~UI()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
-void UI::init(WindowManager* winMan, Dispatcher* disp)
+void UI::init(WindowManager* winMan)
 {
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
 
     ImGui::StyleColorsDark();
 
@@ -24,17 +28,20 @@ void UI::init(WindowManager* winMan, Dispatcher* disp)
     /*
     * Subscribe to mouse button events
     */
-    std::function<void(const char*)> mousefuncmr = std::bind(&UI::mouseButtonReleaseHandler, this, std::placeholders::_1);
-    disp->subscribe(MouseButtonLeftReleasedEvent::EVENT_TYPE, mousefuncmr);
-    std::function<void(const char*)> mousefuncmp = std::bind(&UI::mouseButtonPressHandler, this, std::placeholders::_1);
-    disp->subscribe(MouseButtonLeftPressedEvent::EVENT_TYPE, mousefuncmp);
-    
+    std::function<void()> mousefuncmr = std::bind(&UI::mouseButtonReleaseHandler, this);
+    //m_disp->subscribe(MouseButtonLeftReleasedEvent::EVENT_TYPE, mousefuncmr);
+    InputEvents::MouseButtonLeftReleasedEvent::subscribe(mousefuncmr);
+
+    std::function<void()> mousefuncmp = std::bind(&UI::mouseButtonPressHandler, this);
+    //m_disp->subscribe(MouseButtonLeftPressedEvent::EVENT_TYPE, mousefuncmp);
+    InputEvents::MouseButtonLeftPressedEvent::subscribe(mousefuncmp);
+
     /*
     * Subscribe to mouse move events
     */
-    std::function<void(const char*, float, float)> mousefunc2 = std::bind(&UI::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-    disp->subscribe2f(MouseMoveEvent::EVENT_TYPE, mousefunc2);
-
+    std::function<void(float, float)> mousefunc2 = std::bind(&UI::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2);
+    //m_disp->subscribe2f(MouseMoveEvent::EVENT_TYPE, mousefunc2);
+    InputEvents::MouseMoveEvent::subscribe(mousefunc2);
 }
 
 void UI::renderInterface(SceneNodeUI* node, std::vector<AssetUI>* uiAssets)
@@ -91,22 +98,19 @@ void UI::renderInterface(SceneNodeUI* node, std::vector<AssetUI>* uiAssets)
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void UI::mouseButtonReleaseHandler(const char* eventType)
+void UI::mouseButtonReleaseHandler()
 {
     ImGuiIO& io = ImGui::GetIO();
     io.AddMouseButtonEvent(ImGuiMouseButton_Left , false);
-
-
 }
 
-void UI::mouseButtonPressHandler(const char* eventType)
+void UI::mouseButtonPressHandler()
 {
-    Locator::getLogger()->getLogger()->info(eventType);
     ImGuiIO& io = ImGui::GetIO();
     io.AddMouseButtonEvent(ImGuiMouseButton_Left, true);
 }
 
-void UI::mousePosHandler(const char* eventType, float x, float y)
+void UI::mousePosHandler(float x, float y)
 {
     ImGuiIO& io = ImGui::GetIO();
     io.AddMousePosEvent(x, y);

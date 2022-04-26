@@ -9,7 +9,9 @@ public:
 		return returnType();
 	}
 private:
-	virtual const char* returnType() = 0;
+	virtual const char* returnType() {
+		return "";
+	};
 };
 
 class CameraUpEvent : public InputEvent
@@ -75,6 +77,8 @@ private:
 class MouseMoveEvent : public InputEvent
 {
 public:
+	float mouseX;
+	float mouseY;
 	static constexpr const char* EVENT_TYPE = "MouseMoveEvent";
 private:
 	const char* returnType() override {

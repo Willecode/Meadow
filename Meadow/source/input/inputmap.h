@@ -1,7 +1,8 @@
 #pragma once
 #include <map>
 #include <memory>
-#include "inputevent.h"
+#include <functional>
+#include "inputevents.h"
 /*
 * Recieve glfw key input and convert it into input events.
 * Read key input mapping from a file (in the future).
@@ -10,23 +11,17 @@ class InputMap
 {
 public:
 	InputMap() = default;
-	InputMap(std::map<std::pair<int, bool>, std::unique_ptr<InputEvent>> map):
+	InputMap(std::map<std::pair<int, bool>, std::function<void()>> map):
 		m_map(std::move(map))
 	{
-
 	}
-	InputEvent* getEvent(int key, bool pressed) {
-		auto it = m_map.find(std::make_pair(key, pressed));
-		if (it != m_map.end()) {
-			return it->second.get();
-		}
-		return nullptr;
-	}
+	std::function<void()> getEventFunc(int key, bool pressed);
 
 private:
+	void nullFunc(){}
 	/*
 	* Map glfw key id and pressed status (true/false) to a Meadow input event 
 	*/
-	std::map<std::pair<int, bool>, std::unique_ptr<InputEvent>> m_map;
+	std::map<std::pair<int, bool>, std::function<void()>> m_map;
 };
 

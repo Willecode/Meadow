@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM 
 #include <glm/glm.hpp>
+#include <vector>
 #include "windowmanager.h"
 #include "assets/asset.h"
 
@@ -33,6 +34,7 @@ struct SceneNodeUI {
 class UI
 {
 public:
+	UI();
 	/*
 	* Clean up
 	*/
@@ -40,7 +42,7 @@ public:
 	/*
 	* Lazy initialization
 	*/
-	void init(WindowManager* winMan, Dispatcher* disp);
+	void init(WindowManager* winMan);
 	/*
 	* Render UI
 	*/
@@ -50,9 +52,9 @@ private:
 	/*
 	* Event handlers
 	*/
-	void mouseButtonReleaseHandler(const char* eventType);
-	void mouseButtonPressHandler(const char* eventType);
-	void mousePosHandler(const char* eventType, float x, float y);
+	void mouseButtonReleaseHandler();
+	void mouseButtonPressHandler();
+	void mousePosHandler(float x, float y);
 
 	/*
 	* Other

@@ -4,7 +4,7 @@
 #include "resource_management/imageloader.h"
 #include "scene/scene.h"
 #include "input/inputgather.h"
-#include "input/dispatcher.h"
+
 #include "renderer/openglrenderer.h"
 #include "resource_management/imageloader.h"
 
@@ -33,7 +33,7 @@ private:
 	std::unique_ptr<Scene> m_scene;
 	WindowManager m_windowManager;
 	InputGather m_inputGather;
-	Dispatcher m_dispatcher;
+	//Dispatcher m_dispatcher;
 	OpenGLRenderer m_renderer;
 	ShaderManager m_shaderManager;
 	Logger m_logger;

@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <string>
-#include "input/dispatcher.h"
 #include <GLFW/glfw3.h>
 /*
 * Manages one window
@@ -15,7 +14,7 @@ public:
 public:
 	WindowManager();
 	~WindowManager();
-	bool createWindow(std::string title, Dispatcher* disp);
+	bool createWindow(std::string title);
 	bool shouldClose();
 	void swapBuffers();
 	GLProc getProcAddress();
@@ -34,7 +33,8 @@ private:
 	/*
 	* Meadow input event callbacks
 	*/
-	void closeWindowEventHandler(const char* eventType);
-	void MouseLockHandler(const char* eventType);
+	void closeWindowEventHandler();
+	void MouseLockHandler();
+	void MouseUnlockHandler();
 };
 

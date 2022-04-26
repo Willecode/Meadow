@@ -165,9 +165,7 @@
     <ClCompile Include="source\ui\imgui_tables.cpp" />
     <ClCompile Include="source\ui\imgui_widgets.cpp" />
     <ClCompile Include="source\input\observer.cpp" />
-    <ClCompile Include="source\input\inputevent.cpp" />
     <ClCompile Include="source\input\inputgather.cpp" />
-    <ClCompile Include="source\input\dispatcher.cpp" />
     <ClCompile Include="source\input\inputmap.cpp" />
     <ClCompile Include="source\assets\asset.cpp" />
     <ClCompile Include="source\assets\material.cpp" />
@@ -213,10 +211,9 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\input\inputevents.h" />
     <ClInclude Include="source\input\observer.h" />
-    <ClInclude Include="source\input\inputevent.h" />
     <ClInclude Include="source\input\inputgather.h" />
-    <ClInclude Include="source\input\dispatcher.h" />
     <ClInclude Include="source\input\inputmap.h" />
     <ClInclude Include="source\assets\asset.h" />
     <ClInclude Include="source\logger.h" />

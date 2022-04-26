@@ -1,5 +1,6 @@
 #include "windowmanager.h"
 #include "service_locator/locator.h"
+#include "input/inputevents.h"
 
 namespace WindowConf {
     const float DEFAULT_SCR_WIDTH = 1920.0f;
@@ -17,7 +18,7 @@ WindowManager::~WindowManager()
     glfwDestroyWindow(m_window);
 }
 
-bool WindowManager::createWindow(std::string title, Dispatcher* disp)
+bool WindowManager::createWindow(std::string title)
 {
     // glfw: initialize and configure
 // ------------------------------
@@ -53,15 +54,20 @@ bool WindowManager::createWindow(std::string title, Dispatcher* disp)
     /*
     * Subscribe to windowclose event
     */
-    std::function<void(const char*)> f = std::bind(&WindowManager::closeWindowEventHandler, this, std::placeholders::_1);
-    disp->subscribe(CloseWindowEvent::EVENT_TYPE, f);
+    std::function<void()> f = std::bind(&WindowManager::closeWindowEventHandler, this);
+    //disp->subscribe(CloseWindowEvent::EVENT_TYPE, f);
+    InputEvents::CloseWindowEvent::subscribe(f);
+
 
     /*
     * Subscribe to mouse lock/unlock event
     */
-    std::function<void(const char*)> fml = std::bind(&WindowManager::MouseLockHandler, this, std::placeholders::_1);
-    disp->subscribe(MouseLockEvent::EVENT_TYPE, fml);
-    disp->subscribe(MouseUnlockEvent::EVENT_TYPE, fml);
+    std::function<void()> fml = std::bind(&WindowManager::MouseLockHandler, this);
+    std::function<void()> fmu = std::bind(&WindowManager::MouseUnlockHandler, this);
+    /*disp->subscribe(MouseLockEvent::EVENT_TYPE, fml);
+    disp->subscribe(MouseUnlockEvent::EVENT_TYPE, fml);*/
+    InputEvents::MouseLockEvent::subscribe(fml);
+    InputEvents::MouseUnlockEvent::subscribe(fmu);
 
     /*
     * Initialization succesful
@@ -110,23 +116,23 @@ void WindowManager::errorCallback(int error, const char* description)
     Locator::getLogger()->getLogger()->error("WindowManager: glfw error: {} {}", error, description);
 }
 
-void WindowManager::closeWindowEventHandler(const char* eventType)
+void WindowManager::closeWindowEventHandler()
 {
     glfwSetWindowShouldClose(m_window, true);
 }
 
-void WindowManager::MouseLockHandler(const char* eventType)
+void WindowManager::MouseLockHandler()
 {
     /*
     * Lock cursor to screen
     */
-    if (eventType == MouseLockEvent::EVENT_TYPE) {
-        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
-    /*
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void WindowManager::MouseUnlockHandler()
+{
+   /*
    * Unlock cursor
    */
-    else if (eventType == MouseUnlockEvent::EVENT_TYPE) {
-        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
