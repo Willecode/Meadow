@@ -23,15 +23,19 @@ public:
 	void pollInputs();
 	bool getInputFlag(InputFlag flag);
 private:
+	//These need to be static for them to be accessed in glfw callback functions, I think
+	//--------------------------------------
+	
+	static inline bool initialized;
 	/*
-	* These need to be static for them to be accessed in glfw callback functions, I think
+	* Flags that clients may check via pollInput()
+	*/
+	static inline std::map<InputFlag, bool> m_inputFlags;
+	/*
+	* Maps glfw keypresses to Meadow InputEvent notify functions
 	*/
 	static inline InputMap m_inputMap;
-	//static inline std::vector<InputMap> m_inputMaps;
-
-	static inline bool initialized;
-	static inline std::map<InputFlag, bool> m_inputFlags;
-
+	//--------------------------------------
 	WindowManager* m_windowMan;
 private:
 	/*

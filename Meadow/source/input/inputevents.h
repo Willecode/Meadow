@@ -1,3 +1,14 @@
+/*
+* The *Event classes in this file each have:
+* - a list of handlers
+* - a subscribe function which can be used to register handlers to the event class
+* - a notify function which calls all of the registered handlers
+* Why?:
+* - this way the events may specify the type of the handler funcs they allow to subscribe,
+*	which is required since the event notifications may carry data that the handler should
+*	take as arguments.
+* 
+*/
 #pragma once
 #include <vector>
 #include <functional>

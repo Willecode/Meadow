@@ -84,9 +84,6 @@
     <ClCompile Include="source\input\inputgather.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\input\observer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\ui\ui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -221,9 +218,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\input\inputgather.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\input\observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ui\ui.h">

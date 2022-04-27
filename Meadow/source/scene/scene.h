@@ -3,14 +3,12 @@
 #include "scenenode.h"
 #include "camera.h"
 #include "resource_management/shadermanager.h"
-#include "input/observer.h"
 #include "input/inputgather.h"
-#include "input/dispatcher.h"
 #include "ui/ui.h"
 /*
 * Scene graph class
 */
-class Scene : public Observer
+class Scene
 {
 public:
 	Scene();
@@ -52,7 +50,6 @@ private:
 	/*
 	* Event handlers
 	*/
-	void eventHandler() override;
 	void mousePosHandler(float x, float y);
 	void mouseLockHandler();
 	void mouseUnlockHandler();

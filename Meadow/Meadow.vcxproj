@@ -164,7 +164,6 @@
     <ClCompile Include="source\ui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="source\ui\imgui_tables.cpp" />
     <ClCompile Include="source\ui\imgui_widgets.cpp" />
-    <ClCompile Include="source\input\observer.cpp" />
     <ClCompile Include="source\input\inputgather.cpp" />
     <ClCompile Include="source\input\inputmap.cpp" />
     <ClCompile Include="source\assets\asset.cpp" />
@@ -212,7 +211,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\input\inputevents.h" />
-    <ClInclude Include="source\input\observer.h" />
     <ClInclude Include="source\input\inputgather.h" />
     <ClInclude Include="source\input\inputmap.h" />
     <ClInclude Include="source\assets\asset.h" />

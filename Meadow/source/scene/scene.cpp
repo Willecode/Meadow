@@ -83,10 +83,6 @@ void Scene::scrapeData(SceneNodeUI &uiNode)
 	scrapeNode(m_nodeMap[0].get(), uiNode, 0);
 }
 
-void Scene::eventHandler()
-{
-	//Locator::getLogger()->getLogger()->info("Scene event handler processing event: {}", eventType);
-}
 
 void Scene::mousePosHandler(float x, float y)
 {

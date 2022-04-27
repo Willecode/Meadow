@@ -14,14 +14,14 @@ InputGather::InputGather():
 
 void InputGather::init(WindowManager* windowMan)
 {
-	//glfwSetScrollCallback(window, &scrollCallback);
 	m_windowMan = windowMan;
 	/*
-	* Register InputGather::callback as a keypress callback function
+	* Register handlers as glfw callbacks
 	*/
 	glfwSetKeyCallback(m_windowMan->getWindow(), InputGather::keyCallback);
 	glfwSetCursorPosCallback(m_windowMan->getWindow(), InputGather::mousePosCallback);
 	glfwSetMouseButtonCallback(m_windowMan->getWindow(), InputGather::mouseButtonCallback);
+	//glfwSetScrollCallback(window, &scrollCallback);
 
 	/*
 	* Create input map for input events

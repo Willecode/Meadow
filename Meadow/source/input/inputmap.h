@@ -4,7 +4,7 @@
 #include <functional>
 #include "inputevents.h"
 /*
-* Recieve glfw key input and convert it into input events.
+* Maps glfw keypresses to Meadow InputEvent notify functions
 * Read key input mapping from a file (in the future).
 */
 class InputMap
