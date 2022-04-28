@@ -155,9 +155,21 @@ void UI::processNode(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMa
             ImGui::TableSetColumnIndex(0);
             ImGui::AlignTextToFramePadding();
             ImGui::TreeNodeEx("Material", flags);
+
+            /*
+            * Material combobox
+            */
             ImGui::TableSetColumnIndex(1);
-            ImGui::SetNextItemWidth(-FLT_MIN);
-            ImGui::Text("%s", node->material->name.c_str());
+            if (ImGui::BeginCombo("##material", node->material->name.c_str()))
+            {
+                for (auto const& material : uiAssets->at(Asset::AssetType::MATERIAL)) {
+                    if (ImGui::Selectable(material.second.name.c_str(), false))
+                    {
+                        InputEvents::SetNodeMaterialEvent::notify(node->id, material.second.id);
+                    }
+                }
+                ImGui::EndCombo();
+            }
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
@@ -168,9 +180,7 @@ void UI::processNode(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMa
             * Mesh combobox
             */
             ImGui::TableSetColumnIndex(1);
-            int item_current_idx = 0;
-            const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
-            if (ImGui::BeginCombo("##mesh", node->mesh->name.c_str(), flags)) // jos label on tyhjä tai jo olemas oleva ni homma kusee
+            if (ImGui::BeginCombo("##mesh", node->mesh->name.c_str())) // Empty or an existing label makes the CB disabled
             {
                 for (auto const& mesh : uiAssets->at(Asset::AssetType::MESH)) {
                     if (ImGui::Selectable(mesh.second.name.c_str(), false))
@@ -178,26 +188,8 @@ void UI::processNode(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMa
                         InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
                     }
                 }
-                /*for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-                {
-                    const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(items[n], false))
-                        item_current_idx = n;
-
-                }*/
                 ImGui::EndCombo();
             }
-
-            //static int item_current_2 = 0;
-            //ImGui::Combo("combo 2 (one-liner)", &item_current_2, "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0");
-            //const char* combo_preview_value = items[item_current_idx];
-            //if (ImGui::BeginCombo("combo 1", "ass", flags))
-            //{
-            //    ImGui::Selectable(items[0], false);
-            //    ImGui::Selectable(items[2], false);
-            //    ImGui::Selectable(items[3], false);
-            //    ImGui::EndCombo();
-            //}
         }
         for (auto child : node->children)
         {

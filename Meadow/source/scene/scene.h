@@ -55,6 +55,7 @@ private:
 	void mouseUnlockHandler();
 	void addNodeHandler(unsigned int parent = 0);
 	void setMeshHandler(unsigned int nodeid, unsigned int meshid);
+	void setMaterialHandler(unsigned int nodeid, unsigned int matid);
 	/*
 	* Other funcs
 	*/

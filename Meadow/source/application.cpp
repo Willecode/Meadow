@@ -54,11 +54,17 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     SceneNode* node = m_scene->getNode(nodeId);
     std::unique_ptr<Model> model = std::make_unique<Model>();
     
+    /*
+    * create materials and store them
+    */
     auto mat = std::make_unique<Material>("Woodblock");
     auto matid = manager.storeMaterial(std::move(mat));
     auto mat2 = manager.getMaterial(matid);
-
     mat2->setProperty("color", glm::vec3(.0f, 1.f, 0.f));
+    
+    auto mat3 = std::make_unique<Material>("Bricks");
+    matid = manager.storeMaterial(std::move(mat3));
+    auto mat4 = manager.getMaterial(matid);
 
     auto m = PrimitiveCreation::createCubeMesh();
     m->setId(1);
@@ -76,10 +82,15 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
 
     ImageLoader loader;
     ImageData imgdata = loader.loadImage("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg");
-    
+    ImageData imgdata2 = loader.loadImage("C:/dev/Meadow/data/images/Bricks054_1K_Color.jpg");
+
     auto vecptr = std::make_unique<std::vector<unsigned char>>();
+    auto vecptr2 = std::make_unique<std::vector<unsigned char>>();
     for (int i = 0; i < imgdata.width * imgdata.height * imgdata.nrChannels; i++) {
         vecptr->push_back(imgdata.bytes[i]);
+    }
+    for (int i = 0; i < imgdata2.width * imgdata2.height * imgdata2.nrChannels; i++) {
+        vecptr2->push_back(imgdata2.bytes[i]);
     }
     Renderer::ImageFormat imgForm;
     if (imgdata.nrChannels = 3) {
@@ -88,10 +99,26 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     else if (imgdata.nrChannels = 4) {
         imgForm = Renderer::ImageFormat::RGBA;
     }
+    Renderer::ImageFormat imgForm2;
+    if (imgdata.nrChannels = 3) {
+        imgForm2 = Renderer::ImageFormat::RGB;
+    }
+    else if (imgdata.nrChannels = 4) {
+        imgForm2 = Renderer::ImageFormat::RGBA;
+    }
+
     auto texPtr = std::make_unique<Texture>(std::move(vecptr), imgdata.width, imgdata.height, imgForm, "Woodtex");
+    auto texPtr2 = std::make_unique<Texture>(std::move(vecptr2), imgdata2.width, imgdata2.height, imgForm2, "BrickTex");
+
     unsigned int texId = manager.storeTexture(std::move(texPtr));
+    unsigned int texId2 = manager.storeTexture(std::move(texPtr2));
+
     Texture* tex = manager.getTexture(texId);
+    Texture* tex2 = manager.getTexture(texId2);
+
     mat2->setTexture(tex, Texture::TextureType::DIFFUSE_MAP);
+    mat4->setTexture(tex2, Texture::TextureType::DIFFUSE_MAP);
+
 
     /*
     * Add some transform to the node

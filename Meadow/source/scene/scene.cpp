@@ -25,6 +25,7 @@ Scene::Scene():
 	InputEvents::AddNodeEvent::subscribe(addNodefunc);
 
 	InputEvents::SetNodeMeshEvent::subscribe(std::bind(&Scene::setMeshHandler, this, std::placeholders::_1, std::placeholders::_2));
+	InputEvents::SetNodeMaterialEvent::subscribe(std::bind(&Scene::setMaterialHandler, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void Scene::update(float deltatime, InputGather* input)
@@ -125,6 +126,19 @@ void Scene::setMeshHandler(unsigned int nodeid, unsigned int meshid)
 		it->second->getModel()->meshes = { ResourceManager::getMesh(meshid) };
 	}
 
+}
+
+void Scene::setMaterialHandler(unsigned int nodeid, unsigned int matid)
+{
+	auto it = m_nodeMap.find(nodeid);
+	if (it == m_nodeMap.end()) {
+		Locator::getLogger()->getLogger()->error("Sene::setMaterialHandler: Tried to set material to a nonexistent node");
+		return;
+	}
+	else
+	{
+		it->second->getModel()->material = ResourceManager::getMaterial(matid);
+	}
 }
 
 void Scene::updateNode(SceneNode* node, SceneNode* parent)
