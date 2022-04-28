@@ -3,6 +3,7 @@
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM 
 #include <glm/glm.hpp>
 #include <vector>
+#include <map>
 #include "windowmanager.h"
 #include "assets/asset.h"
 
@@ -22,17 +23,20 @@ struct AssetUI {
 */
 struct SceneNodeUI {
 	int id;
+	int uiElemId;
 	std::string* name;
 	glm::vec3* scale;
 	glm::vec3* pos;
 	std::vector<SceneNodeUI> children;
 	bool hasGraphics;
-	std::vector<std::string> meshes;
-	std::string material;
+	AssetUI* mesh;
+	AssetUI* material;
 };
 
 class UI
 {
+public:
+	typedef std::map<const unsigned int, AssetUI> UIAssetMap;
 public:
 	UI();
 	/*
@@ -46,7 +50,7 @@ public:
 	/*
 	* Render UI
 	*/
-	void renderInterface(SceneNodeUI* node, std::vector<AssetUI>* uiAssets);
+	void renderInterface(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMap>* uiAssets);
 
 private:
 	/*
@@ -59,6 +63,6 @@ private:
 	/*
 	* Other
 	*/
-	void processNode(SceneNodeUI* node);
+	void processNode(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMap>* uiAssets);
 };
 

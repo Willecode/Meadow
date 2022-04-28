@@ -1,13 +1,14 @@
 #include "scenenode.h"
 #include <glm/gtc/matrix_transform.hpp>
-SceneNode::SceneNode(std::string name) :
+SceneNode::SceneNode(unsigned int id, std::string name) :
 	children({}),
 	position(glm::vec3(0.f)),
 	scale(1.0f),
 	rotations({}),
 	m_model(nullptr),
 	m_modelMatrix(glm::mat4(1.0f)),
-	name(name)
+	name(name),
+	id(id)
 {
 }
 

@@ -194,4 +194,34 @@ namespace InputEvents
 		inline static std::vector<std::function<void()>> m_handlers;
 	};
 
+	class AddNodeEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int x) {
+			for (auto h : m_handlers) {
+				h(x);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class SetNodeMeshEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int, unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int nodeid, unsigned int meshid) {
+			for (auto h : m_handlers) {
+				h(nodeid, meshid);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int, unsigned int)>> m_handlers;
+	};
+
 }

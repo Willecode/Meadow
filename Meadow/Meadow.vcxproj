@@ -190,6 +190,7 @@
     <ClCompile Include="source\windowmanager.cpp" />
     <ClCompile Include="source\assets\texture.cpp" />
     <ClCompile Include="source\ui\ui.cpp" />
+    <ClCompile Include="source\ui\uidatascraper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\messingaround.fs" />
@@ -238,6 +239,7 @@
     <ClInclude Include="source\windowmanager.h" />
     <ClInclude Include="source\assets\texture.h" />
     <ClInclude Include="source\ui\ui.h" />
+    <ClInclude Include="source\ui\uidatascraper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

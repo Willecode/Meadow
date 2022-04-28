@@ -8,6 +8,7 @@
 class SceneNode
 {
 public:
+	unsigned int id;
 	std::string name;
 	/*
 	* Scene hierarchy
@@ -22,7 +23,7 @@ public:
 	std::vector<std::pair<float, glm::vec3>> rotations; // switch to quaternions at some point
 
 public:
-	SceneNode(std::string name = "Nameless Node");
+	SceneNode(unsigned int id = -1, std::string name = "Nameless Node");
 	/*
 	* Copy constr and assignment op
 	*/

@@ -22,6 +22,7 @@
 #include "ui/ui.h"
 #include "service_locator/locator.h"
 #include "windowmanager.h"
+#include "ui/uidatascraper.h"
 class Application
 {
 public:
@@ -33,7 +34,7 @@ private:
 	std::unique_ptr<Scene> m_scene;
 	WindowManager m_windowManager;
 	InputGather m_inputGather;
-	//Dispatcher m_dispatcher;
+	UIDataScraper m_UIScraper;
 	OpenGLRenderer m_renderer;
 	ShaderManager m_shaderManager;
 	Logger m_logger;

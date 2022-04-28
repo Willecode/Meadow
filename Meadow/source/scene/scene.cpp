@@ -1,7 +1,8 @@
 #include "scene.h"
 #include "input/inputevents.h"
+#include "resource_management/resourcemanager.h"
 Scene::Scene():
-	m_nodeMap({ {0, std::make_shared<SceneNode>("root")}}), // Initialize scene graph as just the root node
+	m_nodeMap({ {0, std::make_shared<SceneNode>(0,"root")}}), // Initialize scene graph as just the root node
 	m_nodeIdCtr(1),
 	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f)),
 	m_deltatime(0.f),
@@ -11,19 +12,19 @@ Scene::Scene():
 	/*
 	* Subscribe to relevant events
 	*/
-	//std::function<void(const char*)> f = std::bind(&Scene::eventHandler, this, std::placeholders::_1);
-	//m_dispatcher->subscribe(CameraUpEvent::EVENT_TYPE, f);
 	std::function<void(float, float)> mousefunc = std::bind(&Scene::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2);
-	//m_dispatcher->subscribe2f(MouseMoveEvent::EVENT_TYPE, mousefunc);
 	InputEvents::MouseMoveEvent::subscribe(mousefunc);
 
 	std::function<void()> mouseLockfunc = std::bind(&Scene::mouseLockHandler, this);
-	//disp->subscribe(MouseLockEvent::EVENT_TYPE, mouseLockfunc);
 	InputEvents::MouseLockEvent::subscribe(mouseLockfunc);
 
 	std::function<void()> mouseUnlockfunc = std::bind(&Scene::mouseUnlockHandler, this);
-	//disp->subscribe(MouseUnlockEvent::EVENT_TYPE, mouseUnlockfunc);
 	InputEvents::MouseUnlockEvent::subscribe(mouseUnlockfunc);
+
+	std::function<void(unsigned int)>  addNodefunc = std::bind(&Scene::addNodeHandler, this, std::placeholders::_1);
+	InputEvents::AddNodeEvent::subscribe(addNodefunc);
+
+	InputEvents::SetNodeMeshEvent::subscribe(std::bind(&Scene::setMeshHandler, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void Scene::update(float deltatime, InputGather* input)
@@ -62,14 +63,17 @@ void Scene::render(ShaderManager* sdrMan)
 
 unsigned int Scene::addNode(unsigned int parent)
 {
-	m_nodeMap[m_nodeIdCtr] = std::make_shared<SceneNode>();
-	m_nodeMap[parent]->children.push_back(m_nodeMap[m_nodeIdCtr].get());
-	unsigned int ret = m_nodeIdCtr;
-	m_nodeIdCtr++;
-	return ret;
+	if (m_nodeMap.find(parent) != m_nodeMap.end()) {
+		m_nodeMap[m_nodeIdCtr] = std::make_shared<SceneNode>(m_nodeIdCtr);
+		m_nodeMap[parent]->children.push_back(m_nodeMap[m_nodeIdCtr].get());
+		unsigned int ret = m_nodeIdCtr;
+		m_nodeIdCtr++;
+		return ret;
+	}
 }
 
-SceneNode* Scene::getNode(unsigned int id)
+
+SceneNode* Scene::getNode(unsigned int id) const
 {
 	auto it = m_nodeMap.find(id);
 	if (it != m_nodeMap.end()) {
@@ -78,10 +82,10 @@ SceneNode* Scene::getNode(unsigned int id)
 	return nullptr;
 }
 
-void Scene::scrapeData(SceneNodeUI &uiNode)
-{
-	scrapeNode(m_nodeMap[0].get(), uiNode, 0);
-}
+//void Scene::scrapeData(SceneNodeUI &uiNode) const
+//{
+//	scrapeNode(m_nodeMap[0].get(), uiNode, 0);
+//}
 
 
 void Scene::mousePosHandler(float x, float y)
@@ -102,6 +106,25 @@ void Scene::mouseLockHandler()
 void Scene::mouseUnlockHandler()
 {
 	m_cameraLock = true;
+}
+
+void Scene::addNodeHandler(unsigned int parent)
+{
+	addNode(parent);
+}
+
+void Scene::setMeshHandler(unsigned int nodeid, unsigned int meshid)
+{
+	auto it = m_nodeMap.find(nodeid);
+	if (it == m_nodeMap.end()) {
+		Locator::getLogger()->getLogger()->error("Sene::setMeshHandler: Tried to set mesh to a nonexistent node");
+		return;
+	}
+	else
+	{
+		it->second->getModel()->meshes = { ResourceManager::getMesh(meshid) };
+	}
+
 }
 
 void Scene::updateNode(SceneNode* node, SceneNode* parent)
@@ -138,25 +161,25 @@ void Scene::handleCameraMovement(float deltatime, InputGather* input)
 		m_camera.inputMoveRight(deltatime);
 }
 
-void Scene::scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId)
-{
-	uiNode = SceneNodeUI();
-	uiNode.id = uiElemId;
-	uiNode.name = &node->name;
-	uiNode.scale = &node->scale;
-	uiNode.pos = &node->position;
-	Model* model = node->getModel();
-	if (model != nullptr) {
-		uiNode.hasGraphics = true;
-		for (auto const& x : model->meshes)
-			uiNode.meshes.push_back(x->name);
-		uiNode.material = model->material->name;
-	}
-	else
-		uiNode.hasGraphics = false;
-	for (auto child : node->children) {
-		SceneNodeUI uiChild;
-		uiNode.children.push_back(uiChild);
-		scrapeNode(child, uiNode.children.back(), uiElemId++);
-	}
-}
+//void Scene::scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId) const
+//{
+//	uiNode = SceneNodeUI();
+//	uiNode.id = uiElemId;
+//	uiNode.name = &node->name;
+//	uiNode.scale = &node->scale;
+//	uiNode.pos = &node->position;
+//	Model* model = node->getModel();
+//	if (model != nullptr) {
+//		uiNode.hasGraphics = true;
+//		for (auto const& x : model->meshes)
+//			uiNode.meshes.push_back(x->name);
+//		uiNode.material = model->material->name;
+//	}
+//	else
+//		uiNode.hasGraphics = false;
+//	for (auto child : node->children) {
+//		SceneNodeUI uiChild;
+//		uiNode.children.push_back(uiChild);
+//		scrapeNode(child, uiNode.children.back(), uiElemId++);
+//	}
+//}

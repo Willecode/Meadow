@@ -23,12 +23,12 @@ public:
 	*/
 	void render(ShaderManager* sdrMan);
 	unsigned int addNode(unsigned int parent = 0);
-	SceneNode* getNode(unsigned int id);
+	SceneNode* getNode(unsigned int id) const;
 
 	/*
-	* Get a UI representation of the scene graph with references to the real data
+	* Get a UI representation of the scene graph with references to the real data //moved to a separate datascraper class
 	*/
-	void scrapeData(SceneNodeUI &uiNode);
+	//void scrapeData(SceneNodeUI &uiNode) const;
 	
 private:
 	Camera m_camera;
@@ -53,12 +53,14 @@ private:
 	void mousePosHandler(float x, float y);
 	void mouseLockHandler();
 	void mouseUnlockHandler();
+	void addNodeHandler(unsigned int parent = 0);
+	void setMeshHandler(unsigned int nodeid, unsigned int meshid);
 	/*
 	* Other funcs
 	*/
 	void updateNode(SceneNode* node, SceneNode* parent);
 	void renderNode(SceneNode* node, ShaderManager* sdrMan);
 	void handleCameraMovement(float deltatime, InputGather* input);
-	void scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId);
+	//void scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId) const;
 };
 

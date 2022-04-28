@@ -1,6 +1,6 @@
 #include "application.h"
 
-Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false)
+Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false), m_UIScraper()
 {   
 
     /*
@@ -128,8 +128,8 @@ void Application::run()
     float deltatime;
     float time;
     float lastFrameTime = 0.f;
-    SceneNodeUI uiNode;
-    std::vector<AssetUI> AssetsUI;
+    //SceneNodeUI uiNode;
+    //std::vector<AssetUI> AssetsUI;
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -146,9 +146,11 @@ void Application::run()
         /*
         * Render UI
         */
-        m_scene->scrapeData(uiNode);
-        ResourceManager::scrapeData(AssetsUI);
-        m_ui.renderInterface(&uiNode, &AssetsUI);
+        /*m_scene->scrapeData(uiNode);
+        ResourceManager::scrapeData(AssetsUI);*/
+
+        m_UIScraper.update(m_scene.get());
+        m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getUIAssets());
 
         m_windowManager.swapBuffers();
     }
