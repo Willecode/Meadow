@@ -62,6 +62,7 @@ private:
 	void updateNode(SceneNode* node, SceneNode* parent);
 	void renderNode(SceneNode* node, ShaderManager* sdrMan);
 	void handleCameraMovement(float deltatime, InputGather* input);
+	void nodePassLights(SceneNode* node, ShaderManager* sdrMan);
 	//void scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId) const;
 };
 

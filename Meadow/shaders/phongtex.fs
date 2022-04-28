@@ -76,7 +76,15 @@ void main()
     //outputCol = vec3(texture(material.diffuse_map, TexCoords));
     //outputCol = vec3(0.0, 1.0, 0.0);
     //outputCol = normalDir;
+    //outputCol = material.specular;
+    //outputCol = dirLight[0].direction;
 
+//    DirectionalLight debugDirLight;
+//    debugDirLight.direction = vec3(-1.0f);
+//    debugDirLight.ambient = vec3(0.2);
+//    debugDirLight.diffuse = vec3(0.5);
+//    debugDirLight.specular = vec3(0.6);
+//    outputCol += calcDirLight(debugDirLight, normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
     // ***************************************
     FragColor = vec4(outputCol, 1.0);
 }

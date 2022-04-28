@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\scene\lightsource.cpp" />
     <ClCompile Include="source\ui\imgui.cpp" />
     <ClCompile Include="source\ui\imgui_demo.cpp" />
     <ClCompile Include="source\ui\imgui_draw.cpp" />
@@ -211,6 +212,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\scene\lightsource.h" />
     <ClInclude Include="source\input\inputevents.h" />
     <ClInclude Include="source\input\inputgather.h" />
     <ClInclude Include="source\input\inputmap.h" />

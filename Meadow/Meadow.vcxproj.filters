@@ -111,6 +111,9 @@
     <ClCompile Include="source\ui\uidatascraper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\scene\lightsource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\phongtex.fs" />
@@ -230,6 +233,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ui\uidatascraper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\scene\lightsource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

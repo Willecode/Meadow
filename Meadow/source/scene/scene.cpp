@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "input/inputevents.h"
 #include "resource_management/resourcemanager.h"
+#include "lightsource.h"
 Scene::Scene():
 	m_nodeMap({ {0, std::make_shared<SceneNode>(0,"root")}}), // Initialize scene graph as just the root node
 	m_nodeIdCtr(1),
@@ -49,8 +50,15 @@ void Scene::render(ShaderManager* sdrMan)
 	/*
 	* Set camera uniforms
 	*/
-	sdrMan->setFrameUniform("view", m_camera.getViewMatrix());
-	sdrMan->setFrameUniform("projection", m_camera.getProjectionMatrix());
+	sdrMan->setFrameUniform("view", m_camera.getViewMatrix()); // for vertex shader
+	sdrMan->setFrameUniform("projection", m_camera.getProjectionMatrix()); // for vertex shader
+	sdrMan->setFrameUniform("viewPos", m_camera.position); // for phong fragment shader
+
+	/*
+	* Set light uniforms
+	*/
+	nodePassLights(m_nodeMap[0].get(), sdrMan);
+
 	/*
 	* This is a good spot to forward frame constant uniforms to GPU
 	*/
@@ -173,6 +181,15 @@ void Scene::handleCameraMovement(float deltatime, InputGather* input)
 		m_camera.inputMoveLeft(deltatime);
 	if (input->getInputFlag(InputGather::InputFlag::CameraRight))
 		m_camera.inputMoveRight(deltatime);
+}
+
+void Scene::nodePassLights(SceneNode* node, ShaderManager* sdrMan)
+{
+	if (node->getLightsource() != nullptr)
+		node->getLightsource()->passToShader(sdrMan);
+	for (auto child : node->children) {
+		nodePassLights(child, sdrMan);
+	}
 }
 
 //void Scene::scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId) const

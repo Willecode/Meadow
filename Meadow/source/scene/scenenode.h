@@ -2,6 +2,7 @@
 #include "model.h"
 #include <glm/glm.hpp>
 #include "resource_management/shadermanager.h"
+#include "lightsource.h"
 /*
 * Represents a node in scene
 */
@@ -35,6 +36,8 @@ public:
 	*/
 	void setModel(std::unique_ptr<Model> model);
 	Model* getModel();
+	void setLightSource(std::unique_ptr<LightSource> ls);
+	LightSource* getLightsource();
 	glm::mat4* getModelMatrix();
 	/*
 	* Update node transform
@@ -48,6 +51,7 @@ public:
 
 private:
 	std::unique_ptr<Model>m_model;
+	std::unique_ptr<LightSource> m_light;
 	//Controllercomponent m_controller;
 	//PhysicsComponent m_physics;
 

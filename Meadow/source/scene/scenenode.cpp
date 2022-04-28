@@ -6,6 +6,7 @@ SceneNode::SceneNode(unsigned int id, std::string name) :
 	scale(1.0f),
 	rotations({}),
 	m_model(nullptr),
+	m_light(nullptr),
 	m_modelMatrix(glm::mat4(1.0f)),
 	name(name),
 	id(id)
@@ -39,6 +40,16 @@ void SceneNode::setModel(std::unique_ptr<Model> model)
 Model* SceneNode::getModel()
 {
 	return m_model.get();
+}
+
+void SceneNode::setLightSource(std::unique_ptr<LightSource> ls)
+{
+	m_light = std::move(ls);
+}
+
+LightSource* SceneNode::getLightsource()
+{
+	return m_light.get();
 }
 
 glm::mat4* SceneNode::getModelMatrix()

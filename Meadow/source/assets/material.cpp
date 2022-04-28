@@ -58,7 +58,32 @@ void Material::setProperty(std::string name, glm::mat4 value)
 	m_mat4Map[name] = value;
 }
 
+void Material::clearProperties()
+{
+	m_boolMap.clear();
+	m_intMap.clear();
+	m_floatMap.clear();
+	m_vec3Map.clear();
+	m_mat4Map.clear();
+}
+
 void Material::setTexture(Texture* tex, Texture::TextureType type)
 {
 	m_textures[type] = tex;
+}
+
+void Material::defaultPhong()
+{
+	clearProperties();
+	setProperty("material.shininess", 10.f);
+	setProperty("material.diffuse", MaterialConstants::DEFAULT_COLOR);
+	setProperty("material.specular", MaterialConstants::DEFAULT_COLOR * 0.1f);
+	setProperty("material.diffuse_map_present", false);
+	setProperty("material.specular_map_present", false);
+}
+
+void Material::defaultColorOnlyMat()
+{
+	clearProperties();
+	setProperty("color", MaterialConstants::DEFAULT_COLOR);
 }

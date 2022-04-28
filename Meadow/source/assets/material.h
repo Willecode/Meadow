@@ -21,11 +21,18 @@ public:
 	void setProperty(std::string name, float value);
 	void setProperty(std::string name, glm::vec3 value);
 	void setProperty(std::string name, glm::mat4 value);
+	void clearProperties();
 
 	/*
 	* Texture map setter. Pass in nullptr to disable map.
 	*/
 	void setTexture(Texture* tex, Texture::TextureType type);
+
+	/*
+	* Functions to reset material as a default material (function for each shader type)
+	*/
+	void defaultPhong();
+	void defaultColorOnlyMat();
 private:
 	/*
 	* Material property maps. These will be passed to shadermanager as 

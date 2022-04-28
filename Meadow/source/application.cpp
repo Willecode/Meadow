@@ -36,7 +36,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     auto colorSdr = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
     m_shaderManager.provideShader("phong", std::move(phongSdr));
     m_shaderManager.provideShader("color", std::move(colorSdr));
-    m_shaderManager.setCurrentShader("color"); // Set current shader to prevent nullptr
+    m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
     /*
     * Create a scene for entities
     */
@@ -58,8 +58,10 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     * create materials and store them
     */
     auto mat = std::make_unique<Material>("Woodblock");
+    mat->defaultPhong();
     auto matid = manager.storeMaterial(std::move(mat));
     auto mat2 = manager.getMaterial(matid);
+    mat2->setProperty("color", glm::vec3(.0f, 1.f, 0.f));
     mat2->setProperty("color", glm::vec3(.0f, 1.f, 0.f));
     
     auto mat3 = std::make_unique<Material>("Bricks");
@@ -144,6 +146,12 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     */
     node2->position = glm::vec3(0.f);
     
+    /*
+    * Add some light
+    */
+    auto light = std::make_unique<LightSource>();
+    light->defaultDirLight();
+    m_scene->getNode(0)->setLightSource(std::move(light));
 
 #endif
 }
@@ -155,8 +163,6 @@ void Application::run()
     float deltatime;
     float time;
     float lastFrameTime = 0.f;
-    //SceneNodeUI uiNode;
-    //std::vector<AssetUI> AssetsUI;
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -173,9 +179,6 @@ void Application::run()
         /*
         * Render UI
         */
-        /*m_scene->scrapeData(uiNode);
-        ResourceManager::scrapeData(AssetsUI);*/
-
         m_UIScraper.update(m_scene.get());
         m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getUIAssets());
 
