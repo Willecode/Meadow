@@ -1,7 +1,7 @@
 #include "scene.h"
 #include "input/inputevents.h"
 #include "resource_management/resourcemanager.h"
-#include "lightsource.h"
+#include "directionallight.h"
 Scene::Scene():
 	m_nodeMap({ {0, std::make_shared<SceneNode>(0,"root")}}), // Initialize scene graph as just the root node
 	m_nodeIdCtr(1),
@@ -57,7 +57,9 @@ void Scene::render(ShaderManager* sdrMan)
 	/*
 	* Set light uniforms
 	*/
-	nodePassLights(m_nodeMap[0].get(), sdrMan);
+	DirectionalLight::passAllInstancesToShader(sdrMan);
+	//Pointlight....
+	//nodePassLights(m_nodeMap[0].get(), sdrMan);
 
 	/*
 	* This is a good spot to forward frame constant uniforms to GPU
@@ -90,11 +92,6 @@ SceneNode* Scene::getNode(unsigned int id) const
 	}
 	return nullptr;
 }
-
-//void Scene::scrapeData(SceneNodeUI &uiNode) const
-//{
-//	scrapeNode(m_nodeMap[0].get(), uiNode, 0);
-//}
 
 
 void Scene::mousePosHandler(float x, float y)
@@ -183,34 +180,3 @@ void Scene::handleCameraMovement(float deltatime, InputGather* input)
 		m_camera.inputMoveRight(deltatime);
 }
 
-void Scene::nodePassLights(SceneNode* node, ShaderManager* sdrMan)
-{
-	if (node->getLightsource() != nullptr)
-		node->getLightsource()->passToShader(sdrMan);
-	for (auto child : node->children) {
-		nodePassLights(child, sdrMan);
-	}
-}
-
-//void Scene::scrapeNode(SceneNode* node, SceneNodeUI &uiNode, int uiElemId) const
-//{
-//	uiNode = SceneNodeUI();
-//	uiNode.id = uiElemId;
-//	uiNode.name = &node->name;
-//	uiNode.scale = &node->scale;
-//	uiNode.pos = &node->position;
-//	Model* model = node->getModel();
-//	if (model != nullptr) {
-//		uiNode.hasGraphics = true;
-//		for (auto const& x : model->meshes)
-//			uiNode.meshes.push_back(x->name);
-//		uiNode.material = model->material->name;
-//	}
-//	else
-//		uiNode.hasGraphics = false;
-//	for (auto child : node->children) {
-//		SceneNodeUI uiChild;
-//		uiNode.children.push_back(uiChild);
-//		scrapeNode(child, uiNode.children.back(), uiElemId++);
-//	}
-//}

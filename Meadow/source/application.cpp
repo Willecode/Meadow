@@ -1,5 +1,8 @@
 #include "application.h"
 
+// DEBUG --------------------
+#include "scene/directionallight.h"
+//---------------------------
 Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false), m_UIScraper()
 {   
 
@@ -149,9 +152,12 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * Add some light
     */
-    auto light = std::make_unique<LightSource>();
-    light->defaultDirLight();
-    m_scene->getNode(0)->setLightSource(std::move(light));
+    if (!DirectionalLight::maxInstanceCapacity()) {
+        auto dirLight = std::make_unique<DirectionalLight>();
+        dirLight->resetToDefault();
+        m_scene->getNode(0)->setLightSource(std::move(dirLight));
+    }
+
 
 #endif
 }
