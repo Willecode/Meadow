@@ -2,6 +2,7 @@
 
 // DEBUG --------------------
 #include "scene/directionallight.h"
+#include "scene/pointlight.h"
 //---------------------------
 Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false), m_UIScraper()
 {   
@@ -154,8 +155,11 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     */
     if (!DirectionalLight::maxInstanceCapacity()) {
         auto dirLight = std::make_unique<DirectionalLight>();
-        dirLight->resetToDefault();
-        m_scene->getNode(0)->setLightSource(std::move(dirLight));
+        m_scene->getNode(1)->setLightSource(std::move(dirLight));
+    }
+    if (!PointLight::maxInstanceCapacity()) {
+        auto pointLight = std::make_unique<PointLight>();
+        m_scene->getNode(0)->setLightSource(std::move(pointLight));
     }
 
 

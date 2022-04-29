@@ -2,6 +2,7 @@
 #include "input/inputevents.h"
 #include "resource_management/resourcemanager.h"
 #include "directionallight.h"
+#include "pointlight.h"
 Scene::Scene():
 	m_nodeMap({ {0, std::make_shared<SceneNode>(0,"root")}}), // Initialize scene graph as just the root node
 	m_nodeIdCtr(1),
@@ -58,6 +59,7 @@ void Scene::render(ShaderManager* sdrMan)
 	* Set light uniforms
 	*/
 	DirectionalLight::passAllInstancesToShader(sdrMan);
+	PointLight::passAllInstancesToShader(sdrMan);
 	//Pointlight....
 	//nodePassLights(m_nodeMap[0].get(), sdrMan);
 

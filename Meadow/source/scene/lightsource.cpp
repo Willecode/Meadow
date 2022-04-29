@@ -1,5 +1,6 @@
 #include "lightsource.h"
-LightSource::LightSource():m_floatProperties(), m_vec3Properties()
+LightSource::LightSource():
+	m_floatProperties(), m_vec3Properties(), m_intProperties()
 {
 
 }

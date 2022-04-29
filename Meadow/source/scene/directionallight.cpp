@@ -32,7 +32,7 @@ DirectionalLight::DirectionalLight():
 	if (!posFound) {
 		throw std::length_error("Tried to add too many dirlights");
 	}
-
+	resetToDefault();
 }
 
 DirectionalLight::~DirectionalLight()
