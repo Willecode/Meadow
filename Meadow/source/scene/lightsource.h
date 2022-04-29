@@ -7,6 +7,7 @@
 * 
 * This class is kept quite flexible to ease shader development, so no locked in properties.
 */
+
 class LightSource
 {
 public:

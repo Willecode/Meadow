@@ -90,7 +90,7 @@ bool DirectionalLight::maxInstanceCapacity()
 
 
 
-std::map<LightSource::PropertyType, std::string>* DirectionalLight::getPropTypeMap()
+std::map<DirectionalLight::PropertyType, std::string>* DirectionalLight::getPropTypeMap()
 {
 	return &m_propTypeMap;
 }
