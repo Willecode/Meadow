@@ -127,9 +127,8 @@ void UI::processNode(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMa
     ImGui::TableNextRow();
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();
-    bool node_open = ImGui::TreeNode("Object", "%s", node->name->c_str());
 
-    if (node_open)
+    if (ImGui::TreeNode("Object", "%s", node->name->c_str()))
     {
         float sliderSpeed = 0.01f;
         // Here we use a TreeNode to highlight on hover (we could use e.g. Selectable as well)
@@ -195,10 +194,7 @@ void UI::processNode(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMa
         {
             processNode(&child, uiAssets);
         }
-
-        ImGui::NextColumn();
-        ImGui::PopID();
         ImGui::TreePop();
-        ImGui::PopID();
     }
+        ImGui::PopID();
 }
