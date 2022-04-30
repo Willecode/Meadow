@@ -44,6 +44,7 @@ Model* SceneNode::getModel()
 
 void SceneNode::setLightSource(std::unique_ptr<LightSource> ls)
 {
+	auto oldLight = std::move(m_light);
 	m_light = std::move(ls);
 	m_light->setProperty(LightSource::PropertyType::POSITION, position);
 }

@@ -40,7 +40,12 @@ DirectionalLight::~DirectionalLight()
 	/*
 	* Remove from linked list
 	*/
-	DirectionalLight* current = DirectionalLight::HEAD;
+	if (this == HEAD){
+		HEAD = m_nextNode;
+		return;
+	}
+
+	DirectionalLight* current = HEAD;
 	for (int i = 0; i < MAX_DIRLIGHT_COUNT; i++) {
 		if (current->m_nextNode == this)
 			current->m_nextNode = this->m_nextNode;

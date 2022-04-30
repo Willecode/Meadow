@@ -40,6 +40,10 @@ PointLight::~PointLight()
 	/*
 	* Remove from linked list
 	*/
+	if (this == HEAD) {
+		HEAD = m_nextNode;
+		return;
+	}
 	PointLight* current = HEAD;
 	for (int i = 0; i < MAX_POINTLIGHT_COUNT; i++) {
 		if (current->m_nextNode == this)
@@ -59,6 +63,8 @@ void PointLight::passAllInstancesToShader(ShaderManager* sdrMan)
 			count++;
 			current = current->m_nextNode;
 		}
+		else
+			break;
 
 	}
 	sdrMan->setFrameUniform("pointLightCount", count);

@@ -16,6 +16,7 @@ public:
 	};
 public:
 	LightSource();
+	virtual ~LightSource() = default;
 	void setProperty(std::string name, float value);
 	void setProperty(std::string name, int value);
 	void setProperty(std::string name, glm::vec3 value);
