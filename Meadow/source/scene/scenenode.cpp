@@ -46,7 +46,6 @@ void SceneNode::setLightSource(std::unique_ptr<LightSource> ls)
 {
 	auto oldLight = std::move(m_light);
 	m_light = std::move(ls);
-	m_light->setProperty(LightSource::PropertyType::POSITION, position);
 }
 
 LightSource* SceneNode::getLightsource()
@@ -62,6 +61,13 @@ glm::mat4* SceneNode::getModelMatrix()
 void SceneNode::update(SceneNode* parent)
 {
 	updateModelMatrix(parent->getModelMatrix());
+
+	/*
+	* Update the lightsource's position, !!!THIS IS UNINTUITIVE!!!!,
+	* to accumulate transform take the pos from the modelmatrix
+	*/
+	if (m_light != nullptr)
+		m_light->setProperty(LightSource::PropertyType::POSITION, m_modelMatrix[3]);
 }
 
 void SceneNode::render(ShaderManager* sdrMan)

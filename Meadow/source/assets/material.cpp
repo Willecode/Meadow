@@ -69,6 +69,13 @@ void Material::clearProperties()
 
 void Material::setTexture(Texture* tex, Texture::TextureType type)
 {
+	/*
+	* nullptr disables the texturemap
+	*/
+	if (type == Texture::TextureType::DIFFUSE_MAP)
+		setProperty("material.diffuse_map_present", !(tex == nullptr));
+	else if (type == Texture::TextureType::SPECULAR_MAP)
+		setProperty("material.specular_map_present", !(tex == nullptr));
 	m_textures[type] = tex;
 }
 

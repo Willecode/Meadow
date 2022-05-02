@@ -236,7 +236,6 @@
     <ClInclude Include="source\scene\camera.h" />
     <ClInclude Include="source\assets\mesh.h" />
     <ClInclude Include="source\assets\material.h" />
-    <ClInclude Include="source\lightsource.h" />
     <ClInclude Include="source\resource_management\modelimporting.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>

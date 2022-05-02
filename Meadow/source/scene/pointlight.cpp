@@ -32,7 +32,7 @@ m_propTypeMap()
 		throw std::length_error("Tried to add too many pointlights");
 	}
 	resetToDefault();
-	m_propTypeMap.insert({ PointLight::PropertyType::POSITION, "PointLights[].position" });
+	m_propTypeMap.insert({ PointLight::PropertyType::POSITION, "pointLights[].position" });
 }
 
 PointLight::~PointLight()
@@ -93,7 +93,6 @@ void PointLight::resetToDefault()
 	setProperty("pointLights[].constant", 1.0f);
 	setProperty("pointLights[].linear", 0.09f);
 	setProperty("pointLights[].quadratic", 0.032f);
-
 }
 
 std::map<LightSource::PropertyType, std::string>* PointLight::getPropTypeMap()

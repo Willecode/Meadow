@@ -56,6 +56,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     */
     unsigned int nodeId = m_scene->addNode();
     SceneNode* node = m_scene->getNode(nodeId);
+    node->name = "Cube";
     std::unique_ptr<Model> model = std::make_unique<Model>();
     
     /*
@@ -65,8 +66,6 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     mat->defaultPhong();
     auto matid = manager.storeMaterial(std::move(mat));
     auto mat2 = manager.getMaterial(matid);
-    mat2->setProperty("color", glm::vec3(.0f, 1.f, 0.f));
-    mat2->setProperty("color", glm::vec3(.0f, 1.f, 0.f));
     
     auto mat3 = std::make_unique<Material>("Bricks");
     matid = manager.storeMaterial(std::move(mat3));
@@ -136,6 +135,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     */
     unsigned int node2Id = m_scene->addNode();
     SceneNode* node2 = m_scene->getNode(node2Id);
+    node2->name = "Sphere";
 
     (*node2) = *node;
     node2->getModel()->meshes.clear();
@@ -153,13 +153,13 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * Add some light
     */
-    if (!DirectionalLight::maxInstanceCapacity()) {
+    /*if (!DirectionalLight::maxInstanceCapacity()) {
         auto dirLight = std::make_unique<DirectionalLight>();
         m_scene->getNode(0)->setLightSource(std::move(dirLight));
-    }
+    }*/
     if (!PointLight::maxInstanceCapacity()) {
         auto pointLight = std::make_unique<PointLight>();
-        m_scene->getNode(0)->setLightSource(std::move(pointLight));
+        m_scene->getNode(1)->setLightSource(std::move(pointLight));
     }
 
 #endif
