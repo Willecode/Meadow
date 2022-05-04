@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\assets\submesh.cpp" />
     <ClCompile Include="source\scene\pointlight.cpp" />
     <ClCompile Include="source\scene\directionallight.cpp" />
     <ClCompile Include="source\scene\lightsource.cpp" />
@@ -185,7 +186,6 @@
     <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\scene\camera.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\assets\mesh.cpp" />
     <ClCompile Include="source\resource_management\modelimporting.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -214,6 +214,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\assets\submesh.h" />
     <ClInclude Include="source\scene\pointlight.h" />
     <ClInclude Include="source\scene\directionallight.h" />
     <ClInclude Include="source\scene\lightsource.h" />
@@ -234,7 +235,6 @@
     <ClInclude Include="source\resource_management\shadermanager.h" />
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\scene\camera.h" />
-    <ClInclude Include="source\assets\mesh.h" />
     <ClInclude Include="source\assets\material.h" />
     <ClInclude Include="source\resource_management\modelimporting.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
-#include "assets/mesh.h"
+#include "assets/submesh.h"
 class PrimitiveCreation
 {
 public:
-	static std::unique_ptr<Mesh> createCubeMesh();
-	static std::unique_ptr<Mesh> createSphere(int sectorCount, int stackCount);
+	static std::unique_ptr<SubMesh> createCubeMesh();
+	static std::unique_ptr<SubMesh> createSphere(int sectorCount, int stackCount);
 };

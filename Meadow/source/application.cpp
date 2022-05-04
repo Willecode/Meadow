@@ -57,7 +57,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     unsigned int nodeId = m_scene->addNode();
     SceneNode* node = m_scene->getNode(nodeId);
     node->name = "Cube";
-    std::unique_ptr<Model> model = std::make_unique<Model>();
+    std::unique_ptr<Mesh> model = std::make_unique<Mesh>();
     
     /*
     * create materials and store them
@@ -75,7 +75,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     m->setId(1);
 
     unsigned int meshid = manager.storeMesh(std::move(m));
-    Mesh* mesh = manager.getMesh(meshid);
+    SubMesh* mesh = manager.getMesh(meshid);
 
     model->material = mat2;
     model->meshes.push_back(mesh);
@@ -141,7 +141,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     node2->getModel()->meshes.clear();
     auto m2 = PrimitiveCreation::createSphere(15, 20);
     unsigned int mesh2id = manager.storeMesh(std::move(m2));
-    Mesh* mesh2 = manager.getMesh(mesh2id);
+    SubMesh* mesh2 = manager.getMesh(mesh2id);
 
     node2->getModel()->meshes.clear();
     node2->getModel()->meshes.push_back(mesh2);

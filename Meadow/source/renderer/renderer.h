@@ -1,5 +1,5 @@
 #pragma once
-#include "assets/mesh.h"
+#include "assets/submesh.h"
 #include <glm/mat4x4.hpp>
 #include "windowmanager.h"
 /*

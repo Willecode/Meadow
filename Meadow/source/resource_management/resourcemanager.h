@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <memory>
 #include "assets/texture.h"
-#include "assets/mesh.h"
+#include "assets/submesh.h"
 #include "shader.h"
 #include "assets/material.h"
 #include "ui/ui.h"
@@ -15,7 +15,7 @@ class ResourceManager
 {
 public:
 	typedef std::unordered_map<unsigned int, std::unique_ptr<Texture>>  TextureMap;
-	typedef std::unordered_map<unsigned int, std::unique_ptr<Mesh   >>  MeshMap;
+	typedef std::unordered_map<unsigned int, std::unique_ptr<SubMesh   >>  MeshMap;
 	typedef std::unordered_map<unsigned int, std::unique_ptr<Shader >>  ShaderMap;
 	typedef std::unordered_map<unsigned int, std::unique_ptr<Material>> MaterialMap;
 
@@ -26,8 +26,8 @@ public:
 	static Texture* getTexture(unsigned int texId);
 	static const TextureMap* getTextureMap();
 
-	static unsigned int storeMesh(std::unique_ptr<Mesh> mesh);
-	static Mesh* getMesh(unsigned int meshId);
+	static unsigned int storeMesh(std::unique_ptr<SubMesh> mesh);
+	static SubMesh* getMesh(unsigned int meshId);
 	static const MeshMap* getMeshMap();
 
 	static unsigned int storeMaterial(std::unique_ptr<Material> material);

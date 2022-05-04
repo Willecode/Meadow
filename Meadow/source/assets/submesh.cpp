@@ -1,33 +1,33 @@
-#include "mesh.h"
+#include "submesh.h"
 #include "service_locator/locator.h"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string name):
+SubMesh::SubMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string name):
     vertices(vertices), indices(indices), Asset(name)
 {
 
 }
 
-void Mesh::draw()
+void SubMesh::draw()
 {
     Locator::getRenderer()->drawMesh(getId());
 }
 
-void Mesh::generateBuffers()
+void SubMesh::generateBuffers()
 {
     Locator::getRenderer()->meshBuffersGenerate(getId());
 }
 
-void Mesh::buffersPushData()
+void SubMesh::buffersPushData()
 {
     Locator::getRenderer()->meshBuffersPushData(getId(), vertices, indices);
 }
 
-void Mesh::deleteBuffers()
+void SubMesh::deleteBuffers()
 {
     Locator::getRenderer()->meshBuffersDelete(getId());
 }
 
-Mesh::AssetType Mesh::getAssetType()
+SubMesh::AssetType SubMesh::getAssetType()
 {
     return AssetType::MESH;
 }

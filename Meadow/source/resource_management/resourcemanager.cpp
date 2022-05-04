@@ -55,7 +55,7 @@ const ResourceManager::TextureMap* ResourceManager::getTextureMap()
 	return &m_texMap;
 }
 
-unsigned int ResourceManager::storeMesh(std::unique_ptr<Mesh> mesh)
+unsigned int ResourceManager::storeMesh(std::unique_ptr<SubMesh> mesh)
 {
 	unsigned int newId = generateUniqueId(Asset::AssetType::MESH);
 	mesh->setId(newId);
@@ -65,7 +65,7 @@ unsigned int ResourceManager::storeMesh(std::unique_ptr<Mesh> mesh)
 	return newId;
 }
 
-Mesh* ResourceManager::getMesh(unsigned int meshId)
+SubMesh* ResourceManager::getMesh(unsigned int meshId)
 {
 	auto it = m_meshMap.find(meshId);
 	if (it == m_meshMap.end()) {

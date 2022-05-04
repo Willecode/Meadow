@@ -53,10 +53,10 @@ void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemI
 	uiNode.name = &node->name;
 	uiNode.scale = &node->scale;
 	uiNode.pos = &node->position;
-	Model* model = node->getModel();
+	Mesh* model = node->getModel();
 	if (model != nullptr) {
 		uiNode.hasGraphics = true;
-		Mesh* m = model->meshes[0]; // Models have multiple meshes, TODO: fix to mesh which contains submesh
+		SubMesh* m = model->meshes[0]; // Models have multiple meshes, TODO: fix to mesh which contains submesh
 		Material* mat = model->material;
 		uiNode.mesh = &m_UIAssetMaps.at(Asset::AssetType::MESH).at(m->getId());
 		uiNode.material = &m_UIAssetMaps.at(Asset::AssetType::MATERIAL).at(mat->getId());

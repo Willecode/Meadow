@@ -4,7 +4,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include "service_locator/locator.h"
 
-std::unique_ptr<Mesh> PrimitiveCreation::createCubeMesh()
+std::unique_ptr<SubMesh> PrimitiveCreation::createCubeMesh()
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -47,11 +47,11 @@ std::unique_ptr<Mesh> PrimitiveCreation::createCubeMesh()
         16, 17, 18, 16, 18, 19,
         20, 21, 22, 20, 22, 23
     };
-    return std::make_unique<Mesh>(vertices, indices, "Cube");
+    return std::make_unique<SubMesh>(vertices, indices, "Cube");
     
 }
 
-std::unique_ptr<Mesh> PrimitiveCreation::createSphere(int sectorCount, int stackCount)
+std::unique_ptr<SubMesh> PrimitiveCreation::createSphere(int sectorCount, int stackCount)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -91,5 +91,5 @@ std::unique_ptr<Mesh> PrimitiveCreation::createSphere(int sectorCount, int stack
         }
     }
     Locator::getLogger()->getLogger()->info("created a sphere with {} vertices", vertices.size());
-    return std::make_unique<Mesh>(vertices, indices, "Sphere");
+    return std::make_unique<SubMesh>(vertices, indices, "Sphere");
 }

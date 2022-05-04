@@ -1,12 +1,12 @@
 #include "model.h"
 
-Model::Model() :
+Mesh::Mesh() :
 	meshes(),
 	material(nullptr)
 {
 }
 
-void Model::draw(glm::mat4 modelMat, ShaderManager* sdrMan)
+void Mesh::draw(glm::mat4 modelMat, ShaderManager* sdrMan)
 {
 	sdrMan->setUniformDrawSpecific("model", modelMat);
 	material->passToShader(sdrMan);
