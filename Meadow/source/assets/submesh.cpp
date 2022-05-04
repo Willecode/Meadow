@@ -29,5 +29,5 @@ void SubMesh::deleteBuffers()
 
 SubMesh::AssetType SubMesh::getAssetType()
 {
-    return AssetType::MESH;
+    return AssetType::SUBMESH;
 }

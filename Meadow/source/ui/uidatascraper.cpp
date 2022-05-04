@@ -53,7 +53,7 @@ void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemI
 	uiNode.name = &node->name;
 	uiNode.scale = &node->scale;
 	uiNode.pos = &node->position;
-	Mesh* model = node->getModel();
+	Mesh* model = node->getMesh();
 	if (model != nullptr) {
 		uiNode.hasGraphics = true;
 		SubMesh* m = model->meshes[0]; // Models have multiple meshes, TODO: fix to mesh which contains submesh

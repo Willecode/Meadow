@@ -5,7 +5,7 @@ SceneNode::SceneNode(unsigned int id, std::string name) :
 	position(glm::vec3(0.f)),
 	scale(1.0f),
 	rotations({}),
-	m_model(nullptr),
+	m_mesh(nullptr),
 	m_light(nullptr),
 	m_modelMatrix(glm::mat4(1.0f)),
 	name(name),
@@ -18,7 +18,7 @@ SceneNode::SceneNode(const SceneNode& n1)
 	position = n1.position;
 	scale = n1.scale;
 	rotations = n1.rotations;
-	m_model = std::make_unique<Mesh>(*(n1.m_model.get()));
+	m_mesh = n1.m_mesh;
 	m_modelMatrix = n1.m_modelMatrix;
 }
 
@@ -27,19 +27,19 @@ SceneNode& SceneNode::operator=(const SceneNode& n1)
 	position = n1.position;
 	scale = n1.scale;
 	rotations = n1.rotations;
-	m_model = std::make_unique<Mesh>(*(n1.m_model.get()));
+	m_mesh = n1.m_mesh;
 	m_modelMatrix = n1.m_modelMatrix;
 	return *this;
 }
 
-void SceneNode::setModel(std::unique_ptr<Mesh> model)
+void SceneNode::setMesh(Mesh* mesh)
 {
-	m_model = std::move(model);
+	m_mesh = mesh;
 }
 
-Mesh* SceneNode::getModel()
+Mesh* SceneNode::getMesh()
 {
-	return m_model.get();
+	return m_mesh;
 }
 
 void SceneNode::setLightSource(std::unique_ptr<LightSource> ls)
@@ -72,8 +72,8 @@ void SceneNode::update(SceneNode* parent)
 
 void SceneNode::render(ShaderManager* sdrMan)
 {
-	if (m_model != nullptr)
-		m_model->draw(m_modelMatrix, sdrMan);
+	if (m_mesh != nullptr)
+		m_mesh->draw(m_modelMatrix, sdrMan);
 }
 
 void SceneNode::updateModelMatrix(glm::mat4* accumulate)

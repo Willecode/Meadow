@@ -15,6 +15,11 @@ unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
 		m_meshIdCtr++;
 		return m_meshIdCtr;
 	}
+	else if (type == Asset::AssetType::SUBMESH) {
+		m_submeshIdCtr++;
+		return m_submeshIdCtr;
+	}
+
 	else if (type == Asset::AssetType::SHADER) {
 		m_sdrIdCtr++;
 		return m_sdrIdCtr;
@@ -55,17 +60,40 @@ const ResourceManager::TextureMap* ResourceManager::getTextureMap()
 	return &m_texMap;
 }
 
-unsigned int ResourceManager::storeMesh(std::unique_ptr<SubMesh> mesh)
+unsigned int ResourceManager::storeSubmesh(std::unique_ptr<SubMesh> smesh)
+{
+	unsigned int newId = generateUniqueId(Asset::AssetType::SUBMESH);
+	smesh->setId(newId);
+	smesh->generateBuffers();
+	smesh->buffersPushData();
+	m_submeshMap.insert({ newId, std::move(smesh) });
+	return newId;
+}
+
+SubMesh* ResourceManager::getSubmesh(unsigned int meshId)
+{
+	auto it = m_submeshMap.find(meshId);
+	if (it == m_submeshMap.end()) {
+		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get submesh, id not found.\n");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+const ResourceManager::SubmeshMap* ResourceManager::getSubmeshMap()
+{
+	return &m_submeshMap;
+}
+
+unsigned int ResourceManager::storeMesh(std::unique_ptr<Mesh> mesh)
 {
 	unsigned int newId = generateUniqueId(Asset::AssetType::MESH);
 	mesh->setId(newId);
-	mesh->generateBuffers();
-	mesh->buffersPushData();
 	m_meshMap.insert({ newId, std::move(mesh) });
 	return newId;
 }
 
-SubMesh* ResourceManager::getMesh(unsigned int meshId)
+Mesh* ResourceManager::getMesh(unsigned int meshId)
 {
 	auto it = m_meshMap.find(meshId);
 	if (it == m_meshMap.end()) {

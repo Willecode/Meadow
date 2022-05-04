@@ -34,8 +34,8 @@ public:
 	/*
 	* Set and get
 	*/
-	void setModel(std::unique_ptr<Mesh> model);
-	Mesh* getModel();
+	void setMesh(Mesh* mesh);
+	Mesh* getMesh();
 	void setLightSource(std::unique_ptr<LightSource> ls);
 	LightSource* getLightsource();
 	glm::mat4* getModelMatrix();
@@ -45,12 +45,12 @@ public:
 	void update(SceneNode* parent);
 
 	/*
-	* Render this node's model with set transform
+	* Render this node's mesh with set transform
 	*/
 	void render(ShaderManager* sdrMan);
 
 private:
-	std::unique_ptr<Mesh>m_model;
+	Mesh* m_mesh;
 	std::unique_ptr<LightSource> m_light;
 	//Controllercomponent m_controller;
 	//PhysicsComponent m_physics;

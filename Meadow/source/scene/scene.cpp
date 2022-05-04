@@ -130,7 +130,8 @@ void Scene::setMeshHandler(unsigned int nodeid, unsigned int meshid)
 	}
 	else
 	{
-		it->second->getModel()->meshes = { ResourceManager::getMesh(meshid) };
+		//it->second->setMesh(ResourceManager::getMesh(meshid) );
+		Locator::getLogger()->getLogger()->error("Scene mesh set handlers commented out!");
 	}
 
 }
@@ -144,7 +145,8 @@ void Scene::setMaterialHandler(unsigned int nodeid, unsigned int matid)
 	}
 	else
 	{
-		it->second->getModel()->material = ResourceManager::getMaterial(matid);
+		//it->second->getMesh()->material = ResourceManager::getMaterial(matid);
+		Locator::getLogger()->getLogger()->error("Scene mesh set handlers commented out!");
 	}
 }
 

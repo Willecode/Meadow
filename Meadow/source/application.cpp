@@ -57,8 +57,9 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     unsigned int nodeId = m_scene->addNode();
     SceneNode* node = m_scene->getNode(nodeId);
     node->name = "Cube";
-    std::unique_ptr<Mesh> model = std::make_unique<Mesh>();
-    
+    std::unique_ptr<Mesh> newMesh = std::make_unique<Mesh>();
+    unsigned int newMeshId = manager.storeMesh(std::move(newMesh));
+    Mesh* newMeshPtr = manager.getMesh(newMeshId);
     /*
     * create materials and store them
     */
@@ -72,14 +73,15 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     auto mat4 = manager.getMaterial(matid);
 
     auto m = PrimitiveCreation::createCubeMesh();
-    m->setId(1);
+    auto smeshid = manager.storeSubmesh(std::move(m));
+    SubMesh* smesh = manager.getSubmesh(smeshid);
 
-    unsigned int meshid = manager.storeMesh(std::move(m));
-    SubMesh* mesh = manager.getMesh(meshid);
+    newMesh->addSubMesh(mat2, smesh);
 
-    model->material = mat2;
-    model->meshes.push_back(mesh);
-    node->setModel(std::move(model));
+    unsigned int meshid = manager.storeMesh(std::move(newMesh));
+    Mesh* mesh = manager.getMesh(meshid);
+
+    node->setMesh(newMeshPtr);
 
     Camera c(1920.0f / 1080.0f, 0.1f, 100.0f);
     auto renderer = Locator::getRenderer();
@@ -137,14 +139,14 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     SceneNode* node2 = m_scene->getNode(node2Id);
     node2->name = "Sphere";
 
-    (*node2) = *node;
-    node2->getModel()->meshes.clear();
+    /*(*node2) = *node;
+    node2->getMesh()->clearSubmeshes()
     auto m2 = PrimitiveCreation::createSphere(15, 20);
     unsigned int mesh2id = manager.storeMesh(std::move(m2));
     SubMesh* mesh2 = manager.getMesh(mesh2id);
 
-    node2->getModel()->meshes.clear();
-    node2->getModel()->meshes.push_back(mesh2);
+    node2->getMesh()->meshes.clear();
+    node2->getMesh()->meshes.push_back(mesh2);*/
     /*
     * Transform the second node 
     */

@@ -6,6 +6,7 @@ public:
 	enum class AssetType {
 		TEXTURE = 0,
 		MESH,
+		SUBMESH,
 		SHADER,
 		MATERIAL
 	};
