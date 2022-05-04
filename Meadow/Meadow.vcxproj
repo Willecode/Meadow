@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\assets\submesh.cpp" />
+    <ClCompile Include="source\assets\mesh.cpp" />
     <ClCompile Include="source\scene\pointlight.cpp" />
     <ClCompile Include="source\scene\directionallight.cpp" />
     <ClCompile Include="source\scene\lightsource.cpp" />
@@ -177,7 +178,6 @@
     <ClCompile Include="source\resource_management\resourcemanager.cpp" />
     <ClCompile Include="source\scene\scenenode.cpp" />
     <ClCompile Include="source\shader.cpp" />
-    <ClCompile Include="source\scene\model.cpp" />
     <ClCompile Include="source\scene\scene.cpp" />
     <ClCompile Include="source\service_locator\locator.cpp" />
     <ClCompile Include="source\renderer\openglrenderer.cpp" />
@@ -215,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\assets\submesh.h" />
+    <ClInclude Include="source\assets\mesh.h" />
     <ClInclude Include="source\scene\pointlight.h" />
     <ClInclude Include="source\scene\directionallight.h" />
     <ClInclude Include="source\scene\lightsource.h" />
@@ -227,7 +228,6 @@
     <ClInclude Include="source\resource_management\resourcemanager.h" />
     <ClInclude Include="source\scene\scenenode.h" />
     <ClInclude Include="source\shader.h" />
-    <ClInclude Include="source\scene\model.h" />
     <ClInclude Include="source\scene\scene.h" />
     <ClInclude Include="source\service_locator\locator.h" />
     <ClInclude Include="source\renderer\openglrenderer.h" />

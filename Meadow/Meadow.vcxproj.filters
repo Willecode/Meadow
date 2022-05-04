@@ -48,9 +48,6 @@
     <ClCompile Include="source\scene\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\scene\model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -118,6 +115,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\assets\submesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\assets\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -196,9 +196,6 @@
     <ClInclude Include="source\scene\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\scene\model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -245,6 +242,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\assets\submesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\assets\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

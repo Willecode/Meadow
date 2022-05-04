@@ -1,5 +1,5 @@
 #pragma once
-#include "model.h"
+#include "assets/mesh.h"
 #include <glm/glm.hpp>
 #include "resource_management/shadermanager.h"
 #include "lightsource.h"

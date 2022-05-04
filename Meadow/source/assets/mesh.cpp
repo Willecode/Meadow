@@ -1,4 +1,4 @@
-#include "model.h"
+#include "mesh.h"
 
 Mesh::Mesh() :
 	meshes(),
