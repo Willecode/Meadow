@@ -5,7 +5,7 @@
 #include "service_locator/locator.h"
 #include "input/inputevents.h"
 #include "assets/asset.h"
-UI::UI()
+UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE)
 {
 }
 UI::~UI()
@@ -84,82 +84,63 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     ImGui::BeginChild("AssetList", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
     if (ImGui::TreeNode("Textures")) {
         for (auto const& ass : uiAssets->textures) {
-            ImGui::Selectable(ass.second.name.c_str());
+            if (ImGui::Selectable(ass.second.name.c_str(), false)) {
+                m_chosenAssetType = Asset::AssetType::TEXTURE;
+                m_chosenAssetId = ass.first;
+            }
         }
         ImGui::TreePop();
     }
     if (ImGui::TreeNode("Meshes")) {
         for (auto const& ass : uiAssets->meshes) {
-            ImGui::Selectable(ass.second.name.c_str());
+            if (ImGui::Selectable(ass.second.name.c_str(), false)) {
+                m_chosenAssetType = Asset::AssetType::MESH;
+                m_chosenAssetId = ass.first;
+            }
         }
         ImGui::TreePop();
     }
     if (ImGui::TreeNode("Submeshes")) {
         for (auto const& ass : uiAssets->submeshes) {
-            ImGui::Selectable(ass.second.name.c_str());
+            if (ImGui::Selectable(ass.second.name.c_str(), false)) {
+                m_chosenAssetType = Asset::AssetType::SUBMESH;
+                m_chosenAssetId = ass.first;
+            }
         }
         ImGui::TreePop();
     }
     if (ImGui::TreeNode("Materials")) {
         for (auto const& ass : uiAssets->materials) {
-            ImGui::Selectable(ass.second.name.c_str());
+            if (ImGui::Selectable(ass.second.name.c_str(), false)) {
+                m_chosenAssetType = Asset::AssetType::MATERIAL;
+                m_chosenAssetId = ass.first;
+            }
         }
         ImGui::TreePop();
     }
-    
-    
     
     ImGui::EndChild();
     
     ImGui::SameLine();
     
     ImGui::BeginChild("AssetInspector", ImVec2(0, 260), true, window_flags);
-    ImGui::Text("some stuff here");
-    ImGui::Text("some stuff here");
-    ImGui::Text("some stuff here");
-    ImGui::Text("some stuff here");
+    if (m_chosenAssetId != 0) {
+        if (m_chosenAssetType == Asset::AssetType::MESH) {
+            for (auto const& smesh : uiAssets->meshes.at(m_chosenAssetId).submeshes) {
+                ImGui::Text(smesh.second->name.c_str());
+            }
+            /*if (ImGui::BeginCombo("materialcombo", uiAssets->meshes.at(chosenAssetId).name.c_str())) {
+                for (auto const& mat : uiAssets->materials) {
+                    if (ImGui::Selectable(mat.second.name.c_str()), false) {
+
+                    }
+                }
+
+            }*/
+        }
+    }
+    
     ImGui::EndChild();
-
-    //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-    //if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_Resizable))
-    //{
-    //    for (int i = 0; i < 5; i++) {
-    //        ImGui::Text("aaa");
-    //        ImGui::TableNextColumn();
-    //    }
-    //    //for (auto const& ass : uiAssets->textures) {
-    //    //    //ImGui::Text("Texture: %s", ass.second.name.c_str());
-    //    //    ImGui::Selectable("Texture: %s", ass.second.name.c_str());
-    //    //    ImGui::TableNextRow();
-    //    //}
-    //    //for (auto const& ass : uiAssets->meshes) {
-    //    //    ImGui::Text("Mesh: %s", ass.second.name.c_str());
-    //    //    ImGui::TableNextRow();
-    //    //}
-    //    //for (auto const& ass : uiAssets->submeshes) {
-    //    //    ImGui::Text("Submesh: %s", ass.second.name.c_str());
-    //    //    ImGui::TableNextRow();
-    //    //}
-    //    //for (auto const& ass : uiAssets->materials) {
-    //    //    ImGui::Text("Material: %s", ass.second.name.c_str());
-    //    //    ImGui::TableNextRow();
-    //    //}
-    //    ImGui::EndTable();
-    //}
-
-    //static bool selected[10] = {};
-    //if (ImGui::BeginTable("split2", 3, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
-    //{
-    //    for (int i = 0; i < 10; i++)
-    //    {
-    //        char label[32];
-    //        sprintf(label, "Item %d", i);
-    //        ImGui::TableNextColumn();
-    //        ImGui::Selectable(label, &selected[i]); // FIXME-TABLE: Selection overlap
-    //    }
-    //    ImGui::EndTable();
-    //}
-   
 
     ImGui::End();
     //////////////////////

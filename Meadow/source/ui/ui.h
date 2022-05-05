@@ -87,6 +87,12 @@ public:
 
 private:
 	/*
+	* Asset inspector things
+	*/
+	unsigned int m_chosenAssetId;
+	Asset::AssetType m_chosenAssetType;
+private:
+	/*
 	* Event handlers
 	*/
 	void mouseButtonReleaseHandler();
