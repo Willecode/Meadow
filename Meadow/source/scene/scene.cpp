@@ -130,8 +130,8 @@ void Scene::setMeshHandler(unsigned int nodeid, unsigned int meshid)
 	}
 	else
 	{
-		//it->second->setMesh(ResourceManager::getMesh(meshid) );
-		Locator::getLogger()->getLogger()->error("Scene mesh set handlers commented out!");
+		it->second->setMesh(ResourceManager::getMesh(meshid) );
+		/*Locator::getLogger()->getLogger()->error("Scene mesh set handlers commented out!");*/
 	}
 
 }

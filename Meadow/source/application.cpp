@@ -57,7 +57,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     unsigned int nodeId = m_scene->addNode();
     SceneNode* node = m_scene->getNode(nodeId);
     node->name = "Cube";
-    std::unique_ptr<Mesh> newMesh = std::make_unique<Mesh>();
+    std::unique_ptr<Mesh> newMesh = std::make_unique<Mesh>("Cube");
     unsigned int newMeshId = manager.storeMesh(std::move(newMesh));
     Mesh* newMeshPtr = manager.getMesh(newMeshId);
     /*
@@ -140,7 +140,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     unsigned int mesh2id = manager.storeSubmesh(std::move(m2));
     SubMesh* mesh2 = manager.getSubmesh(mesh2id);
     
-    unsigned int meshNode2id = manager.storeMesh(std::make_unique<Mesh>());
+    unsigned int meshNode2id = manager.storeMesh(std::make_unique<Mesh>("Sphere"));
     Mesh* meshNode2 = manager.getMesh(meshNode2id);
     node2->setMesh(meshNode2);
 

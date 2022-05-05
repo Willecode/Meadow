@@ -89,6 +89,9 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     for (auto const &ass : uiAssets->meshes) {
             ImGui::Text("Mesh: %s",ass.second.name.c_str());
     }
+    for (auto const &ass : uiAssets->submeshes) {
+            ImGui::Text("Submesh: %s",ass.second.name.c_str());
+    }
     for (auto const &ass : uiAssets->materials) {
             ImGui::Text("Material: %s",ass.second.name.c_str());
     }
@@ -149,6 +152,23 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
         ImGui::SetNextItemWidth(-FLT_MIN);
         ImGui::DragFloat3("Scale", &node->scale->x, sliderSpeed);
 
+        if (node->mesh != nullptr) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::AlignTextToFramePadding();
+            ImGui::TreeNodeEx("Mesh", flags);
+
+            ImGui::TableSetColumnIndex(1);
+            if (ImGui::BeginCombo("##meshbox", node->mesh->name.c_str())) {
+                for (auto const& mesh : uiAssets->meshes) {
+                    if (ImGui::Selectable(mesh.second.name.c_str(), false))
+                    {
+                        InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
+                    }
+                }
+                ImGui::EndCombo();
+            }
+        }
         //if (node->mesh != nullptr) {
         //    ImGui::TableNextRow();
         //    ImGui::TableSetColumnIndex(0);

@@ -131,25 +131,4 @@ const ResourceManager::MaterialMap* ResourceManager::getMaterialMap()
 	return &m_materialMap;
 }
 
-//void ResourceManager::scrapeData(std::vector<AssetUI> &assets)
-//{
-//	assets.clear();
-//	for (auto const& x : m_texMap) {
-//		AssetUI assUI(x.second->name, x.second->getAssetType(), x.first);
-//		assets.push_back(assUI);
-//	}
-//	for (auto const& x : m_meshMap) {
-//		AssetUI assUI(x.second->name, x.second->getAssetType(), x.first);
-//		assets.push_back(assUI);
-//	}
-//	//for (auto const& x : m_shaderMap) {
-//	//	AssetUI assUI(x.second->name, x.second->getAssetType(), x.first); // shaders not yet stored
-//	//	assets.push_back(assUI);
-//	//}
-//	for (auto const& x : m_materialMap) {
-//		AssetUI assUI(x.second->name, x.second->getAssetType(), x.first);
-//		assets.push_back(assUI);
-//	}
-//
-//}
 
