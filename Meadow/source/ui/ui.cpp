@@ -79,22 +79,87 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     //Create a UI window asset viewing
     //////////////////////
     ImGui::Begin("Assets");
+
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+    ImGui::BeginChild("AssetList", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
+    if (ImGui::TreeNode("Textures")) {
+        for (auto const& ass : uiAssets->textures) {
+            ImGui::Selectable(ass.second.name.c_str());
+        }
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Meshes")) {
+        for (auto const& ass : uiAssets->meshes) {
+            ImGui::Selectable(ass.second.name.c_str());
+        }
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Submeshes")) {
+        for (auto const& ass : uiAssets->submeshes) {
+            ImGui::Selectable(ass.second.name.c_str());
+        }
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Materials")) {
+        for (auto const& ass : uiAssets->materials) {
+            ImGui::Selectable(ass.second.name.c_str());
+        }
+        ImGui::TreePop();
+    }
     
-    if (ImGui::Button("Add asset")) {
-        ImGui::Text("Assets here");
-    }
-    for (auto const &ass : uiAssets->textures) {
-            ImGui::Text("Texture: %s",ass.second.name.c_str());
-    }
-    for (auto const &ass : uiAssets->meshes) {
-            ImGui::Text("Mesh: %s",ass.second.name.c_str());
-    }
-    for (auto const &ass : uiAssets->submeshes) {
-            ImGui::Text("Submesh: %s",ass.second.name.c_str());
-    }
-    for (auto const &ass : uiAssets->materials) {
-            ImGui::Text("Material: %s",ass.second.name.c_str());
-    }
+    
+    
+    ImGui::EndChild();
+    
+    ImGui::SameLine();
+    
+    ImGui::BeginChild("AssetInspector", ImVec2(0, 260), true, window_flags);
+    ImGui::Text("some stuff here");
+    ImGui::Text("some stuff here");
+    ImGui::Text("some stuff here");
+    ImGui::Text("some stuff here");
+    ImGui::EndChild();
+
+    //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+    //if (ImGui::BeginTable("split1", 1, ImGuiTableFlags_Resizable))
+    //{
+    //    for (int i = 0; i < 5; i++) {
+    //        ImGui::Text("aaa");
+    //        ImGui::TableNextColumn();
+    //    }
+    //    //for (auto const& ass : uiAssets->textures) {
+    //    //    //ImGui::Text("Texture: %s", ass.second.name.c_str());
+    //    //    ImGui::Selectable("Texture: %s", ass.second.name.c_str());
+    //    //    ImGui::TableNextRow();
+    //    //}
+    //    //for (auto const& ass : uiAssets->meshes) {
+    //    //    ImGui::Text("Mesh: %s", ass.second.name.c_str());
+    //    //    ImGui::TableNextRow();
+    //    //}
+    //    //for (auto const& ass : uiAssets->submeshes) {
+    //    //    ImGui::Text("Submesh: %s", ass.second.name.c_str());
+    //    //    ImGui::TableNextRow();
+    //    //}
+    //    //for (auto const& ass : uiAssets->materials) {
+    //    //    ImGui::Text("Material: %s", ass.second.name.c_str());
+    //    //    ImGui::TableNextRow();
+    //    //}
+    //    ImGui::EndTable();
+    //}
+
+    //static bool selected[10] = {};
+    //if (ImGui::BeginTable("split2", 3, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
+    //{
+    //    for (int i = 0; i < 10; i++)
+    //    {
+    //        char label[32];
+    //        sprintf(label, "Item %d", i);
+    //        ImGui::TableNextColumn();
+    //        ImGui::Selectable(label, &selected[i]); // FIXME-TABLE: Selection overlap
+    //    }
+    //    ImGui::EndTable();
+    //}
+   
 
     ImGui::End();
     //////////////////////
@@ -169,47 +234,7 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
                 ImGui::EndCombo();
             }
         }
-        //if (node->mesh != nullptr) {
-        //    ImGui::TableNextRow();
-        //    ImGui::TableSetColumnIndex(0);
-        //    ImGui::AlignTextToFramePadding();
-        //    ImGui::TreeNodeEx("Material", flags);
-
-        //    /*
-        //    * Material combobox
-        //    */
-        //    ImGui::TableSetColumnIndex(1);
-        //    if (ImGui::BeginCombo("##material", node->material->name.c_str()))
-        //    {
-        //        for (auto const& material : uiAssets->at(Asset::AssetType::MATERIAL)) {
-        //            if (ImGui::Selectable(material.second.name.c_str(), false))
-        //            {
-        //                InputEvents::SetNodeMaterialEvent::notify(node->id, material.second.id);
-        //            }
-        //        }
-        //        ImGui::EndCombo();
-        //    }
-
-        //    ImGui::TableNextRow();
-        //    ImGui::TableSetColumnIndex(0);
-        //    ImGui::AlignTextToFramePadding();
-        //    ImGui::TreeNodeEx("Mesh", flags);
-
-        //    /*
-        //    * Mesh combobox
-        //    */
-        //    ImGui::TableSetColumnIndex(1);
-        //    if (ImGui::BeginCombo("##mesh", node->mesh->name.c_str())) // Empty or an existing label makes the CB disabled
-        //    {
-        //        for (auto const& mesh : uiAssets->at(Asset::AssetType::MESH)) {
-        //            if (ImGui::Selectable(mesh.second.name.c_str(), false))
-        //            {
-        //                InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
-        //            }
-        //        }
-        //        ImGui::EndCombo();
-        //    }
-        //}
+    
         for (auto child : node->children)
         {
             processNode(&child, uiAssets);
