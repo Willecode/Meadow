@@ -1,31 +1,48 @@
 #include "uidatascraper.h"
 
-UIDataScraper::UIDataScraper()
-{
-	m_UIAssetMaps[Asset::AssetType::MATERIAL] = {};
-	m_UIAssetMaps[Asset::AssetType::MESH] = {};
-	m_UIAssetMaps[Asset::AssetType::TEXTURE] = {};
-}
+UIDataScraper::UIDataScraper() : m_UIAssetMaps()
+{}
 
 void UIDataScraper::update(const Scene* scene)
 {
 	/*
-	* Scrape resource manager
+	* Clear existing data
+	*/
+	m_UIAssetMaps.materials.clear();
+	m_UIAssetMaps.meshes.clear();
+	m_UIAssetMaps.submeshes.clear();
+	m_UIAssetMaps.textures.clear();
+	/*
+	* Fetch resource maps
 	*/
 	auto mats = ResourceManager::getMaterialMap();
 	auto meshes = ResourceManager::getMeshMap();
+	auto submeshes = ResourceManager::getSubmeshMap();
 	auto textures =ResourceManager::getTextureMap();
+
+	/*
+	* Scrape maps for data to populate the UI representation with
+	*/
 	for (auto const& asset : *mats) {
-		AssetUI newAss(asset.second->name, asset.second->getAssetType(), asset.first);
-		m_UIAssetMaps.at(Asset::AssetType::MATERIAL).insert({asset.first,newAss});
+		MaterialUI newAss(asset.second->name, asset.first);
+		m_UIAssetMaps.materials.insert({ asset.first,newAss });
+	}
+	for (auto const& asset : *submeshes) {
+		SubmeshUI newAss(asset.second->name, asset.first);
+		m_UIAssetMaps.submeshes.insert({ asset.first,newAss });
 	}
 	for (auto const& asset : *meshes) {
-		AssetUI newAss(asset.second->name, asset.second->getAssetType(), asset.first);
-		m_UIAssetMaps.at(Asset::AssetType::MESH).insert({ asset.first,newAss });
+		MeshUI newAss(asset.second->name, asset.first);
+		for (auto const& mat : asset.second->submeshes) {
+			for (auto const& smesh : mat.second) {
+				newAss.submeshes[&m_UIAssetMaps.submeshes.at(smesh->getId())] = &m_UIAssetMaps.materials[mat.first->getId()];
+			}
+		}
+		m_UIAssetMaps.meshes.insert({ asset.first,newAss });
 	}
 	for (auto const& asset : *textures) {
-		AssetUI newAss(asset.second->name, asset.second->getAssetType(), asset.first);
-		m_UIAssetMaps.at(Asset::AssetType::TEXTURE).insert({ asset.first,newAss });
+		TextureUI newAss(asset.second->name, asset.first);
+		m_UIAssetMaps.textures.insert({ asset.first,newAss });
 	}
 
 	/*
@@ -40,29 +57,37 @@ SceneNodeUI* UIDataScraper::getUINodeGraph()
 	return &m_uiSceneGraph;
 }
 
-std::map<Asset::AssetType, UI::UIAssetMap>* UIDataScraper::getUIAssets()
+UIAssetMaps* UIDataScraper::getUIAssets()
 {
 	return &m_UIAssetMaps;
 }
 
 void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemId)
 {
+	/*
+	* Populate the UINode with data from the SceneNode
+	*/
 	uiNode = SceneNodeUI();
 	uiNode.id = node->id;
 	uiNode.uiElemId = uiElemId;
 	uiNode.name = &node->name;
 	uiNode.scale = &node->scale;
 	uiNode.pos = &node->position;
-	Mesh* model = node->getMesh();
-	if (model != nullptr) {
-		uiNode.hasGraphics = true;
-		SubMesh* m = model->meshes[0]; // Models have multiple meshes, TODO: fix to mesh which contains submesh
-		Material* mat = model->material;
-		uiNode.mesh = &m_UIAssetMaps.at(Asset::AssetType::MESH).at(m->getId());
-		uiNode.material = &m_UIAssetMaps.at(Asset::AssetType::MATERIAL).at(mat->getId());
+
+	/*
+	* Get mesh data
+	*/
+	Mesh* mesh = node->getMesh();
+	if (mesh == nullptr) {
+		uiNode.mesh = nullptr;
 	}
-	else
-		uiNode.hasGraphics = false;
+	else {
+		uiNode.mesh = &m_UIAssetMaps.meshes.at(mesh->getId());
+	}
+
+	/*
+	* Now do the same for each of the SceneNodes children
+	*/
 	for (auto child : node->children) {
 		SceneNodeUI uiChild;
 		uiNode.children.push_back(uiChild);

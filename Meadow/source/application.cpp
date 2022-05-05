@@ -76,10 +76,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     auto smeshid = manager.storeSubmesh(std::move(m));
     SubMesh* smesh = manager.getSubmesh(smeshid);
 
-    newMesh->addSubMesh(mat2, smesh);
-
-    unsigned int meshid = manager.storeMesh(std::move(newMesh));
-    Mesh* mesh = manager.getMesh(meshid);
+    newMeshPtr->addSubMesh(mat2, smesh);
 
     node->setMesh(newMeshPtr);
 
@@ -130,8 +127,8 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * Add some transform to the node
     */
-    node->scale = glm::vec3(0.1f);
-    node->position = glm::vec3(1.0f, 0.0f, 0.0f);
+    node->scale = glm::vec3(1.2f);
+    node->position = glm::vec3(3.0f, 0.0f, 0.0f);
     /*
     * Add another node
     */
@@ -139,14 +136,15 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     SceneNode* node2 = m_scene->getNode(node2Id);
     node2->name = "Sphere";
 
-    /*(*node2) = *node;
-    node2->getMesh()->clearSubmeshes()
     auto m2 = PrimitiveCreation::createSphere(15, 20);
-    unsigned int mesh2id = manager.storeMesh(std::move(m2));
-    SubMesh* mesh2 = manager.getMesh(mesh2id);
+    unsigned int mesh2id = manager.storeSubmesh(std::move(m2));
+    SubMesh* mesh2 = manager.getSubmesh(mesh2id);
+    
+    unsigned int meshNode2id = manager.storeMesh(std::make_unique<Mesh>());
+    Mesh* meshNode2 = manager.getMesh(meshNode2id);
+    node2->setMesh(meshNode2);
 
-    node2->getMesh()->meshes.clear();
-    node2->getMesh()->meshes.push_back(mesh2);*/
+    node2->getMesh()->addSubMesh(mat4, mesh2);
     /*
     * Transform the second node 
     */
@@ -155,14 +153,14 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * Add some light
     */
-    /*if (!DirectionalLight::maxInstanceCapacity()) {
+    if (!DirectionalLight::maxInstanceCapacity()) {
         auto dirLight = std::make_unique<DirectionalLight>();
         m_scene->getNode(0)->setLightSource(std::move(dirLight));
-    }*/
-    if (!PointLight::maxInstanceCapacity()) {
+    }
+    /*if (!PointLight::maxInstanceCapacity()) {
         auto pointLight = std::make_unique<PointLight>();
         m_scene->getNode(1)->setLightSource(std::move(pointLight));
-    }
+    }*/
 
 #endif
 }

@@ -42,7 +42,7 @@ void UI::init(WindowManager* winMan)
     InputEvents::MouseMoveEvent::subscribe(mousefunc2);
 }
 
-void UI::renderInterface(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMap>* uiAssets)
+void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -83,13 +83,13 @@ void UI::renderInterface(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAss
     if (ImGui::Button("Add asset")) {
         ImGui::Text("Assets here");
     }
-    for (auto const &ass : uiAssets->at(Asset::AssetType::TEXTURE)) {
+    for (auto const &ass : uiAssets->textures) {
             ImGui::Text("Texture: %s",ass.second.name.c_str());
     }
-    for (auto const &ass : uiAssets->at(Asset::AssetType::MESH)) {
+    for (auto const &ass : uiAssets->meshes) {
             ImGui::Text("Mesh: %s",ass.second.name.c_str());
     }
-    for (auto const &ass : uiAssets->at(Asset::AssetType::MATERIAL)) {
+    for (auto const &ass : uiAssets->materials) {
             ImGui::Text("Material: %s",ass.second.name.c_str());
     }
 
@@ -118,7 +118,7 @@ void UI::mousePosHandler(float x, float y)
     io.AddMousePosEvent(x, y);
 }
 
-void UI::processNode(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMap>* uiAssets)
+void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
 {
     // Use object uid as identifier. Most commonly you could also use the object pointer as a base ID.
     ImGui::PushID(node->uiElemId);
@@ -149,47 +149,47 @@ void UI::processNode(SceneNodeUI* node, std::map<Asset::AssetType, UI::UIAssetMa
         ImGui::SetNextItemWidth(-FLT_MIN);
         ImGui::DragFloat3("Scale", &node->scale->x, sliderSpeed);
 
-        if (node->hasGraphics) {
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::AlignTextToFramePadding();
-            ImGui::TreeNodeEx("Material", flags);
+        //if (node->mesh != nullptr) {
+        //    ImGui::TableNextRow();
+        //    ImGui::TableSetColumnIndex(0);
+        //    ImGui::AlignTextToFramePadding();
+        //    ImGui::TreeNodeEx("Material", flags);
 
-            /*
-            * Material combobox
-            */
-            ImGui::TableSetColumnIndex(1);
-            if (ImGui::BeginCombo("##material", node->material->name.c_str()))
-            {
-                for (auto const& material : uiAssets->at(Asset::AssetType::MATERIAL)) {
-                    if (ImGui::Selectable(material.second.name.c_str(), false))
-                    {
-                        InputEvents::SetNodeMaterialEvent::notify(node->id, material.second.id);
-                    }
-                }
-                ImGui::EndCombo();
-            }
+        //    /*
+        //    * Material combobox
+        //    */
+        //    ImGui::TableSetColumnIndex(1);
+        //    if (ImGui::BeginCombo("##material", node->material->name.c_str()))
+        //    {
+        //        for (auto const& material : uiAssets->at(Asset::AssetType::MATERIAL)) {
+        //            if (ImGui::Selectable(material.second.name.c_str(), false))
+        //            {
+        //                InputEvents::SetNodeMaterialEvent::notify(node->id, material.second.id);
+        //            }
+        //        }
+        //        ImGui::EndCombo();
+        //    }
 
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::AlignTextToFramePadding();
-            ImGui::TreeNodeEx("Mesh", flags);
+        //    ImGui::TableNextRow();
+        //    ImGui::TableSetColumnIndex(0);
+        //    ImGui::AlignTextToFramePadding();
+        //    ImGui::TreeNodeEx("Mesh", flags);
 
-            /*
-            * Mesh combobox
-            */
-            ImGui::TableSetColumnIndex(1);
-            if (ImGui::BeginCombo("##mesh", node->mesh->name.c_str())) // Empty or an existing label makes the CB disabled
-            {
-                for (auto const& mesh : uiAssets->at(Asset::AssetType::MESH)) {
-                    if (ImGui::Selectable(mesh.second.name.c_str(), false))
-                    {
-                        InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
-                    }
-                }
-                ImGui::EndCombo();
-            }
-        }
+        //    /*
+        //    * Mesh combobox
+        //    */
+        //    ImGui::TableSetColumnIndex(1);
+        //    if (ImGui::BeginCombo("##mesh", node->mesh->name.c_str())) // Empty or an existing label makes the CB disabled
+        //    {
+        //        for (auto const& mesh : uiAssets->at(Asset::AssetType::MESH)) {
+        //            if (ImGui::Selectable(mesh.second.name.c_str(), false))
+        //            {
+        //                InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
+        //            }
+        //        }
+        //        ImGui::EndCombo();
+        //    }
+        //}
         for (auto child : node->children)
         {
             processNode(&child, uiAssets);
