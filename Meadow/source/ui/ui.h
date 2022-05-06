@@ -27,20 +27,17 @@ struct MaterialUI : public AssetUI {
 	MaterialUI(std::string name, const unsigned int id) :
 		AssetUI(name, Asset::AssetType::MATERIAL, id)
 	{}
-	MaterialUI(): AssetUI("Nameless mat", Asset::AssetType::MATERIAL, 0){}
 };
 struct SubmeshUI : public AssetUI{
-	MaterialUI* material;
 	SubmeshUI(std::string name, const unsigned int id):
-		AssetUI(name, Asset::AssetType::SUBMESH, id),
-		material(nullptr)
+		AssetUI(name, Asset::AssetType::SUBMESH, id)
 	{}
 };
 struct MeshUI : public AssetUI{
 	/*
-	* Map submesh -> material
+	* Map submeshUI id -> materialUI id
 	*/
-	std::map<AssetUI*, AssetUI*> submeshes;
+	std::map<unsigned int, unsigned int> submeshes;
 	MeshUI(std::string name, const unsigned int id) :
 		AssetUI(name, Asset::AssetType::MESH, id)
 	{}
@@ -62,7 +59,6 @@ struct SceneNodeUI {
 	glm::vec3* scale;
 	glm::vec3* pos;
 	std::vector<SceneNodeUI> children;
-	//bool hasGraphics;
 	MeshUI* mesh;
 };
 

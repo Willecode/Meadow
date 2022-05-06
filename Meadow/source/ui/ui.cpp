@@ -125,29 +125,27 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     
     ImGui::BeginChild("AssetInspector", ImVec2(0, 260), true, window_flags);
     if (m_chosenAssetId != 0) {
+        /*
+        * If mesh chosen, display that meshes submeshes and their materials
+        */
         if (m_chosenAssetType == Asset::AssetType::MESH) {
             for (auto const& smesh : uiAssets->meshes.at(m_chosenAssetId).submeshes) {
-                ImGui::Text(smesh.first->name.c_str());
+                ImGui::Text(uiAssets->submeshes.at(smesh.first).name.c_str());
                 ImGui::SameLine();
-                if (ImGui::BeginCombo("##materialcombo", smesh.second->name.c_str())) {
+                if (ImGui::BeginCombo("##materialcombo", uiAssets->materials.at(smesh.second).name.c_str())) {
                     for (auto const& mat : uiAssets->materials) {
                         if (ImGui::Selectable(mat.second.name.c_str(), false)) {
                             InputEvents::SetSubmeshMaterialEvent::notify(
-                                m_chosenAssetId, smesh.first->id, mat.first);
+                                m_chosenAssetId, smesh.first, mat.first);
                         }
                     }
                     ImGui::EndCombo();
                 }
             }
-            /*if (ImGui::BeginCombo("materialcombo", uiAssets->meshes.at(chosenAssetId).name.c_str())) {
-                for (auto const& mat : uiAssets->materials) {
-                    if (ImGui::Selectable(mat.second.name.c_str()), false) {
-
-                    }
-                }
-
-            }*/
         }
+        /*
+        * If material chosen...
+        */
     }
     
     ImGui::EndChild();

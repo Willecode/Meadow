@@ -35,7 +35,7 @@ void UIDataScraper::update(const Scene* scene)
 		MeshUI newAss(asset.second->name, asset.first);
 		for (auto const& mat : asset.second->submeshes) {
 			for (auto const& smesh : mat.second) {
-				newAss.submeshes[&m_UIAssetMaps.submeshes.at(smesh->getId())] = &m_UIAssetMaps.materials[mat.first->getId()];
+				newAss.submeshes[(smesh->getId())] = mat.first->getId();
 			}
 		}
 		m_UIAssetMaps.meshes.insert({ asset.first,newAss });
