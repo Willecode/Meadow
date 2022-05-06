@@ -17,6 +17,7 @@ public:
 	*/
 	void setUniformDrawSpecific(std::string uName, bool uValue);
 	void setUniformDrawSpecific(std::string uName, int uValue);
+	void setUniformDrawSpecific(std::string uName, unsigned int uValue);
 	void setUniformDrawSpecific(std::string uName, float uValue);
 	void setUniformDrawSpecific(std::string uName, glm::vec3 uValue);
 	void setUniformDrawSpecific(std::string uName, glm::mat4 uValue);
@@ -26,6 +27,7 @@ public:
 	*/
 	void setFrameUniform(std::string uName, bool uValue);
 	void setFrameUniform(std::string uName, int uValue);
+	void setFrameUniform(std::string uName, unsigned int uValue);
 	void setFrameUniform(std::string uName, float uValue);
 	void setFrameUniform(std::string uName, glm::vec3 uValue);
 	void setFrameUniform(std::string uName, glm::mat4 uValue);
@@ -41,19 +43,21 @@ private:
 	/*
 	* Shader uniform maps for uniforms that should be forwarded every draw call
 	*/
-	std::unordered_map<std::string, bool>      m_boolMapDraw;
-	std::unordered_map<std::string, int>	   m_intMapDraw;
-	std::unordered_map<std::string, float>	   m_floatMapDraw;
-	std::unordered_map<std::string, glm::vec3> m_vec3MapDraw;
-	std::unordered_map<std::string, glm::mat4> m_mat4MapDraw;
+	std::unordered_map<std::string, bool>         m_boolMapDraw;
+	std::unordered_map<std::string, int>	      m_intMapDraw;
+	std::unordered_map<std::string, unsigned int> m_uintMapDraw;
+	std::unordered_map<std::string, float>	      m_floatMapDraw;
+	std::unordered_map<std::string, glm::vec3>    m_vec3MapDraw;
+	std::unordered_map<std::string, glm::mat4>    m_mat4MapDraw;
 	/*
 	* Shader uniform maps for uniforms that should be forwarded once per frame
 	*/
-	std::unordered_map<std::string, bool>	   m_boolMapFrame;
-	std::unordered_map<std::string, int>	   m_intMapFrame;
-	std::unordered_map<std::string, float>	   m_floatMapFrame;
-	std::unordered_map<std::string, glm::vec3> m_vec3MapFrame;
-	std::unordered_map<std::string, glm::mat4> m_mat4MapFrame;
+	std::unordered_map<std::string, bool>	      m_boolMapFrame;
+	std::unordered_map<std::string, int>	      m_intMapFrame;
+	std::unordered_map<std::string, unsigned int> m_uintMapFrame;
+	std::unordered_map<std::string, float>	      m_floatMapFrame;
+	std::unordered_map<std::string, glm::vec3>    m_vec3MapFrame;
+	std::unordered_map<std::string, glm::mat4>    m_mat4MapFrame;
 
 	/*
 	* Maps texture type to the associated sampler.

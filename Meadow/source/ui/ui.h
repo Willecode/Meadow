@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include "windowmanager.h"
 #include "assets/asset.h"
 
@@ -24,8 +25,12 @@ struct TextureUI : public AssetUI {
 	{}
 };
 struct MaterialUI : public AssetUI {
+	std::unordered_map<std::string, float>* propertiesf;
+	std::unordered_map<std::string, glm::vec3>* propertiesv3;
 	MaterialUI(std::string name, const unsigned int id) :
-		AssetUI(name, Asset::AssetType::MATERIAL, id)
+		AssetUI(name, Asset::AssetType::MATERIAL, id),
+		propertiesf(),
+		propertiesv3()
 	{}
 };
 struct SubmeshUI : public AssetUI{

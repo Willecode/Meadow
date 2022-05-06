@@ -146,6 +146,13 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
         /*
         * If material chosen...
         */
+        if (m_chosenAssetType == Asset::AssetType::MATERIAL) {
+            MaterialUI* chosenMat = &uiAssets->materials.at(m_chosenAssetId);
+            for (auto& prop : *chosenMat->propertiesf) {
+                ImGui::Text(prop.first.c_str());
+                ImGui::DragFloat(prop.first.c_str(),&prop.second, 10);
+            }
+        }
     }
     
     ImGui::EndChild();

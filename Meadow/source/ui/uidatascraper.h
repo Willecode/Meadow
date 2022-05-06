@@ -37,6 +37,6 @@ private:
 	*			   that it can represent the SceneNode in UI
 	*/
 	void scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemId);
-
+	MaterialUI constructMaterialUI(Material*);
 };
 

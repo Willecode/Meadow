@@ -163,6 +163,17 @@ void OpenGLRenderer::setInt(const unsigned int& sdrId, const char* name, int val
     }
 }
 
+void OpenGLRenderer::setuInt(const unsigned int& sdrId, const char* name, unsigned int value)
+{
+    shader_prog_map::iterator it;
+    if (findInshaderProgMap(sdrId, it)) {
+        glUniform1ui(glGetUniformLocation(it->second, name), value);
+#ifdef VERBOSE
+        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
+#endif // VERBOSE
+    }
+}
+
 void OpenGLRenderer::setFloat(const unsigned int& sdrId, const char* name, float value)
 {
     shader_prog_map::iterator it;

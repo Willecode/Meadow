@@ -16,7 +16,7 @@ public:
 	Asset(std::string name = "Nameless asset");
 	virtual AssetType getAssetType() = 0;
 	void setId(unsigned int id);
-	unsigned int getId();
+	unsigned int getId() const;
 private:
 	unsigned int m_id;
 };

@@ -69,6 +69,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     auto mat2 = manager.getMaterial(matid);
     
     auto mat3 = std::make_unique<Material>("Bricks");
+    mat3->defaultPhong();
     matid = manager.storeMaterial(std::move(mat3));
     auto mat4 = manager.getMaterial(matid);
 

@@ -49,6 +49,11 @@ void ShaderManager::setUniformDrawSpecific(std::string uName, int uValue)
 	m_intMapDraw[uName] = uValue;
 }
 
+void ShaderManager::setUniformDrawSpecific(std::string uName, unsigned int uValue)
+{
+	m_intMapDraw[uName] = uValue;
+}
+
 void ShaderManager::setUniformDrawSpecific(std::string uName, float uValue)
 {
 	m_floatMapDraw[uName] = uValue;
@@ -74,6 +79,11 @@ void ShaderManager::setFrameUniform(std::string uName, int uValue)
 	m_intMapFrame[uName] = uValue;
 }
 
+void ShaderManager::setFrameUniform(std::string uName, unsigned int uValue)
+{
+	m_uintMapFrame[uName] = uValue;
+}
+
 void ShaderManager::setFrameUniform(std::string uName, float uValue)
 {
 	m_floatMapFrame[uName] = uValue;
@@ -95,6 +105,8 @@ void ShaderManager::forwardUniformsDrawSpecific()
 		Locator::getRenderer()->setBool(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_intMapDraw)
 		Locator::getRenderer()->setInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+	for (auto uniform : m_uintMapDraw)
+		Locator::getRenderer()->setuInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_floatMapDraw)
 		Locator::getRenderer()->setFloat(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_vec3MapDraw)
@@ -109,6 +121,8 @@ void ShaderManager::forwardFrameUniforms()
 		Locator::getRenderer()->setBool(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_intMapFrame)
 		Locator::getRenderer()->setInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+	for (auto uniform : m_uintMapFrame)
+		Locator::getRenderer()->setuInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_floatMapFrame)
 		Locator::getRenderer()->setFloat(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_vec3MapFrame)

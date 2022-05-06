@@ -38,6 +38,7 @@ public:
 	*/
 	virtual void setBool  (const unsigned int &sdrId, const char* name, bool value) = 0;
 	virtual void setInt   (const unsigned int &sdrId, const char* name, int value) = 0;
+	virtual void setuInt   (const unsigned int &sdrId, const char* name, unsigned int value) = 0;
 	virtual void setFloat (const unsigned int &sdrId, const char* name, float value) = 0;
 	virtual void setFloat3(const unsigned int &sdrId, const char* name, glm::vec3 value) = 0;
 	virtual void setMat4f (const unsigned int &sdrId, const char* name, glm::mat4 value) = 0;

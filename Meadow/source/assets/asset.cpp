@@ -9,7 +9,7 @@ void Asset::setId(unsigned int id)
 	m_id = id;
 }
 
-unsigned int Asset::getId()
+unsigned int Asset::getId() const
 {
 	return m_id;
 }

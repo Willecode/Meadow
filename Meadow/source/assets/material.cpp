@@ -16,55 +16,85 @@ void Material::passToShader(ShaderManager* sdrMan)
 	for (auto tex : m_textures) {
 		Locator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
 		if (tex.first == Texture::TextureType::DIFFUSE_MAP)
-			m_intMap["diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
+			m_uintPropsHidden["diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
 		else if (tex.first == Texture::TextureType::SPECULAR_MAP) {
-			m_intMap["specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
+			m_uintPropsHidden["specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
 		}
 	}
 	/*
 	* Pass properties to shader as uniforms
 	*/
-	for (auto prop : m_boolMap)
+	for (auto prop : m_boolPropsHidden)
 		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
-	for (auto prop : m_intMap)
+	for (auto prop : m_intPropsHidden)
 		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
-	for (auto prop : m_floatMap)
+	for (auto prop : m_uintPropsHidden)
 		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
-	for (auto prop : m_vec3Map)
+	for (auto prop : m_floatPropsHidden)
 		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
-	for (auto prop : m_mat4Map)
+	for (auto prop : m_vec3PropsHidden)
+		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+	for (auto prop : m_mat4PropsHidden)
+		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+
+	for (auto prop : m_boolPropsExposed)
+		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+	for (auto prop : m_intPropsExposed)
+		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+	for (auto prop : m_uintPropsExposed)
+		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+	for (auto prop : m_floatPropsExposed)
+		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+	for (auto prop : m_vec3PropsExposed)
+		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+	for (auto prop : m_mat4PropsExposed)
 		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
 
 }
 
-void Material::setProperty(std::string name, bool value) 
+void Material::setProperty(std::string name, bool value, bool expose) 
 {
-	m_boolMap[name] = value;
+	if (expose)
+		m_boolPropsExposed[name] = value;
+	else
+		m_boolPropsHidden[name] = value;
 }
-void Material::setProperty(std::string name, int value) 
+void Material::setProperty(std::string name, int value, bool expose)
 {
-	m_intMap[name] = value;
+	if (expose)
+		m_intPropsExposed[name] = value;
+	else
+		m_intPropsHidden[name] = value;
 }
-void Material::setProperty(std::string name, float value)
+void Material::setProperty(std::string name, float value, bool expose)
 {
-	m_floatMap[name] = value;
+	if (expose)
+		m_floatPropsExposed[name] = value;
+	else
+		m_floatPropsHidden[name] = value;
 }
-void Material::setProperty(std::string name, glm::vec3 value)
+void Material::setProperty(std::string name, glm::vec3 value, bool expose)
 {
-	m_vec3Map[name] = value;
+	if (expose)
+		m_vec3PropsExposed[name] = value;
+	else
+		m_vec3PropsHidden[name] = value;
 }
-void Material::setProperty(std::string name, glm::mat4 value)
+void Material::setProperty(std::string name, glm::mat4 value, bool expose)
 {
-	m_mat4Map[name] = value;
+	if (expose)
+		m_mat4PropsExposed[name] = value;
+	else
+		m_mat4PropsHidden[name] = value;
 }
 
 void Material::clearProperties()
 {
-	m_boolMap.clear();
-	m_intMap.clear();
-	m_floatMap.clear();
-	m_vec3Map.clear();
-	m_mat4Map.clear();
+	m_boolPropsHidden.clear();
+	m_intPropsHidden.clear();
+	m_floatPropsHidden.clear();
+	m_vec3PropsHidden.clear();
+	m_mat4PropsHidden.clear();
 }
 
 void Material::setTexture(Texture* tex, Texture::TextureType type)
@@ -82,9 +112,9 @@ void Material::setTexture(Texture* tex, Texture::TextureType type)
 void Material::defaultPhong()
 {
 	clearProperties();
-	setProperty("material.shininess", 10.f);
-	setProperty("material.diffuse", MaterialConstants::DEFAULT_COLOR);
-	setProperty("material.specular", MaterialConstants::DEFAULT_COLOR * 0.1f);
+	setProperty("material.shininess", 10.f, true);
+	setProperty("material.diffuse", MaterialConstants::DEFAULT_COLOR, true);
+	setProperty("material.specular", MaterialConstants::DEFAULT_COLOR * 0.1f, true);
 	setProperty("material.diffuse_map_present", false);
 	setProperty("material.specular_map_present", false);
 }
@@ -94,3 +124,34 @@ void Material::defaultColorOnlyMat()
 	clearProperties();
 	setProperty("color", MaterialConstants::DEFAULT_COLOR);
 }
+
+std::unordered_map<std::string, bool>* Material::getExposedPropertiesb()
+{
+	return &m_boolPropsExposed;
+}
+
+std::unordered_map<std::string, int>* Material::getExposedPropertiesi()
+{
+	return &m_intPropsExposed;
+}
+
+std::unordered_map<std::string, unsigned int>* Material::getExposedPropertiesui()
+{
+	return &m_uintPropsExposed;
+}
+
+std::unordered_map<std::string, float>* Material::getExposedPropertiesf()
+{
+	return &m_floatPropsExposed;
+}
+
+std::unordered_map<std::string, glm::vec3>* Material::getExposedPropertiesv3()
+{
+	return &m_vec3PropsExposed;
+}
+
+std::unordered_map<std::string, glm::mat4>* Material::getExposedPropertiesm4()
+{
+	return &m_mat4PropsExposed;
+}
+

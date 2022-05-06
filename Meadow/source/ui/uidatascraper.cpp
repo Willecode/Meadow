@@ -24,8 +24,9 @@ void UIDataScraper::update(const Scene* scene)
 	* Scrape maps for data to populate the UI representation with
 	*/
 	for (auto const& asset : *mats) {
-		MaterialUI newAss(asset.second->name, asset.first);
-		m_UIAssetMaps.materials.insert({ asset.first,newAss });
+		/*MaterialUI newAss(asset.second->name, asset.first);*/
+		//m_UIAssetMaps.materials.insert({ asset.first,newAss });
+		m_UIAssetMaps.materials.insert({ asset.first,constructMaterialUI(asset.second.get())});
 	}
 	for (auto const& asset : *submeshes) {
 		SubmeshUI newAss(asset.second->name, asset.first);
@@ -93,4 +94,12 @@ void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemI
 		uiNode.children.push_back(uiChild);
 		scrapeNode(child, uiNode.children.back(), uiElemId++);
 	}
+}
+
+MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
+{
+	MaterialUI newAss(mat->name, mat->getId());
+	newAss.propertiesf = mat->getExposedPropertiesf();
+	newAss.propertiesv3 = mat->getExposedPropertiesv3();
+	return newAss;
 }
