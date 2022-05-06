@@ -224,18 +224,18 @@ namespace InputEvents
 		inline static std::vector<std::function<void(unsigned int, unsigned int)>> m_handlers;
 	};
 
-	class SetNodeMaterialEvent
+	class SetSubmeshMaterialEvent
 	{
 	public:
-		static void subscribe(std::function<void(unsigned int, unsigned int)> f) {
+		static void subscribe(std::function<void(unsigned int, unsigned int, unsigned int)> f) {
 			m_handlers.push_back(f);
 		}
-		static void notify(unsigned int nodeid, unsigned int materialid) {
+		static void notify(unsigned int meshid, unsigned int submeshid, unsigned int materialid) {
 			for (auto h : m_handlers) {
-				h(nodeid, materialid);
+				h(meshid, submeshid, materialid);
 			}
 		}
 	private:
-		inline static std::vector<std::function<void(unsigned int, unsigned int)>> m_handlers;
+		inline static std::vector<std::function<void(unsigned int, unsigned int, unsigned int)>> m_handlers;
 	};
 }

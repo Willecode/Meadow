@@ -7,7 +7,6 @@
 class Mesh : public Asset
 {
 public:
-	//static constexpr int MAX_MATERIAL_SLOTS = 10;
 	/*
 	* Contains all submeshes the mesh consists of, each assigned to a material.
 	* Material is key to ease drawing (pass material props to shader, then draw all the submeshes using that material)
@@ -29,6 +28,7 @@ public:
 	void setSubMeshMaterial(Material* material, SubMesh* submesh);
 	void clearSubmeshes();
 	AssetType getAssetType() override;
+
 private:
 	SubmeshMap::iterator findSubmesh(SubMesh* submesh);
 };

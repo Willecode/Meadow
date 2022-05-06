@@ -27,7 +27,6 @@ Scene::Scene():
 	InputEvents::AddNodeEvent::subscribe(addNodefunc);
 
 	InputEvents::SetNodeMeshEvent::subscribe(std::bind(&Scene::setMeshHandler, this, std::placeholders::_1, std::placeholders::_2));
-	InputEvents::SetNodeMaterialEvent::subscribe(std::bind(&Scene::setMaterialHandler, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void Scene::update(float deltatime, InputGather* input)

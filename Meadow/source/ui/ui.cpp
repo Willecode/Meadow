@@ -127,7 +127,17 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     if (m_chosenAssetId != 0) {
         if (m_chosenAssetType == Asset::AssetType::MESH) {
             for (auto const& smesh : uiAssets->meshes.at(m_chosenAssetId).submeshes) {
-                ImGui::Text(smesh.second->name.c_str());
+                ImGui::Text(smesh.first->name.c_str());
+                ImGui::SameLine();
+                if (ImGui::BeginCombo("##materialcombo", smesh.second->name.c_str())) {
+                    for (auto const& mat : uiAssets->materials) {
+                        if (ImGui::Selectable(mat.second.name.c_str(), false)) {
+                            InputEvents::SetSubmeshMaterialEvent::notify(
+                                m_chosenAssetId, smesh.first->id, mat.first);
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
             }
             /*if (ImGui::BeginCombo("materialcombo", uiAssets->meshes.at(chosenAssetId).name.c_str())) {
                 for (auto const& mat : uiAssets->materials) {

@@ -40,6 +40,10 @@ public:
 	static Material* getMaterial(unsigned int materialId);
 	static const MaterialMap* getMaterialMap();
 	
+	/*
+	* Event handlers
+	*/
+	void setSubmeshMaterialHandler(unsigned int meshid, unsigned int submeshid, unsigned int materialid);
 private:
 
 	/*

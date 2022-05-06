@@ -1,8 +1,16 @@
 #include "resourcemanager.h"
+#include "input/inputevents.h"
 #include "fmt/format.h"
 
 ResourceManager::ResourceManager()
 {
+	/*
+	* Subscribe to events
+	*/
+	InputEvents::SetSubmeshMaterialEvent::subscribe(
+		std::bind(&ResourceManager::setSubmeshMaterialHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+	);
+
 }
 
 unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
@@ -129,6 +137,18 @@ Material* ResourceManager::getMaterial(unsigned int materialId)
 const ResourceManager::MaterialMap* ResourceManager::getMaterialMap()
 {
 	return &m_materialMap;
+}
+
+void ResourceManager::setSubmeshMaterialHandler(unsigned int meshid, unsigned int submeshid, unsigned int materialid)
+{
+	auto meshit = m_meshMap.find(meshid);
+	auto smeshit = m_submeshMap.find(submeshid);
+	auto matit = m_materialMap.find(materialid);
+	if (   meshit     != m_meshMap.end()
+		&& smeshit != m_submeshMap.end()
+		&& matit   != m_materialMap.end()) {
+		meshit->second->setSubMeshMaterial(matit->second.get(), smeshit->second.get());
+	}
 }
 
 
