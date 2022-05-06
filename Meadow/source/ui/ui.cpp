@@ -148,6 +148,42 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
         */
         if (m_chosenAssetType == Asset::AssetType::MATERIAL) {
             MaterialUI* chosenMat = &uiAssets->materials.at(m_chosenAssetId);
+
+            /*
+            * Diffuse map combobox
+            */
+            std::string diffComboLabel = "";
+            if (chosenMat->diffuseMap == 0)
+                diffComboLabel = "No texture";
+            else
+                diffComboLabel = uiAssets->textures.at(chosenMat->id).name;
+            if (ImGui::BeginCombo("Diffuse map", diffComboLabel.c_str())) {
+                for (auto const& tex : uiAssets->textures) {
+                    if (ImGui::Selectable(tex.second.name.c_str(), false)) {
+                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::DIFFUSE_MAP);
+                    }
+                }
+                ImGui::EndCombo();
+                    
+            }
+            /*
+            * Specular map combobox
+            */
+            std::string specComboLabel = "";
+            if (chosenMat->specularMap == 0)
+                specComboLabel = "No texture";
+            else
+                specComboLabel = uiAssets->textures.at(chosenMat->id).name;
+            if (ImGui::BeginCombo("Specular map", specComboLabel.c_str())) {
+                for (auto const& tex : uiAssets->textures) {
+                    if (ImGui::Selectable(tex.second.name.c_str(), false)) {
+                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::SPECULAR_MAP);
+                    }
+                }
+                ImGui::EndCombo();
+            }
+
+
             for (auto& prop : *chosenMat->propertiesf) {
                 ImGui::Text(prop.first.c_str());
                 ImGui::DragFloat(prop.first.c_str(),&prop.second, 10);

@@ -12,6 +12,7 @@
 #pragma once
 #include <vector>
 #include <functional>
+#include "assets/texture.h"
 namespace InputEvents
 {
 	class CameraUpEvent
@@ -237,5 +238,20 @@ namespace InputEvents
 		}
 	private:
 		inline static std::vector<std::function<void(unsigned int, unsigned int, unsigned int)>> m_handlers;
+	};
+
+	class setMaterialTextureEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int, unsigned int, Texture::TextureType)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int materialid, unsigned int textureid, Texture::TextureType textureType) {
+			for (auto h : m_handlers) {
+				h(materialid, textureid, textureType);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int, unsigned int, Texture::TextureType)>> m_handlers;
 	};
 }

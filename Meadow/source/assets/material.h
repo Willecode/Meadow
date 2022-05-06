@@ -27,7 +27,10 @@ public:
 	* Texture map setter. Pass in nullptr to disable map.
 	*/
 	void setTexture(Texture* tex, Texture::TextureType type);
-
+	/*
+	* Get currently assigned texture
+	*/
+	Texture* getTexture(Texture::TextureType type);
 	/*
 	* Functions to reset material as a default material (function for each shader type)
 	*/
@@ -43,6 +46,8 @@ public:
 	std::unordered_map<std::string, float>* getExposedPropertiesf();
 	std::unordered_map<std::string, glm::vec3>* getExposedPropertiesv3();
 	std::unordered_map<std::string, glm::mat4>* getExposedPropertiesm4();
+
+	
 
 private:
 	/*

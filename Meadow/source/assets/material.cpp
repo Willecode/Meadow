@@ -109,6 +109,15 @@ void Material::setTexture(Texture* tex, Texture::TextureType type)
 	m_textures[type] = tex;
 }
 
+Texture* Material::getTexture(Texture::TextureType type)
+{
+	auto it = m_textures.find(type);
+	if (it != m_textures.end())
+		return it->second;
+	else
+		return nullptr;
+}
+
 void Material::defaultPhong()
 {
 	clearProperties();

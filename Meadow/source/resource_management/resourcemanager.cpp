@@ -10,7 +10,9 @@ ResourceManager::ResourceManager()
 	InputEvents::SetSubmeshMaterialEvent::subscribe(
 		std::bind(&ResourceManager::setSubmeshMaterialHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 	);
-
+	InputEvents::setMaterialTextureEvent::subscribe(
+		std::bind(&ResourceManager::setMaterialTextureEventHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+	);
 }
 
 unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
@@ -148,6 +150,15 @@ void ResourceManager::setSubmeshMaterialHandler(unsigned int meshid, unsigned in
 		&& smeshit != m_submeshMap.end()
 		&& matit   != m_materialMap.end()) {
 		meshit->second->setSubMeshMaterial(matit->second.get(), smeshit->second.get());
+	}
+}
+
+void ResourceManager::setMaterialTextureEventHandler(unsigned int materialid, unsigned int textureid, Texture::TextureType textureType)
+{
+	auto matit = m_materialMap.find(materialid);
+	auto texit = m_texMap.find(textureid);
+	if (matit != m_materialMap.end() && texit != m_texMap.end()) {
+		matit->second->setTexture(texit->second.get(), textureType);
 	}
 }
 
