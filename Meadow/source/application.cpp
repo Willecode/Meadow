@@ -152,16 +152,37 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     node2->position = glm::vec3(0.f);
     
     /*
+    * Add third node and mesh and mat
+    */
+    unsigned int thirdMaterialID = manager.storeMaterial(std::make_unique<Material>("Color Material"));
+    Material* thirdMaterial = manager.getMaterial(thirdMaterialID);
+    thirdMaterial->defaultPhong();
+
+    unsigned int sphereSubmeshID = manager.storeSubmesh(std::move(PrimitiveCreation::createSphere(30, 50)));
+    SubMesh* sphereSubmesh = manager.getSubmesh(sphereSubmeshID);
+    unsigned int thirdNodeID = m_scene->addNode();
+    SceneNode* thirdNode = m_scene->getNode(thirdNodeID);
+    unsigned int thirdMeshID = manager.storeMesh(std::move(std::make_unique<Mesh>("Lamp")));
+    Mesh* thirdMesh = manager.getMesh(thirdMeshID);
+    thirdMesh->addSubMesh(thirdMaterial, sphereSubmesh);
+    thirdNode->setMesh(thirdMesh);
+    thirdNode->scale = glm::vec3(0.2f);
+    thirdNode->position = glm::vec3(-1.0f);
+    thirdNode->name = "LampNode";
+
+    
+
+    /*
     * Add some light
     */
-    if (!DirectionalLight::maxInstanceCapacity()) {
+    /*if (!DirectionalLight::maxInstanceCapacity()) {
         auto dirLight = std::make_unique<DirectionalLight>();
         m_scene->getNode(0)->setLightSource(std::move(dirLight));
-    }
-    /*if (!PointLight::maxInstanceCapacity()) {
-        auto pointLight = std::make_unique<PointLight>();
-        m_scene->getNode(1)->setLightSource(std::move(pointLight));
     }*/
+    if (!PointLight::maxInstanceCapacity()) {
+        auto pointLight = std::make_unique<PointLight>();
+        m_scene->getNode(thirdNodeID)->setLightSource(std::move(pointLight));
+    }
 
 #endif
 }
