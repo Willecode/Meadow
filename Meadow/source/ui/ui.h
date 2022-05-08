@@ -51,6 +51,9 @@ struct MeshUI : public AssetUI{
 		AssetUI(name, Asset::AssetType::MESH, id)
 	{}
 };
+struct LightSourceUI {
+
+};
 
 struct UIAssetMaps {
 	std::map<const unsigned int, TextureUI>  textures;
@@ -69,6 +72,7 @@ struct SceneNodeUI {
 	glm::vec3* pos;
 	std::vector<SceneNodeUI> children;
 	MeshUI* mesh;
+
 };
 
 class UI

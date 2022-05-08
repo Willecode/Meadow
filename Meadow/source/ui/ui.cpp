@@ -258,22 +258,29 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
         ImGui::SetNextItemWidth(-FLT_MIN);
         ImGui::DragFloat3("Scale", &node->scale->x, sliderSpeed);
 
-        if (node->mesh != nullptr) {
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::AlignTextToFramePadding();
-            ImGui::TreeNodeEx("Mesh", flags);
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
+        ImGui::TreeNodeEx("Mesh", flags);
 
-            ImGui::TableSetColumnIndex(1);
-            if (ImGui::BeginCombo("##meshbox", node->mesh->name.c_str())) {
-                for (auto const& mesh : uiAssets->meshes) {
-                    if (ImGui::Selectable(mesh.second.name.c_str(), false))
-                    {
-                        InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
-                    }
-                }
-                ImGui::EndCombo();
+        ImGui::TableSetColumnIndex(1);
+        const char* meshboxlabel;
+        if (node->mesh != nullptr)
+            meshboxlabel = node->mesh->name.c_str();
+        else
+            meshboxlabel = "No Mesh";
+        if (ImGui::BeginCombo("##meshbox", meshboxlabel)) {
+            if (ImGui::Selectable("No Mesh", false))
+            {
+                InputEvents::SetNodeMeshEvent::notify(node->id, 0);
             }
+            for (auto const& mesh : uiAssets->meshes) {
+                if (ImGui::Selectable(mesh.second.name.c_str(), false))
+                {
+                    InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
+                }
+            }
+            ImGui::EndCombo();
         }
     
         for (auto child : node->children)
