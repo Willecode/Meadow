@@ -186,10 +186,16 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
                 ImGui::EndCombo();
             }
 
-
+            /*
+            * Material properties
+            */
             for (auto& prop : *chosenMat->propertiesf) {
                 ImGui::Text(prop.first.c_str());
-                ImGui::DragFloat(prop.first.c_str(),&prop.second, 10);
+                ImGui::DragFloat(prop.first.c_str(),&prop.second, 2);
+            }
+            for (auto& prop : *chosenMat->propertiesv3) {
+                ImGui::Text(prop.first.c_str());
+                ImGui::DragFloat3(prop.first.c_str(), &prop.second.r, 0.01);
             }
         }
     }
