@@ -184,6 +184,11 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
         m_scene->getNode(thirdNodeID)->setLightSource(std::move(pointLight));
     }
 
+    /*
+    * Do dumb stuff
+    */
+    //auto texnullptr = std::make_unique<Mesh>(nullptr);
+
 #endif
 }
 

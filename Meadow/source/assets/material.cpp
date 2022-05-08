@@ -14,11 +14,13 @@ void Material::passToShader(ShaderManager* sdrMan)
 	* Bind textures to appropriate samplers, set texture sampler properties
 	*/
 	for (auto tex : m_textures) {
-		Locator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
-		if (tex.first == Texture::TextureType::DIFFUSE_MAP)
-			m_uintPropsHidden["diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
-		else if (tex.first == Texture::TextureType::SPECULAR_MAP) {
-			m_uintPropsHidden["specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
+		if (tex.second != nullptr) {
+			Locator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
+			if (tex.first == Texture::TextureType::DIFFUSE_MAP)
+				m_uintPropsHidden["diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
+			else if (tex.first == Texture::TextureType::SPECULAR_MAP) {
+				m_uintPropsHidden["specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
+			}
 		}
 	}
 	/*

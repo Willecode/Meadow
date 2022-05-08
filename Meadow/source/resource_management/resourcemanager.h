@@ -56,6 +56,9 @@ private:
 	inline static unsigned int m_sdrIdCtr     = 0;
 	inline static unsigned int m_matIdCtr     = 0;
 
+	/*
+	* Storages for assets.
+	*/
 	inline static TextureMap  m_texMap      = {};
 	inline static MeshMap     m_meshMap     = {};
 	inline static SubmeshMap  m_submeshMap  = {};

@@ -57,6 +57,9 @@ unsigned int ResourceManager::storeTexture(std::unique_ptr<Texture> texture)
 
 Texture* ResourceManager::getTexture(unsigned int texId)
 {
+	if (texId == 0) {
+		return nullptr;
+	}
 	auto it = m_texMap.find(texId);
 	if (it == m_texMap.end()) {
 		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get texture, id not found.\n");
@@ -82,6 +85,8 @@ unsigned int ResourceManager::storeSubmesh(std::unique_ptr<SubMesh> smesh)
 
 SubMesh* ResourceManager::getSubmesh(unsigned int meshId)
 {
+	if (meshId == 0)
+		return nullptr;
 	auto it = m_submeshMap.find(meshId);
 	if (it == m_submeshMap.end()) {
 		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get submesh, id not found.\n");
@@ -105,6 +110,8 @@ unsigned int ResourceManager::storeMesh(std::unique_ptr<Mesh> mesh)
 
 Mesh* ResourceManager::getMesh(unsigned int meshId)
 {
+	if (meshId == 0)
+		return nullptr;
 	auto it = m_meshMap.find(meshId);
 	if (it == m_meshMap.end()) {
 		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get mesh, id not found.\n");
@@ -128,6 +135,8 @@ unsigned int ResourceManager::storeMaterial(std::unique_ptr<Material> material)
 
 Material* ResourceManager::getMaterial(unsigned int materialId)
 {
+	if (materialId == 0)
+		return nullptr;
 	auto it = m_materialMap.find(materialId);
 	if (it == m_materialMap.end()) {
 		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get material, id not found.\n");
@@ -155,10 +164,11 @@ void ResourceManager::setSubmeshMaterialHandler(unsigned int meshid, unsigned in
 
 void ResourceManager::setMaterialTextureEventHandler(unsigned int materialid, unsigned int textureid, Texture::TextureType textureType)
 {
-	auto matit = m_materialMap.find(materialid);
-	auto texit = m_texMap.find(textureid);
-	if (matit != m_materialMap.end() && texit != m_texMap.end()) {
-		matit->second->setTexture(texit->second.get(), textureType);
+
+	Material* mat = getMaterial(materialid);
+	Texture* tex = getTexture(textureid);
+	if (mat != nullptr) {
+		mat->setTexture(tex, textureType);
 	}
 }
 

@@ -156,8 +156,11 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
             if (chosenMat->diffuseMap == 0)
                 diffComboLabel = "No texture";
             else
-                diffComboLabel = uiAssets->textures.at(chosenMat->id).name;
+                diffComboLabel = uiAssets->textures.at(chosenMat->diffuseMap).name;
             if (ImGui::BeginCombo("Diffuse map", diffComboLabel.c_str())) {
+                if (ImGui::Selectable("No texture", false)) {
+                    InputEvents::setMaterialTextureEvent::notify(chosenMat->id,0, Texture::TextureType::DIFFUSE_MAP);
+                }
                 for (auto const& tex : uiAssets->textures) {
                     if (ImGui::Selectable(tex.second.name.c_str(), false)) {
                         InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::DIFFUSE_MAP);
@@ -173,7 +176,7 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
             if (chosenMat->specularMap == 0)
                 specComboLabel = "No texture";
             else
-                specComboLabel = uiAssets->textures.at(chosenMat->id).name;
+                specComboLabel = uiAssets->textures.at(chosenMat->specularMap).name;
             if (ImGui::BeginCombo("Specular map", specComboLabel.c_str())) {
                 for (auto const& tex : uiAssets->textures) {
                     if (ImGui::Selectable(tex.second.name.c_str(), false)) {
