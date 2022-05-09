@@ -84,7 +84,7 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     ImGui::BeginChild("AssetList", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
     if (ImGui::TreeNode("Textures")) {
         for (auto const& ass : uiAssets->textures) {
-            if (ImGui::Selectable(ass.second.name.c_str(), false)) {
+            if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
                 m_chosenAssetType = Asset::AssetType::TEXTURE;
                 m_chosenAssetId = ass.first;
             }
@@ -93,7 +93,7 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     }
     if (ImGui::TreeNode("Meshes")) {
         for (auto const& ass : uiAssets->meshes) {
-            if (ImGui::Selectable(ass.second.name.c_str(), false)) {
+            if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
                 m_chosenAssetType = Asset::AssetType::MESH;
                 m_chosenAssetId = ass.first;
             }
@@ -102,7 +102,7 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     }
     if (ImGui::TreeNode("Submeshes")) {
         for (auto const& ass : uiAssets->submeshes) {
-            if (ImGui::Selectable(ass.second.name.c_str(), false)) {
+            if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
                 m_chosenAssetType = Asset::AssetType::SUBMESH;
                 m_chosenAssetId = ass.first;
             }
@@ -111,7 +111,7 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     }
     if (ImGui::TreeNode("Materials")) {
         for (auto const& ass : uiAssets->materials) {
-            if (ImGui::Selectable(ass.second.name.c_str(), false)) {
+            if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
                 m_chosenAssetType = Asset::AssetType::MATERIAL;
                 m_chosenAssetId = ass.first;
             }

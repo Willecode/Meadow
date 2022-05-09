@@ -188,7 +188,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * import a model
     */
-    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/backpack/backpack.obj", m_scene.get(), 0);
+    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/testmodel/testfile.obj", m_scene.get(), 0);
 
 #endif
 }

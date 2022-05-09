@@ -120,6 +120,8 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			* Load the texture file
 			*/
 			ImageData imgdata = imgLoader.loadImage(std::string(directory + "/" + path.C_Str()));
+			if (imgdata.bytes == nullptr)
+				return false;
 			auto vecptr = std::make_unique<std::vector<unsigned char>>();
 			for (int i = 0; i < imgdata.width * imgdata.height * imgdata.nrChannels; i++) {
 				vecptr->push_back(imgdata.bytes[i]);
@@ -131,8 +133,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			else if (imgdata.nrChannels = 4) {
 				imgForm = Renderer::ImageFormat::RGBA;
 			}
-			if (imgdata.bytes == nullptr)
-				return false;
+			
 			/*
 			* Create new Texture
 			*/
