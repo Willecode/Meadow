@@ -51,7 +51,7 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     /*
     * Display demo window for reference?
     */
-    bool show_demo_window = true;
+    bool show_demo_window = false;
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -257,6 +257,14 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
         ImGui::TableSetColumnIndex(1);
         ImGui::SetNextItemWidth(-FLT_MIN);
         ImGui::DragFloat3("Scale", &node->scale->x, sliderSpeed);
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
+        ImGui::TreeNodeEx("Rotation", flags);
+        ImGui::TableSetColumnIndex(1);
+        ImGui::SetNextItemWidth(-FLT_MIN);
+        ImGui::DragFloat3("Rotation", &node->orientationEuler->x, sliderSpeed);
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);

@@ -4,7 +4,8 @@ SceneNode::SceneNode(unsigned int id, std::string name) :
 	children({}),
 	position(glm::vec3(0.f)),
 	scale(1.0f),
-	rotations({}),
+	orientation(),
+	orientationEuler(glm::vec3(0.f)),
 	m_mesh(nullptr),
 	m_light(nullptr),
 	m_modelMatrix(glm::mat4(1.0f)),
@@ -17,7 +18,7 @@ SceneNode::SceneNode(const SceneNode& n1)
 {
 	position = n1.position;
 	scale = n1.scale;
-	rotations = n1.rotations;
+	orientation = n1.orientation;
 	m_mesh = n1.m_mesh;
 	m_modelMatrix = n1.m_modelMatrix;
 }
@@ -26,7 +27,7 @@ SceneNode& SceneNode::operator=(const SceneNode& n1)
 {
 	position = n1.position;
 	scale = n1.scale;
-	rotations = n1.rotations;
+	orientation = n1.orientation;
 	m_mesh = n1.m_mesh;
 	m_modelMatrix = n1.m_modelMatrix;
 	return *this;
@@ -78,10 +79,12 @@ void SceneNode::render(ShaderManager* sdrMan)
 
 void SceneNode::updateModelMatrix(glm::mat4* accumulate)
 {
+	/*
+	* This needs to be optimized
+	*/
+	orientation = glm::quat(orientationEuler);
 	m_modelMatrix = glm::translate(glm::mat4(1.0), position);
-	for (auto rot : rotations){
-		m_modelMatrix = glm::rotate(m_modelMatrix, rot.first, rot.second);
-	}
+	m_modelMatrix *= glm::toMat4(orientation);
 	m_modelMatrix = glm::scale(m_modelMatrix, scale);
 	m_modelMatrix = (*accumulate) * m_modelMatrix;
 }

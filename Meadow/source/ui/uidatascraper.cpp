@@ -74,6 +74,7 @@ void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemI
 	uiNode.name = &node->name;
 	uiNode.scale = &node->scale;
 	uiNode.pos = &node->position;
+	uiNode.orientationEuler = &node->orientationEuler;
 
 	/*
 	* Get mesh data

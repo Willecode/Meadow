@@ -1,6 +1,7 @@
 #pragma once
 #include "assets/mesh.h"
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include "resource_management/shadermanager.h"
 #include "lightsource.h"
 /*
@@ -21,7 +22,8 @@ public:
 	*/
 	glm::vec3 position;
 	glm::vec3 scale;
-	std::vector<std::pair<float, glm::vec3>> rotations; // switch to quaternions at some point
+	glm::vec3 orientationEuler;
+	glm::quat orientation;
 
 public:
 	SceneNode(unsigned int id = -1, std::string name = "Nameless Node");

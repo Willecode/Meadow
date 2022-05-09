@@ -70,6 +70,7 @@ struct SceneNodeUI {
 	std::string* name;
 	glm::vec3* scale;
 	glm::vec3* pos;
+	glm::vec3* orientationEuler;
 	std::vector<SceneNodeUI> children;
 	MeshUI* mesh;
 
