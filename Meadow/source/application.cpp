@@ -3,6 +3,7 @@
 // DEBUG --------------------
 #include "scene/directionallight.h"
 #include "scene/pointlight.h"
+#include "resource_management/modelimporting.h"
 //---------------------------
 Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false), m_UIScraper()
 {   
@@ -185,9 +186,9 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     }
 
     /*
-    * Do dumb stuff
+    * import a model
     */
-    //auto texnullptr = std::make_unique<Mesh>(nullptr);
+    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/backpack/backpack.obj", m_scene.get(), 0);
 
 #endif
 }

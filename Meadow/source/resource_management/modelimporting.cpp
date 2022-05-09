@@ -1,20 +1,16 @@
 #include "modelimporting.h"
-#if 0 
-#include "imageloader.h"
+#if 1
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
-#include "materials/phongmaterial.h"
-
+#include <glm/gtx/matrix_decompose.hpp>
+#include "imageloader.h"
+#include "service_locator/locator.h"
+#include "resourcemanager.h"
 /*
 TODO:
 Refactor/clean up this mess of a file
 */
-
-
-
-
 
 glm::mat4 matAssimpToGlm(aiMatrix4x4 aimat) {
 	return glm::transpose(glm::mat4(
@@ -23,43 +19,8 @@ glm::mat4 matAssimpToGlm(aiMatrix4x4 aimat) {
 		aimat[2][0], aimat[2][1], aimat[2][2], aimat[2][3],
 		aimat[3][0], aimat[3][1], aimat[3][2], aimat[3][3]));
 }
-static std::shared_ptr<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, ImageCache& textureCache, std::string directory)
-{
-	// Implement this comment block if you want to load multiple textures of the same type.
-	// Remember to use imagecache.h to prevent loading the same texture multiple times!
-	// ----
 
-	/*std::vector<Texture> textures;
-	aiString path;
-	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
-		aiReturn ret = mat->GetTexture(type, i, &path);
-		if (ret != aiReturn_SUCCESS) {
-			std::cout << "GetTexture failed" << std::endl;
-		}
-		else {
-			std::cout << path.C_Str() << std::endl;
-			textures.push_back(loadTextureFromFile(std::string(path.C_Str()), typeName));
-		}
-	}*/
-	// ----
-
-	aiString path;
-	aiReturn ret = mat->GetTexture(type, 0, &path);
-	if (ret != aiReturn_SUCCESS) {
-		Locator::getLogger()->getLogger()->info("Assimp failed to get texture type {} texture in folder: {}/\n", type, directory);
-		return nullptr;
-	}
-	else {
-		//textures.push_back(loadTextureFromFile(std::string(path.C_Str()), typeName));
-		return std::make_shared<Texture>(
-			std::string(directory + "/" + path.C_Str()),
-			GL_TEXTURE_2D,
-			textureCache);
-		
-	}
-}
-
-static std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene, ImageCache& textureCache)
+static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
@@ -97,107 +58,121 @@ static std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene, Ima
 			indices.push_back(mesh->mFaces[i].mIndices[2]);
 		}
 		else
-			std::cout << "model encountered a non-triangulated face with vertex count of: " + indexCount << std::endl;
+			Locator::getLogger()->getLogger()->info("model encountered a non-triangulated face with vertex count of: {}", indexCount);
 	}
-	// Implement this comment block if you want to load multiple textures of the same type.
-	// Remember to use imagecache.h to prevent loading the same texture multiple times!
-	// ----
-		// Here we can choose what map types to load
-	//std::vector<Texture> diffuseMaps = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, "diffuse_map");
-	//std::vector<Texture> specularMaps = loadMaterialTextures(scene->mMaterials[mesh->mMaterialIndex], aiTextureType_SPECULAR, "specular_map");
-	//textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-	//textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-	// ----
-	return std::make_shared<Mesh>(vertices, indices);
+	return std::make_unique<SubMesh>(vertices, indices);
 }
-static void processNode(std::shared_ptr<GraphicsComponent> parent, aiNode* node, const aiScene* scene, ImageCache &textureCache, std::string directory)
-{
-	auto objptr = std::make_shared<GraphicsComponent>(); // assimp node => wilkan engine object
-	objptr->name = node->mName.C_Str();
-	parent->addChild(objptr);
-	objptr->setModelMatrix(matAssimpToGlm(node->mTransformation)); //fbx imports in huge scale for some reason
-	std::vector<unsigned int> addedMaterials;
-	std::vector<unsigned int>::iterator it;
-	int materialCount = 0;
-	int materialSlot = 0;
-	// process all the node's meshes (if any)
-	for (unsigned int i = 0; i < node->mNumMeshes; i++)
-	{
-		aiMesh* aimesh = scene->mMeshes[node->mMeshes[i]];
-		it = std::find(addedMaterials.begin(), addedMaterials.end(), aimesh->mMaterialIndex);
-		if (it == addedMaterials.end()) {
-			if (materialCount < objptr->MAX_MATERIAL_SLOTS) {
-				// Encountered a new material, create new material slot for object
-				addedMaterials.push_back(aimesh->mMaterialIndex);
-				objptr->setMaterial(std::make_shared<PhongMaterial>(
-					loadMaterialTextures(scene->mMaterials[aimesh->mMaterialIndex], aiTextureType_DIFFUSE, textureCache, directory),
-					loadMaterialTextures(scene->mMaterials[aimesh->mMaterialIndex], aiTextureType_SPECULAR, textureCache, directory)), materialCount);
-				materialCount++;
-			}
-			else {
-				Locator::getLogger()->getLogger()->info(
-					"ERROR: Tried to import object with more than the max of {} materials",
-					objptr->MAX_MATERIAL_SLOTS);
-			}
-		}
-		else {
-			materialSlot = std::distance(addedMaterials.begin(), it);
-		}
 
-		objptr->addMesh(processMesh(aimesh, scene, textureCache), materialSlot);
-		
-	}
-	// then do the same for each of its children
-	for (unsigned int i = 0; i < node->mNumChildren; i++)
-	{
-		processNode(objptr, node->mChildren[i], scene, textureCache, directory);
-	}
+static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode, const aiScene* aiscene, std::string directory, ResourceManager resourceMan, std::map<int, int> aiMatToMeadowMatId)
+{
+	unsigned int newNodeId = scene->addNode(parentNodeId);
+	SceneNode* newNode = scene->getNode(newNodeId);
+	/*
+	* Set scenenode name
+	*/
+	newNode->name = ainode->mName.C_Str();
+	/*
+	* Set scenenode transform
+	*/
+	glm::vec3 skew;
+	glm::vec4 perspective;
+	glm::mat4 transf = matAssimpToGlm(ainode->mTransformation);
+	glm::decompose(transf, newNode->scale, newNode->orientation, newNode->position, skew, perspective);
 
 	
+	/*
+	* If there are aimeshes, the scenenode will be given a new Mesh and each aimesh will be linked as it's SubMesh
+	*/
+	if (ainode->mNumMeshes > 0) {
+		std::unique_ptr<Mesh> newMesh = std::make_unique<Mesh>(ainode->mName.C_Str());
+		// process all the ainode meshes (our submeshes)
+		for (unsigned int i = 0; i < ainode->mNumMeshes; i++) {
+			aiMesh* aimesh = aiscene->mMeshes[ainode->mMeshes[i]];
+			auto newSubmesh = processMesh(aimesh, aiscene);
+			unsigned int newSubmeshId = resourceMan.storeSubmesh(std::move(newSubmesh));
+			SubMesh* newSubmeshPtr = resourceMan.getSubmesh(newSubmeshId);
+			newMesh->addSubMesh(resourceMan.getMaterial(aiMatToMeadowMatId.at(aimesh->mMaterialIndex)), newSubmeshPtr);
+		}
+		unsigned int newMeshId = resourceMan.storeMesh(std::move(newMesh));
+		newNode->setMesh(resourceMan.getMesh(newMeshId));
+	}
+	//// then do the same for each of the ainode's children
+	for (unsigned int i = 0; i < ainode->mNumChildren; i++)
+	{
+		processNode(newNodeId, scene, ainode->mChildren[i], aiscene, directory, resourceMan, aiMatToMeadowMatId);
+	}
 	return;
 }
 
-std::shared_ptr<GraphicsComponent> ModelImporting::importWavefront(std::string path, ImageCache &textureCache)
-{
-	auto objptr = std::make_shared<GraphicsComponent>();
+bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* aiscene, std::string directory, ResourceManager resourceMan) {
+	/*
+	* Get materials
+	*/
+	ImageLoader imgLoader;
+	for (int i = 0; i < aiscene->mNumMaterials; i++) {
+		aiString path;
+		aiReturn ret = aiscene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+		if (ret != aiReturn_SUCCESS) {
+			Locator::getLogger()->getLogger()->info("Assimp failed to get texture type {} texture in folder: {}/\n", "diffuse", directory);
+		}
+		else {
+			/*
+			* Load the texture file
+			*/
+			ImageData imgdata = imgLoader.loadImage(std::string(directory + "/" + path.C_Str()));
+			auto vecptr = std::make_unique<std::vector<unsigned char>>();
+			for (int i = 0; i < imgdata.width * imgdata.height * imgdata.nrChannels; i++) {
+				vecptr->push_back(imgdata.bytes[i]);
+			}
+			Renderer::ImageFormat imgForm;
+			if (imgdata.nrChannels = 3) {
+				imgForm = Renderer::ImageFormat::RGB;
+			}
+			else if (imgdata.nrChannels = 4) {
+				imgForm = Renderer::ImageFormat::RGBA;
+			}
+			if (imgdata.bytes == nullptr)
+				return false;
+			/*
+			* Create new Texture
+			*/
+			auto newTex = std::make_unique<Texture>(std::move(vecptr), imgdata.width, imgdata.height, imgForm, path.C_Str());
+			unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
+			Texture* newTexPtr = resourceMan.getTexture(newTexId);
+			/*
+			* Create new Material
+			*/
+			auto newMat = std::make_unique<Material>(aiscene->mMaterials[i]->GetName().C_Str());
+			unsigned int newMatId = resourceMan.storeMaterial(std::move(newMat));
+			Material* newMatPtr = resourceMan.getMaterial(newMatId);
+			newMatPtr->setTexture(newTexPtr, Texture::TextureType::DIFFUSE_MAP);
 
-	//ImageCache cache;
-	//Assimp::Importer importer;
-	//const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-	//if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-	//{
-	//	std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
-	//	return nullptr;
-	//}
-	//std::string directory = path.substr(0, path.find_last_of('/'));
+			/*
+			* Create mapping from aimaterial id to Meadow material id
+			*/
+			aiMatToMeadowMatId[i] = newMatId;
+		}
 
-	//processNode(objptr.get(), scene->mRootNode, scene, textureCache, directory);
-	//// free image cache since all textures of the model are loaded at this point
-	//cache.freeAllData();
-
-	return objptr;
+	}
+	return true;
 }
 
-std::shared_ptr<GraphicsComponent> ModelImporting::objsFromFile(std::string path, ImageCache& textureCache)
+void ModelImporting::objsFromFile(std::string path, Scene* scene, unsigned int parentId)
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	const aiScene* aiscene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	if (!aiscene || aiscene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !aiscene->mRootNode)
 	{
-		std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
-		return nullptr;
+		Locator::getLogger()->getLogger()->error("ERROR::ASSIMP::{}", importer.GetErrorString());
+		return;
 	}
-
-	auto objptr = std::make_shared<GraphicsComponent>();
-	objptr->name = path;
-	ImageCache cache;
 	std::string directory = path.substr(0, path.find_last_of('/'));
-
-	processNode(objptr, scene->mRootNode, scene, textureCache, directory);
-	// free image cache since all textures of the model are loaded at this point
-	cache.freeAllData();
-
-	return objptr;
+	ResourceManager resourceMan = ResourceManager::getInstance();
+	std::map<int, int> aiMatToMeadowMatId;
+	bool success = processMaterials(aiMatToMeadowMatId, aiscene, directory, resourceMan);
+	if (success)
+		processNode(parentId, scene, aiscene->mRootNode, aiscene, directory, resourceMan, aiMatToMeadowMatId);
+	return;
 }
 
 #endif // if 0

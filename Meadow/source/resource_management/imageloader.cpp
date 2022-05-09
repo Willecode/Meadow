@@ -4,6 +4,7 @@
 #include <service_locator/locator.h>
 ImageLoader::ImageLoader() : m_loadedImages()
 {
+    stbi_set_flip_vertically_on_load(1);
 }
 ImageData ImageLoader::loadImage(const std::string& path)
 {
