@@ -229,7 +229,7 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     * note: this causes an access violation exception if format is GL_RGBA and provided data is in RGB format.
     *       Also the textures may just glitch out if formats are not passed correctly...
     */
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, m_imgFormatMap.at(format), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, m_imgFormatMap.at(format), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
     /*********************************/
 
     glBindTexture(GL_TEXTURE_2D, 0);

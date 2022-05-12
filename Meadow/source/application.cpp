@@ -94,11 +94,10 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     int width2, height2;
     auto vecptr2 = std::make_unique<std::vector<unsigned char>>();
 
-
-    loader.loadImage("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg", width1, height1, *vecptr1.get());
+    loader.loadImage("C:/dev/Meadow/data/images/grass.png", width1, height1, *vecptr1.get());
     loader.loadImage("C:/dev/Meadow/data/images/Bricks054_1K_Color.jpg", width2, height2, *vecptr2.get());
 
-    auto texPtr = std::make_unique<Texture>(std::move(vecptr1), width1, height1, Renderer::ImageFormat::RGBA, "Woodtex");
+    auto texPtr = std::make_unique<Texture>(std::move(vecptr1), width1, height1, Renderer::ImageFormat::RGBA, "BushTex");
     auto texPtr2 = std::make_unique<Texture>(std::move(vecptr2), width2, height2, Renderer::ImageFormat::RGBA, "BrickTex");
 
     unsigned int texId = manager.storeTexture(std::move(texPtr));
