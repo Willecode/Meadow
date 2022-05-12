@@ -6,33 +6,35 @@ ImageLoader::ImageLoader() : m_loadedImages()
 {
     stbi_set_flip_vertically_on_load(0);
 }
-ImageData ImageLoader::loadImage(const std::string& path)
+bool ImageLoader::loadImage(const std::string& path, int& width, int& height, std::vector<unsigned char>& bytes)
 {
 
     Locator::getLogger()->getLogger()->info("ImageLoader: Loading image {}\n", path.c_str()); // Logging
 
     /*
-    * if stbi_load() fails, it returns nullptr
+    * Force stb to import with 4 channels (all textures will be rgba)
     */
-    int width, height, nrChannels;
-    unsigned char* bytes = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+    int nrChannels;
+    unsigned char* byteArr = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
 
+    /*
+    * if stbi_load() fails, it returns false
+    */
     if (stbi_failure_reason())
         Locator::getLogger()->getLogger()->info("ImageLoader: detected failure: {}\n", stbi_failure_reason()); // Logging
-    if (!bytes) {
-        Locator::getLogger()->getLogger()->info("ImageLoader: stb failed to load image {}, returning byte ptr as nullptr\n", path.c_str()); // Logging
+    if (!byteArr) {
+        Locator::getLogger()->getLogger()->info("ImageLoader: stb failed to load image {}, returning false\n", path.c_str()); // Logging
+        return false;
     }
-    /*
-    * return image data
-    */
-    ImageData img;
-    img.bytes = bytes;
-    img.height = height;
-    img.width = width;
-    img.nrChannels = nrChannels;
 
-    m_loadedImages.insert(img.bytes);
-    return img;
+    /*
+    * Populate provided vec with bytes
+    */
+    bytes.clear();
+    bytes.insert(bytes.end(), &byteArr[0], &byteArr[width*height*4]);
+
+    m_loadedImages.insert(byteArr);
+    return true;
 }
 
 ImageLoader::~ImageLoader()

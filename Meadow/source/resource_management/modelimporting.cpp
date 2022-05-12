@@ -119,25 +119,15 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			/*
 			* Load the texture file
 			*/
-			ImageData imgdata = imgLoader.loadImage(std::string(directory + "/" + path.C_Str()));
-			if (imgdata.bytes == nullptr)
+			int width1, height1;
+			auto vecptr1 = std::make_unique<std::vector<unsigned char>>();
+			if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), width1, height1, *vecptr1.get()))
 				return false;
-			auto vecptr = std::make_unique<std::vector<unsigned char>>();
-			for (int i = 0; i < imgdata.width * imgdata.height * imgdata.nrChannels; i++) {
-				vecptr->push_back(imgdata.bytes[i]);
-			}
-			Renderer::ImageFormat imgForm;
-			if (imgdata.nrChannels = 3) {
-				imgForm = Renderer::ImageFormat::RGB;
-			}
-			else if (imgdata.nrChannels = 4) {
-				imgForm = Renderer::ImageFormat::RGBA;
-			}
 			
 			/*
 			* Create new Texture
 			*/
-			auto newTex = std::make_unique<Texture>(std::move(vecptr), imgdata.width, imgdata.height, imgForm, path.C_Str());
+			auto newTex = std::make_unique<Texture>(std::move(vecptr1), width1, height1, Renderer::ImageFormat::RGBA, path.C_Str());
 			unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
 			Texture* newTexPtr = resourceMan.getTexture(newTexId);
 			/*

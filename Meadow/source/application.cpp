@@ -43,7 +43,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     m_shaderManager.provideShader("phong", std::move(phongSdr));
     m_shaderManager.provideShader("color", std::move(colorSdr));
     m_shaderManager.provideShader("depth", std::move(depthSdr));
-    m_shaderManager.setCurrentShader("depth"); // Set current shader to prevent nullptr
+    m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
     /*
     * Create a scene for entities
     */
@@ -89,34 +89,17 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     unsigned int sdrId = m_shaderManager.getCurrentShader()->getId();
 
     ImageLoader loader;
-    ImageData imgdata = loader.loadImage("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg");
-    ImageData imgdata2 = loader.loadImage("C:/dev/Meadow/data/images/Bricks054_1K_Color.jpg");
-
-    auto vecptr = std::make_unique<std::vector<unsigned char>>();
+    int width1, height1;
+    auto vecptr1 = std::make_unique<std::vector<unsigned char>>();
+    int width2, height2;
     auto vecptr2 = std::make_unique<std::vector<unsigned char>>();
-    for (int i = 0; i < imgdata.width * imgdata.height * imgdata.nrChannels; i++) {
-        vecptr->push_back(imgdata.bytes[i]);
-    }
-    for (int i = 0; i < imgdata2.width * imgdata2.height * imgdata2.nrChannels; i++) {
-        vecptr2->push_back(imgdata2.bytes[i]);
-    }
-    Renderer::ImageFormat imgForm;
-    if (imgdata.nrChannels = 3) {
-        imgForm = Renderer::ImageFormat::RGB;
-    }
-    else if (imgdata.nrChannels = 4) {
-        imgForm = Renderer::ImageFormat::RGBA;
-    }
-    Renderer::ImageFormat imgForm2;
-    if (imgdata.nrChannels = 3) {
-        imgForm2 = Renderer::ImageFormat::RGB;
-    }
-    else if (imgdata.nrChannels = 4) {
-        imgForm2 = Renderer::ImageFormat::RGBA;
-    }
 
-    auto texPtr = std::make_unique<Texture>(std::move(vecptr), imgdata.width, imgdata.height, imgForm, "Woodtex");
-    auto texPtr2 = std::make_unique<Texture>(std::move(vecptr2), imgdata2.width, imgdata2.height, imgForm2, "BrickTex");
+
+    loader.loadImage("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg", width1, height1, *vecptr1.get());
+    loader.loadImage("C:/dev/Meadow/data/images/Bricks054_1K_Color.jpg", width2, height2, *vecptr2.get());
+
+    auto texPtr = std::make_unique<Texture>(std::move(vecptr1), width1, height1, Renderer::ImageFormat::RGBA, "Woodtex");
+    auto texPtr2 = std::make_unique<Texture>(std::move(vecptr2), width2, height2, Renderer::ImageFormat::RGBA, "BrickTex");
 
     unsigned int texId = manager.storeTexture(std::move(texPtr));
     unsigned int texId2 = manager.storeTexture(std::move(texPtr2));
