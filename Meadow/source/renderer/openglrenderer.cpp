@@ -258,6 +258,42 @@ void OpenGLRenderer::deleteTexture(const unsigned int& id)
     m_texIdMap.erase(it);
 }
 
+int OpenGLRenderer::getColorBuffBit()
+{
+    return GL_COLOR_BUFFER_BIT;
+}
+
+int OpenGLRenderer::getStencilBuffBit()
+{
+    return GL_STENCIL_BUFFER_BIT;
+}
+
+int OpenGLRenderer::getDepthBuffBit()
+{
+    return GL_DEPTH_BUFFER_BIT;
+}
+
+void OpenGLRenderer::clearBuffer(int buffers)
+{
+    glClear(buffers);
+}
+
+void OpenGLRenderer::depthTesting(bool enable)
+{
+    if (enable)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+}
+
+void OpenGLRenderer::stencilTesting(bool enable)
+{
+    if (enable)
+        glEnable(GL_STENCIL_TEST);
+    else
+        glDisable(GL_STENCIL_TEST);
+}
+
 void OpenGLRenderer::drawMesh(int meshId)
 {
     auto it = m_meshBufferMap.find(meshId);

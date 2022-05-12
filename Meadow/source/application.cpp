@@ -39,9 +39,11 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     */
     auto phongSdr = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/phongtex.fs");
     auto colorSdr = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
+    auto depthSdr = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
     m_shaderManager.provideShader("phong", std::move(phongSdr));
     m_shaderManager.provideShader("color", std::move(colorSdr));
-    m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
+    m_shaderManager.provideShader("depth", std::move(depthSdr));
+    m_shaderManager.setCurrentShader("depth"); // Set current shader to prevent nullptr
     /*
     * Create a scene for entities
     */
@@ -129,8 +131,8 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * Add some transform to the node
     */
-    node->scale = glm::vec3(1.2f);
-    node->position = glm::vec3(3.0f, 0.0f, 0.0f);
+    node->scale = glm::vec3(4.0f, 4.0f, 1.0f);
+    node->position = glm::vec3(0.0f, 2.0f, -1.0f);
     /*
     * Add another node
     */
@@ -151,6 +153,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     * Transform the second node 
     */
     node2->position = glm::vec3(0.f);
+    node2->scale = glm::vec3(3.0f, 0.1f, 3.0f);
     
     /*
     * Add third node and mesh and mat
@@ -168,7 +171,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     thirdMesh->addSubMesh(thirdMaterial, sphereSubmesh);
     thirdNode->setMesh(thirdMesh);
     thirdNode->scale = glm::vec3(0.2f);
-    thirdNode->position = glm::vec3(-1.0f);
+    thirdNode->position = glm::vec3(0.9f, 2.5f, 1.5f);
     thirdNode->name = "LampNode";
 
     
@@ -188,8 +191,8 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * import a model
     */
-    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/testmodel/testfile.obj", m_scene.get(), 0);
-
+    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
+    m_scene->getNode(4)->scale = glm::vec3(0.2f);
 #endif
 }
 
@@ -200,6 +203,7 @@ void Application::run()
     float deltatime;
     float time;
     float lastFrameTime = 0.f;
+    m_renderer.depthTesting(true);
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -208,9 +212,20 @@ void Application::run()
         time = m_windowManager.getTime();
         deltatime = time - lastFrameTime;
         lastFrameTime = time;
+        /*
+        * Poll events
+        */
         m_windowManager.pollEvents();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        /*
+        * Update scene
+        */
         m_scene->update(deltatime, &m_inputGather);
+
+        /*
+        * Render scene
+        */
+        m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
         m_scene->render(&m_shaderManager);
 
         /*

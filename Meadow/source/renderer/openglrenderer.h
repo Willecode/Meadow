@@ -50,6 +50,23 @@ public:
 	void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) override;
 	void deleteTexture(const unsigned int& id) override;
 
+	/*
+	* Buffer clearing
+	*/
+	int getColorBuffBit() override;
+	int getStencilBuffBit() override;
+	int getDepthBuffBit() override;
+	void clearBuffer(int buffers) override;
+
+	/*
+	* Depth testing
+	*/
+	void depthTesting(bool enable) override;
+
+	/*
+	* Stencil testing
+	*/
+	void stencilTesting(bool enable) override;
 private:
 	struct MeshBufferData {
 		GLuint VAO;

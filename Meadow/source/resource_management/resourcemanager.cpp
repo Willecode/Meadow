@@ -13,6 +13,9 @@ ResourceManager::ResourceManager()
 	InputEvents::setMaterialTextureEvent::subscribe(
 		std::bind(&ResourceManager::setMaterialTextureEventHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 	);
+	InputEvents::importTextureEvent::subscribe(
+		std::bind(&ResourceManager::importTextureHandler, this)
+	);
 }
 
 unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
@@ -170,6 +173,11 @@ void ResourceManager::setMaterialTextureEventHandler(unsigned int materialid, un
 	if (mat != nullptr) {
 		mat->setTexture(tex, textureType);
 	}
+}
+
+void ResourceManager::importTextureHandler()
+{
+
 }
 
 

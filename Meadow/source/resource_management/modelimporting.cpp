@@ -146,6 +146,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			auto newMat = std::make_unique<Material>(aiscene->mMaterials[i]->GetName().C_Str());
 			unsigned int newMatId = resourceMan.storeMaterial(std::move(newMat));
 			Material* newMatPtr = resourceMan.getMaterial(newMatId);
+			newMatPtr->defaultPhong();
 			newMatPtr->setTexture(newTexPtr, Texture::TextureType::DIFFUSE_MAP);
 
 			/*

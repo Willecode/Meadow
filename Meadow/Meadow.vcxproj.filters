@@ -120,12 +120,15 @@
     <ClCompile Include="source\assets\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\resource_management\importutility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\phongtex.fs" />
     <None Include="shaders\object.vs" />
     <None Include="shaders\coloronly.fs" />
-    <None Include="shaders\messingaround.fs" />
+    <None Include="shaders\depth.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\Wood066_1K_Color.jpg">
@@ -245,6 +248,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\assets\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource_management\importutility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -255,6 +255,21 @@ namespace InputEvents
 		inline static std::vector<std::function<void(unsigned int, unsigned int, Texture::TextureType)>> m_handlers;
 	};
 
+	class importTextureEvent
+	{
+	public:
+		static void subscribe(std::function<void()> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify() {
+			for (auto h : m_handlers) {
+				h();
+			}
+		}
+	private:
+		inline static std::vector<std::function<void()>> m_handlers;
+	};
+
 	/*class toggleWireframeModeEvent
 	{
 	public:

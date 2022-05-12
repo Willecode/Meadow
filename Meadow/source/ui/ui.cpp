@@ -55,6 +55,29 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
 
+    //////////////////////
+    //Create a main menu bar
+    //////////////////////
+    if (ImGui::BeginMainMenuBar()) {
+
+        if (ImGui::BeginMenu("Import")) {
+            if (ImGui::MenuItem("Texture")) {
+                InputEvents::importTextureEvent::notify();
+            }
+            if (ImGui::BeginMenu("3D model")) {
+                if (ImGui::MenuItem("FBX")) {
+
+                }
+                if (ImGui::MenuItem("OBJ")) {
+
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+
+    }
 
     //////////////////////
     //Create a UI window for scene objects

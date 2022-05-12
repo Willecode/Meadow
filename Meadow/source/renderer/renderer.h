@@ -51,5 +51,22 @@ public:
 	virtual void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) = 0;
 	virtual void deleteTexture(const unsigned int& id) = 0;
 
+	/*
+	* Buffer clearing
+	*/
+	virtual int getColorBuffBit() = 0;
+	virtual int getStencilBuffBit() = 0;
+	virtual int getDepthBuffBit() = 0;
+	virtual void clearBuffer(int buffers) = 0;
+
+	/*
+	* Depth testing
+	*/
+	virtual void depthTesting(bool enable) = 0;
+
+	/*
+	* Stencil testing
+	*/
+	virtual void stencilTesting(bool enable) = 0;
 };
 
