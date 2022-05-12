@@ -186,6 +186,7 @@ void Application::run()
     float time;
     float lastFrameTime = 0.f;
     m_renderer.depthTesting(true);
+    m_renderer.blending(true);
     while (!m_windowManager.shouldClose())
     {
         /*

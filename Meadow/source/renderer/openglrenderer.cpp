@@ -294,6 +294,16 @@ void OpenGLRenderer::stencilTesting(bool enable)
         glDisable(GL_STENCIL_TEST);
 }
 
+void OpenGLRenderer::blending(bool enable)
+{
+    if (enable) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+        glDisable(GL_BLEND);
+}
+
 void OpenGLRenderer::drawMesh(int meshId)
 {
     auto it = m_meshBufferMap.find(meshId);

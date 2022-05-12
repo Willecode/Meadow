@@ -68,5 +68,10 @@ public:
 	* Stencil testing
 	*/
 	virtual void stencilTesting(bool enable) = 0;
+
+	/*
+	* Blending
+	*/
+	virtual void blending(bool enable) = 0;
 };
 

@@ -67,6 +67,11 @@ public:
 	* Stencil testing
 	*/
 	void stencilTesting(bool enable) override;
+
+	/*
+	* Blending
+	*/
+	void blending(bool enable) override;
 private:
 	struct MeshBufferData {
 		GLuint VAO;

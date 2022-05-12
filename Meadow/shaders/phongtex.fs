@@ -50,26 +50,29 @@ vec3 calcSpecular(vec3 lightDir, vec3 lightSpecular, vec3 materialSpecular, floa
 
 void main()
 {
-    vec3 outputCol = vec3(0.0);
+    vec4 outputCol = vec4(0.0, 0.0, 0.0, 1.0);
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 normalDir = normalize(normal);
-
+    
     // Check if textures are present for diffuse and specular
     // ----
     vec3 materialDiffuse = material.diffuse;
     vec3 materialSpecular = material.specular;
-    if (material.diffuse_map_present)
+    if (material.diffuse_map_present){
         materialDiffuse *= vec3(texture(material.diffuse_map, TexCoords));
+        outputCol.a = texture(material.diffuse_map, TexCoords).a;
+    }
     if(material.specular_map_present)
         materialSpecular *= vec3(texture(material.specular_map, TexCoords)) * material.specular;
-
     // ----
 
+
+
     for (int i = 0; i < pointLightCount; i++){
-        outputCol += calcPointLight(pointLights[i], normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
+        outputCol.rgb += calcPointLight(pointLights[i], normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
     }
     for (int i = 0; i < dirLightCount; i++){
-        outputCol += calcDirLight(dirLight[i], normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
+        outputCol.rgb += calcDirLight(dirLight[i], normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
     }
     
     // DEBUG ***************************************
@@ -85,8 +88,10 @@ void main()
 //    debugDirLight.diffuse = vec3(0.5);
 //    debugDirLight.specular = vec3(0.6);
 //    outputCol += calcDirLight(debugDirLight, normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
+//    outputCol = vec4(texture(material.diffuse_map, TexCoords).a);
     // ***************************************
-    FragColor = vec4(outputCol, 1.0);
+
+    FragColor = outputCol;
 }
 
 vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular){
