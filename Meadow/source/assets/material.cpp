@@ -11,18 +11,32 @@ Material::AssetType Material::getAssetType()
 void Material::passToShader(ShaderManager* sdrMan)
 {
 	/*
-	* Bind textures to appropriate samplers, set texture sampler properties
+	* Check textures assigned for this material. Set appropriate samplers.
 	*/
+	bool diffmap = false;
+	bool specmap = false;
+	bool opacmap = false;
 	for (auto tex : m_textures) {
 		if (tex.second != nullptr) {
 			Locator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
-			if (tex.first == Texture::TextureType::DIFFUSE_MAP)
+			if (tex.first == Texture::TextureType::DIFFUSE_MAP) {
 				m_uintPropsHidden["diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
+				diffmap = true;
+			}
 			else if (tex.first == Texture::TextureType::SPECULAR_MAP) {
 				m_uintPropsHidden["specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
+				specmap = true;
+			}
+			else if (tex.first == Texture::TextureType::OPACITY_MAP) {
+				m_uintPropsHidden["opacity_map"] = sdrMan->getTexSamplerId(Texture::TextureType::OPACITY_MAP);
+				opacmap = true;
 			}
 		}
 	}
+	setProperty("material.diffuse_map_present", diffmap);
+	setProperty("material.specular_map_present", specmap);
+	setProperty("material.opacity_map_present", opacmap);
+
 	/*
 	* Pass properties to shader as uniforms
 	*/
@@ -108,6 +122,8 @@ void Material::setTexture(Texture* tex, Texture::TextureType type)
 		setProperty("material.diffuse_map_present", !(tex == nullptr));
 	else if (type == Texture::TextureType::SPECULAR_MAP)
 		setProperty("material.specular_map_present", !(tex == nullptr));
+	else if (type == Texture::TextureType::OPACITY_MAP)
+		setProperty("material.opacity_map_present", !(tex == nullptr));
 	m_textures[type] = tex;
 }
 

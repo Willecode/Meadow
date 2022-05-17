@@ -1,9 +1,15 @@
 #include "submesh.h"
 #include "service_locator/locator.h"
+#include <stdexcept>
 
 SubMesh::SubMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string name):
     vertices(vertices), indices(indices), Asset(name)
 {
+    /*
+    * The vertice and indice count must be above zero
+    */
+    if (vertices.size() == 0 || indices.size() == 0)
+        throw std::invalid_argument("SubMesh: received an empty vertices or indices vector");
 
 }
 

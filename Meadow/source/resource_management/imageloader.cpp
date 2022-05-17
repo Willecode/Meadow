@@ -6,16 +6,14 @@ ImageLoader::ImageLoader() : m_loadedImages()
 {
     stbi_set_flip_vertically_on_load(0);
 }
-bool ImageLoader::loadImage(const std::string& path, int& width, int& height, std::vector<unsigned char>& bytes)
+bool ImageLoader::loadImage(const std::string& path, int& width, int& height, Renderer::ImageFormat& format, std::vector<unsigned char>& bytes)
 {
 
     Locator::getLogger()->getLogger()->info("ImageLoader: Loading image {}\n", path.c_str()); // Logging
 
-    /*
-    * Force stb to import with 4 channels (all textures will be rgba)
-    */
+
     int nrChannels;
-    unsigned char* byteArr = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
+    unsigned char* byteArr = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
     /*
     * if stbi_load() fails, it returns false
@@ -31,7 +29,17 @@ bool ImageLoader::loadImage(const std::string& path, int& width, int& height, st
     * Populate provided vec with bytes
     */
     bytes.clear();
-    bytes.insert(bytes.end(), &byteArr[0], &byteArr[width*height*4]);
+    bytes.insert(bytes.end(), &byteArr[0], &byteArr[width*height*nrChannels]);
+
+    /*
+    * Determine format
+    */
+    if (nrChannels == 1)
+        format = Renderer::ImageFormat::R;
+    if (nrChannels == 3)
+        format = Renderer::ImageFormat::RGB;
+    if (nrChannels == 4)
+        format = Renderer::ImageFormat::RGBA;
 
     m_loadedImages.insert(byteArr);
     return true;

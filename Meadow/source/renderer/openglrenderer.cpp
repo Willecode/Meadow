@@ -4,7 +4,7 @@
 
 //#define VERBOSE
 
-const std::unordered_map<Renderer::ImageFormat, GLenum> OpenGLRenderer::m_imgFormatMap = { {ImageFormat::RGB, GL_RGB}, {ImageFormat::RGBA, GL_RGBA} };
+const std::unordered_map<Renderer::ImageFormat, GLenum> OpenGLRenderer::m_imgFormatMap = { {ImageFormat::RGB, GL_RGB}, {ImageFormat::RGBA, GL_RGBA}, {ImageFormat::R, GL_RED} };
 OpenGLRenderer::OpenGLRenderer():
     m_meshBufferMap({}),
     m_shaderProgMap({}),
@@ -207,7 +207,8 @@ void OpenGLRenderer::setMat4f(const unsigned int& sdrId, const char* name, glm::
     }
 }
 
-void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int& width, const unsigned int& height, ImageFormat format, unsigned char* imgData)
+void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int& width, const unsigned int& height,
+    ImageFormat formatSrc, ImageFormat formatInternal, unsigned char* imgData)
 {
     auto it = m_texIdMap.find(id);
     if (it != m_texIdMap.end()) {
@@ -229,7 +230,7 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     * note: this causes an access violation exception if format is GL_RGBA and provided data is in RGB format.
     *       Also the textures may just glitch out if formats are not passed correctly...
     */
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, m_imgFormatMap.at(format), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
+    glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatInternal), width, height, 0, m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
     /*********************************/
 
     glBindTexture(GL_TEXTURE_2D, 0);

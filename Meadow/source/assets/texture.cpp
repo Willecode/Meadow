@@ -3,16 +3,17 @@ Texture::Texture(
 	std::unique_ptr<std::vector<unsigned char>> img,
 	unsigned int width,
 	unsigned int height,
-	Renderer::ImageFormat format,
+	Renderer::ImageFormat formatSource,
+	Renderer::ImageFormat formatInternal,
 	std::string name
 ):
-	m_img(std::move(img)), m_imgWidth(width), m_imgHeight(height), m_imgFormat(format), Asset(name)
+	m_img(std::move(img)), m_imgWidth(width), m_imgHeight(height), m_imgFormatSource(formatSource), m_imgFormatInternal(formatInternal), Asset(name)
 {
 }
 
 void Texture::loadToGPU()
 {
-	Locator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormat, &(*m_img)[0]);
+	Locator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormatSource, m_imgFormatInternal, &(*m_img)[0]);
 }
 
 void Texture::bindToSampler(const unsigned int& samplerId)

@@ -104,10 +104,13 @@ MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
 	newAss.propertiesv3 = mat->getExposedPropertiesv3();
 	Texture* diff = mat->getTexture(Texture::TextureType::DIFFUSE_MAP);
 	Texture* spec = mat->getTexture(Texture::TextureType::SPECULAR_MAP);
+	Texture* opac = mat->getTexture(Texture::TextureType::OPACITY_MAP);
 	if (diff != nullptr)
 		newAss.diffuseMap = diff->getId();
 	if (spec != nullptr)
 		newAss.specularMap = spec->getId();
+	if (opac != nullptr)
+		newAss.opacityMap = opac->getId();
 
 	return newAss;
 }

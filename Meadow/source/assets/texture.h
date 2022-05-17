@@ -11,10 +11,12 @@ public:
 	*/
 	enum class TextureType {
 		DIFFUSE_MAP = 0,
-		SPECULAR_MAP
+		SPECULAR_MAP,
+		OPACITY_MAP
 	};
 public:
-	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height, Renderer::ImageFormat format, std::string name = "Nameless texture");
+	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height,
+		Renderer::ImageFormat formatSource, Renderer::ImageFormat formatInternal, std::string name = "Nameless texture");
 	
 	void loadToGPU(); // Generate buffers in graphics memory and push image texture data to them
 	void bindToSampler(const unsigned int& samplerId);
@@ -26,6 +28,7 @@ private:
 	std::unique_ptr<std::vector<unsigned char>> m_img;
 	unsigned int m_imgWidth;
 	unsigned int m_imgHeight;
-	Renderer::ImageFormat m_imgFormat;
+	Renderer::ImageFormat m_imgFormatSource;
+	Renderer::ImageFormat m_imgFormatInternal;
 };
 

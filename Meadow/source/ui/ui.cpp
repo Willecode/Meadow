@@ -201,9 +201,31 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
             else
                 specComboLabel = uiAssets->textures.at(chosenMat->specularMap).name;
             if (ImGui::BeginCombo("Specular map", specComboLabel.c_str())) {
+                if (ImGui::Selectable("No texture", false)) {
+                    InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::SPECULAR_MAP);
+                }
                 for (auto const& tex : uiAssets->textures) {
                     if (ImGui::Selectable(tex.second.name.c_str(), false)) {
                         InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::SPECULAR_MAP);
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            /*
+            * Opacity map combobox
+            */
+            std::string opacComboLabel = "";
+            if (chosenMat->opacityMap == 0)
+                opacComboLabel = "No texture";
+            else
+                opacComboLabel = uiAssets->textures.at(chosenMat->opacityMap).name;
+            if (ImGui::BeginCombo("Opacity map", opacComboLabel.c_str())) {
+                if (ImGui::Selectable("No texture", false)) {
+                    InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::OPACITY_MAP);
+                }
+                for (auto const& tex : uiAssets->textures) {
+                    if (ImGui::Selectable(tex.second.name.c_str(), false)) {
+                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::OPACITY_MAP);
                     }
                 }
                 ImGui::EndCombo();

@@ -46,7 +46,8 @@ public:
 	/*
 	* Textures
 	*/
-	void create2DTexture(const unsigned int&, const unsigned int& width, const unsigned int& height, ImageFormat nrChannels, unsigned char* imgData) override;
+	void create2DTexture(const unsigned int&, const unsigned int& width, const unsigned int& height,
+		ImageFormat formatSrc, ImageFormat formatInternal,  unsigned char* imgData) override;
 	void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) override;
 	void deleteTexture(const unsigned int& id) override;
 

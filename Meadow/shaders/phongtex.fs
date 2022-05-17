@@ -29,8 +29,10 @@ struct Material {
     vec3 specular;
     sampler2D diffuse_map;
     sampler2D specular_map;
+    sampler2D opacity_map;
     bool diffuse_map_present;
     bool specular_map_present;
+    bool opacity_map_present;
 };
 
 #define MAX_POINT_LIGHTS 30
@@ -51,6 +53,10 @@ vec3 calcSpecular(vec3 lightDir, vec3 lightSpecular, vec3 materialSpecular, floa
 void main()
 {
     vec4 outputCol = vec4(0.0, 0.0, 0.0, 1.0);
+    // Check for opacity map
+    if (material.opacity_map_present)
+        outputCol.a = texture(material.opacity_map, TexCoords).r;
+
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 normalDir = normalize(normal);
     
@@ -60,7 +66,6 @@ void main()
     vec3 materialSpecular = material.specular;
     if (material.diffuse_map_present){
         materialDiffuse *= vec3(texture(material.diffuse_map, TexCoords));
-        outputCol.a = texture(material.diffuse_map, TexCoords).a;
     }
     if(material.specular_map_present)
         materialSpecular *= vec3(texture(material.specular_map, TexCoords)) * material.specular;

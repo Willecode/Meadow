@@ -89,16 +89,18 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     unsigned int sdrId = m_shaderManager.getCurrentShader()->getId();
 
     ImageLoader loader;
+    Renderer::ImageFormat fmt1;
     int width1, height1;
     auto vecptr1 = std::make_unique<std::vector<unsigned char>>();
+    Renderer::ImageFormat fmt2;
     int width2, height2;
     auto vecptr2 = std::make_unique<std::vector<unsigned char>>();
 
-    loader.loadImage("C:/dev/Meadow/data/images/grass.png", width1, height1, *vecptr1.get());
-    loader.loadImage("C:/dev/Meadow/data/images/Bricks054_1K_Color.jpg", width2, height2, *vecptr2.get());
+    loader.loadImage("C:/dev/Meadow/data/images/grass.png", width1, height1, fmt1, *vecptr1.get());
+    loader.loadImage("C:/dev/Meadow/data/images/Bricks054_1K_Color.jpg", width2, height2, fmt2, *vecptr2.get());
 
-    auto texPtr = std::make_unique<Texture>(std::move(vecptr1), width1, height1, Renderer::ImageFormat::RGBA, "BushTex");
-    auto texPtr2 = std::make_unique<Texture>(std::move(vecptr2), width2, height2, Renderer::ImageFormat::RGBA, "BrickTex");
+    auto texPtr = std::make_unique<Texture>(std::move(vecptr1), width1, height1, fmt1, Renderer::ImageFormat::RGB, "BushTex");
+    auto texPtr2 = std::make_unique<Texture>(std::move(vecptr2), width2, height2, fmt2, Renderer::ImageFormat::RGB, "BrickTex");
 
     unsigned int texId = manager.storeTexture(std::move(texPtr));
     unsigned int texId2 = manager.storeTexture(std::move(texPtr2));
@@ -173,8 +175,8 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * import a model
     */
-    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
-    m_scene->getNode(4)->scale = glm::vec3(0.2f);
+    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/old-office-window/source/office window.fbx", m_scene.get(), 0);
+    //m_scene->getNode(4)->scale = glm::vec3(0.2f);
 #endif
 }
 

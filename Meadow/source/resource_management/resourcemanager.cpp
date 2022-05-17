@@ -51,6 +51,8 @@ ResourceManager& ResourceManager::getInstance()
 
 unsigned int ResourceManager::storeTexture(std::unique_ptr<Texture> texture)
 {
+	if (texture == nullptr)
+		return 0;
 	unsigned int newId = generateUniqueId(Asset::AssetType::TEXTURE);
 	texture->setId(newId);
 	texture->loadToGPU();
@@ -78,6 +80,8 @@ const ResourceManager::TextureMap* ResourceManager::getTextureMap()
 
 unsigned int ResourceManager::storeSubmesh(std::unique_ptr<SubMesh> smesh)
 {
+	if (smesh == nullptr)
+		return 0;
 	unsigned int newId = generateUniqueId(Asset::AssetType::SUBMESH);
 	smesh->setId(newId);
 	smesh->generateBuffers();
@@ -105,6 +109,8 @@ const ResourceManager::SubmeshMap* ResourceManager::getSubmeshMap()
 
 unsigned int ResourceManager::storeMesh(std::unique_ptr<Mesh> mesh)
 {
+	if (mesh == nullptr)
+		return 0;
 	unsigned int newId = generateUniqueId(Asset::AssetType::MESH);
 	mesh->setId(newId);
 	m_meshMap.insert({ newId, std::move(mesh) });
@@ -130,6 +136,8 @@ const ResourceManager::MeshMap* ResourceManager::getMeshMap()
 
 unsigned int ResourceManager::storeMaterial(std::unique_ptr<Material> material)
 {
+	if (material == nullptr)
+		return 0;
 	unsigned int newId = generateUniqueId(Asset::AssetType::MATERIAL);
 	material->setId(newId);
 	m_materialMap.insert({ newId, std::move(material) });

@@ -29,12 +29,14 @@ struct MaterialUI : public AssetUI {
 	std::unordered_map<std::string, glm::vec3>* propertiesv3;
 	unsigned int diffuseMap;
 	unsigned int specularMap;
+	unsigned int opacityMap;
 	MaterialUI(std::string name, const unsigned int id) :
 		AssetUI(name, Asset::AssetType::MATERIAL, id),
 		propertiesf(),
 		propertiesv3(),
 		diffuseMap(0),
-		specularMap(0)
+		specularMap(0),
+		opacityMap(0)
 	{}
 };
 struct SubmeshUI : public AssetUI{

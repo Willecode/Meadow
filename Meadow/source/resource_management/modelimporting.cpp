@@ -60,7 +60,17 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 		else
 			Locator::getLogger()->getLogger()->info("model encountered a non-triangulated face with vertex count of: {}", indexCount);
 	}
-	return std::make_unique<SubMesh>(vertices, indices);
+	try
+	{
+		return std::make_unique<SubMesh>(vertices, indices);
+	}
+	catch (const std::invalid_argument&)
+	{
+		/*
+		* vertices or indices were invalid
+		*/
+		return nullptr;
+	}
 }
 
 static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode, const aiScene* aiscene, std::string directory, ResourceManager resourceMan, std::map<int, int> aiMatToMeadowMatId)
@@ -76,7 +86,7 @@ static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode,
 	*/
 	glm::vec3 skew;
 	glm::vec4 perspective;
-	glm::mat4 transf = matAssimpToGlm(ainode->mTransformation);
+	glm::mat4 transf = glm::scale(matAssimpToGlm(ainode->mTransformation), glm::vec3(1.0));
 	glm::decompose(transf, newNode->scale, newNode->orientation, newNode->position, skew, perspective);
 
 	
@@ -89,9 +99,18 @@ static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode,
 		for (unsigned int i = 0; i < ainode->mNumMeshes; i++) {
 			aiMesh* aimesh = aiscene->mMeshes[ainode->mMeshes[i]];
 			auto newSubmesh = processMesh(aimesh, aiscene);
-			unsigned int newSubmeshId = resourceMan.storeSubmesh(std::move(newSubmesh));
-			SubMesh* newSubmeshPtr = resourceMan.getSubmesh(newSubmeshId);
-			newMesh->addSubMesh(resourceMan.getMaterial(aiMatToMeadowMatId.at(aimesh->mMaterialIndex)), newSubmeshPtr);
+			if (newSubmesh != nullptr) {
+				unsigned int newSubmeshId = resourceMan.storeSubmesh(std::move(newSubmesh));
+				SubMesh* newSubmeshPtr = resourceMan.getSubmesh(newSubmeshId);
+				newMesh->addSubMesh(resourceMan.getMaterial(aiMatToMeadowMatId.at(aimesh->mMaterialIndex)), newSubmeshPtr);
+			}
+			else {
+				/*
+				* Invalid submesh was found within the imported file, mesh will not be stored to resourceman
+				*/
+				newMesh = nullptr;
+				break;
+			}
 		}
 		unsigned int newMeshId = resourceMan.storeMesh(std::move(newMesh));
 		newNode->setMesh(resourceMan.getMesh(newMeshId));
@@ -110,41 +129,101 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 	*/
 	ImageLoader imgLoader;
 	for (int i = 0; i < aiscene->mNumMaterials; i++) {
+		aiMaterial* aimat = aiscene->mMaterials[i];
+		Locator::getLogger()->getLogger()->info("Modelimporting: Importing material: {}/", aimat->GetName().C_Str());
+		/*
+		* Get colors
+		*/
+		aiColor3D diffuse = aiColor3D(0.f);
+		aiColor3D specular = aiColor3D(0.f);
+		aimat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+		aimat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+
+		/*
+		* Get diffuse map
+		*/
+		Renderer::ImageFormat diffuseMapFormat;
+		bool foundDiffuseMap = false;
+		int widthDiffuseMap, heightDiffuseMap;
+		auto vecptrDiffuseMap = std::make_unique<std::vector<unsigned char>>();
 		aiString path;
-		aiReturn ret = aiscene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+		aiReturn ret = aimat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 		if (ret != aiReturn_SUCCESS) {
-			Locator::getLogger()->getLogger()->info("Assimp failed to get texture type {} texture in folder: {}/\n", "diffuse", directory);
+			
 		}
 		else {
+			Locator::getLogger()->getLogger()->info("Modelimporting: Material has a {}/", "diffuse map");
+			foundDiffuseMap = true;
 			/*
 			* Load the texture file
 			*/
-			int width1, height1;
-			auto vecptr1 = std::make_unique<std::vector<unsigned char>>();
-			if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), width1, height1, *vecptr1.get()))
+			if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), widthDiffuseMap, heightDiffuseMap, diffuseMapFormat, *vecptrDiffuseMap.get()))
 				return false;
+		}
+
+		/*
+		* Get opacity map
+		*/
+		Renderer::ImageFormat opacityMapFormat;
+		bool foundOpacityMap = false;
+		int widthOpacityMap, heightOpacityMap;
+		auto vecptrOpacityMap = std::make_unique<std::vector<unsigned char>>();
+		ret = aimat->GetTexture(aiTextureType_OPACITY, 0, &path);
+		if (ret != aiReturn_SUCCESS) {
 			
+		}
+		else {
+			Locator::getLogger()->getLogger()->info("Modelimporting: Material has an {}/", "opacity map");
+			foundOpacityMap = true;
+			/*
+			* Load the texture file
+			*/
+			if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), widthOpacityMap, heightOpacityMap, opacityMapFormat, *vecptrOpacityMap.get()))
+				return false;
+		}
+
+		/*
+		* Create new Meadow material
+		*/
+		auto newMat = std::make_unique<Material>(aiscene->mMaterials[i]->GetName().C_Str());
+		unsigned int newMatId = resourceMan.storeMaterial(std::move(newMat));
+		Material* newMatPtr = resourceMan.getMaterial(newMatId);
+		newMatPtr->defaultPhong();
+
+		/*
+		* Set colors
+		*/
+		newMatPtr->setProperty("material.diffuse", glm::vec3(diffuse.r, diffuse.g, diffuse.b), true);
+		newMatPtr->setProperty("material.specular", glm::vec3(diffuse.r, diffuse.g, diffuse.b), true);
+
+		/*
+		* Store and set textures
+		*/
+		if (foundDiffuseMap) {
 			/*
 			* Create new Texture
 			*/
-			auto newTex = std::make_unique<Texture>(std::move(vecptr1), width1, height1, Renderer::ImageFormat::RGBA, path.C_Str());
+			auto newTex = std::make_unique<Texture>(std::move(vecptrDiffuseMap), widthDiffuseMap, heightDiffuseMap, diffuseMapFormat, Renderer::ImageFormat::RGBA, path.C_Str());
 			unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
 			Texture* newTexPtr = resourceMan.getTexture(newTexId);
-			/*
-			* Create new Material
-			*/
-			auto newMat = std::make_unique<Material>(aiscene->mMaterials[i]->GetName().C_Str());
-			unsigned int newMatId = resourceMan.storeMaterial(std::move(newMat));
-			Material* newMatPtr = resourceMan.getMaterial(newMatId);
-			newMatPtr->defaultPhong();
-			newMatPtr->setTexture(newTexPtr, Texture::TextureType::DIFFUSE_MAP);
 
+			newMatPtr->setTexture(newTexPtr, Texture::TextureType::DIFFUSE_MAP);
+		}
+		if (foundOpacityMap) {
 			/*
-			* Create mapping from aimaterial id to Meadow material id
+			* Create new Texture
 			*/
-			aiMatToMeadowMatId[i] = newMatId;
+			auto newTex = std::make_unique<Texture>(std::move(vecptrOpacityMap), widthOpacityMap, heightOpacityMap, opacityMapFormat, Renderer::ImageFormat::R, path.C_Str());
+			unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
+			Texture* newTexPtr = resourceMan.getTexture(newTexId);
+
+			newMatPtr->setTexture(newTexPtr, Texture::TextureType::OPACITY_MAP);
 		}
 
+		/*
+		* Create mapping from aimaterial id to Meadow material id
+		*/
+		aiMatToMeadowMatId[i] = newMatId;
 	}
 	return true;
 }

@@ -18,6 +18,7 @@ ShaderManager::ShaderManager() :
 {
 	m_texSamplerMap.insert({ Texture::TextureType::DIFFUSE_MAP, 0 });
 	m_texSamplerMap.insert({ Texture::TextureType::SPECULAR_MAP, 1 });
+	m_texSamplerMap.insert({ Texture::TextureType::OPACITY_MAP, 2 });
 }
 
 
