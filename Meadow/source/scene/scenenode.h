@@ -18,13 +18,13 @@ public:
 	std::vector<SceneNode*> children;
 		
 	/*
-	* 3D transform
+	* Local 3D transform
 	*/
 	glm::vec3 position;
 	glm::vec3 scale;
 	glm::vec3 orientationEuler;
 	glm::quat orientation;
-
+	float distanceFromCamera;
 public:
 	SceneNode(unsigned int id = -1, std::string name = "Nameless Node");
 	/*
@@ -44,7 +44,7 @@ public:
 	/*
 	* Update node transform
 	*/
-	void update(SceneNode* parent);
+	void update(SceneNode* parent, const glm::vec3& cameraPos);
 
 	/*
 	* Render this node's mesh with set transform
@@ -65,5 +65,7 @@ private:
 	* Update m_modelMatrix from position, scale, rotation members
 	*/
 	void updateModelMatrix(glm::mat4* accumulate);
+	float calcDistanceFromCam(const glm::vec3& camPos);
+	glm::vec3 getWorldPosition();
 };
 

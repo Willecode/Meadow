@@ -47,6 +47,11 @@ private:
 	unsigned int m_nodeIdCtr;
 
 	/*
+	* Nodes of the scene in drawing order.
+	*/
+	std::vector<SceneNode*> m_drawQueue;
+
+	/*
 	* Data to provide to UI
 	*/
 	std::vector<SceneNodeUI> m_uiNodes;
@@ -60,15 +65,15 @@ private:
 	void addNodeHandler(unsigned int parent = 0);
 	void duplicateNodeHandler(unsigned int parent);
 	void setMeshHandler(unsigned int nodeid, unsigned int meshid);
-	void setMaterialHandler(unsigned int nodeid, unsigned int matid);
 	/*
 	* Other funcs
 	*/
-	void updateNode(SceneNode* node, SceneNode* parent);
-	void renderNode(SceneNode* node, ShaderManager* sdrMan);
+	void updateNode(SceneNode* node, SceneNode* parent, const glm::vec3& cameraPos);
+	void drawNodes(ShaderManager* sdrMan);
 	void handleCameraMovement(float deltatime, InputGather* input);
 	unsigned int findParent(SceneNode* node);
 	void duplicateChildren(SceneNode* const source, SceneNode* destination);
 	bool nodeIdInUse(unsigned int id) const;
+	void sortDrawQueue();
 };
 

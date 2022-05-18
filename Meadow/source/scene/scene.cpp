@@ -45,7 +45,7 @@ void Scene::update(float deltatime, InputGather* input)
 	/*
 	* Update each node, starting from root with root also as parent (root doesn't have transforms so it's ok)
 	*/
-	updateNode(m_nodes[0].get(), m_nodes[0].get());
+	updateNode(m_nodes[0].get(), m_nodes[0].get(), m_camera.position);
 }
 
 void Scene::render(ShaderManager* sdrMan)
@@ -71,9 +71,14 @@ void Scene::render(ShaderManager* sdrMan)
 	sdrMan->forwardFrameUniforms();
 
 	/*
-	* Render each node, starting from root
+	* Sort the drawing order
 	*/
-	renderNode(m_nodes[0].get(), sdrMan);
+	sortDrawQueue();
+	
+	/*
+	* Render each node
+	*/
+	drawNodes(sdrMan);
 }
 
 unsigned int Scene::addNode(unsigned int parent)
@@ -83,6 +88,7 @@ unsigned int Scene::addNode(unsigned int parent)
 	if (nodeIdInUse(parent)) {
 		m_nodes[m_nodeIdCtr] = std::make_unique<SceneNode>(m_nodeIdCtr);
 		m_nodes[parent]->children.push_back(m_nodes[m_nodeIdCtr].get());
+		m_drawQueue.push_back(m_nodes[m_nodeIdCtr].get());
 		unsigned int ret = m_nodeIdCtr;
 		m_nodeIdCtr++;
 		return ret;
@@ -181,19 +187,18 @@ void Scene::setMeshHandler(unsigned int nodeid, unsigned int meshid)
 }
 
 
-void Scene::updateNode(SceneNode* node, SceneNode* parent)
+void Scene::updateNode(SceneNode* node, SceneNode* parent, const glm::vec3& cameraPos)
 {
-	node->update(parent);
+	node->update(parent, cameraPos);
 	for (auto child : node->children) {
-		updateNode(child, node);
+		updateNode(child, node, cameraPos);
 	}
 }
 
-void Scene::renderNode(SceneNode* node, ShaderManager* sdrMan)
+void Scene::drawNodes(ShaderManager* sdrMan)
 {
-	node->render(sdrMan);
-	for (auto child : node->children) {
-		renderNode(child, sdrMan);
+	for (int i = 0; i < m_drawQueue.size(); i++) {
+		m_drawQueue[i]->render(sdrMan);
 	}
 }
 
@@ -243,5 +248,12 @@ bool Scene::nodeIdInUse(unsigned int id) const
 			return true;
 	}
 	return false;
+}
+
+void Scene::sortDrawQueue()
+{
+	std::sort(m_drawQueue.begin(), m_drawQueue.end(), [](SceneNode* a, SceneNode* b) {
+		return a->distanceFromCamera > b->distanceFromCamera;
+		});
 }
 

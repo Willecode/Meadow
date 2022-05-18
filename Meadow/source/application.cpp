@@ -163,10 +163,10 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * Add some light
     */
-    /*if (!DirectionalLight::maxInstanceCapacity()) {
+    if (!DirectionalLight::maxInstanceCapacity()) {
         auto dirLight = std::make_unique<DirectionalLight>();
         m_scene->getNode(0)->setLightSource(std::move(dirLight));
-    }*/
+    }
     if (!PointLight::maxInstanceCapacity()) {
         auto pointLight = std::make_unique<PointLight>();
         m_scene->getNode(thirdNodeID)->setLightSource(std::move(pointLight));

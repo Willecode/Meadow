@@ -6,6 +6,7 @@ SceneNode::SceneNode(unsigned int id, std::string name) :
 	scale(1.0f),
 	orientation(),
 	orientationEuler(glm::vec3(0.f)),
+	distanceFromCamera(0),
 	m_mesh(nullptr),
 	m_light(nullptr),
 	m_modelMatrix(glm::mat4(1.0f)),
@@ -60,10 +61,10 @@ glm::mat4* SceneNode::getModelMatrix()
 	return &m_modelMatrix;
 }
 
-void SceneNode::update(SceneNode* parent)
+void SceneNode::update(SceneNode* parent, const glm::vec3& cameraPos)
 {
 	updateModelMatrix(parent->getModelMatrix());
-
+	distanceFromCamera = calcDistanceFromCam(cameraPos);
 	/*
 	* Update the lightsource's position, !!!THIS IS UNINTUITIVE!!!!,
 	* to accumulate transform take the pos from the modelmatrix
@@ -88,4 +89,14 @@ void SceneNode::updateModelMatrix(glm::mat4* accumulate)
 	m_modelMatrix *= glm::toMat4(orientation);
 	m_modelMatrix = glm::scale(m_modelMatrix, scale);
 	m_modelMatrix = (*accumulate) * m_modelMatrix;
+}
+
+glm::vec3 SceneNode::getWorldPosition()
+{
+	return glm::vec3(m_modelMatrix[3]);
+}
+
+float SceneNode::calcDistanceFromCam(const glm::vec3& camPos)
+{
+	return glm::distance(getWorldPosition(), camPos);
 }
