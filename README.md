@@ -18,7 +18,7 @@ Meadow is an interactive graphics software, it is an ongoing personal project fo
 
 # In the future
 - Cool shaders using normal maps and such
-- Opaque objects
+- ~~Translucent objects~~ ✓
 - Shadows
 - Basic collision and physics simulation
 - Object selection by clicking an object in the 3D world
