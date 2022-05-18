@@ -23,3 +23,14 @@ Meadow is an interactive graphics software, it is an ongoing personal project fo
 - Basic collision and physics simulation
 - Object selection by clicking an object in the 3D world
 - Object highlighting, selection 
+
+# Funky stuff
+![](https://github.com/Willecode/Meadow/blob/a546cd7f2eda68c37171eb0044a7f5662d2e7939/docs/gifs/transparency_bug.gif)
+Cool transparency bug:
+- The windows are drawn in order: **Right background window**, **front window**, **left background window**
+- When the **front window** is in front of the **right back window**, the **back window** gets drawn first, and then the **front window** get's drawn on top of it. Thus, the blending - directed by the translucency (alpha) of the **front window** - produces the desired result where the **back window** can be seen through the **front window**.
+- When the **front window** is in front of the **left back window**, the **front window** gets drawn first. When the **back window** is drawn, the **front window** has already been drawn in front of it, and thus all of it's fragments fail their depth tests, and the **left back window** will not be drawn at all.
+
+Solution:
+Draw translucent objects last, and always in order from furthest to nearest from camera.
+But what if an object is both in front of and behind another object? ....don't think about it if you wish not to lose sleep.
