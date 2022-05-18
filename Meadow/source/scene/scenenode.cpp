@@ -25,6 +25,7 @@ SceneNode::SceneNode(const SceneNode& n1)
 
 SceneNode& SceneNode::operator=(const SceneNode& n1)
 {
+	name = n1.name;
 	position = n1.position;
 	scale = n1.scale;
 	orientation = n1.orientation;

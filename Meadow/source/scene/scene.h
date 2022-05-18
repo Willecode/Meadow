@@ -23,7 +23,9 @@ public:
 	*/
 	void render(ShaderManager* sdrMan);
 	unsigned int addNode(unsigned int parent = 0);
+	unsigned int addNode(SceneNode* parent);
 	SceneNode* getNode(unsigned int id) const;
+	void duplicateNode(unsigned int id);
 
 	/*
 	* Get a UI representation of the scene graph with references to the real data //moved to a separate datascraper class
@@ -39,7 +41,9 @@ private:
 	* Scenenodes only exist in a scene, and are unique
 	* Rootnode is always 0 and added in initialization
 	*/
-	std::unordered_map<unsigned int, std::shared_ptr<SceneNode>> m_nodeMap;
+	//std::unordered_map<unsigned int, std::shared_ptr<SceneNode>> m_nodeMap;
+	static constexpr unsigned int MAX_NODES = 200;
+	std::array<std::unique_ptr<SceneNode>, MAX_NODES> m_nodes;
 	unsigned int m_nodeIdCtr;
 
 	/*
@@ -54,6 +58,7 @@ private:
 	void mouseLockHandler();
 	void mouseUnlockHandler();
 	void addNodeHandler(unsigned int parent = 0);
+	void duplicateNodeHandler(unsigned int parent);
 	void setMeshHandler(unsigned int nodeid, unsigned int meshid);
 	void setMaterialHandler(unsigned int nodeid, unsigned int matid);
 	/*
@@ -62,5 +67,8 @@ private:
 	void updateNode(SceneNode* node, SceneNode* parent);
 	void renderNode(SceneNode* node, ShaderManager* sdrMan);
 	void handleCameraMovement(float deltatime, InputGather* input);
+	unsigned int findParent(SceneNode* node);
+	void duplicateChildren(SceneNode* const source, SceneNode* destination);
+	bool nodeIdInUse(unsigned int id) const;
 };
 

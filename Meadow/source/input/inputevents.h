@@ -209,6 +209,20 @@ namespace InputEvents
 	private:
 		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
 	};
+	class DuplicateNodeEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int x) {
+			for (auto h : m_handlers) {
+				h(x);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
 
 	class SetNodeMeshEvent
 	{

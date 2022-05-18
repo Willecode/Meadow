@@ -279,6 +279,11 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
 
     // Text and Tree nodes are less high than framed widgets, using AlignTextToFramePadding() we add vertical spacing to make the tree lines equal high.
     ImGui::TableNextRow();
+    ImGui::TableSetColumnIndex(1);
+    if (ImGui::Button("Duplicate node")) {
+        InputEvents::DuplicateNodeEvent::notify(node->id);
+    }
+
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();
 

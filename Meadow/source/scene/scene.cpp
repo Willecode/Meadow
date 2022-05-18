@@ -1,16 +1,18 @@
 #include "scene.h"
+#include <algorithm>
 #include "input/inputevents.h"
 #include "resource_management/resourcemanager.h"
 #include "directionallight.h"
 #include "pointlight.h"
 Scene::Scene():
-	m_nodeMap({ {0, std::make_shared<SceneNode>(0,"root")}}), // Initialize scene graph as just the root node
 	m_nodeIdCtr(1),
 	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f)),
 	m_deltatime(0.f),
 	m_cameraLock(true),
 	m_uiNodes()
 {
+	// Initialize scene graph as just the root node
+	m_nodes[0] = std::make_unique<SceneNode>(0, "root");
 	/*
 	* Subscribe to relevant events
 	*/
@@ -27,6 +29,7 @@ Scene::Scene():
 	InputEvents::AddNodeEvent::subscribe(addNodefunc);
 
 	InputEvents::SetNodeMeshEvent::subscribe(std::bind(&Scene::setMeshHandler, this, std::placeholders::_1, std::placeholders::_2));
+	InputEvents::DuplicateNodeEvent::subscribe(std::bind(&Scene::duplicateNodeHandler, this, std::placeholders::_1));
 }
 
 void Scene::update(float deltatime, InputGather* input)
@@ -42,7 +45,7 @@ void Scene::update(float deltatime, InputGather* input)
 	/*
 	* Update each node, starting from root with root also as parent (root doesn't have transforms so it's ok)
 	*/
-	updateNode(m_nodeMap[0].get(), m_nodeMap[0].get());
+	updateNode(m_nodes[0].get(), m_nodes[0].get());
 }
 
 void Scene::render(ShaderManager* sdrMan)
@@ -70,28 +73,72 @@ void Scene::render(ShaderManager* sdrMan)
 	/*
 	* Render each node, starting from root
 	*/
-	renderNode(m_nodeMap[0].get(), sdrMan);
+	renderNode(m_nodes[0].get(), sdrMan);
 }
 
 unsigned int Scene::addNode(unsigned int parent)
 {
-	if (m_nodeMap.find(parent) != m_nodeMap.end()) {
-		m_nodeMap[m_nodeIdCtr] = std::make_shared<SceneNode>(m_nodeIdCtr);
-		m_nodeMap[parent]->children.push_back(m_nodeMap[m_nodeIdCtr].get());
+	if (m_nodeIdCtr >= MAX_NODES)
+		throw std::length_error(std::string("Tried to add more than ") + std::to_string(MAX_NODES) + std::string(" nodes"));
+	if (nodeIdInUse(parent)) {
+		m_nodes[m_nodeIdCtr] = std::make_unique<SceneNode>(m_nodeIdCtr);
+		m_nodes[parent]->children.push_back(m_nodes[m_nodeIdCtr].get());
 		unsigned int ret = m_nodeIdCtr;
 		m_nodeIdCtr++;
 		return ret;
+	}
+	else {
+		throw std::invalid_argument("Tried to add child to nonexistent parent");
+	}
+}
+
+unsigned int Scene::addNode(SceneNode* parent)
+{
+	/*
+	* Make sure that the parent exists
+	*/
+	bool found = false;
+	unsigned int parentId;
+	for (int i = 0; i < MAX_NODES; i++) {
+		if (m_nodes[i].get() == parent) {
+			found = true;
+			parentId = i;
+			break;
+		}
+	}
+	if (!found)
+		throw std::invalid_argument("Tried to add child to nonexistent parent");
+	else {
+		return addNode(parentId);
 	}
 }
 
 
 SceneNode* Scene::getNode(unsigned int id) const
 {
-	auto it = m_nodeMap.find(id);
-	if (it != m_nodeMap.end()) {
-		return it->second.get();
+	if (!nodeIdInUse(id))
+		return nullptr;
+	return m_nodes[id].get();
+
+}
+
+void Scene::duplicateNode(unsigned int id)
+{
+	SceneNode* node = getNode(id);
+	if (node != nullptr) {
+		/*
+		* Create a new node with the same parent
+		*/
+		unsigned int parentId = findParent(node);
+		unsigned int newNodeId = addNode(parentId);
+		SceneNode* newNode = getNode(newNodeId);
+
+		/*
+		* Create a copy for each of the child nodes and make the copies children of the new node
+		*/
+		*newNode = *node;
+		duplicateChildren(node, newNode);
 	}
-	return nullptr;
 }
 
 
@@ -120,34 +167,19 @@ void Scene::addNodeHandler(unsigned int parent)
 	addNode(parent);
 }
 
+void Scene::duplicateNodeHandler(unsigned int parent)
+{
+	duplicateNode(parent);
+}
+
 void Scene::setMeshHandler(unsigned int nodeid, unsigned int meshid)
 {
-	auto it = m_nodeMap.find(nodeid);
-	if (it == m_nodeMap.end()) {
-		Locator::getLogger()->getLogger()->error("Sene::setMeshHandler: Tried to set mesh to a nonexistent node");
-		return;
-	}
+	if (nodeIdInUse(nodeid))
+		getNode(nodeid)->setMesh(ResourceManager::getMesh(meshid));
 	else
-	{
-		it->second->setMesh(ResourceManager::getMesh(meshid) );
-		/*Locator::getLogger()->getLogger()->error("Scene mesh set handlers commented out!");*/
-	}
-
+		Locator::getLogger()->getLogger()->error("Scene::setMeshHandler: Tried to set mesh to a nonexistent node");
 }
 
-void Scene::setMaterialHandler(unsigned int nodeid, unsigned int matid)
-{
-	auto it = m_nodeMap.find(nodeid);
-	if (it == m_nodeMap.end()) {
-		Locator::getLogger()->getLogger()->error("Sene::setMaterialHandler: Tried to set material to a nonexistent node");
-		return;
-	}
-	else
-	{
-		//it->second->getMesh()->material = ResourceManager::getMaterial(matid);
-		Locator::getLogger()->getLogger()->error("Scene mesh set handlers commented out!");
-	}
-}
 
 void Scene::updateNode(SceneNode* node, SceneNode* parent)
 {
@@ -181,5 +213,35 @@ void Scene::handleCameraMovement(float deltatime, InputGather* input)
 		m_camera.inputMoveLeft(deltatime);
 	if (input->getInputFlag(InputGather::InputFlag::CameraRight))
 		m_camera.inputMoveRight(deltatime);
+}
+
+unsigned int Scene::findParent(SceneNode* node)
+{
+	for (int i = 0; i < MAX_NODES; i++) {
+		if (m_nodes[i] != nullptr) {
+			auto it = std::find(m_nodes[i]->children.begin(), m_nodes[i]->children.end(), node);
+			if (it != m_nodes[i]->children.end())
+				return i;
+		}
+	}
+}
+
+void Scene::duplicateChildren(SceneNode* const source, SceneNode* destination)
+{
+	for (SceneNode* const child : source->children) {
+		unsigned int newNodeId = addNode(destination);
+		SceneNode* newNode = getNode(newNodeId);
+		*newNode = *child;
+		duplicateChildren(child, newNode);
+	}
+}
+
+bool Scene::nodeIdInUse(unsigned int id) const
+{
+	if (id < MAX_NODES) {
+		if (m_nodes[id] != nullptr)
+			return true;
+	}
+	return false;
 }
 
