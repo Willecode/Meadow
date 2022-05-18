@@ -10,7 +10,6 @@ OpenGLRenderer::OpenGLRenderer():
     m_shaderProgMap({}),
     m_texIdMap({})
 {
-    
 }
 
 bool OpenGLRenderer::initialize(WindowManager* windowMan)
@@ -36,6 +35,8 @@ bool OpenGLRenderer::initialize(WindowManager* windowMan)
     /*glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
+
+    faceCulling(true);
     return false;
 }
 
@@ -300,6 +301,15 @@ void OpenGLRenderer::blending(bool enable)
     if (enable) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+        glDisable(GL_BLEND);
+}
+
+void OpenGLRenderer::faceCulling(bool enable)
+{
+    if (enable) {
+        glEnable(GL_CULL_FACE);
     }
     else
         glDisable(GL_BLEND);

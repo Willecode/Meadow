@@ -82,8 +82,8 @@ std::unique_ptr<SubMesh> PrimitiveCreation::createSphere(int sectorCount, int st
         int nextStackFirst = stackFirst + sectorCount + 1;
         for (int j = 0; j < sectorCount; j++) {
             indices.push_back(stackFirst + j);
-            indices.push_back(stackFirst + j + 1);
             indices.push_back(nextStackFirst + j);
+            indices.push_back(stackFirst + j + 1);
 
             indices.push_back(stackFirst + j + 1);
             indices.push_back(nextStackFirst + j);

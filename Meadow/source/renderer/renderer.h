@@ -74,5 +74,10 @@ public:
 	* Blending
 	*/
 	virtual void blending(bool enable) = 0;
+
+	/*
+	* Face culling
+	*/
+	virtual void faceCulling(bool enable) = 0;
 };
 

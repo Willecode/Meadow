@@ -73,6 +73,12 @@ public:
 	* Blending
 	*/
 	void blending(bool enable) override;
+
+	/*
+	* Face culling
+	*/
+	void faceCulling(bool enable) override;
+
 private:
 	struct MeshBufferData {
 		GLuint VAO;
