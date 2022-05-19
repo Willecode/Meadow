@@ -81,8 +81,10 @@ void main()
     }
     
     // DEBUG ***************************************
-    //outputCol = vec3(texture(material.diffuse_map, TexCoords));
-    //outputCol = vec3(0.0, 1.0, 0.0);
+//    outputCol = texture(material.diffuse_map, TexCoords);
+//    outputCol.a = 1;
+//    if (material.opacity_map_present)
+//        outputCol = vec4(0.0, 1.0, 0.0, 1.0);
     //outputCol = normalDir;
     //outputCol = material.specular;
     //outputCol = dirLight[0].direction;
@@ -94,6 +96,10 @@ void main()
 //    debugDirLight.specular = vec3(0.6);
 //    outputCol += calcDirLight(debugDirLight, normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
 //    outputCol = vec4(texture(material.diffuse_map, TexCoords).a);
+//    if (material.opacity_map_present)
+//        outputCol = vec4(texture(material.opacity_map, TexCoords));
+//    else
+//        outputCol = vec4(1.0);
     // ***************************************
 
     FragColor = outputCol;

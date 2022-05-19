@@ -22,7 +22,7 @@ bool OpenGLRenderer::initialize(WindowManager* windowMan)
         return true;
     }
     
-    glClearColor(0.f, 0.f, 0.f, 1.0f);
+    glClearColor(0.f, 0.f, 1.f, 1.0f);
 
     // Initial depth test config
     glEnable(GL_DEPTH_TEST);
@@ -247,6 +247,14 @@ void OpenGLRenderer::bindTo2DSampler(const unsigned int& texId, const unsigned i
     }
     glActiveTexture(GL_TEXTURE0 + samplerId);
     glBindTexture(GL_TEXTURE_2D, it->second);
+    glActiveTexture(GL_TEXTURE0);
+}
+
+void OpenGLRenderer::unbindTexture(const unsigned int& samplerId)
+{
+    glActiveTexture(GL_TEXTURE0 + samplerId);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void OpenGLRenderer::deleteTexture(const unsigned int& id)

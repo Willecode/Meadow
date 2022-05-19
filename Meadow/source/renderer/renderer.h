@@ -50,6 +50,7 @@ public:
 	virtual void create2DTexture(const unsigned int& id, const unsigned int &width, const unsigned int &height,
 		ImageFormat formatSrc, ImageFormat formatInternal, unsigned char* imgData) = 0;
 	virtual void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) = 0;
+	virtual void unbindTexture(const unsigned int& samplerId) = 0;
 	virtual void deleteTexture(const unsigned int& id) = 0;
 
 	/*

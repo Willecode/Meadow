@@ -11,7 +11,7 @@ Material::AssetType Material::getAssetType()
 void Material::passToShader(ShaderManager* sdrMan)
 {
 	/*
-	* Check textures assigned for this material. Set appropriate samplers.
+	* Bind textures assigned for this material. Set appropriate samplers.
 	*/
 	bool diffmap = false;
 	bool specmap = false;
@@ -19,22 +19,25 @@ void Material::passToShader(ShaderManager* sdrMan)
 	for (auto tex : m_textures) {
 		if (tex.second != nullptr) {
 			Locator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
+			//tex.second->bindToSampler(sdrMan->getTexSamplerId(tex.first));
 			if (tex.first == Texture::TextureType::DIFFUSE_MAP) {
-				m_uintPropsHidden["diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
 				diffmap = true;
 			}
 			else if (tex.first == Texture::TextureType::SPECULAR_MAP) {
-				m_uintPropsHidden["specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
 				specmap = true;
 			}
 			else if (tex.first == Texture::TextureType::OPACITY_MAP) {
-				m_uintPropsHidden["opacity_map"] = sdrMan->getTexSamplerId(Texture::TextureType::OPACITY_MAP);
 				opacmap = true;
 			}
 		}
+		else
+			Locator::getRenderer()->unbindTexture(sdrMan->getTexSamplerId(tex.first));
 	}
+	m_uintPropsHidden["material.diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
 	setProperty("material.diffuse_map_present", diffmap);
+	m_uintPropsHidden["material.specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
 	setProperty("material.specular_map_present", specmap);
+	m_uintPropsHidden["material.opacity_map"] = sdrMan->getTexSamplerId(Texture::TextureType::OPACITY_MAP);
 	setProperty("material.opacity_map_present", opacmap);
 
 	/*
@@ -118,12 +121,12 @@ void Material::setTexture(Texture* tex, Texture::TextureType type)
 	/*
 	* nullptr disables the texturemap
 	*/
-	if (type == Texture::TextureType::DIFFUSE_MAP)
+	/*if (type == Texture::TextureType::DIFFUSE_MAP)
 		setProperty("material.diffuse_map_present", !(tex == nullptr));
 	else if (type == Texture::TextureType::SPECULAR_MAP)
 		setProperty("material.specular_map_present", !(tex == nullptr));
 	else if (type == Texture::TextureType::OPACITY_MAP)
-		setProperty("material.opacity_map_present", !(tex == nullptr));
+		setProperty("material.opacity_map_present", !(tex == nullptr));*/
 	m_textures[type] = tex;
 }
 
@@ -142,8 +145,8 @@ void Material::defaultPhong()
 	setProperty("material.shininess", 10.f, true);
 	setProperty("material.diffuse", MaterialConstants::DEFAULT_COLOR, true);
 	setProperty("material.specular", MaterialConstants::DEFAULT_COLOR * 0.1f, true);
-	setProperty("material.diffuse_map_present", false);
-	setProperty("material.specular_map_present", false);
+	/*setProperty("material.diffuse_map_present", false);
+	setProperty("material.specular_map_present", false);*/
 }
 
 void Material::defaultColorOnlyMat()
