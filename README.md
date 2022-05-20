@@ -4,7 +4,7 @@ Demo from 10th of May 2022:
 A 3D model created by me, rendered in Meadow :).
 
 # About
-Meadow is an interactive graphics software, it is an ongoing personal project for learning purposes.
+Meadow is an interactive graphics software for Windows, it is an ongoing personal project for learning purposes. Right now can't be built on other machines.
 
 # Features
 - Original rendering engine, which uses OpenGL.
