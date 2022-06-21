@@ -1,5 +1,4 @@
 #include "application.h"
-
 // DEBUG --------------------
 #include "scene/directionallight.h"
 #include "scene/pointlight.h"
@@ -37,12 +36,14 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     /*
     * Provide shaderman some shaders
     */
-    auto phongSdr = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/phongtex.fs");
-    auto colorSdr = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
-    auto depthSdr = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
+    auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/phongtex.fs");
+    auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
+    auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
+    auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/2d.fs");
     m_shaderManager.provideShader("phong", std::move(phongSdr));
     m_shaderManager.provideShader("color", std::move(colorSdr));
     m_shaderManager.provideShader("depth", std::move(depthSdr));
+    m_shaderManager.provideShader("sQuad", std::move(screenQuadSdr));
     m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
     /*
     * Create a scene for entities
@@ -176,6 +177,8 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     * import a model
     */
     ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/old-office-window/source/office window.fbx", m_scene.get(), 0);
+    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
+
     //m_scene->getNode(4)->scale = glm::vec3(0.2f);
 #endif
 }
@@ -187,8 +190,25 @@ void Application::run()
     float deltatime;
     float time;
     float lastFrameTime = 0.f;
-    m_renderer.depthTesting(true);
-    m_renderer.blending(true);
+
+    // Create texture to store render
+    Texture tex(m_windowManager.width, m_windowManager.height, "");
+    tex.setId(10000);
+    tex.loadToGPU();
+
+    // Create framebuffer
+    m_renderer.createFrameBuffer(0, tex.getId(), tex.getWidth(), tex.getHeight());
+    m_renderer.bindFrameBuffer(0);
+    if (!m_renderer.checkFrameBufferStatus())
+        Locator::getLogger()->getLogger()->error("Application: framebuffer not complete");
+
+    // Create screen quad
+    ResourceManager manager = ResourceManager::getInstance();
+    unsigned int screenQuad = manager.storeMesh2D(std::move(PrimitiveCreation::createScreenQuad()));
+    Mesh2D* quadptr = manager.getMesh2D(screenQuad);
+    
+    manager.getMesh2D(screenQuad)->setTexture(&tex);
+
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -208,10 +228,23 @@ void Application::run()
         m_scene->update(deltatime, &m_inputGather);
 
         /*
-        * Render scene
+        * Render scene 
         */
+        m_renderer.depthTesting(true);
+        m_renderer.blending(true);
+        m_renderer.bindFrameBuffer(0);
+        m_shaderManager.setCurrentShader("phong");
         m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
         m_scene->render(&m_shaderManager);
+
+        /*
+        * Do postprocessing
+        */
+        m_renderer.depthTesting(false);
+        m_renderer.blending(false);
+        m_renderer.bindFrameBufferDefault();
+        m_shaderManager.setCurrentShader("sQuad");
+        manager.getMesh2D(screenQuad)->draw(&m_shaderManager);
 
         /*
         * Render UI

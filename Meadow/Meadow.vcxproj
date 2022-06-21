@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\assets\mesh2d.cpp" />
     <ClCompile Include="source\assets\submesh.cpp" />
     <ClCompile Include="source\assets\mesh.cpp" />
     <ClCompile Include="source\resource_management\importutility.cpp" />
@@ -197,6 +198,8 @@
     <ClCompile Include="source\ui\uidatascraper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\2d.fs" />
+    <None Include="shaders\2d.vs" />
     <None Include="shaders\depth.fs" />
     <None Include="shaders\phongtex.fs" />
     <None Include="shaders\object.vs" />
@@ -215,8 +218,10 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\assets\mesh2d.h" />
     <ClInclude Include="source\assets\submesh.h" />
     <ClInclude Include="source\assets\mesh.h" />
+    <ClInclude Include="source\assets\vertex2d.h" />
     <ClInclude Include="source\resource_management\importutility.h" />
     <ClInclude Include="source\scene\pointlight.h" />
     <ClInclude Include="source\scene\directionallight.h" />

@@ -93,3 +93,21 @@ std::unique_ptr<SubMesh> PrimitiveCreation::createSphere(int sectorCount, int st
     Locator::getLogger()->getLogger()->info("created a sphere with {} vertices", vertices.size());
     return std::make_unique<SubMesh>(vertices, indices, "Sphere");
 }
+
+std::unique_ptr<Mesh2D> PrimitiveCreation::createScreenQuad()
+{
+    std::vector<Vertex2D> vertices;
+    std::vector<unsigned int> indices;
+                                         //positon               //texcoords
+    vertices.push_back(Vertex2D(glm::vec2(-1.0f, 1.0f), glm::vec2(0.0f, 1.0f))); // top left
+    vertices.push_back(Vertex2D(glm::vec2(-1.0f, -1.0f), glm::vec2(0.0f, 0.0f)));// bot left
+    vertices.push_back(Vertex2D(glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f))); // top right
+    vertices.push_back(Vertex2D(glm::vec2(1.0f, -1.0f), glm::vec2(1.0f, 0.0f)));  // bot right
+
+    indices = {
+        0,1,2,
+        1,3,2
+    };
+
+    return std::make_unique<Mesh2D>(vertices, indices, "Screen Quad");
+}

@@ -8,7 +8,8 @@ const std::unordered_map<Renderer::ImageFormat, GLenum> OpenGLRenderer::m_imgFor
 OpenGLRenderer::OpenGLRenderer():
     m_meshBufferMap({}),
     m_shaderProgMap({}),
-    m_texIdMap({})
+    m_texIdMap({}),
+    m_fbIdMap({})
 {
 }
 
@@ -22,7 +23,7 @@ bool OpenGLRenderer::initialize(WindowManager* windowMan)
         return true;
     }
     
-    glClearColor(0.f, 0.f, 1.f, 1.0f);
+    glClearColor(0.f, 0.f, 0.f, 1.0f);
 
     // Initial depth test config
     glEnable(GL_DEPTH_TEST);
@@ -88,6 +89,35 @@ void OpenGLRenderer::meshBuffersPushData(int meshId,
     // vertex texture coords
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+
+    glBindVertexArray(0);
+}
+
+void OpenGLRenderer::mesh2DBuffersPushData(int meshId, const std::vector<Vertex2D>& vertices, const std::vector<unsigned int>& indices)
+{
+    auto it = m_meshBufferMap.find(meshId);
+    if (it == m_meshBufferMap.end()) {
+        Locator::getLogger()->getLogger()->info("Renderer: mesh buffer data push failed: unknown meshId\n");
+        return;
+    }
+
+    it->second.indexCount = static_cast<unsigned int>(indices.size());
+
+    glBindVertexArray(it->second.VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, it->second.VBO);
+
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex2D), &vertices[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, it->second.EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
+        &indices[0], GL_STATIC_DRAW);
+
+    // vertex positions
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (void*)0);
+    // vertex texture coords
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (void*)offsetof(Vertex2D, texCoords));
 
     glBindVertexArray(0);
 }
@@ -226,12 +256,19 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+    
     /*********************************
     * note: this causes an access violation exception if format is GL_RGBA and provided data is in RGB format.
     *       Also the textures may just glitch out if formats are not passed correctly...
     */
-    glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatInternal), width, height, 0, m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
+    if (imgData == nullptr) {
+        glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatInternal), width, height, 0,
+            m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, NULL);
+    }
+    else {
+        glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatInternal), width, height, 0,
+            m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
+    }
     /*********************************/
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -321,6 +358,74 @@ void OpenGLRenderer::faceCulling(bool enable)
     }
     else
         glDisable(GL_BLEND);
+}
+
+void OpenGLRenderer::createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height)
+{
+    // Check fb already taken
+    auto it = m_fbIdMap.find(buffId);
+    if (it != m_fbIdMap.end()) {
+        Locator::getLogger()->getLogger()->error("Renderer: framebuffer creation failed: framebuffer with id already exists\n");
+        return;
+    }
+    
+    // Check that tex exists
+    auto it2 = m_texIdMap.find(texId);
+    if (it2 == m_texIdMap.end()) {
+        Locator::getLogger()->getLogger()->error("Renderer: framebuffer creation failed: nonexistent texid provided\n");
+        return;
+    }
+    GLuint oglTexId = it2->second;
+
+    // Create opengl fb
+    unsigned int glbuffId;
+    glGenFramebuffers(1, &glbuffId);
+    glBindFramebuffer(GL_FRAMEBUFFER, glbuffId);
+
+    // Attach texture
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, oglTexId, 0);
+
+    // Attach rbo as a depth/stencil buffer
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+    glBindRenderbuffer(GL_RENDERBUFFER,0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+    FrameBufferData fbData = {
+        glbuffId, // Framebuffer Id
+        rbo // RBO id
+    };
+    m_fbIdMap.insert(std::pair<unsigned int, FrameBufferData>(buffId, fbData));
+}
+
+void OpenGLRenderer::bindFrameBuffer(int buffId)
+{
+    auto it = m_fbIdMap.find(buffId);
+    if (it == m_fbIdMap.end()) {
+        Locator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
+        return;
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, it->second.frameBuffId);
+}
+
+void OpenGLRenderer::bindFrameBufferDefault()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void OpenGLRenderer::deleteFrameBuffer(int buffId)
+{
+
+}
+
+bool OpenGLRenderer::checkFrameBufferStatus()
+{
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        return false;
+    }
+    return true;
 }
 
 void OpenGLRenderer::drawMesh(int meshId)

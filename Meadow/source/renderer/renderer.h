@@ -1,5 +1,6 @@
 #pragma once
 #include "assets/submesh.h"
+#include "assets/vertex2d.h"
 #include <glm/mat4x4.hpp>
 #include "windowmanager.h"
 /*
@@ -20,6 +21,9 @@ public:
 	virtual void meshBuffersPushData(int meshId,
 		const std::vector<Vertex> &vertices,
 		const std::vector<unsigned int> &indices) = 0;
+	virtual void mesh2DBuffersPushData(int meshId,
+		const std::vector<Vertex2D>& vertices,
+		const std::vector<unsigned int>& indices) = 0;
 
 	// Use this to remove mesh from GPU memory
 	virtual void meshBuffersDelete(int meshId) = 0;
@@ -80,5 +84,14 @@ public:
 	* Face culling
 	*/
 	virtual void faceCulling(bool enable) = 0;
+
+	/*
+	* Framebuffers
+	*/
+	virtual void createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height) = 0;
+	virtual void bindFrameBuffer(int buffId) = 0;
+	virtual void bindFrameBufferDefault() = 0;
+	virtual void deleteFrameBuffer(int buffId) = 0;
+	virtual bool checkFrameBufferStatus() = 0;
 };
 
