@@ -32,7 +32,10 @@ unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
 		m_submeshIdCtr++;
 		return m_submeshIdCtr;
 	}
-
+	else if (type == Asset::AssetType::MESH2D) { 
+		m_submeshIdCtr++; // Submesh and mesh2D share ID space, since they also share internal OGL id space
+		return m_submeshIdCtr;
+	}
 	else if (type == Asset::AssetType::SHADER) {
 		m_sdrIdCtr++;
 		return m_sdrIdCtr;
@@ -159,6 +162,30 @@ Material* ResourceManager::getMaterial(unsigned int materialId)
 const ResourceManager::MaterialMap* ResourceManager::getMaterialMap()
 {
 	return &m_materialMap;
+}
+
+unsigned int ResourceManager::storeMesh2D(std::unique_ptr<Mesh2D> mesh2D)
+{
+	if (mesh2D == nullptr)
+		return 0;
+	unsigned int newId = generateUniqueId(Asset::AssetType::MESH2D); 
+	mesh2D->setId(newId);
+	mesh2D->generateBuffers();
+	mesh2D->buffersPushData();
+	m_mesh2DMap.insert({ newId, std::move(mesh2D) });
+	return newId;
+}
+
+Mesh2D* ResourceManager::getMesh2D(unsigned int Mesh2DId)
+{
+	if (Mesh2DId == 0)
+		return nullptr;
+	auto it = m_mesh2DMap.find(Mesh2DId);
+	if (it == m_mesh2DMap.end()) {
+		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get mesh2D, id not found.\n");
+		return nullptr;
+	}
+	return it->second.get();
 }
 
 void ResourceManager::setSubmeshMaterialHandler(unsigned int meshid, unsigned int submeshid, unsigned int materialid)

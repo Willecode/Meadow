@@ -20,7 +20,9 @@ public:
 	void meshBuffersPushData(int meshId,
 		const std::vector<Vertex>& vertices,
 		const std::vector<unsigned int>& indices) override;
-
+	void mesh2DBuffersPushData(int meshId,
+		const std::vector<Vertex2D>& vertices,
+		const std::vector<unsigned int>& indices) override;
 	// Use this to remove mesh from GPU memory
 	void meshBuffersDelete(int meshId) override;
 
@@ -79,7 +81,16 @@ public:
 	* Face culling
 	*/
 	void faceCulling(bool enable) override;
-
+	
+	/*
+	* Framebuffers
+	*/
+	// Creates an fb with texId as color attachment, also attaches depth and stencil RBO
+	void createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height) override;
+	void bindFrameBuffer(int buffId) override;
+	void bindFrameBufferDefault() override;
+	void deleteFrameBuffer(int buffId) override; // DOES NOT DELETE RBO YET!!!
+	bool checkFrameBufferStatus() override;
 private:
 	struct MeshBufferData {
 		GLuint VAO;
@@ -108,6 +119,14 @@ private:
 	*/
 	static const std::unordered_map<ImageFormat, GLenum> m_imgFormatMap;
 
+	struct FrameBufferData {
+		GLuint frameBuffId;
+		GLuint rboId;
+	};
+	/*
+	* Maps from user framebuffer id -> OpenGL framebuffer id
+	*/
+	std::unordered_map<unsigned int, FrameBufferData> m_fbIdMap;
 private:
 
 	/*

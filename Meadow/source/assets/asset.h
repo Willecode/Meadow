@@ -7,6 +7,7 @@ public:
 		TEXTURE = 0,
 		MESH,
 		SUBMESH,
+		MESH2D,
 		SHADER,
 		MATERIAL
 	};

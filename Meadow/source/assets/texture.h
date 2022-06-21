@@ -18,9 +18,17 @@ public:
 	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height,
 		Renderer::ImageFormat formatSource, Renderer::ImageFormat formatInternal, std::string name = "Nameless texture");
 	
+	/*
+	* Use this constructor to create empty texture (no image data)
+	*/
+	Texture(unsigned int width, unsigned int height, std::string name = "Nameless texture");
+
 	void loadToGPU(); // Generate buffers in graphics memory and push image texture data to them
 	void bindToSampler(const unsigned int& samplerId);
 	void deleteFromGPU();
+
+	unsigned int getWidth();
+	unsigned int getHeight();
 
 	AssetType getAssetType() override;
 private:

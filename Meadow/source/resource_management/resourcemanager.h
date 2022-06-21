@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "assets/material.h"
 #include "ui/ui.h"
+#include "assets/mesh2d.h"
 /*
 *  Singleton resource manager. For now meshes and textures stored here get loaded to graphics memory
 */
@@ -17,6 +18,7 @@ class ResourceManager
 public:
 	typedef std::unordered_map<unsigned int, std::unique_ptr<Texture>>  TextureMap;
 	typedef std::unordered_map<unsigned int, std::unique_ptr<Mesh>>		MeshMap;
+	typedef std::unordered_map<unsigned int, std::unique_ptr<Mesh2D>>	Mesh2DMap;
 	typedef std::unordered_map<unsigned int, std::unique_ptr<SubMesh>>  SubmeshMap;
 	typedef std::unordered_map<unsigned int, std::unique_ptr<Shader >>  ShaderMap;
 	typedef std::unordered_map<unsigned int, std::unique_ptr<Material>> MaterialMap;
@@ -39,7 +41,10 @@ public:
 	static unsigned int storeMaterial(std::unique_ptr<Material> material);
 	static Material* getMaterial(unsigned int materialId);
 	static const MaterialMap* getMaterialMap();
-	
+
+	static unsigned int storeMesh2D(std::unique_ptr<Mesh2D> Mesh2D);
+	static Mesh2D* getMesh2D(unsigned int Mesh2DId);
+	static const Mesh2DMap* getMesh2DMap();
 	/*
 	* Event handlers
 	*/
@@ -62,6 +67,7 @@ private:
 	*/
 	inline static TextureMap  m_texMap      = {};
 	inline static MeshMap     m_meshMap     = {};
+	inline static Mesh2DMap   m_mesh2DMap = {};
 	inline static SubmeshMap  m_submeshMap  = {};
 	inline static ShaderMap   m_shaderMap   = {};
 	inline static MaterialMap m_materialMap = {};
