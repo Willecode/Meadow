@@ -39,12 +39,13 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/phongtex.fs");
     auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
     auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
-    auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/2d.fs");
+    auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessing.fs");
     m_shaderManager.provideShader("phong", std::move(phongSdr));
     m_shaderManager.provideShader("color", std::move(colorSdr));
     m_shaderManager.provideShader("depth", std::move(depthSdr));
-    m_shaderManager.provideShader("sQuad", std::move(screenQuadSdr));
+    m_shaderManager.provideShader("postprocess", std::move(screenQuadSdr));
     m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
+
     /*
     * Create a scene for entities
     */
@@ -191,22 +192,27 @@ void Application::run()
     float time;
     float lastFrameTime = 0.f;
 
-    // Create texture to store render
+    /*
+    * Create texture to store render
+    */
     Texture tex(m_windowManager.width, m_windowManager.height, "");
     tex.setId(10000);
     tex.loadToGPU();
 
-    // Create framebuffer
+    /*
+    * Create framebuffer
+    */
     m_renderer.createFrameBuffer(0, tex.getId(), tex.getWidth(), tex.getHeight());
     m_renderer.bindFrameBuffer(0);
     if (!m_renderer.checkFrameBufferStatus())
         Locator::getLogger()->getLogger()->error("Application: framebuffer not complete");
 
-    // Create screen quad
+    /*
+    * Create screen quad
+    */
     ResourceManager manager = ResourceManager::getInstance();
     unsigned int screenQuad = manager.storeMesh2D(std::move(PrimitiveCreation::createScreenQuad()));
     Mesh2D* quadptr = manager.getMesh2D(screenQuad);
-    
     manager.getMesh2D(screenQuad)->setTexture(&tex);
 
     while (!m_windowManager.shouldClose())
@@ -243,7 +249,7 @@ void Application::run()
         m_renderer.depthTesting(false);
         m_renderer.blending(false);
         m_renderer.bindFrameBufferDefault();
-        m_shaderManager.setCurrentShader("sQuad");
+        m_shaderManager.setCurrentShader("postprocess");
         manager.getMesh2D(screenQuad)->draw(&m_shaderManager);
 
         /*
