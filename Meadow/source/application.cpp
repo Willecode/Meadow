@@ -40,10 +40,12 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
     auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
     auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessing.fs");
+    auto skyboxSdr     = std::make_unique<Shader>(4, "shaders/skybox.vs"     , "shaders/skybox.fs");
     m_shaderManager.provideShader("phong", std::move(phongSdr));
     m_shaderManager.provideShader("color", std::move(colorSdr));
     m_shaderManager.provideShader("depth", std::move(depthSdr));
     m_shaderManager.provideShader("postprocess", std::move(screenQuadSdr));
+    m_shaderManager.provideShader("skybox", std::move(skyboxSdr));
     m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
 
     /*
@@ -180,7 +182,7 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/old-office-window/source/office window.fbx", m_scene.get(), 0);
     ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
 
-    //m_scene->getNode(4)->scale = glm::vec3(0.2f);
+    m_scene->getNode(3)->scale = glm::vec3(0.2f);
 #endif
 }
 
@@ -215,6 +217,39 @@ void Application::run()
     Mesh2D* quadptr = manager.getMesh2D(screenQuad);
     manager.getMesh2D(screenQuad)->setTexture(&tex);
 
+    /*
+    * Create Skybox
+    */
+    ImageLoader loader;
+    loader.flipOnLoad(false);
+    int width, height;
+    Renderer::ImageFormat fmt;
+
+    std::array<std::unique_ptr<std::vector<unsigned char>>, 6> texArr;
+    
+    for (int i = 0; i < 6; i++) {
+        auto vecptr = std::make_unique<std::vector<unsigned char>>();
+
+        if (i == 0)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_rt.jpg", width, height, fmt, *vecptr.get());
+        if (i == 1)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_lf.jpg", width, height, fmt, *vecptr.get());
+        if (i == 2)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_up.jpg", width, height, fmt, *vecptr.get());
+        if (i == 3)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_dn.jpg", width, height, fmt, *vecptr.get());
+        if (i == 4)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_bk.jpg", width, height, fmt, *vecptr.get());
+        if (i == 5)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_ft.jpg", width, height, fmt, *vecptr.get());
+
+        texArr[i] = std::move(vecptr);
+    }
+
+
+    auto skybox = std::make_unique<Cubemap>(std::move(texArr), width, height);
+    unsigned int skyboxId = manager.storecubemap(std::move(skybox));
+
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -229,6 +264,27 @@ void Application::run()
         m_windowManager.pollEvents();
 
         /*
+        * Bind first render pass framebuffer
+        */
+        m_renderer.bindFrameBuffer(0);
+
+        /*
+        * Clear buffers
+        */
+        m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
+
+        /*
+        * Render skybox
+        */
+        m_renderer.depthMask(false);
+        m_shaderManager.setCurrentShader("skybox");
+        Camera* cam = m_scene->getCamera();
+        m_shaderManager.setFrameUniform("view", glm::mat4(glm::mat3(cam->getViewMatrix()))); // for vertex shader
+        m_shaderManager.setFrameUniform("projection", cam->getProjectionMatrix()); // for vertex shader
+        m_shaderManager.forwardFrameUniforms();
+        manager.getcubemap(skyboxId)->draw(&m_shaderManager);
+
+        /*
         * Update scene
         */
         m_scene->update(deltatime, &m_inputGather);
@@ -238,9 +294,10 @@ void Application::run()
         */
         m_renderer.depthTesting(true);
         m_renderer.blending(true);
-        m_renderer.bindFrameBuffer(0);
+        m_renderer.depthMask(true);
         m_shaderManager.setCurrentShader("phong");
-        m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
+        /*m_renderer.bindFrameBuffer(0);
+        m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());*/
         m_scene->render(&m_shaderManager);
 
         /*

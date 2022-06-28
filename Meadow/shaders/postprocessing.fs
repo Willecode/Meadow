@@ -15,8 +15,8 @@ void main()
 {
     // Post processing flags
     bool negate = false;
-    bool grayscale = true;
-    bool sharpen = true;
+    bool grayscale = false;
+    bool sharpen = false;
 
     // Sample fragment color from texture
     vec4 outCol = texture(screenTexture, TexCoords);

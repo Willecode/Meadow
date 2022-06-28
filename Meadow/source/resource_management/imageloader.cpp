@@ -50,3 +50,11 @@ ImageLoader::~ImageLoader()
     for (auto it = m_loadedImages.begin(); it != m_loadedImages.end(); it++)
     stbi_image_free(*it);
 }
+
+void ImageLoader::flipOnLoad(bool flip)
+{
+    if (flip)
+        stbi_set_flip_vertically_on_load(1);
+    if (!flip)
+        stbi_set_flip_vertically_on_load(0);
+}

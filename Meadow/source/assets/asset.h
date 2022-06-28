@@ -9,7 +9,8 @@ public:
 		SUBMESH,
 		MESH2D,
 		SHADER,
-		MATERIAL
+		MATERIAL,
+		CUBEMAP
 	};
 	std::string name;
 public:

@@ -37,7 +37,7 @@ bool OpenGLRenderer::initialize(WindowManager* windowMan)
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
 
-    faceCulling(true);
+    faceCulling(false);
     return false;
 }
 
@@ -333,6 +333,14 @@ void OpenGLRenderer::depthTesting(bool enable)
         glDisable(GL_DEPTH_TEST);
 }
 
+void OpenGLRenderer::depthMask(bool enable)
+{
+    if (enable)
+        glDepthMask(GL_TRUE);
+    else
+        glDepthMask(GL_FALSE);
+}
+
 void OpenGLRenderer::stencilTesting(bool enable)
 {
     if (enable)
@@ -426,6 +434,74 @@ bool OpenGLRenderer::checkFrameBufferStatus()
         return false;
     }
     return true;
+}
+
+void OpenGLRenderer::createCubemap(int cmId)
+{
+    // Check id already taken
+    auto it = m_cubemapIdMap.find(cmId);
+    if (it != m_cubemapIdMap.end()) {
+        Locator::getLogger()->getLogger()->error("Renderer: cubemap creation failed: cubemap with id already exists\n");
+        return;
+    }
+    // Generate cubemap
+    unsigned int cubemapId;
+    glGenTextures(1, &cubemapId);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapId);
+
+    // store into map
+    m_cubemapIdMap.insert(std::make_pair(cmId, cubemapId));
+
+    // Unbind
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+void OpenGLRenderer::cubemapLoadTextures(int cmId, std::array<unsigned char*, 6> images, int width, int height)
+{
+    // Check id exists
+    auto it = m_cubemapIdMap.find(cmId);
+    if (it == m_cubemapIdMap.end()) {
+        Locator::getLogger()->getLogger()->error("Renderer: cubemap can't be loaded failed: id doesn't exist\n");
+        return;
+    }
+
+    // Bind
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubemapIdMap.at(cmId));
+
+    // Load
+    for (int i = 0; i < images.size(); i++) {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+            0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, images[i]
+        );
+    }
+    // Set tex parameters
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
+
+void OpenGLRenderer::deleteCubemap(int cmId)
+{
+    // Check id exists
+    auto it = m_cubemapIdMap.find(cmId);
+    if (it == m_cubemapIdMap.end()) {
+        Locator::getLogger()->getLogger()->error("Renderer: cubemap can't be deleted: id doesn't exist\n");
+        return;
+    }
+    glDeleteTextures(0, &it->second);
+}
+
+void OpenGLRenderer::bindCubemap(int cmId)
+{
+    // Check id exists
+    auto it = m_cubemapIdMap.find(cmId);
+    if (it == m_cubemapIdMap.end()) {
+        Locator::getLogger()->getLogger()->error("Renderer: cubemap can't be bound: id doesn't exist\n");
+        return;
+    }
+    glBindTexture(GL_TEXTURE_CUBE_MAP, it->second);
 }
 
 void OpenGLRenderer::drawMesh(int meshId)

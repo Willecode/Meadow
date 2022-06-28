@@ -66,6 +66,7 @@ public:
 	* Depth testing
 	*/
 	void depthTesting(bool enable) override;
+	void depthMask(bool enable) override;
 
 	/*
 	* Stencil testing
@@ -91,6 +92,15 @@ public:
 	void bindFrameBufferDefault() override;
 	void deleteFrameBuffer(int buffId) override; // DOES NOT DELETE RBO YET!!!
 	bool checkFrameBufferStatus() override;
+
+	/*
+	* Cubemaps
+	*/
+	void createCubemap(int cmId) override;
+	void cubemapLoadTextures(int cmId, std::array<unsigned char*, 6> images, int width, int height) override;
+	void deleteCubemap(int cmId) override;
+	void bindCubemap(int cmId) override;
+
 private:
 	struct MeshBufferData {
 		GLuint VAO;
@@ -127,6 +137,12 @@ private:
 	* Maps from user framebuffer id -> OpenGL framebuffer id
 	*/
 	std::unordered_map<unsigned int, FrameBufferData> m_fbIdMap;
+
+	/*
+	* Maps from user cubemap id -> OpenGL cubemap id
+	*/
+	std::unordered_map<unsigned int, GLuint> m_cubemapIdMap;
+
 private:
 
 	/*
