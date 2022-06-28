@@ -129,6 +129,9 @@
     <ClCompile Include="postprocessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\assets\cubemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\phongtex.fs" />
@@ -137,6 +140,8 @@
     <None Include="shaders\depth.fs" />
     <None Include="shaders\2d.vs" />
     <None Include="shaders\postprocessing.fs" />
+    <None Include="shaders\skybox.vs" />
+    <None Include="shaders\skybox.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\Wood066_1K_Color.jpg">
@@ -268,6 +273,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="postprocessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\assets\cubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -27,10 +27,7 @@ public:
 	SceneNode* getNode(unsigned int id) const;
 	void duplicateNode(unsigned int id);
 
-	/*
-	* Get a UI representation of the scene graph with references to the real data //moved to a separate datascraper class
-	*/
-	//void scrapeData(SceneNodeUI &uiNode) const;
+	Camera* getCamera();
 	
 private:
 	Camera m_camera;

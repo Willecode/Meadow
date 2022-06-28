@@ -14,6 +14,7 @@ public:
 	ImageLoader();
 	bool loadImage(const std::string &path, int &width, int &height, Renderer::ImageFormat& format, std::vector<unsigned char> &bytes);
 	~ImageLoader();
+	void flipOnLoad(bool flip);
 private:
 	/*
 	* Local cache

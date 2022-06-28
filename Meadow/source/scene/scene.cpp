@@ -147,6 +147,11 @@ void Scene::duplicateNode(unsigned int id)
 	}
 }
 
+Camera* Scene::getCamera()
+{
+	return &m_camera;
+}
+
 
 void Scene::mousePosHandler(float x, float y)
 {

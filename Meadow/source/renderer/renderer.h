@@ -3,6 +3,7 @@
 #include "assets/vertex2d.h"
 #include <glm/mat4x4.hpp>
 #include "windowmanager.h"
+#include <array>
 /*
 * I only know OpenGL as I'm writing this class, so this may need to be
 * modified to provide a more general Graphics api wrapper.
@@ -69,6 +70,8 @@ public:
 	* Depth testing
 	*/
 	virtual void depthTesting(bool enable) = 0;
+	virtual void depthMask(bool enable) = 0;
+
 
 	/*
 	* Stencil testing
@@ -93,5 +96,13 @@ public:
 	virtual void bindFrameBufferDefault() = 0;
 	virtual void deleteFrameBuffer(int buffId) = 0;
 	virtual bool checkFrameBufferStatus() = 0;
+
+	/*
+	* Cubemaps
+	*/
+	virtual void createCubemap(int cmId) = 0;
+	virtual void cubemapLoadTextures(int cmId, std::array<unsigned char*, 6> images, int width, int height) = 0;
+	virtual void deleteCubemap(int cmId) = 0;
+	virtual void bindCubemap(int cmId) = 0;
 };
 

@@ -12,7 +12,8 @@ public:
 	enum class TextureType {
 		DIFFUSE_MAP = 0,
 		SPECULAR_MAP,
-		OPACITY_MAP
+		OPACITY_MAP,
+		CUBE_MAP
 	};
 public:
 	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height,

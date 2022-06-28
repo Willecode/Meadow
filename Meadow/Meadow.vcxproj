@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\assets\cubemap.cpp" />
     <ClCompile Include="postprocessing.cpp" />
     <ClCompile Include="source\assets\mesh2d.cpp" />
     <ClCompile Include="source\assets\submesh.cpp" />
@@ -205,6 +206,8 @@
     <None Include="shaders\object.vs" />
     <None Include="shaders\coloronly.fs" />
     <None Include="shaders\postprocessing.fs" />
+    <None Include="shaders\skybox.fs" />
+    <None Include="shaders\skybox.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\black.png" />
@@ -219,6 +222,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\assets\cubemap.h" />
     <ClInclude Include="postprocessing.h" />
     <ClInclude Include="source\assets\mesh2d.h" />
     <ClInclude Include="source\assets\submesh.h" />

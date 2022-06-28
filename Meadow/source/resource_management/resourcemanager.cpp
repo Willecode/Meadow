@@ -20,8 +20,8 @@ ResourceManager::ResourceManager()
 
 unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
 {
-	if (type == Asset::AssetType::TEXTURE) {
-		m_texIdCtr++;
+	if (type == Asset::AssetType::TEXTURE || type == Asset::AssetType::CUBEMAP) {
+		m_texIdCtr++; // Texture and Cubemap share ID space, since they also share internal OGL id space
 		return m_texIdCtr;
 	}
 	else if (type == Asset::AssetType::MESH) {
@@ -183,6 +183,29 @@ Mesh2D* ResourceManager::getMesh2D(unsigned int Mesh2DId)
 	auto it = m_mesh2DMap.find(Mesh2DId);
 	if (it == m_mesh2DMap.end()) {
 		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get mesh2D, id not found.\n");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+unsigned int ResourceManager::storecubemap(std::unique_ptr<Cubemap> cubemap)
+{
+	if (cubemap == nullptr)
+		return 0;
+	unsigned int newId = generateUniqueId(Asset::AssetType::CUBEMAP);
+	cubemap->setId(newId);
+	cubemap->load();
+	m_cubemapMap.insert({ newId, std::move(cubemap) });
+	return newId;
+}
+
+Cubemap* ResourceManager::getcubemap(unsigned int texId)
+{
+	if (texId == 0)
+		return nullptr;
+	auto it = m_cubemapMap.find(texId);
+	if (it == m_cubemapMap.end()) {
+		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get cubemap, id not found.\n");
 		return nullptr;
 	}
 	return it->second.get();
