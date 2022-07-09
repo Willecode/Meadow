@@ -5,6 +5,10 @@ in vec2 TexCoords;
 
 uniform sampler2D screenTexture;
 
+uniform bool negate;
+uniform bool grayscale;
+uniform bool sharpen;
+
 // Kernel pixel offset
 const float offsetx = 1.0 / 1920.0;
 const float offsety = 1.0 / 1080.0;
@@ -14,9 +18,9 @@ vec4 calculateKernel(float kernel[9],  vec2 offsets[9]);
 void main()
 {
     // Post processing flags
-    bool negate = false;
-    bool grayscale = false;
-    bool sharpen = false;
+//    bool negate = false;
+//    bool grayscale = false;
+//    bool sharpen = false;
 
     // Sample fragment color from texture
     vec4 outCol = texture(screenTexture, TexCoords);

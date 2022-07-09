@@ -1,5 +1,6 @@
 #pragma once
 #include "scene/scene.h"
+#include "postprocessing.h"
 #include "resource_management/resourcemanager.h"
 #include "ui/ui.h"
 class UIDataScraper
@@ -13,12 +14,16 @@ private:
 	* UI Scene graph, tree of nodes with child pointers. Properties of the nodes are pointers to UIAssets in m_UIAssetMaps
 	*/
 	SceneNodeUI m_uiSceneGraph;
+	/*
+	* Postprocessing flags for UI
+	*/
+	PostprocessingFlags m_postprocFlags;
 public:
 	UIDataScraper();
 	/*
 	* Generate UI representation from back end data
 	*/
-	void update(const Scene* scene);
+	void update(const Scene* scene, const PostProcessing* postproc);
 	/*
 	* Get UI scene graph
 	*/
@@ -27,6 +32,10 @@ public:
 	* Get the list of all stored assets in a UI representation format
 	*/
 	UIAssetMaps* getUIAssets();
+	/*
+	* Get postproc flags
+	*/
+	PostprocessingFlags* getPostprocessingFlags();
 private:
 	/*
 	* param SceneNode* node: Back end node that exists in the scene

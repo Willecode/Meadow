@@ -23,6 +23,7 @@
 #include "service_locator/locator.h"
 #include "windowmanager.h"
 #include "ui/uidatascraper.h"
+#include "postprocessing.h"
 class Application
 {
 public:
@@ -39,5 +40,6 @@ private:
 	ShaderManager m_shaderManager;
 	Logger m_logger;
 	UI m_ui;
+	PostProcessing m_postProcessing;
 };
 

@@ -158,7 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\assets\cubemap.cpp" />
-    <ClCompile Include="postprocessing.cpp" />
+    <ClCompile Include="source\postprocessing.cpp" />
     <ClCompile Include="source\assets\mesh2d.cpp" />
     <ClCompile Include="source\assets\submesh.cpp" />
     <ClCompile Include="source\assets\mesh.cpp" />
@@ -223,7 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\assets\cubemap.h" />
-    <ClInclude Include="postprocessing.h" />
+    <ClInclude Include="source\postprocessing.h" />
     <ClInclude Include="source\assets\mesh2d.h" />
     <ClInclude Include="source\assets\submesh.h" />
     <ClInclude Include="source\assets\mesh.h" />
