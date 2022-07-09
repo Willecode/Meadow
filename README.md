@@ -3,6 +3,10 @@
 Demo from 10th of May 2022:
 A 3D model created by me, rendered in Meadow :).
 
+![](https://github.com/Willecode/Meadow/blob/b3f529ed5e7a9a0df610cebd9a6f70fe3c91ee89/docs/gifs/demo9-7-22.gif)
+Demo from 9th of July 2022:
+Skybox and some postprocessing showcasing.
+
 # About
 Meadow is an interactive graphics software for Windows, it is an ongoing personal project for learning purposes. Right now can't be built on other machines.
 
