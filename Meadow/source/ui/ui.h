@@ -78,6 +78,12 @@ struct SceneNodeUI {
 
 };
 
+struct PostprocessingFlags {
+	bool sharpness;
+	bool grayscale;
+	bool negative;
+};
+
 class UI
 {
 public:
@@ -95,7 +101,7 @@ public:
 	/*
 	* Render UI
 	*/
-	void renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets);
+	void renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags);
 
 private:
 	/*

@@ -3,8 +3,11 @@
 UIDataScraper::UIDataScraper() : m_UIAssetMaps()
 {}
 
-void UIDataScraper::update(const Scene* scene)
+void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
 {
+	//////////////////////////////////
+	// SCENE RELATED
+	//////////////////////////////////
 	/*
 	* Clear existing data
 	*/
@@ -51,6 +54,13 @@ void UIDataScraper::update(const Scene* scene)
 	*/
 	SceneNode* root = scene->getNode(0);
 	scrapeNode(root, m_uiSceneGraph, 0);
+
+	//////////////////////////////////
+	// POSTPROCESSING
+	//////////////////////////////////
+	m_postprocFlags.grayscale = postproc->getGrayscale();
+	m_postprocFlags.sharpness = postproc->getSharpen();
+	m_postprocFlags.negative = postproc->getNegate();
 }
 
 SceneNodeUI* UIDataScraper::getUINodeGraph()
@@ -61,6 +71,11 @@ SceneNodeUI* UIDataScraper::getUINodeGraph()
 UIAssetMaps* UIDataScraper::getUIAssets()
 {
 	return &m_UIAssetMaps;
+}
+
+PostprocessingFlags* UIDataScraper::getPostprocessingFlags()
+{
+	return &m_postprocFlags;
 }
 
 void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemId)

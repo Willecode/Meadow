@@ -4,7 +4,17 @@
 #include "scene/pointlight.h"
 #include "resource_management/modelimporting.h"
 //---------------------------
-Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_renderer(OpenGLRenderer()), m_logger(Logger()), m_shaderManager(), m_scene(nullptr), appFailed(false), m_UIScraper()
+Application::Application():
+    m_windowManager(),
+    m_ui(),
+    m_inputGather(),
+    m_renderer(OpenGLRenderer()),
+    m_logger(Logger()),
+    m_shaderManager(),
+    m_scene(nullptr),
+    appFailed(false),
+    m_UIScraper(),
+    m_postProcessing(PostProcessing())
 {   
 
     /*
@@ -47,6 +57,11 @@ Application::Application(): m_windowManager(), m_ui(), m_inputGather(), m_render
     m_shaderManager.provideShader("postprocess", std::move(screenQuadSdr));
     m_shaderManager.provideShader("skybox", std::move(skyboxSdr));
     m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
+
+    /*
+    * Initialize postprocessing
+    */
+    m_postProcessing.init(&m_shaderManager);
 
     /*
     * Create a scene for entities
@@ -307,13 +322,14 @@ void Application::run()
         m_renderer.blending(false);
         m_renderer.bindFrameBufferDefault();
         m_shaderManager.setCurrentShader("postprocess");
+        m_shaderManager.forwardFrameUniforms();
         manager.getMesh2D(screenQuad)->draw(&m_shaderManager);
 
         /*
         * Render UI
         */
-        m_UIScraper.update(m_scene.get());
-        m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getUIAssets());
+        m_UIScraper.update(m_scene.get(), &m_postProcessing);
+        m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags());
 
         m_windowManager.swapBuffers();
     }

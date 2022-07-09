@@ -126,7 +126,7 @@
     <ClCompile Include="source\assets\mesh2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="postprocessing.cpp">
+    <ClCompile Include="source\postprocessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\assets\cubemap.cpp">
@@ -272,7 +272,7 @@
     <ClInclude Include="source\assets\vertex2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="postprocessing.h">
+    <ClInclude Include="source\postprocessing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\assets\cubemap.h">

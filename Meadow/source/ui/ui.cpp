@@ -42,7 +42,7 @@ void UI::init(WindowManager* winMan)
     InputEvents::MouseMoveEvent::subscribe(mousefunc2);
 }
 
-void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
+void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -73,6 +73,21 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets)
                 }
                 ImGui::EndMenu();
             }
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Postprocessing")) {
+            if (ImGui::Checkbox("Sharpen", &postprocFlags->sharpness))
+                InputEvents::PostprocSharpnessEvent::notify(postprocFlags->sharpness);
+            if (ImGui::Checkbox("Grayscale", &postprocFlags->grayscale))
+                InputEvents::PostprocGrayscaleEvent::notify(postprocFlags->grayscale);
+            if (ImGui::Checkbox("Negative", &postprocFlags->negative))
+                InputEvents::PostprocNegativeEvent::notify(postprocFlags->negative);
+            ImGui::EndMenu();
+        }
+        bool tempBool = false;
+        if (ImGui::BeginMenu("Skybox")) {
+            ImGui::Checkbox("Clouds", &tempBool);
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
