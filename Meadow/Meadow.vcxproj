@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\lighting.cpp" />
     <ClCompile Include="source\assets\cubemap.cpp" />
     <ClCompile Include="source\postprocessing.cpp" />
     <ClCompile Include="source\assets\mesh2d.cpp" />
@@ -222,6 +223,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\lighting.h" />
     <ClInclude Include="source\assets\cubemap.h" />
     <ClInclude Include="source\postprocessing.h" />
     <ClInclude Include="source\assets\mesh2d.h" />

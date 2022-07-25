@@ -45,13 +45,21 @@ uniform DirectionalLight dirLight[MAX_DIR_LIGHTS];
 uniform vec3 viewPos;
 uniform Material material;
 
+// Lighting flag:
+// false = phong 
+// true = blinn-phong
+uniform bool blinn;
+
 vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular);
 vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular);
 vec3 calcDiffuse(vec3 lightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 normalDir);
 vec3 calcSpecular(vec3 lightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 viewDir);
 
+
+
 void main()
 {
+
     vec4 outputCol = vec4(0.0, 0.0, 0.0, 1.0);
     // Check for opacity map
     if (material.opacity_map_present)
@@ -136,10 +144,24 @@ vec3 calcDiffuse(vec3 lightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 no
     return diffuse;
 }
 vec3 calcSpecular(vec3 lightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 viewDir){
+    // Prevent spec on back-surfaces
     if (dot(-lightDir, normalDir) > 0)
-        return vec3(0.0);
-    vec3 reflectDir = reflect(-lightDir, normalDir);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+            return vec3(0.0);
+
+    // Calculate spec component
+    float spec;
+    if (blinn){ // blinn-phong shading
+        vec3 halfwayDir = normalize(lightDir + viewDir);
+        spec = pow(max(dot(normal, halfwayDir), 0.0), shininess);
+    }
+    else { // phong shading
+        vec3 reflectDir = reflect(-lightDir, normalDir);
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+    }
+    // Calculate specular
     vec3 specular = lightSpecular *  spec * materialSpecular;
+    // debug
+    //specular = vec3(spec);
     return specular;
+    
 }

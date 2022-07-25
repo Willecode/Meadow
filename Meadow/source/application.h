@@ -24,6 +24,7 @@
 #include "windowmanager.h"
 #include "ui/uidatascraper.h"
 #include "postprocessing.h"
+#include "lighting.h"
 class Application
 {
 public:
@@ -41,5 +42,6 @@ private:
 	Logger m_logger;
 	UI m_ui;
 	PostProcessing m_postProcessing;
+	Lighting m_lighting;
 };
 

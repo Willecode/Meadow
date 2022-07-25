@@ -73,7 +73,7 @@ void DirectionalLight::passAllInstancesToShader(ShaderManager* sdrMan)
 void DirectionalLight::resetToDefault()
 {
 	clearProperties();
-	setProperty("dirLight[].direction", glm::vec3(-1.0f));
+	setProperty("dirLight[].direction", glm::vec3(0.f, -1.f, 0.f));
 	setProperty("dirLight[].ambient",  DEFAULT_LIGHT_COLOR * 0.2f);
 	setProperty("dirLight[].diffuse",  DEFAULT_LIGHT_COLOR * 0.5f);
 	setProperty("dirLight[].specular", DEFAULT_LIGHT_COLOR * 0.6f);

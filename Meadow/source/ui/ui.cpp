@@ -51,7 +51,7 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, Postprocessin
     /*
     * Display demo window for reference?
     */
-    bool show_demo_window = false;
+    bool show_demo_window = true;
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -88,6 +88,13 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, Postprocessin
         bool tempBool = false;
         if (ImGui::BeginMenu("Skybox")) {
             ImGui::Checkbox("Clouds", &tempBool);
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Lighting style")) {
+            if(ImGui::Button("Phong"))
+                InputEvents::LightingBlinnEvent::notify(false);
+            if (ImGui::Button("Blinn-Phong"))
+                InputEvents::LightingBlinnEvent::notify(true);
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
