@@ -50,10 +50,10 @@ uniform Material material;
 // true = blinn-phong
 uniform bool blinn;
 
-vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular);
-vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular);
-vec3 calcDiffuse(vec3 lightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 normalDir);
-vec3 calcSpecular(vec3 lightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 viewDir);
+vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 fragToCamDir, vec3 materialDiffuse, vec3 materialSpecular);
+vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 fragToCamDir, vec3 materialDiffuse, vec3 materialSpecular);
+vec3 calcDiffuse(vec3 fragToLightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 normalDir);
+vec3 calcSpecular(vec3 fragToLightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 fragToCamDir);
 
 
 
@@ -65,7 +65,7 @@ void main()
     if (material.opacity_map_present)
         outputCol.a = texture(material.opacity_map, TexCoords).r;
 
-    vec3 viewDir = normalize(viewPos - fragPos);
+    vec3 fragToCamDir = normalize(viewPos - fragPos);
     vec3 normalDir = normalize(normal);
     
     // Check if textures are present for diffuse and specular
@@ -82,18 +82,18 @@ void main()
 
 
     for (int i = 0; i < pointLightCount; i++){
-        outputCol.rgb += calcPointLight(pointLights[i], normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
+        outputCol.rgb += calcPointLight(pointLights[i], normalDir, fragPos, fragToCamDir, materialDiffuse, materialSpecular);
     }
     for (int i = 0; i < dirLightCount; i++){
-        outputCol.rgb += calcDirLight(dirLight[i], normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
+        outputCol.rgb += calcDirLight(dirLight[i], normalDir, fragPos, fragToCamDir, materialDiffuse, materialSpecular);
     }
     
     // DEBUG ***************************************
 //    outputCol = texture(material.diffuse_map, TexCoords);
 //    outputCol.a = 1;
 //    if (material.opacity_map_present)
-//        outputCol = vec4(0.0, 1.0, 0.0, 1.0);
-    //outputCol = normalDir;
+     //outputCol = vec4(normalize(normal), 1.0);
+
     //outputCol = material.specular;
     //outputCol = dirLight[0].direction;
 
@@ -102,7 +102,7 @@ void main()
 //    debugDirLight.ambient = vec3(0.2);
 //    debugDirLight.diffuse = vec3(0.5);
 //    debugDirLight.specular = vec3(0.6);
-//    outputCol += calcDirLight(debugDirLight, normalDir, fragPos, viewDir, materialDiffuse, materialSpecular);
+//    outputCol += calcDirLight(debugDirLight, normalDir, fragPos, fragToCamDir, materialDiffuse, materialSpecular);
 //    outputCol = vec4(texture(material.diffuse_map, TexCoords).a);
 //    if (material.opacity_map_present)
 //        outputCol = vec4(texture(material.opacity_map, TexCoords));
@@ -113,12 +113,12 @@ void main()
     FragColor = outputCol;
 }
 
-vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular){
+vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 fragToCamDir, vec3 materialDiffuse, vec3 materialSpecular){
 
-    vec3 lightDir = normalize(light.position - fragPos);
+    vec3 fragToLightDir = normalize(light.position - fragPos);
     vec3 ambient = materialDiffuse * light.ambient;
-    vec3 diffuse = calcDiffuse(lightDir, light.diffuse,materialDiffuse, normalDir);
-    vec3 specular = calcSpecular(lightDir, light.specular, materialSpecular, material.shininess, normalDir, viewDir);
+    vec3 diffuse = calcDiffuse(fragToLightDir, light.diffuse,materialDiffuse, normalDir);
+    vec3 specular = calcSpecular(fragToLightDir, light.specular, materialSpecular, material.shininess, normalDir, fragToCamDir);
 
     // Light attenuation
     // -----------------
@@ -129,34 +129,34 @@ vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 viewDir
 
     return (ambient + diffuse + specular) * attenuation;
 }
-vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular){
+vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 fragToCamDir, vec3 materialDiffuse, vec3 materialSpecular){
 
-    vec3 lightDir = normalize(-light.direction);
+    vec3 fragToLightDir = normalize(-light.direction);
     vec3 ambient = materialDiffuse * light.ambient;
-    vec3 diffuse = calcDiffuse(lightDir, light.diffuse, materialDiffuse, normalDir);
-    vec3 specular = calcSpecular(lightDir, light.specular, materialSpecular, material.shininess, normalDir, viewDir);
+    vec3 diffuse = calcDiffuse(fragToLightDir, light.diffuse, materialDiffuse, normalDir);
+    vec3 specular = calcSpecular(fragToLightDir, light.specular, materialSpecular, material.shininess, normalDir, fragToCamDir);
     return (ambient + diffuse + specular);
 }
 
-vec3 calcDiffuse(vec3 lightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 normalDir){
-    float diff = max(dot(lightDir, normalDir), 0.0);
+vec3 calcDiffuse(vec3 fragToLightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 normalDir){
+    float diff = max(dot(fragToLightDir, normalDir), 0.0);
     vec3 diffuse =  lightDiffuse * (diff) * materialDiffuse;
     return diffuse;
 }
-vec3 calcSpecular(vec3 lightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 viewDir){
+vec3 calcSpecular(vec3 fragToLightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 fragToCamDir){
     // Prevent spec on back-surfaces
-    if (dot(-lightDir, normalDir) > 0)
+    if (dot(-fragToLightDir, normalDir) > 0)
             return vec3(0.0);
 
     // Calculate spec component
     float spec;
     if (blinn){ // blinn-phong shading
-        vec3 halfwayDir = normalize(lightDir + viewDir);
-        spec = pow(max(dot(normal, halfwayDir), 0.0), shininess);
+        vec3 halfwayDir = normalize(fragToLightDir + fragToCamDir);
+        spec = pow(max(dot(normalDir, halfwayDir), 0.0), shininess);
     }
     else { // phong shading
-        vec3 reflectDir = reflect(-lightDir, normalDir);
-        spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+        vec3 reflectDir = reflect(-fragToLightDir, normalDir);
+        spec = pow(max(dot(fragToCamDir, reflectDir), 0.0), shininess);
     }
     // Calculate specular
     vec3 specular = lightSpecular *  spec * materialSpecular;

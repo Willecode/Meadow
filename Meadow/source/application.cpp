@@ -47,7 +47,7 @@ Application::Application():
     /*
     * Provide shaderman some shaders
     */
-    auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/phongtex.fs");
+    auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/texwithlight.fs");
     auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
     auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
     auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessing.fs");
