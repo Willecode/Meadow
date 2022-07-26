@@ -75,6 +75,7 @@ struct SceneNodeUI {
 	glm::vec3* orientationEuler;
 	std::vector<SceneNodeUI> children;
 	MeshUI* mesh;
+	bool* wireframeMode;
 
 };
 

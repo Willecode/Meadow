@@ -7,6 +7,7 @@ SceneNode::SceneNode(unsigned int id, std::string name) :
 	orientation(),
 	orientationEuler(glm::vec3(0.f)),
 	distanceFromCamera(0),
+	wireframeMode(false),
 	m_mesh(nullptr),
 	m_light(nullptr),
 	m_modelMatrix(glm::mat4(1.0f)),
@@ -75,8 +76,22 @@ void SceneNode::update(SceneNode* parent, const glm::vec3& cameraPos)
 
 void SceneNode::render(ShaderManager* sdrMan)
 {
-	if (m_mesh != nullptr)
+	if (m_mesh != nullptr) {
+
+		/*
+		* Wireframe mode?
+		*/
+		if (wireframeMode)
+			Locator::getRenderer()->wireframe(true);
+		else
+			Locator::getRenderer()->wireframe(false);
+
+		/*
+		* Draw!
+		*/
 		m_mesh->draw(m_modelMatrix, sdrMan);
+	}
+		
 }
 
 void SceneNode::updateModelMatrix(glm::mat4* accumulate)

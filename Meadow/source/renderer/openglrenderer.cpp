@@ -504,6 +504,14 @@ void OpenGLRenderer::bindCubemap(int cmId)
     glBindTexture(GL_TEXTURE_CUBE_MAP, it->second);
 }
 
+void OpenGLRenderer::wireframe(bool enable)
+{
+    if (enable)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
 void OpenGLRenderer::drawMesh(int meshId)
 {
     auto it = m_meshBufferMap.find(meshId);

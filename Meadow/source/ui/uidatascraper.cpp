@@ -6,7 +6,7 @@ UIDataScraper::UIDataScraper() : m_UIAssetMaps()
 void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
 {
 	//////////////////////////////////
-	// SCENE RELATED
+	// ASSETS
 	//////////////////////////////////
 	/*
 	* Clear existing data
@@ -49,9 +49,9 @@ void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
 		m_UIAssetMaps.textures.insert({ asset.first,newAss });
 	}
 
-	/*
-	* Scrape scene graph
-	*/
+	//////////////////////////////////
+	// SCENE GRAPH
+	//////////////////////////////////
 	SceneNode* root = scene->getNode(0);
 	scrapeNode(root, m_uiSceneGraph, 0);
 
@@ -90,6 +90,7 @@ void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemI
 	uiNode.scale = &node->scale;
 	uiNode.pos = &node->position;
 	uiNode.orientationEuler = &node->orientationEuler;
+	uiNode.wireframeMode = &node->wireframeMode;
 
 	/*
 	* Get mesh data

@@ -104,5 +104,10 @@ public:
 	virtual void cubemapLoadTextures(int cmId, std::array<unsigned char*, 6> images, int width, int height) = 0;
 	virtual void deleteCubemap(int cmId) = 0;
 	virtual void bindCubemap(int cmId) = 0;
+
+	/*
+	* Drawing mode
+	*/
+	virtual void wireframe(bool enable) = 0;
 };
 

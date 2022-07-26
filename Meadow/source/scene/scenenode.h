@@ -25,6 +25,12 @@ public:
 	glm::vec3 orientationEuler;
 	glm::quat orientation;
 	float distanceFromCamera;
+
+	/*
+	* How to render
+	*/
+	bool wireframeMode;
+
 public:
 	SceneNode(unsigned int id = -1, std::string name = "Nameless Node");
 	/*

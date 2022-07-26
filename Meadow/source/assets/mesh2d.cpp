@@ -19,6 +19,7 @@ void Mesh2D::draw(ShaderManager* sdrMan)
     */
     m_texture->bindToSampler(0);
     sdrMan->setUniformDrawSpecific("screenTexture", 0);
+    Locator::getRenderer()->wireframe(false); // There isn't really a reason to draw a 2D mesh in wireframe
     Locator::getRenderer()->drawMesh(getId());
 }
 

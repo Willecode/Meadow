@@ -362,6 +362,9 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
             }
             ImGui::EndCombo();
         }
+        // Wireframe mode checkbox
+        //ImGui::TableSetColumnIndex(2);
+        ImGui::Checkbox("Wireframe", node->wireframeMode);
     
         for (auto child : node->children)
         {

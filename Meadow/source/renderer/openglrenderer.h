@@ -101,6 +101,11 @@ public:
 	void deleteCubemap(int cmId) override;
 	void bindCubemap(int cmId) override;
 
+	/*
+	* Drawing mode
+	*/
+	void wireframe(bool enable);
+
 private:
 	struct MeshBufferData {
 		GLuint VAO;
