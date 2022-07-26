@@ -365,7 +365,7 @@ void OpenGLRenderer::faceCulling(bool enable)
         glEnable(GL_CULL_FACE);
     }
     else
-        glDisable(GL_BLEND);
+        glDisable(GL_CULL_FACE);
 }
 
 void OpenGLRenderer::createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height)
@@ -506,10 +506,13 @@ void OpenGLRenderer::bindCubemap(int cmId)
 
 void OpenGLRenderer::wireframe(bool enable)
 {
-    if (enable)
+    if (enable) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else
+    }
+    else {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+        
 }
 
 void OpenGLRenderer::drawMesh(int meshId)

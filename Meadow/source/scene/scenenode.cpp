@@ -81,11 +81,16 @@ void SceneNode::render(ShaderManager* sdrMan)
 		/*
 		* Wireframe mode?
 		*/
-		if (wireframeMode)
+		if (wireframeMode) {
 			Locator::getRenderer()->wireframe(true);
-		else
+			Locator::getRenderer()->faceCulling(false);
+			
+		}
+		else {
 			Locator::getRenderer()->wireframe(false);
-
+			Locator::getRenderer()->faceCulling(true);
+		}
+			
 		/*
 		* Draw!
 		*/

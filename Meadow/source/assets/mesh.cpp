@@ -16,11 +16,6 @@ void Mesh::draw(glm::mat4 modelMat, ShaderManager* sdrMan)
 			submesh->draw();
 		}
 	}
-	/*material->passToShader(sdrMan);
-	sdrMan->forwardUniformsDrawSpecific();
-	for (auto m : meshes) {
-		m->draw();
-	}*/
 }
 
 void Mesh::addSubMesh(Material* material, SubMesh* submesh)

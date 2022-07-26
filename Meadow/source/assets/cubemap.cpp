@@ -54,6 +54,8 @@ void Cubemap::draw(ShaderManager* sdrMan)
 	Locator::getRenderer()->bindCubemap(getId());
 
 	// Draw
+	Locator::getRenderer()->wireframe(false);
+	Locator::getRenderer()->faceCulling(false);
 	auto resMan = ResourceManager::getInstance();
 	resMan.getSubmesh(m_cubeId)->draw();
 }
