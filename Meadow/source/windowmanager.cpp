@@ -14,8 +14,8 @@ WindowManager::WindowManager(): m_window(nullptr)
 
 WindowManager::~WindowManager()
 {
-    glfwTerminate();
     glfwDestroyWindow(m_window);
+    glfwTerminate();
 }
 
 bool WindowManager::createWindow(std::string title)
@@ -106,9 +106,10 @@ void WindowManager::pollEvents()
     glfwPollEvents();
 }
 
-void WindowManager::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+void WindowManager::framebufferResizeCallback(GLFWwindow* window, int w, int h)
 {
-    Locator::getRenderer()->setViewportSize(width, height);
+    width = w;
+    height = h;
 }
 
 void WindowManager::errorCallback(int error, const char* description)

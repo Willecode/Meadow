@@ -92,6 +92,7 @@ public:
 	void bindFrameBufferDefault() override;
 	void deleteFrameBuffer(int buffId) override; // DOES NOT DELETE RBO YET!!!
 	bool checkFrameBufferStatus() override;
+	void getFrameBufferDimensions(int buffId, int& width, int& height) override;
 
 	/*
 	* Cubemaps
@@ -137,6 +138,8 @@ private:
 	struct FrameBufferData {
 		GLuint frameBuffId;
 		GLuint rboId;
+		int frameBuffWidth;
+		int frameBuffHeight;
 	};
 	/*
 	* Maps from user framebuffer id -> OpenGL framebuffer id

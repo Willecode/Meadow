@@ -403,7 +403,9 @@ void OpenGLRenderer::createFrameBuffer(int buffId, int texId, unsigned int width
 
     FrameBufferData fbData = {
         glbuffId, // Framebuffer Id
-        rbo // RBO id
+        rbo, // RBO id
+        width,
+        height
     };
     m_fbIdMap.insert(std::pair<unsigned int, FrameBufferData>(buffId, fbData));
 }
@@ -434,6 +436,17 @@ bool OpenGLRenderer::checkFrameBufferStatus()
         return false;
     }
     return true;
+}
+
+void OpenGLRenderer::getFrameBufferDimensions(int buffId, int& width, int& height)
+{
+    auto it = m_fbIdMap.find(buffId);
+    if (it == m_fbIdMap.end()) {
+        Locator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
+        return;
+    }
+    width = it->second.frameBuffWidth;
+    height = it->second.frameBuffHeight;
 }
 
 void OpenGLRenderer::createCubemap(int cmId)

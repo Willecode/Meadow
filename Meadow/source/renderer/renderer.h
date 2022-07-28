@@ -96,6 +96,7 @@ public:
 	virtual void bindFrameBufferDefault() = 0;
 	virtual void deleteFrameBuffer(int buffId) = 0;
 	virtual bool checkFrameBufferStatus() = 0;
+	virtual void getFrameBufferDimensions(int buffId, int& width, int& height) = 0;
 
 	/*
 	* Cubemaps

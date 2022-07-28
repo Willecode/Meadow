@@ -291,6 +291,13 @@ void Application::run()
         m_renderer.bindFrameBuffer(0);
 
         /*
+        * Set renderer viewport dimensions to match the framebuffer
+        */
+        int fbWidth, fbHeight;
+        m_renderer.getFrameBufferDimensions(0, fbWidth, fbHeight);
+        m_renderer.setViewportSize(fbWidth, fbHeight);
+
+        /*
         * Clear buffers
         */
         m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
@@ -323,13 +330,15 @@ void Application::run()
         m_scene->render(&m_shaderManager);
 
         /*
-        * Do postprocessing
+        * Do postprocessing pass
         */
         m_renderer.depthTesting(false);
         m_renderer.blending(false);
         m_renderer.bindFrameBufferDefault();
         m_shaderManager.setCurrentShader("postprocess");
         m_shaderManager.forwardFrameUniforms();
+        // Set viewport to match window dimensions
+        m_renderer.setViewportSize(m_windowManager.width, m_windowManager.height);
         manager.getMesh2D(screenQuad)->draw(&m_shaderManager);
 
         /*
@@ -341,21 +350,4 @@ void Application::run()
         m_windowManager.swapBuffers();
     }
 
-    glfwTerminate();
-    /////////////////////
-    // Update loop sketching
-    /////////////////////
-    // 
-    // rendering
-        /* Clear framebuffer */
-        /* Get all objects that glow */
-        /* Set up glow shader */
-        /* Render */
-        /* Get all objects that are lit */
-        /* Set up light shader */
-        /* Render */
-    // Scrape Scene data for UI
-    // Provide scene data to UI
-    // Render UI
-    /////////////////////
 }
