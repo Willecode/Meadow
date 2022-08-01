@@ -7,12 +7,20 @@ Texture::Texture(
 	Renderer::ImageFormat formatInternal,
 	std::string name
 ):
-	m_img(std::move(img)), m_imgWidth(width), m_imgHeight(height), m_imgFormatSource(formatSource), m_imgFormatInternal(formatInternal), Asset(name)
+	m_img(std::move(img)), m_imgWidth(width), m_imgHeight(height),
+	m_imgFormatSource(formatSource),
+	m_imgFormatInternal(formatInternal),
+	m_multisample(false),
+	Asset(name)
 {
 }
 
-Texture::Texture(unsigned int width, unsigned int height, std::string name):
-	m_img(nullptr), m_imgWidth(width), m_imgHeight(height), m_imgFormatSource(Renderer::ImageFormat::RGB), m_imgFormatInternal(Renderer::ImageFormat::RGB), Asset(name)
+Texture::Texture(unsigned int width, unsigned int height, bool multisample, std::string name):
+	m_img(nullptr), m_imgWidth(width), m_imgHeight(height),
+	m_imgFormatSource(Renderer::ImageFormat::RGB),
+	m_imgFormatInternal(Renderer::ImageFormat::RGB),
+	Asset(name),
+	m_multisample(multisample)
 {
 }
 
@@ -21,12 +29,18 @@ void Texture::loadToGPU()
 	unsigned char* imgData = nullptr;
 	if (m_img != nullptr)
 		imgData = &(*m_img)[0];
-	Locator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormatSource, m_imgFormatInternal, imgData);
+	if (m_multisample)
+		Locator::getRenderer()->create2DTextureMS(getId(), m_imgWidth, m_imgHeight);
+	else
+		Locator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormatSource, m_imgFormatInternal, imgData);
 }
 
 void Texture::bindToSampler(const unsigned int& samplerId)
 {
-	Locator::getRenderer()->bindTo2DSampler(getId(), samplerId);
+	if(m_multisample)
+		Locator::getRenderer()->bindTo2DSamplerMS(getId(), samplerId);
+	else
+		Locator::getRenderer()->bindTo2DSampler(getId(), samplerId);
 }
 
 void Texture::deleteFromGPU()

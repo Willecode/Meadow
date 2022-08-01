@@ -51,11 +51,13 @@ Application::Application():
     auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
     auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
     auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessing.fs");
+    auto screenQuadSdrMS = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessingmultisample.fs");
     auto skyboxSdr     = std::make_unique<Shader>(4, "shaders/skybox.vs"     , "shaders/skybox.fs");
     m_shaderManager.provideShader("phong", std::move(phongSdr));
     m_shaderManager.provideShader("color", std::move(colorSdr));
     m_shaderManager.provideShader("depth", std::move(depthSdr));
     m_shaderManager.provideShader("postprocess", std::move(screenQuadSdr));
+    m_shaderManager.provideShader("postprocessMS", std::move(screenQuadSdrMS));
     m_shaderManager.provideShader("skybox", std::move(skyboxSdr));
     m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
 
@@ -216,10 +218,13 @@ void Application::run()
     float time;
     float lastFrameTime = 0.f;
 
+    /////////////////////////
+    // Intermediate fb
+    /////////////////////////
     /*
     * Create texture to store render
     */
-    Texture tex(m_windowManager.width, m_windowManager.height, "");
+    Texture tex(m_windowManager.width, m_windowManager.height, false, "normal pass");
     tex.setId(10000);
     tex.loadToGPU();
 
@@ -230,6 +235,23 @@ void Application::run()
     m_renderer.bindFrameBuffer(0);
     if (!m_renderer.checkFrameBufferStatus())
         Locator::getLogger()->getLogger()->error("Application: framebuffer not complete");
+
+    /////////////////////////
+    // Multisampled fb
+    /////////////////////////
+    /*
+    * Create texture to store render
+    */
+    Texture texMS(m_windowManager.width, m_windowManager.height, true, "MS pass");
+    texMS.setId(10001);
+    texMS.loadToGPU();
+    /*
+    * Create framebuffer
+    */
+    m_renderer.createFrameBufferMultisample(1,texMS.getId(), texMS.getWidth(), texMS.getHeight()); // think this again
+    m_renderer.bindFrameBuffer(1);
+    if (!m_renderer.checkFrameBufferStatus())
+        Locator::getLogger()->getLogger()->error("Application: MS framebuffer not complete");
 
     /*
     * Create screen quad
@@ -286,9 +308,9 @@ void Application::run()
         m_windowManager.pollEvents();
 
         /*
-        * Bind first render pass framebuffer
+        * Bind MS framebuffer
         */
-        m_renderer.bindFrameBuffer(0);
+        m_renderer.bindFrameBuffer(1);
 
         /*
         * Set renderer viewport dimensions to match the framebuffer
@@ -325,9 +347,14 @@ void Application::run()
         m_renderer.blending(true);
         m_renderer.depthMask(true);
         m_shaderManager.setCurrentShader("phong");
-        /*m_renderer.bindFrameBuffer(0);
-        m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());*/
         m_scene->render(&m_shaderManager);
+
+        /*
+        * Blit to intermediate frame buffer
+        */
+        m_renderer.bindFrameBufferRead(1);
+        m_renderer.bindFrameBufferDraw(0);
+        m_renderer.blitFramebuffer(texMS.getWidth(), texMS.getHeight());
 
         /*
         * Do postprocessing pass
@@ -335,10 +362,13 @@ void Application::run()
         m_renderer.depthTesting(false);
         m_renderer.blending(false);
         m_renderer.bindFrameBufferDefault();
+        m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
         m_shaderManager.setCurrentShader("postprocess");
-        m_shaderManager.forwardFrameUniforms();
         // Set viewport to match window dimensions
         m_renderer.setViewportSize(m_windowManager.width, m_windowManager.height);
+        /*m_shaderManager.setFrameUniform("viewportWidth", m_windowManager.width);
+        m_shaderManager.setFrameUniform("viewportHeight", m_windowManager.height);*/
+        m_shaderManager.forwardFrameUniforms();
         manager.getMesh2D(screenQuad)->draw(&m_shaderManager);
 
         /*

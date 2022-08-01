@@ -22,7 +22,7 @@ public:
 	/*
 	* Use this constructor to create empty texture (no image data)
 	*/
-	Texture(unsigned int width, unsigned int height, std::string name = "Nameless texture");
+	Texture(unsigned int width, unsigned int height, bool multisample, std::string name = "Nameless texture");
 
 	void loadToGPU(); // Generate buffers in graphics memory and push image texture data to them
 	void bindToSampler(const unsigned int& samplerId);
@@ -39,5 +39,6 @@ private:
 	unsigned int m_imgHeight;
 	Renderer::ImageFormat m_imgFormatSource;
 	Renderer::ImageFormat m_imgFormatInternal;
+	bool m_multisample;
 };
 

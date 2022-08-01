@@ -50,7 +50,9 @@ public:
 	*/
 	void create2DTexture(const unsigned int&, const unsigned int& width, const unsigned int& height,
 		ImageFormat formatSrc, ImageFormat formatInternal,  unsigned char* imgData) override;
+	void create2DTextureMS(const unsigned int& id, const unsigned int& width, const unsigned int& height) override;
 	void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) override;
+	void bindTo2DSamplerMS(const unsigned int& texId, const unsigned int& samplerId) override;
 	void unbindTexture(const unsigned int& samplerId) override;
 	void deleteTexture(const unsigned int& id) override;
 
@@ -88,11 +90,15 @@ public:
 	*/
 	// Creates an fb with texId as color attachment, also attaches depth and stencil RBO
 	void createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height) override;
+	void createFrameBufferMultisample(int buffId, int texId, unsigned int width, unsigned int height) override;
 	void bindFrameBuffer(int buffId) override;
+	void bindFrameBufferDraw(int buffId) override;
+	void bindFrameBufferRead(int buffId) override;
 	void bindFrameBufferDefault() override;
 	void deleteFrameBuffer(int buffId) override; // DOES NOT DELETE RBO YET!!!
 	bool checkFrameBufferStatus() override;
 	void getFrameBufferDimensions(int buffId, int& width, int& height) override;
+	void blitFramebuffer(int width, int height) override;
 
 	/*
 	* Cubemaps
@@ -140,6 +146,8 @@ private:
 		GLuint rboId;
 		int frameBuffWidth;
 		int frameBuffHeight;
+		bool multisampled;
+		GLuint texId;
 	};
 	/*
 	* Maps from user framebuffer id -> OpenGL framebuffer id

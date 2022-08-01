@@ -54,7 +54,9 @@ public:
 	enum class ImageFormat{RGB = 0, RGBA, R};
 	virtual void create2DTexture(const unsigned int& id, const unsigned int &width, const unsigned int &height,
 		ImageFormat formatSrc, ImageFormat formatInternal, unsigned char* imgData) = 0;
+	virtual void create2DTextureMS(const unsigned int& id, const unsigned int& width, const unsigned int& height) = 0;
 	virtual void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) = 0;
+	virtual void bindTo2DSamplerMS(const unsigned int& texId, const unsigned int& samplerId) = 0;
 	virtual void unbindTexture(const unsigned int& samplerId) = 0;
 	virtual void deleteTexture(const unsigned int& id) = 0;
 
@@ -92,11 +94,15 @@ public:
 	* Framebuffers
 	*/
 	virtual void createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height) = 0;
+	virtual void createFrameBufferMultisample(int buffId, int texId, unsigned int width, unsigned int height) = 0;
 	virtual void bindFrameBuffer(int buffId) = 0;
+	virtual void bindFrameBufferRead(int buffId) = 0;
+	virtual void bindFrameBufferDraw(int buffId) = 0;
 	virtual void bindFrameBufferDefault() = 0;
 	virtual void deleteFrameBuffer(int buffId) = 0;
 	virtual bool checkFrameBufferStatus() = 0;
 	virtual void getFrameBufferDimensions(int buffId, int& width, int& height) = 0;
+	virtual void blitFramebuffer(int width, int height) = 0; //blits read to draw fb
 
 	/*
 	* Cubemaps

@@ -145,6 +145,7 @@
     <None Include="shaders\skybox.vs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\texwithlight.fs" />
+    <None Include="shaders\postprocessingmultisample.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\Wood066_1K_Color.jpg">

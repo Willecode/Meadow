@@ -206,6 +206,7 @@
     <None Include="shaders\object.vs" />
     <None Include="shaders\coloronly.fs" />
     <None Include="shaders\postprocessing.fs" />
+    <None Include="shaders\postprocessingmultisample.fs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\skybox.vs" />
     <None Include="shaders\texwithlight.fs" />
