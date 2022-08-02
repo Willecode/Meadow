@@ -116,5 +116,10 @@ public:
 	* Drawing mode
 	*/
 	virtual void wireframe(bool enable) = 0;
+
+	/*
+	* Multisampling toggle
+	*/
+	virtual void multisampling(bool enable) = 0;
 };
 

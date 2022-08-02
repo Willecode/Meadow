@@ -634,6 +634,14 @@ void OpenGLRenderer::wireframe(bool enable)
         
 }
 
+void OpenGLRenderer::multisampling(bool enable)
+{
+    if (enable)
+        glEnable(GL_MULTISAMPLE);
+    else
+        glDisable(GL_MULTISAMPLE);
+}
+
 void OpenGLRenderer::drawMesh(int meshId)
 {
     auto it = m_meshBufferMap.find(meshId);

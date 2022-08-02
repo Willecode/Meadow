@@ -59,6 +59,7 @@ void PostProcessing::negate(bool f)
 void PostProcessing::MSAA(bool f)
 {
     m_MSAA = f;
+    Locator::getRenderer()->multisampling(f);
 }
 
 bool PostProcessing::getSharpen() const

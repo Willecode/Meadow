@@ -113,6 +113,11 @@ public:
 	*/
 	void wireframe(bool enable);
 
+	/*
+	* Multisampling toggle
+	*/
+	void multisampling(bool enable) override;
+
 private:
 	struct MeshBufferData {
 		GLuint VAO;
