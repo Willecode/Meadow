@@ -341,18 +341,18 @@ namespace InputEvents
 	private:
 		inline static std::vector<std::function<void(bool)>> m_handlers;
 	};
-	/*class toggleWireframeModeEvent
+	class MSAAToggleEvent
 	{
 	public:
-		static void subscribe(std::function<void()> f) {
+		static void subscribe(std::function<void(bool)> f) {
 			m_handlers.push_back(f);
 		}
-		static void notify() {
+		static void notify(bool flag) {
 			for (auto h : m_handlers) {
-				h();
+				h(flag);
 			}
 		}
 	private:
-		inline static std::vector<std::function<void()>> m_handlers;
-	};*/
+		inline static std::vector<std::function<void(bool)>> m_handlers;
+	};
 }

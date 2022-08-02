@@ -51,7 +51,7 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, Postprocessin
     /*
     * Display demo window for reference?
     */
-    bool show_demo_window = true;
+    bool show_demo_window = false;
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -83,6 +83,11 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, Postprocessin
                 InputEvents::PostprocGrayscaleEvent::notify(postprocFlags->grayscale);
             if (ImGui::Checkbox("Negative", &postprocFlags->negative))
                 InputEvents::PostprocNegativeEvent::notify(postprocFlags->negative);
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Anti-aliasing")) {
+            if (ImGui::Checkbox("MSAA", &postprocFlags->MSAA))
+                InputEvents::MSAAToggleEvent::notify(postprocFlags->MSAA);
             ImGui::EndMenu();
         }
         bool tempBool = false;

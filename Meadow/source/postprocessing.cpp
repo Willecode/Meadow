@@ -22,6 +22,8 @@ PostProcessing::PostProcessing() :
     
     std::function<void(bool)> negateFunc = std::bind(&PostProcessing::negate, this, std::placeholders::_1);
     InputEvents::PostprocNegativeEvent::subscribe(negateFunc);
+
+    InputEvents::MSAAToggleEvent::subscribe(std::bind(&PostProcessing::MSAA, this, std::placeholders::_1));
 }
 
 void PostProcessing::init(ShaderManager* sdrMan)
@@ -30,6 +32,7 @@ void PostProcessing::init(ShaderManager* sdrMan)
     sharpen(false);
     grayscale(false);
     negate(false);
+    MSAA(true);
 }
 
 void PostProcessing::sharpen(bool f)
@@ -53,6 +56,11 @@ void PostProcessing::negate(bool f)
     m_negate = f;
 }
 
+void PostProcessing::MSAA(bool f)
+{
+    m_MSAA = f;
+}
+
 bool PostProcessing::getSharpen() const
 {
     return m_sharpen;
@@ -66,4 +74,9 @@ bool PostProcessing::getGrayscale() const
 bool PostProcessing::getNegate() const
 {
     return m_negate;
+}
+
+bool PostProcessing::getMSAA() const
+{
+    return m_MSAA;
 }

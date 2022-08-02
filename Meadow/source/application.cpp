@@ -310,10 +310,13 @@ void Application::run()
         m_windowManager.pollEvents();
 
         /*
-        * Bind MS framebuffer
+        * Bind MSAA buffer or basic buffer
         */
-        m_renderer.bindFrameBuffer(1);
-
+        if (m_postProcessing.getMSAA())
+            m_renderer.bindFrameBuffer(1);
+        else
+            m_renderer.bindFrameBuffer(0);
+        
         /*
         * Set renderer viewport dimensions to match the framebuffer
         */
@@ -352,21 +355,27 @@ void Application::run()
         m_scene->render(&m_shaderManager);
 
         /*
-        * Blit to intermediate frame buffer
+        * If MSAA on then blit to intermediate frame buffer
         */
-        m_renderer.bindFrameBufferRead(1);
-        m_renderer.bindFrameBufferDraw(0);
-        m_renderer.blitFramebuffer(texMS->getWidth(), texMS->getHeight());
+        if (m_postProcessing.getMSAA()) {
+            m_renderer.bindFrameBufferRead(1);
+            m_renderer.bindFrameBufferDraw(0);
+            m_renderer.blitFramebuffer(texMS->getWidth(), texMS->getHeight());
+        }
+        
 
         /*
-        * Do postprocessing pass
+        * Set default framebuffer to render on screen
         */
         m_renderer.depthTesting(false);
         m_renderer.blending(false);
         m_renderer.bindFrameBufferDefault();
         m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
+
+        /*
+        * Do postprocessing pass
+        */
         m_shaderManager.setCurrentShader("postprocess");
-        // Set viewport to match window dimensions
         m_renderer.setViewportSize(m_windowManager.width, m_windowManager.height);
         /*m_shaderManager.setFrameUniform("viewportWidth", m_windowManager.width);
         m_shaderManager.setFrameUniform("viewportHeight", m_windowManager.height);*/

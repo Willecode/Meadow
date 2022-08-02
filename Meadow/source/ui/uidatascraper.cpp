@@ -67,6 +67,7 @@ void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
 	m_postprocFlags.grayscale = postproc->getGrayscale();
 	m_postprocFlags.sharpness = postproc->getSharpen();
 	m_postprocFlags.negative = postproc->getNegate();
+	m_postprocFlags.MSAA = postproc->getMSAA();
 }
 
 SceneNodeUI* UIDataScraper::getUINodeGraph()

@@ -83,6 +83,7 @@ struct PostprocessingFlags {
 	bool sharpness;
 	bool grayscale;
 	bool negative;
+	bool MSAA;
 };
 
 class UI
