@@ -27,26 +27,32 @@ void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
 	* Scrape maps for data to populate the UI representation with
 	*/
 	for (auto const& asset : *mats) {
-		/*MaterialUI newAss(asset.second->name, asset.first);*/
-		//m_UIAssetMaps.materials.insert({ asset.first,newAss });
-		m_UIAssetMaps.materials.insert({ asset.first,constructMaterialUI(asset.second.get())});
+		if (asset.second->exposeToUI)
+			m_UIAssetMaps.materials.insert({ asset.first,constructMaterialUI(asset.second.get())});
 	}
 	for (auto const& asset : *submeshes) {
-		SubmeshUI newAss(asset.second->name, asset.first);
-		m_UIAssetMaps.submeshes.insert({ asset.first,newAss });
+		if (asset.second->exposeToUI) {
+			SubmeshUI newAss(asset.second->name, asset.first);
+			m_UIAssetMaps.submeshes.insert({ asset.first,newAss });
+		}
+		
 	}
 	for (auto const& asset : *meshes) {
-		MeshUI newAss(asset.second->name, asset.first);
-		for (auto const& mat : asset.second->submeshes) {
-			for (auto const& smesh : mat.second) {
-				newAss.submeshes[(smesh->getId())] = mat.first->getId();
+		if (asset.second->exposeToUI) {
+			MeshUI newAss(asset.second->name, asset.first);
+			for (auto const& mat : asset.second->submeshes) {
+				for (auto const& smesh : mat.second) {
+					newAss.submeshes[(smesh->getId())] = mat.first->getId();
+				}
 			}
+			m_UIAssetMaps.meshes.insert({ asset.first,newAss });
 		}
-		m_UIAssetMaps.meshes.insert({ asset.first,newAss });
 	}
 	for (auto const& asset : *textures) {
-		TextureUI newAss(asset.second->name, asset.first);
-		m_UIAssetMaps.textures.insert({ asset.first,newAss });
+		if (asset.second->exposeToUI) {
+			TextureUI newAss(asset.second->name, asset.first);
+			m_UIAssetMaps.textures.insert({ asset.first,newAss });
+		}
 	}
 
 	//////////////////////////////////

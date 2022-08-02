@@ -212,26 +212,26 @@ Application::Application():
 
 void Application::run()
 {
-    // Update loop
-    // -----------
     float deltatime;
     float time;
     float lastFrameTime = 0.f;
 
+    ResourceManager manager = ResourceManager::getInstance();
+
     /////////////////////////
-    // Intermediate fb
+    // Intermediate fb to blit to
     /////////////////////////
     /*
     * Create texture to store render
     */
-    Texture tex(m_windowManager.width, m_windowManager.height, false, "normal pass");
-    tex.setId(10000);
-    tex.loadToGPU();
+    std::unique_ptr<Texture> texptr = std::make_unique<Texture>(m_windowManager.width, m_windowManager.height, false, "normal pass", false);
+    unsigned int texId = manager.storeTexture(std::move(texptr));
+    Texture* tex = manager.getTexture(texId);
 
     /*
     * Create framebuffer
     */
-    m_renderer.createFrameBuffer(0, tex.getId(), tex.getWidth(), tex.getHeight());
+    m_renderer.createFrameBuffer(0, tex->getId(), tex->getWidth(), tex->getHeight());
     m_renderer.bindFrameBuffer(0);
     if (!m_renderer.checkFrameBufferStatus())
         Locator::getLogger()->getLogger()->error("Application: framebuffer not complete");
@@ -242,13 +242,13 @@ void Application::run()
     /*
     * Create texture to store render
     */
-    Texture texMS(m_windowManager.width, m_windowManager.height, true, "MS pass");
-    texMS.setId(10001);
-    texMS.loadToGPU();
+    std::unique_ptr<Texture> texMSptr = std::make_unique<Texture>(m_windowManager.width, m_windowManager.height, true, "MS pass", false);
+    unsigned int texMSId = manager.storeTexture(std::move(texMSptr));
+    Texture* texMS = manager.getTexture(texMSId);
     /*
     * Create framebuffer
     */
-    m_renderer.createFrameBufferMultisample(1,texMS.getId(), texMS.getWidth(), texMS.getHeight()); // think this again
+    m_renderer.createFrameBufferMultisample(1,texMS->getId(), texMS->getWidth(), texMS->getHeight()); // think this again
     m_renderer.bindFrameBuffer(1);
     if (!m_renderer.checkFrameBufferStatus())
         Locator::getLogger()->getLogger()->error("Application: MS framebuffer not complete");
@@ -256,10 +256,10 @@ void Application::run()
     /*
     * Create screen quad
     */
-    ResourceManager manager = ResourceManager::getInstance();
+    
     unsigned int screenQuad = manager.storeMesh2D(std::move(PrimitiveCreation::createScreenQuad()));
     Mesh2D* quadptr = manager.getMesh2D(screenQuad);
-    manager.getMesh2D(screenQuad)->setTexture(&tex);
+    manager.getMesh2D(screenQuad)->setTexture(tex);
 
     /*
     * Create Skybox
@@ -294,6 +294,8 @@ void Application::run()
     auto skybox = std::make_unique<Cubemap>(std::move(texArr), width, height);
     unsigned int skyboxId = manager.storecubemap(std::move(skybox));
 
+    // Update loop
+    // -----------
     while (!m_windowManager.shouldClose())
     {
         /*
@@ -354,7 +356,7 @@ void Application::run()
         */
         m_renderer.bindFrameBufferRead(1);
         m_renderer.bindFrameBufferDraw(0);
-        m_renderer.blitFramebuffer(texMS.getWidth(), texMS.getHeight());
+        m_renderer.blitFramebuffer(texMS->getWidth(), texMS->getHeight());
 
         /*
         * Do postprocessing pass

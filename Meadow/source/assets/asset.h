@@ -13,9 +13,10 @@ public:
 		CUBEMAP
 	};
 	std::string name;
+	bool exposeToUI;
 public:
 
-	Asset(std::string name = "Nameless asset");
+	Asset(std::string name = "Nameless asset", bool exposeUI = true);
 	virtual AssetType getAssetType() = 0;
 	void setId(unsigned int id);
 	unsigned int getId() const;

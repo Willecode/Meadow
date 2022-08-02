@@ -1,6 +1,6 @@
 #include "asset.h"
 
-Asset::Asset(std::string name): m_id(0), name(name)
+Asset::Asset(std::string name, bool exposeUI): m_id(0), name(name), exposeToUI(exposeUI)
 {
 }
 

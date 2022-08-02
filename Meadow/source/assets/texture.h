@@ -16,13 +16,17 @@ public:
 		CUBE_MAP
 	};
 public:
+	/*
+	* Constructor for textures with imported image data
+	*/
 	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height,
 		Renderer::ImageFormat formatSource, Renderer::ImageFormat formatInternal, std::string name = "Nameless texture");
 	
 	/*
-	* Use this constructor to create empty texture (no image data)
+	* Use this constructor to create empty texture (no image data).
+	* Used as attachments for framebuffers etc
 	*/
-	Texture(unsigned int width, unsigned int height, bool multisample, std::string name = "Nameless texture");
+	Texture(unsigned int width, unsigned int height, bool multisample, std::string name = "Nameless texture", bool exposeToUI = false);
 
 	void loadToGPU(); // Generate buffers in graphics memory and push image texture data to them
 	void bindToSampler(const unsigned int& samplerId);
