@@ -355,4 +355,18 @@ namespace InputEvents
 	private:
 		inline static std::vector<std::function<void(bool)>> m_handlers;
 	};
+	class ShaderHotReloadEvent
+	{
+	public:
+		static void subscribe(std::function<void(std::string)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(std::string s) {
+			for (auto h : m_handlers) {
+				h(s);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(std::string)>> m_handlers;
+	};
 }

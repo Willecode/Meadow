@@ -1,6 +1,6 @@
 #include "shadermanager.h"
 #include "service_locator/locator.h"
-
+#include "input/inputevents.h"
 ShaderManager::ShaderManager() :
 	m_currentShader(nullptr),
 	m_shaderMap(),
@@ -20,6 +20,13 @@ ShaderManager::ShaderManager() :
 	m_texSamplerMap.insert({ Texture::TextureType::SPECULAR_MAP, 1 });
 	m_texSamplerMap.insert({ Texture::TextureType::OPACITY_MAP, 2 });
 	m_texSamplerMap.insert({ Texture::TextureType::CUBE_MAP, 0 });
+
+	/*
+	* Subscribe to events
+	*/
+	InputEvents::ShaderHotReloadEvent::subscribe(
+		std::bind(&ShaderManager::hotReloadShader, this, std::placeholders::_1)
+	);
 }
 
 
@@ -136,4 +143,11 @@ void ShaderManager::forwardFrameUniforms()
 unsigned int ShaderManager::getTexSamplerId(Texture::TextureType type)
 {
 	return m_texSamplerMap.at(type);
+}
+
+void ShaderManager::hotReloadShader(std::string name)
+{
+	auto it = m_shaderMap.find(name);
+	if (it != m_shaderMap.end())
+		it->second->hotReload();
 }

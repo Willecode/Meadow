@@ -64,5 +64,7 @@ private:
 	*/
 	std::unordered_map<Texture::TextureType, unsigned int> m_texSamplerMap;
 
+private:
+	void hotReloadShader(std::string name);
 };
 

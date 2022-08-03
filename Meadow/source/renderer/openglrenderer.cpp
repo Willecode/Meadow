@@ -144,6 +144,13 @@ void OpenGLRenderer::meshBuffersDelete(int meshId)
 
 void OpenGLRenderer::createShaderProgram(const unsigned int &id,const char* vertexShader, const char* fragShader)
 {
+    // check if program already exists
+    auto it = m_shaderProgMap.find(id);
+    if (it != m_shaderProgMap.end()) {
+        Locator::getLogger()->getLogger()->info("Renderer: cant create shader program: id taken\n");
+        return;
+    }
+
     unsigned int vertex, fragment;
     // vertex shader
     vertex = glCreateShader(GL_VERTEX_SHADER);
@@ -177,6 +184,17 @@ void OpenGLRenderer::useShaderProgram(const unsigned int& id)
         return;
     }
     glUseProgram(it->second);
+}
+
+void OpenGLRenderer::deleteShaderProgram(const unsigned int& id)
+{
+    auto it = m_shaderProgMap.find(id);
+    if (it == m_shaderProgMap.end()) {
+        Locator::getLogger()->getLogger()->info("Renderer: cant delete shader program: unknown program id\n");
+        return;
+    }
+    glDeleteProgram(it->second);
+    m_shaderProgMap.erase(it);
 }
 
 void OpenGLRenderer::setBool(const unsigned int& sdrId, const char* name, bool value)

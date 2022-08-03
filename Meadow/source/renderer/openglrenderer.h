@@ -34,7 +34,7 @@ public:
 	*/
 	void createShaderProgram(const unsigned int& id, const char* vertexShader, const char* fragShader) override;
 	void useShaderProgram(const unsigned int& id) override;
-	
+	void deleteShaderProgram(const unsigned int& id) override;
 	/*
 	* Shader uniform setters
 	*/

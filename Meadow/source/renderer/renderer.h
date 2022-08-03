@@ -37,7 +37,7 @@ public:
 	*/
 	virtual void createShaderProgram(const unsigned int& id, const char* vertexShader, const char* fragShader) = 0;
 	virtual void useShaderProgram(const unsigned int& id) = 0;
-
+	virtual void deleteShaderProgram(const unsigned int& id) = 0;
 	/*
 	* Shader uniform setters
 	*/

@@ -95,11 +95,14 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, Postprocessin
             ImGui::Checkbox("Clouds", &tempBool);
             ImGui::EndMenu();
         }
-        if (ImGui::BeginMenu("Lighting style")) {
+        if (ImGui::BeginMenu("Shader")) {
             if(ImGui::Button("Phong"))
                 InputEvents::LightingBlinnEvent::notify(false);
             if (ImGui::Button("Blinn-Phong"))
                 InputEvents::LightingBlinnEvent::notify(true);
+            if (ImGui::Button("Hot reload")) {
+                InputEvents::ShaderHotReloadEvent::notify("phong");
+            }
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();

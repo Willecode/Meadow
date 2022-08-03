@@ -4,7 +4,29 @@
 #include <fmt/format.h>
 #include "service_locator/locator.h"
 
-Shader::Shader(const unsigned int& id, const char* vertexPath, const char* fragmentPath):m_id(id)
+Shader::Shader(const unsigned int& id, const char* vertexPath, const char* fragmentPath):
+    m_id(id),m_vertexPath(vertexPath),m_fragmentPath(fragmentPath)
+{
+    std::string vertexCode, fragmentCode;
+    sourceFromFile(vertexPath, fragmentPath, vertexCode, fragmentCode);
+    Locator::getRenderer()->createShaderProgram(m_id, vertexCode.c_str(), fragmentCode.c_str());
+
+}
+
+unsigned int Shader::getId()
+{
+    return m_id;
+}
+
+void Shader::hotReload()
+{
+    Locator::getRenderer()->deleteShaderProgram(m_id);
+    std::string vertexCode, fragmentCode;
+    sourceFromFile(m_vertexPath, m_fragmentPath, vertexCode, fragmentCode);
+    Locator::getRenderer()->createShaderProgram(m_id, vertexCode.c_str(), fragmentCode.c_str());
+}
+
+void Shader::sourceFromFile(const char* vertexPath, const char* fragmentPath, std::string& vertexCode, std::string& fragmentCode)
 {
     // 1. retrieve the vertex/fragment source code from filePath
     std::ifstream vShaderFile;
@@ -13,8 +35,6 @@ Shader::Shader(const unsigned int& id, const char* vertexPath, const char* fragm
     vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-    std::string vertexCode;
-    std::string fragmentCode;
     try
     {
         // open files
@@ -33,16 +53,8 @@ Shader::Shader(const unsigned int& id, const char* vertexPath, const char* fragm
     }
     catch (std::ifstream::failure& e)
     {
-         Locator::getLogger()->getLogger()->info("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n");
-         vertexCode = "";
-         fragmentCode = "";
+        Locator::getLogger()->getLogger()->info("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n");
+        vertexCode = "";
+        fragmentCode = "";
     }
-    
-    Locator::getRenderer()->createShaderProgram(m_id, vertexCode.c_str(), fragmentCode.c_str());
-
-}
-
-unsigned int Shader::getId()
-{
-    return m_id;
 }
