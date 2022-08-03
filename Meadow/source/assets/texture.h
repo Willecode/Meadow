@@ -24,7 +24,8 @@ public:
 	
 	/*
 	* Use this constructor to create empty texture (no image data).
-	* Used as attachments for framebuffers etc
+	* Used as attachments for framebuffers etc.
+	* High precision.
 	*/
 	Texture(unsigned int width, unsigned int height, bool multisample, std::string name = "Nameless texture", bool exposeToUI = false);
 

@@ -18,7 +18,7 @@ Texture::Texture(
 Texture::Texture(unsigned int width, unsigned int height, bool multisample, std::string name, bool exposeToUI):
 	m_img(nullptr), m_imgWidth(width), m_imgHeight(height),
 	m_imgFormatSource(Renderer::ImageFormat::RGB),
-	m_imgFormatInternal(Renderer::ImageFormat::RGB),
+	m_imgFormatInternal(Renderer::ImageFormat::RGB_HIGH_PRECISION),
 	Asset(name, exposeToUI),
 	m_multisample(multisample)
 {

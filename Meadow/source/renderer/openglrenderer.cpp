@@ -7,6 +7,7 @@
 const std::unordered_map<Renderer::ImageFormat, GLenum> OpenGLRenderer::m_imgFormatMap = 
 {
     {ImageFormat::RGB, GL_RGB},
+    {ImageFormat::RGB_HIGH_PRECISION, GL_RGB32F},
     {ImageFormat::RGBA, GL_RGBA},
     {ImageFormat::sRGB, GL_SRGB},
     {ImageFormat::sRGBA, GL_SRGB_ALPHA},
