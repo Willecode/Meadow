@@ -203,7 +203,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			/*
 			* Create new Texture
 			*/
-			auto newTex = std::make_unique<Texture>(std::move(vecptrDiffuseMap), widthDiffuseMap, heightDiffuseMap, diffuseMapFormat, Renderer::ImageFormat::RGBA, path.C_Str());
+			auto newTex = std::make_unique<Texture>(std::move(vecptrDiffuseMap), widthDiffuseMap, heightDiffuseMap, diffuseMapFormat, Renderer::ImageFormat::sRGBA, path.C_Str());
 			unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
 			Texture* newTexPtr = resourceMan.getTexture(newTexId);
 

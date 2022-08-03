@@ -51,9 +51,9 @@ public:
 	/*
 	* Textures
 	*/
-	enum class ImageFormat{RGB = 0, RGBA, R};
+	enum class ImageFormat{RGB = 0, sRGB, RGBA, sRGBA, R};
 	virtual void create2DTexture(const unsigned int& id, const unsigned int &width, const unsigned int &height,
-		ImageFormat formatSrc, ImageFormat formatInternal, unsigned char* imgData) = 0;
+		ImageFormat formatSrc, ImageFormat formatDestination, unsigned char* imgData) = 0;
 	virtual void create2DTextureMS(const unsigned int& id, const unsigned int& width, const unsigned int& height) = 0;
 	virtual void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) = 0;
 	virtual void bindTo2DSamplerMS(const unsigned int& texId, const unsigned int& samplerId) = 0;

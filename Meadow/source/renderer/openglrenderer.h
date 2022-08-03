@@ -49,7 +49,7 @@ public:
 	* Textures
 	*/
 	void create2DTexture(const unsigned int&, const unsigned int& width, const unsigned int& height,
-		ImageFormat formatSrc, ImageFormat formatInternal,  unsigned char* imgData) override;
+		ImageFormat formatSrc, ImageFormat formatDestination,  unsigned char* imgData) override;
 	void create2DTextureMS(const unsigned int& id, const unsigned int& width, const unsigned int& height) override;
 	void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) override;
 	void bindTo2DSamplerMS(const unsigned int& texId, const unsigned int& samplerId) override;

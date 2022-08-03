@@ -17,14 +17,9 @@ void getKernelOffsets(inout vec2[9] arr);
 vec4 calculateKernel(float kernel[9],  vec2 offsets[9]);
 void main()
 {
-    // Post processing flags
-//    bool negate = false;
-//    bool grayscale = false;
-//    bool sharpen = false;
-
     // Sample fragment color from texture
     vec4 outCol = texture(screenTexture, TexCoords);
-    
+
     // kernel and offset matrix
     float kernel[9];
     vec2 offsets[9];
@@ -52,6 +47,13 @@ void main()
         float average = 0.2126 * outCol.r + 0.7152 * outCol.g + 0.0722 * outCol.b;
         outCol = vec4(average, average, average, 1.0);
     }
+
+    // Gamma correction
+    // -----------------
+    float gamma = 2.2;
+    outCol.rgb = pow(outCol.rgb, vec3(1.0/gamma));
+
+    // -----------------
 
     // Ouput result
     FragColor = vec4(outCol.rgb,1.0);

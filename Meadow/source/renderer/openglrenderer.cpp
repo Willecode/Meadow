@@ -4,7 +4,13 @@
 
 //#define VERBOSE
 
-const std::unordered_map<Renderer::ImageFormat, GLenum> OpenGLRenderer::m_imgFormatMap = { {ImageFormat::RGB, GL_RGB}, {ImageFormat::RGBA, GL_RGBA}, {ImageFormat::R, GL_RED} };
+const std::unordered_map<Renderer::ImageFormat, GLenum> OpenGLRenderer::m_imgFormatMap = 
+{
+    {ImageFormat::RGB, GL_RGB},
+    {ImageFormat::RGBA, GL_RGBA},
+    {ImageFormat::sRGB, GL_SRGB},
+    {ImageFormat::sRGBA, GL_SRGB_ALPHA},
+    {ImageFormat::R, GL_RED} };
 OpenGLRenderer::OpenGLRenderer():
     m_meshBufferMap({}),
     m_shaderProgMap({}),
@@ -239,7 +245,7 @@ void OpenGLRenderer::setMat4f(const unsigned int& sdrId, const char* name, glm::
 }
 
 void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int& width, const unsigned int& height,
-    ImageFormat formatSrc, ImageFormat formatInternal, unsigned char* imgData)
+    ImageFormat formatSrc, ImageFormat formatDestination, unsigned char* imgData)
 {
     auto it = m_texIdMap.find(id);
     if (it != m_texIdMap.end()) {
@@ -262,11 +268,11 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     *       Also the textures may just glitch out if formats are not passed correctly...
     */
     if (imgData == nullptr) {
-        glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatInternal), width, height, 0,
+        glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatDestination), width, height, 0,
             m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, NULL);
     }
     else {
-        glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatInternal), width, height, 0,
+        glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatDestination), width, height, 0,
             m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
     }
     /*********************************/
