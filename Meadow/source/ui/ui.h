@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include "windowmanager.h"
 #include "assets/asset.h"
+#include "ui/uiflags.h"
 
 /*
 * Contains the data for a UI element representing an asset 
@@ -111,6 +112,12 @@ private:
 	*/
 	unsigned int m_chosenAssetId;
 	Asset::AssetType m_chosenAssetType;
+
+	/*
+	* Various UI flags
+	*/
+	UIFlags m_uiFlags;
+
 private:
 	/*
 	* Event handlers

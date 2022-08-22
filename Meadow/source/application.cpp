@@ -77,7 +77,7 @@ Application::Application():
     m_scene = std::make_unique<Scene>();
 
     /*
-    * Add some stuff into the scene
+    * DEFAULT SCENE
     */
 #if 1
 

@@ -5,7 +5,7 @@
 #include "service_locator/locator.h"
 #include "input/inputevents.h"
 #include "assets/asset.h"
-UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE)
+UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE), m_uiFlags()
 {
 }
 UI::~UI()
@@ -58,226 +58,246 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, Postprocessin
     //////////////////////
     //Create a main menu bar
     //////////////////////
-    if (ImGui::BeginMainMenuBar()) {
+    if (m_uiFlags.mainMenuVisible()) {
+        if (ImGui::BeginMainMenuBar()) {
 
-        if (ImGui::BeginMenu("Import")) {
-            if (ImGui::MenuItem("Texture")) {
-                InputEvents::importTextureEvent::notify();
+            if (ImGui::BeginMenu("Menus")) {
+                bool assetVis = m_uiFlags.assetWindowVisible();
+                bool sceneGraphVis = m_uiFlags.sceneGraphVisible();
+                if (ImGui::Checkbox("Asset Manager", &assetVis))
+                    InputEvents::AssetWindowVisibilityEvent::notify(assetVis);
+                if (ImGui::Checkbox("Scene Graph", &sceneGraphVis))
+                    InputEvents::SceneGraphVisibilityEvent::notify(sceneGraphVis);
+
+                ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("3D model")) {
-                if (ImGui::MenuItem("FBX")) {
 
+            if (ImGui::BeginMenu("Import")) {
+                if (ImGui::MenuItem("Texture")) {
+                    InputEvents::importTextureEvent::notify();
                 }
-                if (ImGui::MenuItem("OBJ")) {
+                if (ImGui::BeginMenu("3D model")) {
+                    if (ImGui::MenuItem("FBX")) {
 
+                    }
+                    if (ImGui::MenuItem("OBJ")) {
+
+                    }
+                    ImGui::EndMenu();
                 }
                 ImGui::EndMenu();
             }
-            ImGui::EndMenu();
-        }
 
-        if (ImGui::BeginMenu("Postprocessing")) {
-            if (ImGui::Checkbox("Sharpen", &postprocFlags->sharpness))
-                InputEvents::PostprocSharpnessEvent::notify(postprocFlags->sharpness);
-            if (ImGui::Checkbox("Grayscale", &postprocFlags->grayscale))
-                InputEvents::PostprocGrayscaleEvent::notify(postprocFlags->grayscale);
-            if (ImGui::Checkbox("Negative", &postprocFlags->negative))
-                InputEvents::PostprocNegativeEvent::notify(postprocFlags->negative);
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Anti-aliasing")) {
-            if (ImGui::Checkbox("MSAA", &postprocFlags->MSAA))
-                InputEvents::MSAAToggleEvent::notify(postprocFlags->MSAA);
-            ImGui::EndMenu();
-        }
-        bool tempBool = false;
-        if (ImGui::BeginMenu("Skybox")) {
-            ImGui::Checkbox("Clouds", &tempBool);
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Shader")) {
-            if(ImGui::Button("Phong"))
-                InputEvents::LightingBlinnEvent::notify(false);
-            if (ImGui::Button("Blinn-Phong"))
-                InputEvents::LightingBlinnEvent::notify(true);
-            if (ImGui::Button("Hot reload")) {
-                InputEvents::ShaderHotReloadEvent::notify("phong");
+            if (ImGui::BeginMenu("Postprocessing")) {
+                if (ImGui::Checkbox("Sharpen", &postprocFlags->sharpness))
+                    InputEvents::PostprocSharpnessEvent::notify(postprocFlags->sharpness);
+                if (ImGui::Checkbox("Grayscale", &postprocFlags->grayscale))
+                    InputEvents::PostprocGrayscaleEvent::notify(postprocFlags->grayscale);
+                if (ImGui::Checkbox("Negative", &postprocFlags->negative))
+                    InputEvents::PostprocNegativeEvent::notify(postprocFlags->negative);
+                ImGui::EndMenu();
             }
-            ImGui::EndMenu();
+            if (ImGui::BeginMenu("Anti-aliasing")) {
+                if (ImGui::Checkbox("MSAA", &postprocFlags->MSAA))
+                    InputEvents::MSAAToggleEvent::notify(postprocFlags->MSAA);
+                ImGui::EndMenu();
+            }
+            bool tempBool = false;
+            if (ImGui::BeginMenu("Skybox")) {
+                ImGui::Checkbox("Clouds", &tempBool);
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Shader")) {
+                if (ImGui::Button("Phong"))
+                    InputEvents::LightingBlinnEvent::notify(false);
+                if (ImGui::Button("Blinn-Phong"))
+                    InputEvents::LightingBlinnEvent::notify(true);
+                if (ImGui::Button("Hot reload")) {
+                    InputEvents::ShaderHotReloadEvent::notify("phong");
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+
         }
-        ImGui::EndMainMenuBar();
-
     }
+
 
     //////////////////////
-    //Create a UI window for scene objects
+    //Create a UI window for scenegraph
     //////////////////////
-    ImGui::Begin("Scene");
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-    if (ImGui::Button("Add node")) {
-        InputEvents::AddNodeEvent::notify(0);
-    }
-    if (ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
-    {
-        processNode(node, uiAssets);
-        ImGui::EndTable();
-    }
-    ImGui::PopStyleVar();
+    if (m_uiFlags.sceneGraphVisible()) {
+        ImGui::Begin("Scene");
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+        if (ImGui::Button("Add node")) {
+            InputEvents::AddNodeEvent::notify(0);
+        }
+        if (ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
+        {
+            processNode(node, uiAssets);
+            ImGui::EndTable();
+        }
+        ImGui::PopStyleVar();
 
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::End();
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
+    }
+    
     //////////////////////
     
     //////////////////////
     //Create a UI window asset viewing
     //////////////////////
-    ImGui::Begin("Assets");
+    if (m_uiFlags.assetWindowVisible()) {
+        ImGui::Begin("Assets");
 
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-    ImGui::BeginChild("AssetList", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
-    if (ImGui::TreeNode("Textures")) {
-        for (auto const& ass : uiAssets->textures) {
-            if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
-                m_chosenAssetType = Asset::AssetType::TEXTURE;
-                m_chosenAssetId = ass.first;
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+        ImGui::BeginChild("AssetList", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
+        if (ImGui::TreeNode("Textures")) {
+            for (auto const& ass : uiAssets->textures) {
+                if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
+                    m_chosenAssetType = Asset::AssetType::TEXTURE;
+                    m_chosenAssetId = ass.first;
+                }
             }
+            ImGui::TreePop();
         }
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNode("Meshes")) {
-        for (auto const& ass : uiAssets->meshes) {
-            if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
-                m_chosenAssetType = Asset::AssetType::MESH;
-                m_chosenAssetId = ass.first;
+        if (ImGui::TreeNode("Meshes")) {
+            for (auto const& ass : uiAssets->meshes) {
+                if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
+                    m_chosenAssetType = Asset::AssetType::MESH;
+                    m_chosenAssetId = ass.first;
+                }
             }
+            ImGui::TreePop();
         }
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNode("Submeshes")) {
-        for (auto const& ass : uiAssets->submeshes) {
-            if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
-                m_chosenAssetType = Asset::AssetType::SUBMESH;
-                m_chosenAssetId = ass.first;
+        if (ImGui::TreeNode("Submeshes")) {
+            for (auto const& ass : uiAssets->submeshes) {
+                if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
+                    m_chosenAssetType = Asset::AssetType::SUBMESH;
+                    m_chosenAssetId = ass.first;
+                }
             }
+            ImGui::TreePop();
         }
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNode("Materials")) {
-        for (auto const& ass : uiAssets->materials) {
-            if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
-                m_chosenAssetType = Asset::AssetType::MATERIAL;
-                m_chosenAssetId = ass.first;
+        if (ImGui::TreeNode("Materials")) {
+            for (auto const& ass : uiAssets->materials) {
+                if (ImGui::Selectable((std::to_string(ass.second.id) + " " + ass.second.name).c_str(), false)) {
+                    m_chosenAssetType = Asset::AssetType::MATERIAL;
+                    m_chosenAssetId = ass.first;
+                }
             }
+            ImGui::TreePop();
         }
-        ImGui::TreePop();
-    }
-    
-    ImGui::EndChild();
-    
-    ImGui::SameLine();
-    
-    ImGui::BeginChild("AssetInspector", ImVec2(0, 260), true, window_flags);
-    if (m_chosenAssetId != 0) {
-        /*
-        * If mesh chosen, display that meshes submeshes and their materials
-        */
-        if (m_chosenAssetType == Asset::AssetType::MESH) {
-            for (auto const& smesh : uiAssets->meshes.at(m_chosenAssetId).submeshes) {
-                ImGui::Text(uiAssets->submeshes.at(smesh.first).name.c_str());
-                ImGui::SameLine();
-                if (ImGui::BeginCombo("##materialcombo", uiAssets->materials.at(smesh.second).name.c_str())) {
-                    for (auto const& mat : uiAssets->materials) {
-                        if (ImGui::Selectable(mat.second.name.c_str(), false)) {
-                            InputEvents::SetSubmeshMaterialEvent::notify(
-                                m_chosenAssetId, smesh.first, mat.first);
+
+        ImGui::EndChild();
+
+        ImGui::SameLine();
+
+        ImGui::BeginChild("AssetInspector", ImVec2(0, 260), true, window_flags);
+        if (m_chosenAssetId != 0) {
+            /*
+            * If mesh chosen, display that meshes submeshes and their materials
+            */
+            if (m_chosenAssetType == Asset::AssetType::MESH) {
+                for (auto const& smesh : uiAssets->meshes.at(m_chosenAssetId).submeshes) {
+                    ImGui::Text(uiAssets->submeshes.at(smesh.first).name.c_str());
+                    ImGui::SameLine();
+                    if (ImGui::BeginCombo("##materialcombo", uiAssets->materials.at(smesh.second).name.c_str())) {
+                        for (auto const& mat : uiAssets->materials) {
+                            if (ImGui::Selectable(mat.second.name.c_str(), false)) {
+                                InputEvents::SetSubmeshMaterialEvent::notify(
+                                    m_chosenAssetId, smesh.first, mat.first);
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
+                }
+            }
+            /*
+            * If material chosen...
+            */
+            if (m_chosenAssetType == Asset::AssetType::MATERIAL) {
+                MaterialUI* chosenMat = &uiAssets->materials.at(m_chosenAssetId);
+
+                /*
+                * Diffuse map combobox
+                */
+                std::string diffComboLabel = "";
+                if (chosenMat->diffuseMap == 0)
+                    diffComboLabel = "No texture";
+                else
+                    diffComboLabel = uiAssets->textures.at(chosenMat->diffuseMap).name;
+                if (ImGui::BeginCombo("Diffuse map", diffComboLabel.c_str())) {
+                    if (ImGui::Selectable("No texture", false)) {
+                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::DIFFUSE_MAP);
+                    }
+                    for (auto const& tex : uiAssets->textures) {
+                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
+                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::DIFFUSE_MAP);
+                        }
+                    }
+                    ImGui::EndCombo();
+
+                }
+                /*
+                * Specular map combobox
+                */
+                std::string specComboLabel = "";
+                if (chosenMat->specularMap == 0)
+                    specComboLabel = "No texture";
+                else
+                    specComboLabel = uiAssets->textures.at(chosenMat->specularMap).name;
+                if (ImGui::BeginCombo("Specular map", specComboLabel.c_str())) {
+                    if (ImGui::Selectable("No texture", false)) {
+                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::SPECULAR_MAP);
+                    }
+                    for (auto const& tex : uiAssets->textures) {
+                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
+                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::SPECULAR_MAP);
                         }
                     }
                     ImGui::EndCombo();
                 }
+                /*
+                * Opacity map combobox
+                */
+                std::string opacComboLabel = "";
+                if (chosenMat->opacityMap == 0)
+                    opacComboLabel = "No texture";
+                else
+                    opacComboLabel = uiAssets->textures.at(chosenMat->opacityMap).name;
+                if (ImGui::BeginCombo("Opacity map", opacComboLabel.c_str())) {
+                    if (ImGui::Selectable("No texture", false)) {
+                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::OPACITY_MAP);
+                    }
+                    for (auto const& tex : uiAssets->textures) {
+                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
+                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::OPACITY_MAP);
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+
+                /*
+                * Material properties
+                */
+                for (auto& prop : *chosenMat->propertiesf) {
+                    ImGui::Text(prop.first.c_str());
+                    ImGui::DragFloat(prop.first.c_str(), &prop.second, 2);
+                }
+                for (auto& prop : *chosenMat->propertiesv3) {
+                    ImGui::Text(prop.first.c_str());
+                    ImGui::DragFloat3(prop.first.c_str(), &prop.second.r, 0.01);
+                }
             }
         }
-        /*
-        * If material chosen...
-        */
-        if (m_chosenAssetType == Asset::AssetType::MATERIAL) {
-            MaterialUI* chosenMat = &uiAssets->materials.at(m_chosenAssetId);
 
-            /*
-            * Diffuse map combobox
-            */
-            std::string diffComboLabel = "";
-            if (chosenMat->diffuseMap == 0)
-                diffComboLabel = "No texture";
-            else
-                diffComboLabel = uiAssets->textures.at(chosenMat->diffuseMap).name;
-            if (ImGui::BeginCombo("Diffuse map", diffComboLabel.c_str())) {
-                if (ImGui::Selectable("No texture", false)) {
-                    InputEvents::setMaterialTextureEvent::notify(chosenMat->id,0, Texture::TextureType::DIFFUSE_MAP);
-                }
-                for (auto const& tex : uiAssets->textures) {
-                    if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::DIFFUSE_MAP);
-                    }
-                }
-                ImGui::EndCombo();
-                    
-            }
-            /*
-            * Specular map combobox
-            */
-            std::string specComboLabel = "";
-            if (chosenMat->specularMap == 0)
-                specComboLabel = "No texture";
-            else
-                specComboLabel = uiAssets->textures.at(chosenMat->specularMap).name;
-            if (ImGui::BeginCombo("Specular map", specComboLabel.c_str())) {
-                if (ImGui::Selectable("No texture", false)) {
-                    InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::SPECULAR_MAP);
-                }
-                for (auto const& tex : uiAssets->textures) {
-                    if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::SPECULAR_MAP);
-                    }
-                }
-                ImGui::EndCombo();
-            }
-            /*
-            * Opacity map combobox
-            */
-            std::string opacComboLabel = "";
-            if (chosenMat->opacityMap == 0)
-                opacComboLabel = "No texture";
-            else
-                opacComboLabel = uiAssets->textures.at(chosenMat->opacityMap).name;
-            if (ImGui::BeginCombo("Opacity map", opacComboLabel.c_str())) {
-                if (ImGui::Selectable("No texture", false)) {
-                    InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::OPACITY_MAP);
-                }
-                for (auto const& tex : uiAssets->textures) {
-                    if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::OPACITY_MAP);
-                    }
-                }
-                ImGui::EndCombo();
-            }
+        ImGui::EndChild();
 
-            /*
-            * Material properties
-            */
-            for (auto& prop : *chosenMat->propertiesf) {
-                ImGui::Text(prop.first.c_str());
-                ImGui::DragFloat(prop.first.c_str(),&prop.second, 2);
-            }
-            for (auto& prop : *chosenMat->propertiesv3) {
-                ImGui::Text(prop.first.c_str());
-                ImGui::DragFloat3(prop.first.c_str(), &prop.second.r, 0.01);
-            }
-        }
+        ImGui::End();
     }
     
-    ImGui::EndChild();
-
-    ImGui::End();
     //////////////////////
 
     ImGui::Render();

@@ -369,4 +369,49 @@ namespace InputEvents
 	private:
 		inline static std::vector<std::function<void(std::string)>> m_handlers;
 	};
+
+	class MainMenuVisibilityToggleEvent
+	{
+	public:
+		static void subscribe(std::function<void()> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify() {
+			for (auto h : m_handlers) {
+				h();
+			}
+		}
+	private:
+		inline static std::vector<std::function<void()>> m_handlers;
+	};
+
+	class AssetWindowVisibilityEvent
+	{
+	public:
+		static void subscribe(std::function<void(bool)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(bool flag) {
+			for (auto h : m_handlers) {
+				h(flag);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(bool)>> m_handlers;
+	};
+	class SceneGraphVisibilityEvent
+	{
+	public:
+		static void subscribe(std::function<void(bool)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(bool flag) {
+			for (auto h : m_handlers) {
+				h(flag);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(bool)>> m_handlers;
+	};
+
 }

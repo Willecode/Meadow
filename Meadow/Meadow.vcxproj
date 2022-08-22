@@ -199,6 +199,7 @@
     <ClCompile Include="source\assets\texture.cpp" />
     <ClCompile Include="source\ui\ui.cpp" />
     <ClCompile Include="source\ui\uidatascraper.cpp" />
+    <ClCompile Include="source\ui\uiflags.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\2d.vs" />
@@ -261,6 +262,7 @@
     <ClInclude Include="source\assets\texture.h" />
     <ClInclude Include="source\ui\ui.h" />
     <ClInclude Include="source\ui\uidatascraper.h" />
+    <ClInclude Include="source\ui\uiflags.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
