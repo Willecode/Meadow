@@ -300,7 +300,7 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     m_texIdMap.insert(std::pair<unsigned int, GLuint>(id, glTexId));
 }
 
-void OpenGLRenderer::create2DTextureMS(const unsigned int& id, const unsigned int& width, const unsigned int& height)
+void OpenGLRenderer::create2DTextureMS(const unsigned int& id, const unsigned int& width, const unsigned int& height, ImageFormat format)
 {
     auto it = m_texIdMap.find(id);
     if (it != m_texIdMap.end()) {
@@ -313,7 +313,7 @@ void OpenGLRenderer::create2DTextureMS(const unsigned int& id, const unsigned in
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, glTexId);
 
     // Set multisample
-    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, width, height, GL_TRUE);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, m_imgFormatMap.at(format), width, height, GL_TRUE);
 
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
     m_texIdMap.insert(std::pair<unsigned int, GLuint>(id, glTexId));

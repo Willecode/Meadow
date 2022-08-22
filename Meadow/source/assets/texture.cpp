@@ -30,7 +30,7 @@ void Texture::loadToGPU()
 	if (m_img != nullptr)
 		imgData = &(*m_img)[0];
 	if (m_multisample)
-		Locator::getRenderer()->create2DTextureMS(getId(), m_imgWidth, m_imgHeight);
+		Locator::getRenderer()->create2DTextureMS(getId(), m_imgWidth, m_imgHeight, m_imgFormatInternal);
 	else
 		Locator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormatSource, m_imgFormatInternal, imgData);
 }
