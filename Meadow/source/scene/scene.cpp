@@ -30,6 +30,8 @@ Scene::Scene():
 
 	InputEvents::SetNodeMeshEvent::subscribe(std::bind(&Scene::setMeshHandler, this, std::placeholders::_1, std::placeholders::_2));
 	InputEvents::DuplicateNodeEvent::subscribe(std::bind(&Scene::duplicateNodeHandler, this, std::placeholders::_1));
+	InputEvents::SceneNodeLightsourceAddEvent::subscribe(std::bind(&Scene::addNodeLightSource, this, std::placeholders::_1));
+	InputEvents::SceneNodeLightsourceRemoveEvent::subscribe(std::bind(&Scene::removeNodeLightSource, this, std::placeholders::_1));
 }
 
 void Scene::update(float deltatime, InputGather* input)
@@ -189,6 +191,28 @@ void Scene::setMeshHandler(unsigned int nodeid, unsigned int meshid)
 		getNode(nodeid)->setMesh(ResourceManager::getMesh(meshid));
 	else
 		Locator::getLogger()->getLogger()->error("Scene::setMeshHandler: Tried to set mesh to a nonexistent node");
+}
+
+void Scene::removeNodeLightSource(unsigned int nodeid)
+{
+	if (!nodeIdInUse(nodeid))
+		return;
+	else {
+		m_nodes[nodeid]->setLightSource(nullptr);
+	}
+	
+}
+
+void Scene::addNodeLightSource(unsigned int nodeid)
+{
+	if (!nodeIdInUse(nodeid))
+		return;
+	else {
+		if (!PointLight::maxInstanceCapacity()) {
+			auto pointLight = std::make_unique<PointLight>();
+			m_nodes[nodeid]->setLightSource(std::move(pointLight));
+		}
+	}
 }
 
 

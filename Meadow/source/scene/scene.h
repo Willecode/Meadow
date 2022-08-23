@@ -62,6 +62,8 @@ private:
 	void addNodeHandler(unsigned int parent = 0);
 	void duplicateNodeHandler(unsigned int parent);
 	void setMeshHandler(unsigned int nodeid, unsigned int meshid);
+	void removeNodeLightSource(unsigned int nodeid);
+	void addNodeLightSource(unsigned int nodeid);
 	/*
 	* Other funcs
 	*/

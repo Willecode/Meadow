@@ -77,6 +77,7 @@ struct SceneNodeUI {
 	std::vector<SceneNodeUI> children;
 	MeshUI* mesh;
 	bool* wireframeMode;
+	bool hasLightsource;
 
 };
 

@@ -31,6 +31,11 @@ public:
 	*/
 	bool wireframeMode;
 
+	/*
+	* Lightsource?
+	*/
+	bool hasLightSource;
+
 public:
 	SceneNode(unsigned int id = -1, std::string name = "Nameless Node");
 	/*
@@ -44,9 +49,15 @@ public:
 	*/
 	void setMesh(Mesh* mesh);
 	Mesh* getMesh();
+	glm::mat4* getModelMatrix();
+
+	/*
+	* Set lightsource. The variable put as the argument becomes unusable.
+	* Pass in nullptr to remove light.
+	*/
 	void setLightSource(std::unique_ptr<LightSource> ls);
 	LightSource* getLightsource();
-	glm::mat4* getModelMatrix();
+
 	/*
 	* Update node transform
 	*/

@@ -18,7 +18,7 @@ m_propTypeMap()
 			if (current->m_nextNode == nullptr) {
 				current->m_nextNode = this;
 				posFound = true;
-				return;
+				break;
 			}
 			else
 				current = current->m_nextNode;
@@ -46,8 +46,10 @@ PointLight::~PointLight()
 	}
 	PointLight* current = HEAD;
 	for (int i = 0; i < MAX_POINTLIGHT_COUNT; i++) {
-		if (current->m_nextNode == this)
+		if (current->m_nextNode == this) {
 			current->m_nextNode = this->m_nextNode;
+			return;
+		}
 		else
 			current = current->m_nextNode;
 	}

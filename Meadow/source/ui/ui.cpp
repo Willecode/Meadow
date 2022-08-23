@@ -393,6 +393,15 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
         // Wireframe mode checkbox
         //ImGui::TableSetColumnIndex(2);
         ImGui::Checkbox("Wireframe", node->wireframeMode);
+
+        // LightSource adding/removing
+        bool hasLight = node->hasLightsource;
+        if (ImGui::Checkbox("Light Source", &node->hasLightsource)){
+            if (hasLight)
+                InputEvents::SceneNodeLightsourceRemoveEvent::notify(node->id);
+            else
+                InputEvents::SceneNodeLightsourceAddEvent::notify(node->id);
+        }
     
         for (auto child : node->children)
         {

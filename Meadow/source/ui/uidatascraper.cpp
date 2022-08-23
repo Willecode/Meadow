@@ -98,6 +98,7 @@ void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemI
 	uiNode.pos = &node->position;
 	uiNode.orientationEuler = &node->orientationEuler;
 	uiNode.wireframeMode = &node->wireframeMode;
+	uiNode.hasLightsource = node->hasLightSource;
 
 	/*
 	* Get mesh data

@@ -1,5 +1,11 @@
 #pragma once
 #include "lightsource.h"
+
+/*
+* Has a pretty funky linked list type memory management system. (should prolly be redesigned.)
+* See HEAD, MAX_POINTLIGHT_COUNT and m_nextNode + constructor + destructor.
+*/
+
 class PointLight : public LightSource
 {
 public:

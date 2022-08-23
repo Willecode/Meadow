@@ -12,7 +12,8 @@ SceneNode::SceneNode(unsigned int id, std::string name) :
 	m_light(nullptr),
 	m_modelMatrix(glm::mat4(1.0f)),
 	name(name),
-	id(id)
+	id(id),
+	hasLightSource(false)
 {
 }
 
@@ -48,6 +49,10 @@ Mesh* SceneNode::getMesh()
 
 void SceneNode::setLightSource(std::unique_ptr<LightSource> ls)
 {
+	if (ls == nullptr)
+		hasLightSource = false;
+	else
+		hasLightSource = true;
 	auto oldLight = std::move(m_light);
 	m_light = std::move(ls);
 }
