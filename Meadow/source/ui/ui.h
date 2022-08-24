@@ -10,6 +10,7 @@
 #include "windowmanager.h"
 #include "assets/asset.h"
 #include "ui/uiflags.h"
+#include <backends/imgui_impl_opengl3.h>
 
 /*
 * Contains the data for a UI element representing an asset 
@@ -157,6 +158,6 @@ private:
 	* Other
 	*/
 	void processNode(SceneNodeUI* node, UIAssetMaps* uiAssets);
-	//SceneNodeUI* getNodeById(unsigned int id, SceneNodeUI* rootNode);
+	void createSceneTree(SceneNodeUI* rootNode, ImGuiTreeNodeFlags treeflags);
 };
 

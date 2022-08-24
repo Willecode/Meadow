@@ -1,7 +1,7 @@
 #include "ui.h"
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
+//#include <backends/imgui_impl_opengl3.h>
 #include "service_locator/locator.h"
 #include "input/inputevents.h"
 #include "assets/asset.h"
@@ -51,7 +51,7 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
     /*
     * Display demo window for reference?
     */
-    bool show_demo_window = false;
+    bool show_demo_window = true;
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -135,11 +135,22 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
         if (ImGui::Button("Add node")) {
             InputEvents::AddNodeEvent::notify(0);
         }
-        if (ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
+
+        /*
+        * Create a table (old implementetion) of scene nodes
+        */
+        /*if (ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
         {
             processNode(node, uiAssets);
             ImGui::EndTable();
-        }
+        }*/
+
+        /*
+        * Create a tree of scene nodes
+        */
+        ImGuiTreeNodeFlags treeflags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+        createSceneTree(node, treeflags);
+
         ImGui::PopStyleVar();
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -368,6 +379,26 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void UI::createSceneTree(SceneNodeUI* rootNode, ImGuiTreeNodeFlags treeflags)
+{
+    ImGuiTreeNodeFlags nodeflags = treeflags;
+    if (rootNode->active)
+        nodeflags |= ImGuiTreeNodeFlags_Selected;
+
+    bool node_open = ImGui::TreeNodeEx((void*)rootNode, nodeflags, rootNode->name->c_str());
+
+    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+        InputEvents::SetActiveNodeEvent::notify(rootNode->id);
+    if (node_open)
+    {
+        for (auto child : rootNode->children)
+        {
+            createSceneTree(&child, treeflags);
+        }
+        ImGui::TreePop();
+    }
+}
+
 void UI::mouseButtonReleaseHandler()
 {
     ImGuiIO& io = ImGui::GetIO();
@@ -421,67 +452,67 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
     {
         float sliderSpeed = 0.01f;
         // Here we use a TreeNode to highlight on hover (we could use e.g. Selectable as well)
-        ImGui::TableNextRow();
-        ImGui::TableSetColumnIndex(0);
-        ImGui::AlignTextToFramePadding();
-        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet;
-        ImGui::TreeNodeEx("Position", flags);
-        ImGui::TableSetColumnIndex(1);
-        ImGui::SetNextItemWidth(-FLT_MIN);
-        ImGui::DragFloat3("Position", &node->pos->x, sliderSpeed);
+        //ImGui::TableNextRow();
+        //ImGui::TableSetColumnIndex(0);
+        //ImGui::AlignTextToFramePadding();
+        //ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet;
+        //ImGui::TreeNodeEx("Position", flags);
+        //ImGui::TableSetColumnIndex(1);
+        //ImGui::SetNextItemWidth(-FLT_MIN);
+        //ImGui::DragFloat3("Position", &node->pos->x, sliderSpeed);
 
-        ImGui::TableNextRow();
-        ImGui::TableSetColumnIndex(0);
-        ImGui::AlignTextToFramePadding();
-        ImGui::TreeNodeEx("Scale", flags);
-        ImGui::TableSetColumnIndex(1);
-        ImGui::SetNextItemWidth(-FLT_MIN);
-        ImGui::DragFloat3("Scale", &node->scale->x, sliderSpeed);
+        //ImGui::TableNextRow();
+        //ImGui::TableSetColumnIndex(0);
+        //ImGui::AlignTextToFramePadding();
+        //ImGui::TreeNodeEx("Scale", flags);
+        //ImGui::TableSetColumnIndex(1);
+        //ImGui::SetNextItemWidth(-FLT_MIN);
+        //ImGui::DragFloat3("Scale", &node->scale->x, sliderSpeed);
 
-        ImGui::TableNextRow();
-        ImGui::TableSetColumnIndex(0);
-        ImGui::AlignTextToFramePadding();
-        ImGui::TreeNodeEx("Rotation", flags);
-        ImGui::TableSetColumnIndex(1);
-        ImGui::SetNextItemWidth(-FLT_MIN);
-        ImGui::DragFloat3("Rotation", &node->orientationEuler->x, sliderSpeed);
+        //ImGui::TableNextRow();
+        //ImGui::TableSetColumnIndex(0);
+        //ImGui::AlignTextToFramePadding();
+        //ImGui::TreeNodeEx("Rotation", flags);
+        //ImGui::TableSetColumnIndex(1);
+        //ImGui::SetNextItemWidth(-FLT_MIN);
+        //ImGui::DragFloat3("Rotation", &node->orientationEuler->x, sliderSpeed);
 
-        ImGui::TableNextRow();
-        ImGui::TableSetColumnIndex(0);
-        ImGui::AlignTextToFramePadding();
-        ImGui::TreeNodeEx("Mesh", flags);
+        //ImGui::TableNextRow();
+        //ImGui::TableSetColumnIndex(0);
+        //ImGui::AlignTextToFramePadding();
+        //ImGui::TreeNodeEx("Mesh", flags);
 
-        ImGui::TableSetColumnIndex(1);
-        const char* meshboxlabel;
-        if (node->mesh != nullptr)
-            meshboxlabel = node->mesh->name.c_str();
-        else
-            meshboxlabel = "No Mesh";
-        if (ImGui::BeginCombo("##meshbox", meshboxlabel)) {
-            if (ImGui::Selectable("No Mesh", false))
-            {
-                InputEvents::SetNodeMeshEvent::notify(node->id, 0);
-            }
-            for (auto const& mesh : uiAssets->meshes) {
-                if (ImGui::Selectable(mesh.second.name.c_str(), false))
-                {
-                    InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
-                }
-            }
-            ImGui::EndCombo();
-        }
-        // Wireframe mode checkbox
-        //ImGui::TableSetColumnIndex(2);
-        ImGui::Checkbox("Wireframe", node->wireframeMode);
+        //ImGui::TableSetColumnIndex(1);
+        //const char* meshboxlabel;
+        //if (node->mesh != nullptr)
+        //    meshboxlabel = node->mesh->name.c_str();
+        //else
+        //    meshboxlabel = "No Mesh";
+        //if (ImGui::BeginCombo("##meshbox", meshboxlabel)) {
+        //    if (ImGui::Selectable("No Mesh", false))
+        //    {
+        //        InputEvents::SetNodeMeshEvent::notify(node->id, 0);
+        //    }
+        //    for (auto const& mesh : uiAssets->meshes) {
+        //        if (ImGui::Selectable(mesh.second.name.c_str(), false))
+        //        {
+        //            InputEvents::SetNodeMeshEvent::notify(node->id, mesh.second.id);
+        //        }
+        //    }
+        //    ImGui::EndCombo();
+        //}
+        //// Wireframe mode checkbox
+        ////ImGui::TableSetColumnIndex(2);
+        //ImGui::Checkbox("Wireframe", node->wireframeMode);
 
-        // LightSource adding/removing
-        bool hasLight = node->hasLightsource;
-        if (ImGui::Checkbox("Light Source", &node->hasLightsource)){
-            if (hasLight)
-                InputEvents::SceneNodeLightsourceRemoveEvent::notify(node->id);
-            else
-                InputEvents::SceneNodeLightsourceAddEvent::notify(node->id);
-        }
+        //// LightSource adding/removing
+        //bool hasLight = node->hasLightsource;
+        //if (ImGui::Checkbox("Light Source", &node->hasLightsource)){
+        //    if (hasLight)
+        //        InputEvents::SceneNodeLightsourceRemoveEvent::notify(node->id);
+        //    else
+        //        InputEvents::SceneNodeLightsourceAddEvent::notify(node->id);
+        //}
     
         for (auto child : node->children)
         {
