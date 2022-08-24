@@ -56,8 +56,9 @@ void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
 	}
 
 	//////////////////////////////////
-	// SCENE GRAPH
+	// SCENE GRAPH AND STATE
 	//////////////////////////////////
+	m_sceneState.activeNode = std::nullopt;
 	SceneNode* root = scene->getNode(0);
 	scrapeNode(root, m_uiSceneGraph, 0);
 
@@ -85,6 +86,11 @@ PostprocessingFlags* UIDataScraper::getPostprocessingFlags()
 	return &m_postprocFlags;
 }
 
+SceneState* UIDataScraper::getSceneState()
+{
+	return &m_sceneState;
+}
+
 void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemId)
 {
 	/*
@@ -99,6 +105,8 @@ void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemI
 	uiNode.orientationEuler = &node->orientationEuler;
 	uiNode.wireframeMode = &node->wireframeMode;
 	uiNode.hasLightsource = node->hasLightSource;
+	uiNode.selected = node->selected;
+	uiNode.active = node->active;
 
 	/*
 	* Get mesh data
@@ -110,6 +118,12 @@ void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemI
 	else {
 		uiNode.mesh = &m_UIAssetMaps.meshes.at(mesh->getId());
 	}
+
+	/*
+	* Check if the node is actice, if yes save a copy
+	*/
+	if (uiNode.active = node->active)
+		m_sceneState.activeNode = uiNode;
 
 	/*
 	* Now do the same for each of the SceneNodes children

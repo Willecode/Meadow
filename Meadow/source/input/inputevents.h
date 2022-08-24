@@ -444,4 +444,51 @@ namespace InputEvents
 	private:
 		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
 	};
+
+	class SceneNodeInspectorVisibilityEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id) {
+			for (auto h : m_handlers) {
+				h(id);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class SetActiveNodeEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id) {
+			for (auto h : m_handlers) {
+				h(id);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class SetNodeSelectionEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int, bool)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id, bool f) {
+			for (auto h : m_handlers) {
+				h(id, f);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int, bool)>> m_handlers;
+	};
+
+
 }

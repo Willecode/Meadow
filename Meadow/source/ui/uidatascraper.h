@@ -18,6 +18,10 @@ private:
 	* Postprocessing flags for UI
 	*/
 	PostprocessingFlags m_postprocFlags;
+	/*
+	* Scene's state
+	*/
+	SceneState m_sceneState;
 public:
 	UIDataScraper();
 	/*
@@ -36,6 +40,10 @@ public:
 	* Get postproc flags
 	*/
 	PostprocessingFlags* getPostprocessingFlags();
+	/*
+	* Get scene state
+	*/
+	SceneState* getSceneState();
 private:
 	/*
 	* param SceneNode* node: Back end node that exists in the scene

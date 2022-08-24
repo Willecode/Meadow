@@ -9,7 +9,9 @@ Scene::Scene():
 	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f)),
 	m_deltatime(0.f),
 	m_cameraLock(true),
-	m_uiNodes()
+	//m_uiNodes(),
+	m_activeNode(nullptr),
+	m_selectedNodes()
 {
 	// Initialize scene graph as just the root node
 	m_nodes[0] = std::make_unique<SceneNode>(0, "root");
@@ -32,6 +34,8 @@ Scene::Scene():
 	InputEvents::DuplicateNodeEvent::subscribe(std::bind(&Scene::duplicateNodeHandler, this, std::placeholders::_1));
 	InputEvents::SceneNodeLightsourceAddEvent::subscribe(std::bind(&Scene::addNodeLightSource, this, std::placeholders::_1));
 	InputEvents::SceneNodeLightsourceRemoveEvent::subscribe(std::bind(&Scene::removeNodeLightSource, this, std::placeholders::_1));
+	InputEvents::SetActiveNodeEvent::subscribe(std::bind(&Scene::setActiveNode, this, std::placeholders::_1));
+	InputEvents::SetNodeSelectionEvent::subscribe(std::bind(&Scene::setNodeSelection, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void Scene::update(float deltatime, InputGather* input)
@@ -211,6 +215,43 @@ void Scene::addNodeLightSource(unsigned int nodeid)
 		if (!PointLight::maxInstanceCapacity()) {
 			auto pointLight = std::make_unique<PointLight>();
 			m_nodes[nodeid]->setLightSource(std::move(pointLight));
+		}
+	}
+}
+
+void Scene::setActiveNode(unsigned int nodeid)
+{
+	if (!nodeIdInUse(nodeid))
+		return;
+	else {
+		if (m_activeNode != nullptr)
+			m_activeNode->active = false; // remove old active status
+		m_activeNode = m_nodes[nodeid].get(); // update pointer
+		m_activeNode->active = true; // set new active status
+	}
+}
+
+void Scene::setNodeSelection(unsigned int nodeid, bool f)
+{
+	if (!nodeIdInUse(nodeid))
+		return;
+	else {
+		SceneNode* nodeptr = m_nodes[nodeid].get();
+
+		// Select node
+		if (f) {
+			nodeptr->selected = true;
+			m_selectedNodes.insert(nodeptr);
+		}
+		// Unselect node
+		else
+		{
+			auto it = m_selectedNodes.find(nodeptr);
+			if (it != m_selectedNodes.end()) {
+				nodeptr->selected = false;
+				m_selectedNodes.erase(it);
+			}
+				
 		}
 	}
 }

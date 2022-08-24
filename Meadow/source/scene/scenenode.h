@@ -12,6 +12,8 @@ class SceneNode
 public:
 	unsigned int id;
 	std::string name;
+	bool selected;
+	bool active;
 	/*
 	* Scene hierarchy
 	*/

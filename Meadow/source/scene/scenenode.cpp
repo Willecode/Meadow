@@ -13,7 +13,9 @@ SceneNode::SceneNode(unsigned int id, std::string name) :
 	m_modelMatrix(glm::mat4(1.0f)),
 	name(name),
 	id(id),
-	hasLightSource(false)
+	hasLightSource(false),
+	selected(false),
+	active(false)
 {
 }
 

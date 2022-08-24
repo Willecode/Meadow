@@ -5,6 +5,8 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <set>
+#include <optional>
 #include "windowmanager.h"
 #include "assets/asset.h"
 #include "ui/uiflags.h"
@@ -78,6 +80,21 @@ struct SceneNodeUI {
 	MeshUI* mesh;
 	bool* wireframeMode;
 	bool hasLightsource;
+	bool selected;
+	bool active;
+	SceneNodeUI() :
+		id(-1),
+		uiElemId(-1),
+		name(nullptr),
+		scale(nullptr),
+		pos(nullptr),
+		orientationEuler(nullptr),
+		children({}),
+		mesh(nullptr),
+		wireframeMode(nullptr),
+		hasLightsource(false),
+		selected(false),
+		active(false) {}
 
 };
 
@@ -86,6 +103,15 @@ struct PostprocessingFlags {
 	bool grayscale;
 	bool negative;
 	bool MSAA;
+};
+
+/*
+* Contains data about the scene's state
+*/
+struct SceneState
+{
+	// Optional because it can be empty (no active node)
+	std::optional<SceneNodeUI> activeNode;
 };
 
 class UI
@@ -105,7 +131,7 @@ public:
 	/*
 	* Render UI
 	*/
-	void renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags);
+	void renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags);
 
 private:
 	/*
@@ -131,5 +157,6 @@ private:
 	* Other
 	*/
 	void processNode(SceneNodeUI* node, UIAssetMaps* uiAssets);
+	//SceneNodeUI* getNodeById(unsigned int id, SceneNodeUI* rootNode);
 };
 

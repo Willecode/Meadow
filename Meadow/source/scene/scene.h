@@ -1,10 +1,12 @@
 #pragma once
 #include <unordered_map>
+#include <set>
 #include "scenenode.h"
 #include "camera.h"
 #include "resource_management/shadermanager.h"
 #include "input/inputgather.h"
 #include "ui/ui.h"
+
 /*
 * Scene graph class
 */
@@ -33,6 +35,13 @@ private:
 	Camera m_camera;
 	bool m_cameraLock;
 	float m_deltatime;
+
+	/*
+	* Selected nodes and the active node ptrs for convenience
+	*/
+	SceneNode* m_activeNode;
+	std::set<SceneNode*> m_selectedNodes;
+
 	/*
 	* Map for accessing nodes with id.
 	* Scenenodes only exist in a scene, and are unique
@@ -51,7 +60,7 @@ private:
 	/*
 	* Data to provide to UI
 	*/
-	std::vector<SceneNodeUI> m_uiNodes;
+	//std::vector<SceneNodeUI> m_uiNodes;
 private:
 	/*
 	* Event handlers
@@ -64,6 +73,8 @@ private:
 	void setMeshHandler(unsigned int nodeid, unsigned int meshid);
 	void removeNodeLightSource(unsigned int nodeid);
 	void addNodeLightSource(unsigned int nodeid);
+	void setActiveNode(unsigned int nodeid);
+	void setNodeSelection(unsigned int nodeid, bool f);
 	/*
 	* Other funcs
 	*/

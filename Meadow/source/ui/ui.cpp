@@ -42,7 +42,7 @@ void UI::init(WindowManager* winMan)
     InputEvents::MouseMoveEvent::subscribe(mousefunc2);
 }
 
-void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags)
+void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -64,10 +64,13 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, Postprocessin
             if (ImGui::BeginMenu("Menus")) {
                 bool assetVis = m_uiFlags.assetWindowVisible();
                 bool sceneGraphVis = m_uiFlags.sceneGraphVisible();
+                bool sceneNodeInspVis = m_uiFlags.sceneNodeInspectorVisible();
                 if (ImGui::Checkbox("Asset Manager", &assetVis))
                     InputEvents::AssetWindowVisibilityEvent::notify(assetVis);
                 if (ImGui::Checkbox("Scene Graph", &sceneGraphVis))
                     InputEvents::SceneGraphVisibilityEvent::notify(sceneGraphVis);
+                if (ImGui::Checkbox("Scene Node Inspector", &sceneNodeInspVis))
+                    InputEvents::SceneNodeInspectorVisibilityEvent::notify(sceneNodeInspVis);
 
                 ImGui::EndMenu();
             }
@@ -142,7 +145,68 @@ void UI::renderInterface(SceneNodeUI* node, UIAssetMaps* uiAssets, Postprocessin
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
     }
+    //////////////////////
     
+    //////////////////////
+    //Create a UI window for Node Inspector
+    //////////////////////
+    if (m_uiFlags.sceneNodeInspectorVisible()) {
+        ImGui::Begin("Node Inspector");
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+        if (sceneState->activeNode == std::nullopt) {
+            ImGui::Text("Choose a node from the scene graph.");
+        }
+        else
+        {
+            SceneNodeUI activenode = sceneState->activeNode.value();
+            /*if (ImGui::BeginTable("nodeinsp", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
+            {
+                ImGui::TableNextRow();
+                float sliderSpeed = 0.01f;
+                ImGui::TableSetColumnIndex(0);
+
+                ImGui::EndTable();
+            }*/
+            //ImGui::Text("Chosen node: %s", m_chosenNode->name->c_str());
+            float sliderSpeed = 0.01f;
+            ImGui::DragFloat3("Position", &activenode.pos->x, sliderSpeed);
+            ImGui::DragFloat3("Scale", &activenode.scale->x, sliderSpeed);
+            ImGui::DragFloat3("Rotation", &activenode.orientationEuler->x, sliderSpeed);
+
+            const char* meshboxlabel;
+            if (activenode.mesh != nullptr)
+                meshboxlabel = activenode.mesh->name.c_str();
+            else
+                meshboxlabel = "No Mesh";
+            if (ImGui::BeginCombo("##inspmeshcombo", meshboxlabel)) {
+                if (ImGui::Selectable("No Mesh", false))
+                {
+                    InputEvents::SetNodeMeshEvent::notify(activenode.id, 0);
+                }
+                for (auto const& mesh : uiAssets->meshes) {
+                    if (ImGui::Selectable(mesh.second.name.c_str(), false))
+                    {
+                        InputEvents::SetNodeMeshEvent::notify(activenode.id, mesh.second.id);
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            // Wireframe mode checkbox
+            //ImGui::TableSetColumnIndex(2);
+            ImGui::Checkbox("Wireframe", activenode.wireframeMode);
+
+            // LightSource adding/removing
+            bool hasLight = activenode.hasLightsource;
+            if (ImGui::Checkbox("Light Source", &activenode.hasLightsource)) {
+                if (hasLight)
+                    InputEvents::SceneNodeLightsourceRemoveEvent::notify(activenode.id);
+                else
+                    InputEvents::SceneNodeLightsourceAddEvent::notify(activenode.id);
+            }
+        }
+        ImGui::PopStyleVar();
+        ImGui::End();
+    }
     //////////////////////
     
     //////////////////////
@@ -310,6 +374,19 @@ void UI::mouseButtonReleaseHandler()
     io.AddMouseButtonEvent(ImGuiMouseButton_Left , false);
 }
 
+//SceneNodeUI* UI::getNodeById(unsigned int id, SceneNodeUI* rootNode)
+//{
+//    if (rootNode->id == id)
+//        return rootNode;
+//    SceneNodeUI* retNode = nullptr;
+//    SceneNodeUI* foundNode = nullptr;
+//    for (auto child : rootNode->children) {
+//        foundNode = getNodeById(id, &child);
+//        if foundNode
+//    }
+//    return retNode;
+//}
+
 void UI::mouseButtonPressHandler()
 {
     ImGuiIO& io = ImGui::GetIO();
@@ -332,6 +409,9 @@ void UI::processNode(SceneNodeUI* node, UIAssetMaps* uiAssets)
     ImGui::TableSetColumnIndex(1);
     if (ImGui::Button("Duplicate node")) {
         InputEvents::DuplicateNodeEvent::notify(node->id);
+    }
+    if (ImGui::Button("Set active")) {
+        InputEvents::SetActiveNodeEvent::notify(node->id);
     }
 
     ImGui::TableSetColumnIndex(0);

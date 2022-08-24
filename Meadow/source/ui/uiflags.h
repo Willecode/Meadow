@@ -11,15 +11,18 @@ public:
 	bool mainMenuVisible();
 	bool assetWindowVisible();
 	bool sceneGraphVisible();
+	bool sceneNodeInspectorVisible();
 
 private:
 	bool m_showSceneGraph;
 	bool m_showAssets;
 	bool m_showMainMenu;
+	bool m_showSceneNodeInspector;
 
 	void setSceneGraphVisibility(bool f);
 	void setAssetsVisibility(bool f);
 	void setMainMenuVisibility(bool f);
+	void setSceneNodeInspectorVisibility(bool f);
 	void toggleMainMenuVisibility();
 };
 

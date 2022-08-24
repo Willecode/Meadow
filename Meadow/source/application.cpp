@@ -386,7 +386,7 @@ void Application::run()
         * Render UI
         */
         m_UIScraper.update(m_scene.get(), &m_postProcessing);
-        m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags());
+        m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getSceneState(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags());
 
         m_windowManager.swapBuffers();
     }
