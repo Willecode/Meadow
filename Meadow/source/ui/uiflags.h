@@ -8,6 +8,14 @@ class UIFlags
 public:
 	UIFlags();
 
+	/*
+	* Public flags
+	*/
+	bool imguiStackToolVisible;
+
+	/*
+	* Event managed flag getters
+	*/
 	bool mainMenuVisible();
 	bool assetWindowVisible();
 	bool sceneGraphVisible();

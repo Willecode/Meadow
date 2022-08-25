@@ -120,6 +120,10 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
                 }
                 ImGui::EndMenu();
             }
+            if (ImGui::BeginMenu("Debug")) {
+                ImGui::Checkbox("Dear ImGui stack tool", &m_uiFlags.imguiStackToolVisible);
+                ImGui::EndMenu();
+            }
             ImGui::EndMainMenuBar();
 
         }
@@ -375,6 +379,12 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
     
     //////////////////////
 
+    //////////////////////
+    //Show imgui debug window
+    //////////////////////
+    if (m_uiFlags.imguiStackToolVisible)
+        ImGui::ShowStackToolWindow();
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -385,8 +395,8 @@ void UI::createSceneTree(SceneNodeUI* rootNode, ImGuiTreeNodeFlags treeflags)
     if (rootNode->active)
         nodeflags |= ImGuiTreeNodeFlags_Selected;
 
-    bool node_open = ImGui::TreeNodeEx((void*)rootNode, nodeflags, rootNode->name->c_str());
-
+    bool node_open = ImGui::TreeNodeEx((void*)rootNode->uiElemId, nodeflags, rootNode->name->c_str());
+    Locator::getLogger()->getLogger()->info((void*)rootNode->uiElemId);
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
         InputEvents::SetActiveNodeEvent::notify(rootNode->id);
     if (node_open)
