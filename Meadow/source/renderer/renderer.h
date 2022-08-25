@@ -112,6 +112,7 @@ public:
 	virtual void setStencilMask(unsigned int) = 0;
 	virtual void setStencilFunc(TestingFuncs func, int ref, unsigned int mask) = 0;
 	virtual void setStencilOp(TestingActions stencilFail, TestingActions depthFail, TestingActions depthPass) = 0;
+	virtual void setStencilClearValue(unsigned int) = 0;
 
 	/*
 	* Blending

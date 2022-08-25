@@ -1,4 +1,5 @@
 #include "application.h"
+#include "renderer/renderingutils.h"
 // DEBUG --------------------
 #include "scene/directionallight.h"
 #include "scene/pointlight.h"
@@ -294,6 +295,12 @@ void Application::run()
     auto skybox = std::make_unique<Cubemap>(std::move(texArr), width, height);
     unsigned int skyboxId = manager.storecubemap(std::move(skybox));
 
+    /*
+    * Enable stencil testing
+    */
+    m_renderer.stencilTesting(true);
+    /*m_renderer.setStencilClearValue(1);*/
+
     // Update loop
     // -----------
     while (!m_windowManager.shouldClose())
@@ -327,12 +334,35 @@ void Application::run()
         /*
         * Clear buffers
         */
+        m_renderer.setStencilClearValue(1); // clear stencil buffer with ones
+        m_renderer.setStencilMask(1);
         m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
+
+        /*
+        * Render active node highlighting
+        */
+        if (m_scene->getActiveNode() != nullptr)
+        {
+            m_shaderManager.setCurrentShader("phong");
+            RenderingUtils::maskMeshOutlines(m_scene->getActiveNode(), &m_shaderManager);
+        }
+            
+        /*
+        * Ensure proper testing before rendering other things
+        */
+        m_renderer.depthMask(false);
+        m_renderer.depthTesting(false);
+        m_renderer.setColorMask(true);
+        
+
+        //m_renderer.setStencilClearValue(1);
+        //m_renderer.clearBuffer(m_renderer.getStencilBuffBit());
+        m_renderer.setStencilFunc(Renderer::TestingFuncs::EQUAL, 1, 0xFF);
+        m_renderer.setStencilOp(Renderer::TestingActions::KEEP, Renderer::TestingActions::KEEP, Renderer::TestingActions::REPLACE);
 
         /*
         * Render skybox
         */
-        m_renderer.depthMask(false);
         m_shaderManager.setCurrentShader("skybox");
         Camera* cam = m_scene->getCamera();
         m_shaderManager.setFrameUniform("view", glm::mat4(glm::mat3(cam->getViewMatrix()))); // for vertex shader

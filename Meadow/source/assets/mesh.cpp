@@ -18,6 +18,17 @@ void Mesh::draw(glm::mat4 modelMat, ShaderManager* sdrMan)
 	}
 }
 
+void Mesh::drawWithoutMaterial(glm::mat4 modelMat, ShaderManager* sdrMan)
+{
+	sdrMan->setUniformDrawSpecific("model", modelMat);
+	for (auto const& materialMesh : submeshes) {
+		sdrMan->forwardUniformsDrawSpecific();
+		for (auto const& submesh : materialMesh.second) {
+			submesh->draw();
+		}
+	}
+}
+
 void Mesh::addSubMesh(Material* material, SubMesh* submesh)
 {
 	/*

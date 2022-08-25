@@ -56,7 +56,7 @@ bool OpenGLRenderer::initialize(WindowManager* windowMan)
         return true;
     }
     
-    glClearColor(0.f, 0.f, 0.f, 1.0f);
+    glClearColor(1.f, 0.f, 0.f, 1.0f);
 
     // Initial depth test config
     glEnable(GL_DEPTH_TEST);
@@ -455,6 +455,11 @@ void OpenGLRenderer::setStencilFunc(TestingFuncs func, int ref, unsigned int mas
 void OpenGLRenderer::setStencilOp(TestingActions stencilFail, TestingActions depthFail, TestingActions depthPass)
 {
     glStencilOp(m_actionMap.at(stencilFail), m_actionMap.at(depthFail), m_actionMap.at(depthPass));
+}
+
+void OpenGLRenderer::setStencilClearValue(unsigned int val)
+{
+    glClearStencil(val);
 }
 
 void OpenGLRenderer::blending(bool enable)

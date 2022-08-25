@@ -153,6 +153,11 @@ void Scene::duplicateNode(unsigned int id)
 	}
 }
 
+SceneNode* Scene::getActiveNode()
+{
+	return m_activeNode;
+}
+
 Camera* Scene::getCamera()
 {
 	return &m_camera;

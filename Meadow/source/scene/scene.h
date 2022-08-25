@@ -29,6 +29,8 @@ public:
 	SceneNode* getNode(unsigned int id) const;
 	void duplicateNode(unsigned int id);
 
+	SceneNode* getActiveNode();
+
 	Camera* getCamera();
 	
 private:

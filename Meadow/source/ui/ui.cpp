@@ -396,7 +396,6 @@ void UI::createSceneTree(SceneNodeUI* rootNode, ImGuiTreeNodeFlags treeflags)
         nodeflags |= ImGuiTreeNodeFlags_Selected;
 
     bool node_open = ImGui::TreeNodeEx((void*)rootNode->uiElemId, nodeflags, rootNode->name->c_str());
-    Locator::getLogger()->getLogger()->info((void*)rootNode->uiElemId);
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
         InputEvents::SetActiveNodeEvent::notify(rootNode->id);
     if (node_open)

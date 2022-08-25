@@ -78,7 +78,7 @@ public:
 	void setStencilMask(unsigned int mask) override;
 	void setStencilFunc(TestingFuncs func, int ref, unsigned int mask) override;
 	void setStencilOp(TestingActions stencilFail, TestingActions depthFail, TestingActions depthPass) override;
-
+	void setStencilClearValue(unsigned int) override;
 
 	/*
 	* Blending
