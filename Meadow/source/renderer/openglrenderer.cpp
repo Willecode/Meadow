@@ -12,6 +12,32 @@ const std::unordered_map<Renderer::ImageFormat, GLenum> OpenGLRenderer::m_imgFor
     {ImageFormat::sRGB, GL_SRGB},
     {ImageFormat::sRGBA, GL_SRGB_ALPHA},
     {ImageFormat::R, GL_RED} };
+
+const std::unordered_map<Renderer::TestingFuncs, GLuint> OpenGLRenderer::m_testingFuncMap =
+{
+    {Renderer::TestingFuncs::NEVER, GL_NEVER},
+    {Renderer::TestingFuncs::LESS, GL_LESS},
+    {Renderer::TestingFuncs::LEQUAL, GL_LEQUAL},
+    {Renderer::TestingFuncs::GREATER, GL_GREATER},
+    {Renderer::TestingFuncs::GEQUAL, GL_GEQUAL},
+    {Renderer::TestingFuncs::EQUAL, GL_EQUAL},
+    {Renderer::TestingFuncs::NOTEQUAL, GL_NOTEQUAL},
+    {Renderer::TestingFuncs::ALWAYS, GL_ALWAYS}
+};
+
+const std::unordered_map<Renderer::TestingActions, GLuint> OpenGLRenderer::m_actionMap =
+{
+    {Renderer::TestingActions::KEEP, GL_KEEP},
+    {Renderer::TestingActions::ZERO, GL_ZERO},
+    {Renderer::TestingActions::REPLACE, GL_REPLACE},
+    {Renderer::TestingActions::INCR, GL_INCR},
+    {Renderer::TestingActions::INCR_WRAP, GL_INCR_WRAP},
+    {Renderer::TestingActions::DECR, GL_DECR},
+    {Renderer::TestingActions::DECR_WRAP, GL_DECR_WRAP},
+    {Renderer::TestingActions::INVERT, GL_INVERT},
+
+};
+
 OpenGLRenderer::OpenGLRenderer():
     m_meshBufferMap({}),
     m_shaderProgMap({}),
@@ -381,6 +407,11 @@ void OpenGLRenderer::clearBuffer(int buffers)
     glClear(buffers);
 }
 
+void OpenGLRenderer::setClearColor(glm::vec4 color)
+{
+    glClearColor(color.r, color.g, color.b, color.a);
+}
+
 void OpenGLRenderer::depthTesting(bool enable)
 {
     if (enable)
@@ -403,6 +434,27 @@ void OpenGLRenderer::stencilTesting(bool enable)
         glEnable(GL_STENCIL_TEST);
     else
         glDisable(GL_STENCIL_TEST);
+}
+
+void OpenGLRenderer::setStencilMask(unsigned int mask)
+{
+    if (mask == 0) {
+        glStencilMask(0x00);
+    }
+    else
+    {
+        glStencilMask(0xFF);
+    }
+}
+
+void OpenGLRenderer::setStencilFunc(TestingFuncs func, int ref, unsigned int mask)
+{
+    glStencilFunc(m_testingFuncMap.at(func), ref, mask);
+}
+
+void OpenGLRenderer::setStencilOp(TestingActions stencilFail, TestingActions depthFail, TestingActions depthPass)
+{
+    glStencilOp(m_actionMap.at(stencilFail), m_actionMap.at(depthFail), m_actionMap.at(depthPass));
 }
 
 void OpenGLRenderer::blending(bool enable)
@@ -665,6 +717,14 @@ void OpenGLRenderer::multisampling(bool enable)
         glEnable(GL_MULTISAMPLE);
     else
         glDisable(GL_MULTISAMPLE);
+}
+
+void OpenGLRenderer::setColorMask(bool flag)
+{
+    if (flag)
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    else
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 }
 
 void OpenGLRenderer::drawMesh(int meshId)

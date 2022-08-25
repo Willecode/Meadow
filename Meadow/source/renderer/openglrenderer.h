@@ -63,6 +63,7 @@ public:
 	int getStencilBuffBit() override;
 	int getDepthBuffBit() override;
 	void clearBuffer(int buffers) override;
+	void setClearColor(glm::vec4 color) override; // Set color buffer clearing color
 
 	/*
 	* Depth testing
@@ -74,6 +75,10 @@ public:
 	* Stencil testing
 	*/
 	void stencilTesting(bool enable) override;
+	void setStencilMask(unsigned int mask) override;
+	void setStencilFunc(TestingFuncs func, int ref, unsigned int mask) override;
+	void setStencilOp(TestingActions stencilFail, TestingActions depthFail, TestingActions depthPass) override;
+
 
 	/*
 	* Blending
@@ -118,6 +123,12 @@ public:
 	*/
 	void multisampling(bool enable) override;
 
+	
+
+	/*
+	* Disable/Enable drawing on the color buffer
+	*/
+	void setColorMask(bool flag) override;
 private:
 	struct MeshBufferData {
 		GLuint VAO;
@@ -163,6 +174,17 @@ private:
 	* Maps from user cubemap id -> OpenGL cubemap id
 	*/
 	std::unordered_map<unsigned int, GLuint> m_cubemapIdMap;
+
+	/*
+	* Maps from Renderer func enums to OpenGL funcs
+	*/
+	static const std::unordered_map<Renderer::TestingFuncs, GLuint> m_testingFuncMap;
+
+	/*
+	* Maps from Renderer action enums to OpenGL "Ops"
+	*/
+	static const std::unordered_map<Renderer::TestingActions, GLuint> m_actionMap;
+
 
 private:
 

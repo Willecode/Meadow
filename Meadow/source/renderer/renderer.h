@@ -11,6 +11,35 @@
 class Renderer
 {
 public:
+
+	/*
+	* Testing funcs (depth, stencil testing)
+	*/
+	enum class TestingFuncs {
+		NEVER = 0,
+		LESS,
+		LEQUAL,
+		GREATER,
+		GEQUAL,
+		EQUAL,
+		NOTEQUAL,
+		ALWAYS
+	};
+
+	/*
+	* Testing actions (depth, stencil testing)
+	*/
+	enum class TestingActions {
+		KEEP = 0,
+		ZERO,
+		REPLACE,
+		INCR,
+		INCR_WRAP,
+		DECR,
+		DECR_WRAP,
+		INVERT
+	};
+
 	virtual bool initialize(WindowManager* windowMan) = 0;
 	virtual void setViewportSize(int width, int height) = 0;
 	
@@ -67,6 +96,7 @@ public:
 	virtual int getStencilBuffBit() = 0;
 	virtual int getDepthBuffBit() = 0;
 	virtual void clearBuffer(int buffers) = 0;
+	virtual void setClearColor(glm::vec4 color) = 0; // Set color buffer clearing color
 
 	/*
 	* Depth testing
@@ -79,6 +109,9 @@ public:
 	* Stencil testing
 	*/
 	virtual void stencilTesting(bool enable) = 0;
+	virtual void setStencilMask(unsigned int) = 0;
+	virtual void setStencilFunc(TestingFuncs func, int ref, unsigned int mask) = 0;
+	virtual void setStencilOp(TestingActions stencilFail, TestingActions depthFail, TestingActions depthPass) = 0;
 
 	/*
 	* Blending
@@ -121,5 +154,11 @@ public:
 	* Multisampling toggle
 	*/
 	virtual void multisampling(bool enable) = 0;
+
+	/*
+	* Disable/Enable drawing on the color buffer
+	*/
+	virtual void setColorMask(bool flag) = 0;
+
 };
 
