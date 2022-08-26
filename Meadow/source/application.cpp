@@ -335,7 +335,7 @@ void Application::run()
         * Clear buffers
         */
         m_renderer.setStencilClearValue(1); // clear stencil buffer with ones
-        m_renderer.setStencilMask(1);
+        m_renderer.setStencilMask(1); // allow stencil buffer writing
         m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
 
         /*
@@ -348,21 +348,17 @@ void Application::run()
         }
             
         /*
-        * Ensure proper testing before rendering other things
+        * Allow color rendering and disable rendering on stencil buffer's mask of 0's
         */
-        m_renderer.depthMask(false);
-        m_renderer.depthTesting(false);
         m_renderer.setColorMask(true);
-        
-
-        //m_renderer.setStencilClearValue(1);
-        //m_renderer.clearBuffer(m_renderer.getStencilBuffBit());
         m_renderer.setStencilFunc(Renderer::TestingFuncs::EQUAL, 1, 0xFF);
         m_renderer.setStencilOp(Renderer::TestingActions::KEEP, Renderer::TestingActions::KEEP, Renderer::TestingActions::REPLACE);
 
         /*
         * Render skybox
         */
+        m_renderer.depthMask(false);
+        m_renderer.depthTesting(false);
         m_shaderManager.setCurrentShader("skybox");
         Camera* cam = m_scene->getCamera();
         m_shaderManager.setFrameUniform("view", glm::mat4(glm::mat3(cam->getViewMatrix()))); // for vertex shader
