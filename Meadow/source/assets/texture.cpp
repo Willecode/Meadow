@@ -30,22 +30,22 @@ void Texture::loadToGPU()
 	if (m_img != nullptr)
 		imgData = &(*m_img)[0];
 	if (m_multisample)
-		Locator::getRenderer()->create2DTextureMS(getId(), m_imgWidth, m_imgHeight, m_imgFormatInternal);
+		RendererLocator::getRenderer()->create2DTextureMS(getId(), m_imgWidth, m_imgHeight, m_imgFormatInternal);
 	else
-		Locator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormatSource, m_imgFormatInternal, imgData);
+		RendererLocator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormatSource, m_imgFormatInternal, imgData);
 }
 
 void Texture::bindToSampler(const unsigned int& samplerId)
 {
 	if(m_multisample)
-		Locator::getRenderer()->bindTo2DSamplerMS(getId(), samplerId);
+		RendererLocator::getRenderer()->bindTo2DSamplerMS(getId(), samplerId);
 	else
-		Locator::getRenderer()->bindTo2DSampler(getId(), samplerId);
+		RendererLocator::getRenderer()->bindTo2DSampler(getId(), samplerId);
 }
 
 void Texture::deleteFromGPU()
 {
-	Locator::getRenderer()->deleteTexture(getId());
+	RendererLocator::getRenderer()->deleteTexture(getId());
 }
 
 unsigned int Texture::getWidth()

@@ -4,6 +4,7 @@
 #include "resource_management/resourcemanager.h"
 #include "directionallight.h"
 #include "pointlight.h"
+#include "service_locator/loggerlocator.h"
 Scene::Scene():
 	m_nodeIdCtr(1),
 	m_camera(Camera(1920.0f / 1080.0f, 0.1f, 100.0f)),
@@ -199,7 +200,7 @@ void Scene::setMeshHandler(unsigned int nodeid, unsigned int meshid)
 	if (nodeIdInUse(nodeid))
 		getNode(nodeid)->setMesh(ResourceManager::getMesh(meshid));
 	else
-		Locator::getLogger()->getLogger()->error("Scene::setMeshHandler: Tried to set mesh to a nonexistent node");
+		LoggerLocator::getLogger()->getLogger()->error("Scene::setMeshHandler: Tried to set mesh to a nonexistent node");
 }
 
 void Scene::removeNodeLightSource(unsigned int nodeid)

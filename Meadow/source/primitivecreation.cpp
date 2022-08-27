@@ -2,7 +2,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <glm/gtx/string_cast.hpp>
-#include "service_locator/locator.h"
+#include "service_locator/loggerlocator.h"
 
 std::unique_ptr<SubMesh> PrimitiveCreation::createCubeMesh()
 {
@@ -90,7 +90,7 @@ std::unique_ptr<SubMesh> PrimitiveCreation::createSphere(int sectorCount, int st
             indices.push_back(nextStackFirst + j + 1);
         }
     }
-    Locator::getLogger()->getLogger()->info("created a sphere with {} vertices", vertices.size());
+    LoggerLocator::getLogger()->getLogger()->info("created a sphere with {} vertices", vertices.size());
     return std::make_unique<SubMesh>(vertices, indices, "Sphere");
 }
 

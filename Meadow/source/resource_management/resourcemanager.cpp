@@ -1,6 +1,7 @@
 #include "resourcemanager.h"
 #include "input/inputevents.h"
 #include "fmt/format.h"
+#include "service_locator/loggerlocator.h"
 
 ResourceManager::ResourceManager()
 {
@@ -70,7 +71,7 @@ Texture* ResourceManager::getTexture(unsigned int texId)
 	}
 	auto it = m_texMap.find(texId);
 	if (it == m_texMap.end()) {
-		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get texture, id not found.\n");
+		LoggerLocator::getLogger()->getLogger()->info("Resource manager: couldn't get texture, id not found.\n");
 		return nullptr;
 	}
 	return it->second.get();
@@ -99,7 +100,7 @@ SubMesh* ResourceManager::getSubmesh(unsigned int meshId)
 		return nullptr;
 	auto it = m_submeshMap.find(meshId);
 	if (it == m_submeshMap.end()) {
-		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get submesh, id not found.\n");
+		LoggerLocator::getLogger()->getLogger()->info("Resource manager: couldn't get submesh, id not found.\n");
 		return nullptr;
 	}
 	return it->second.get();
@@ -126,7 +127,7 @@ Mesh* ResourceManager::getMesh(unsigned int meshId)
 		return nullptr;
 	auto it = m_meshMap.find(meshId);
 	if (it == m_meshMap.end()) {
-		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get mesh, id not found.\n");
+		LoggerLocator::getLogger()->getLogger()->info("Resource manager: couldn't get mesh, id not found.\n");
 		return nullptr;
 	}
 	return it->second.get();
@@ -153,7 +154,7 @@ Material* ResourceManager::getMaterial(unsigned int materialId)
 		return nullptr;
 	auto it = m_materialMap.find(materialId);
 	if (it == m_materialMap.end()) {
-		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get material, id not found.\n");
+		LoggerLocator::getLogger()->getLogger()->info("Resource manager: couldn't get material, id not found.\n");
 		return nullptr;
 	}
 	return it->second.get();
@@ -182,7 +183,7 @@ Mesh2D* ResourceManager::getMesh2D(unsigned int Mesh2DId)
 		return nullptr;
 	auto it = m_mesh2DMap.find(Mesh2DId);
 	if (it == m_mesh2DMap.end()) {
-		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get mesh2D, id not found.\n");
+		LoggerLocator::getLogger()->getLogger()->info("Resource manager: couldn't get mesh2D, id not found.\n");
 		return nullptr;
 	}
 	return it->second.get();
@@ -205,7 +206,7 @@ Cubemap* ResourceManager::getcubemap(unsigned int texId)
 		return nullptr;
 	auto it = m_cubemapMap.find(texId);
 	if (it == m_cubemapMap.end()) {
-		Locator::getLogger()->getLogger()->info("Resource manager: couldn't get cubemap, id not found.\n");
+		LoggerLocator::getLogger()->getLogger()->info("Resource manager: couldn't get cubemap, id not found.\n");
 		return nullptr;
 	}
 	return it->second.get();

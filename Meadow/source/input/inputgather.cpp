@@ -73,7 +73,7 @@ void InputGather::keyCallback(GLFWwindow* window, int key, int scancode, int act
 
 void InputGather::mousePosCallback(GLFWwindow* window, double mouseXIn, double mouseYIn)
 {
-	//Locator::getLogger()->getLogger()->info("Mouse x:{} y:{}", mouseXIn, mouseYIn);
+	//LoggerLocator::getLogger()->getLogger()->info("Mouse x:{} y:{}", mouseXIn, mouseYIn);
 	InputEvents::MouseMoveEvent::notify(mouseXIn, mouseYIn);
 }
 

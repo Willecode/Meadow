@@ -1,5 +1,5 @@
 #include "directionallight.h"
-
+#include <stdexcept>
 
 DirectionalLight::DirectionalLight():
 	m_nextNode(nullptr),

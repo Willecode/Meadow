@@ -1,5 +1,5 @@
 #include "pointlight.h"
-
+#include <stdexcept>
 PointLight::PointLight():
 m_nextNode(nullptr),
 m_propTypeMap()

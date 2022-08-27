@@ -1,5 +1,5 @@
 #include "windowmanager.h"
-#include "service_locator/locator.h"
+#include "service_locator/loggerlocator.h"
 #include "input/inputevents.h"
 
 namespace WindowConf {
@@ -114,7 +114,7 @@ void WindowManager::framebufferResizeCallback(GLFWwindow* window, int w, int h)
 
 void WindowManager::errorCallback(int error, const char* description)
 {
-    Locator::getLogger()->getLogger()->error("WindowManager: glfw error: {} {}", error, description);
+    LoggerLocator::getLogger()->getLogger()->error("WindowManager: glfw error: {} {}", error, description);
 }
 
 void WindowManager::closeWindowEventHandler()

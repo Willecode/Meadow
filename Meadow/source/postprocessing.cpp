@@ -1,6 +1,6 @@
 #include "postprocessing.h"
 #include "assets/texture.h"
-#include "service_locator/locator.h"
+#include "service_locator/rendererlocator.h"
 #include "resource_management/resourcemanager.h"
 #include "primitivecreation.h"
 #include "input/inputevents.h"
@@ -59,7 +59,7 @@ void PostProcessing::negate(bool f)
 void PostProcessing::MSAA(bool f)
 {
     m_MSAA = f;
-    Locator::getRenderer()->multisampling(f);
+    RendererLocator::getRenderer()->multisampling(f);
 }
 
 bool PostProcessing::getSharpen() const

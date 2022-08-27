@@ -18,7 +18,7 @@ void Material::passToShader(ShaderManager* sdrMan)
 	bool opacmap = false;
 	for (auto tex : m_textures) {
 		if (tex.second != nullptr) {
-			Locator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
+			RendererLocator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
 			//tex.second->bindToSampler(sdrMan->getTexSamplerId(tex.first));
 			if (tex.first == Texture::TextureType::DIFFUSE_MAP) {
 				diffmap = true;
@@ -31,7 +31,7 @@ void Material::passToShader(ShaderManager* sdrMan)
 			}
 		}
 		else
-			Locator::getRenderer()->unbindTexture(sdrMan->getTexSamplerId(tex.first));
+			RendererLocator::getRenderer()->unbindTexture(sdrMan->getTexSamplerId(tex.first));
 	}
 	m_uintPropsHidden["material.diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
 	setProperty("material.diffuse_map_present", diffmap);

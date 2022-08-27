@@ -1,7 +1,7 @@
 #include "cubemap.h"
 #include "primitivecreation.h"
 #include "resource_management/resourcemanager.h"
-
+#include "service_locator/loggerlocator.h"
 Cubemap::Cubemap(
 	std::array<std::unique_ptr<std::vector<unsigned char>>, 6> images,
 	int width, int height,
@@ -10,7 +10,7 @@ Cubemap::Cubemap(
 {
 	/*for (int i = 0; i < images.size(); i++) {
 		if (images[i] == nullptr) {
-			Locator::getLogger()->getLogger()->error("Cubemap: got nullptr texture");
+			LoggerLocator::getLogger()->getLogger()->error("Cubemap: got nullptr texture");
 			return;
 		}
 		else
@@ -24,7 +24,7 @@ void Cubemap::load()
 {
 	// Must be a valid asset
 	if (getId() == 0) {
-		Locator::getLogger()->getLogger()->error("Cubemap: tried to load with 0 id");
+		LoggerLocator::getLogger()->getLogger()->error("Cubemap: tried to load with 0 id");
 		return;
 	}
 
@@ -41,8 +41,8 @@ void Cubemap::load()
 	ResourceManager resMan = ResourceManager::getInstance();
 	m_cubeId = resMan.storeSubmesh(std::move(cube));
 
-	Locator::getRenderer()->createCubemap(getId());
-	Locator::getRenderer()->cubemapLoadTextures(getId(), imgData, m_imgWidth, m_imgHeight);
+	RendererLocator::getRenderer()->createCubemap(getId());
+	RendererLocator::getRenderer()->cubemapLoadTextures(getId(), imgData, m_imgWidth, m_imgHeight);
 }
 
 void Cubemap::draw(ShaderManager* sdrMan)
@@ -51,11 +51,11 @@ void Cubemap::draw(ShaderManager* sdrMan)
 	sdrMan->setUniformDrawSpecific("skybox", sdrMan->getTexSamplerId(Texture::TextureType::CUBE_MAP));
 
 	// Bind texture
-	Locator::getRenderer()->bindCubemap(getId());
+	RendererLocator::getRenderer()->bindCubemap(getId());
 
 	// Draw
-	Locator::getRenderer()->wireframe(false);
-	Locator::getRenderer()->faceCulling(false);
+	RendererLocator::getRenderer()->wireframe(false);
+	RendererLocator::getRenderer()->faceCulling(false);
 	auto resMan = ResourceManager::getInstance();
 	resMan.getSubmesh(m_cubeId)->draw();
 }

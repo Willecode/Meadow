@@ -25,9 +25,8 @@ Application::Application():
     m_windowManager.createWindow("Meadow");
     appFailed = m_renderer.initialize(&m_windowManager);
     m_logger.init();
-    Locator::provide(&m_logger);
-    //Locator::provide(&m_windowManager);
-    Locator::provide(&m_renderer);
+    LoggerLocator::provide(&m_logger);
+    RendererLocator::provide(&m_renderer);
 
     /*
     * Initialize ui
@@ -113,7 +112,7 @@ Application::Application():
     node->setMesh(newMeshPtr);
 
     Camera c(1920.0f / 1080.0f, 0.1f, 100.0f);
-    auto renderer = Locator::getRenderer();
+    auto renderer = RendererLocator::getRenderer();
     unsigned int sdrId = m_shaderManager.getCurrentShader()->getId();
 
     ImageLoader loader;
@@ -235,7 +234,7 @@ void Application::run()
     m_renderer.createFrameBuffer(0, tex->getId(), tex->getWidth(), tex->getHeight());
     m_renderer.bindFrameBuffer(0);
     if (!m_renderer.checkFrameBufferStatus())
-        Locator::getLogger()->getLogger()->error("Application: framebuffer not complete");
+        LoggerLocator::getLogger()->getLogger()->error("Application: framebuffer not complete");
 
     /////////////////////////
     // Multisampled fb
@@ -252,7 +251,7 @@ void Application::run()
     m_renderer.createFrameBufferMultisample(1,texMS->getId(), texMS->getWidth(), texMS->getHeight()); // think this again
     m_renderer.bindFrameBuffer(1);
     if (!m_renderer.checkFrameBufferStatus())
-        Locator::getLogger()->getLogger()->error("Application: MS framebuffer not complete");
+        LoggerLocator::getLogger()->getLogger()->error("Application: MS framebuffer not complete");
 
     /*
     * Create screen quad

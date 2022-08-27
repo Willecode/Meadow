@@ -42,7 +42,7 @@
     <ClCompile Include="source\renderer\openglrenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\service_locator\locator.cpp">
+    <ClCompile Include="source\service_locator\rendererlocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\scene\scene.cpp">
@@ -141,6 +141,9 @@
     <ClCompile Include="source\renderer\renderingutils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\service_locator\loggerlocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\object.vs" />
@@ -216,7 +219,7 @@
     <ClInclude Include="source\renderer\openglrenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\service_locator\locator.h">
+    <ClInclude Include="source\service_locator\rendererlocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\scene\scene.h">
@@ -295,6 +298,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\renderingutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\service_locator\loggerlocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

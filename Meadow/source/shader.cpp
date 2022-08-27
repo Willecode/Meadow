@@ -2,14 +2,15 @@
 #include <fstream>
 #include <sstream>
 #include <fmt/format.h>
-#include "service_locator/locator.h"
+#include "service_locator/rendererlocator.h"
+#include "service_locator/loggerlocator.h"
 
 Shader::Shader(const unsigned int& id, const char* vertexPath, const char* fragmentPath):
     m_id(id),m_vertexPath(vertexPath),m_fragmentPath(fragmentPath)
 {
     std::string vertexCode, fragmentCode;
     sourceFromFile(vertexPath, fragmentPath, vertexCode, fragmentCode);
-    Locator::getRenderer()->createShaderProgram(m_id, vertexCode.c_str(), fragmentCode.c_str());
+    RendererLocator::getRenderer()->createShaderProgram(m_id, vertexCode.c_str(), fragmentCode.c_str());
 
 }
 
@@ -20,10 +21,10 @@ unsigned int Shader::getId()
 
 void Shader::hotReload()
 {
-    Locator::getRenderer()->deleteShaderProgram(m_id);
+    RendererLocator::getRenderer()->deleteShaderProgram(m_id);
     std::string vertexCode, fragmentCode;
     sourceFromFile(m_vertexPath, m_fragmentPath, vertexCode, fragmentCode);
-    Locator::getRenderer()->createShaderProgram(m_id, vertexCode.c_str(), fragmentCode.c_str());
+    RendererLocator::getRenderer()->createShaderProgram(m_id, vertexCode.c_str(), fragmentCode.c_str());
 }
 
 void Shader::sourceFromFile(const char* vertexPath, const char* fragmentPath, std::string& vertexCode, std::string& fragmentCode)
@@ -53,7 +54,7 @@ void Shader::sourceFromFile(const char* vertexPath, const char* fragmentPath, st
     }
     catch (std::ifstream::failure& e)
     {
-        Locator::getLogger()->getLogger()->info("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n");
+        LoggerLocator::getLogger()->getLogger()->info("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n");
         vertexCode = "";
         fragmentCode = "";
     }

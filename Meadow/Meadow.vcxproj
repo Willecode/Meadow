@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\service_locator\loggerlocator.cpp" />
     <ClCompile Include="source\renderer\renderingutils.cpp" />
     <ClCompile Include="source\lighting.cpp" />
     <ClCompile Include="source\assets\cubemap.cpp" />
@@ -185,7 +186,7 @@
     <ClCompile Include="source\scene\scenenode.cpp" />
     <ClCompile Include="source\shader.cpp" />
     <ClCompile Include="source\scene\scene.cpp" />
-    <ClCompile Include="source\service_locator\locator.cpp" />
+    <ClCompile Include="source\service_locator\rendererlocator.cpp" />
     <ClCompile Include="source\renderer\openglrenderer.cpp" />
     <ClCompile Include="source\renderer\renderer.cpp" />
     <ClCompile Include="source\resource_management\shadermanager.cpp" />
@@ -226,6 +227,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\service_locator\loggerlocator.h" />
     <ClInclude Include="source\renderer\renderingutils.h" />
     <ClInclude Include="source\lighting.h" />
     <ClInclude Include="source\assets\cubemap.h" />
@@ -248,7 +250,7 @@
     <ClInclude Include="source\scene\scenenode.h" />
     <ClInclude Include="source\shader.h" />
     <ClInclude Include="source\scene\scene.h" />
-    <ClInclude Include="source\service_locator\locator.h" />
+    <ClInclude Include="source\service_locator\rendererlocator.h" />
     <ClInclude Include="source\renderer\openglrenderer.h" />
     <ClInclude Include="source\renderer\renderer.h" />
     <ClInclude Include="source\resource_management\shadermanager.h" />

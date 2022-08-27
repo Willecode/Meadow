@@ -1,5 +1,5 @@
 #include "shadermanager.h"
-#include "service_locator/locator.h"
+#include "service_locator/rendererlocator.h"
 #include "input/inputevents.h"
 ShaderManager::ShaderManager() :
 	m_currentShader(nullptr),
@@ -40,7 +40,7 @@ void ShaderManager::setCurrentShader(std::string name)
 	auto it = m_shaderMap.find(name);
 	if (it != m_shaderMap.end())
 		m_currentShader = (it->second).get();
-		Locator::getRenderer()->useShaderProgram(it->second->getId());
+		RendererLocator::getRenderer()->useShaderProgram(it->second->getId());
 }
 
 Shader* ShaderManager::getCurrentShader()
@@ -111,33 +111,33 @@ void ShaderManager::setFrameUniform(std::string uName, glm::mat4 uValue)
 void ShaderManager::forwardUniformsDrawSpecific()
 {
 	for (auto uniform : m_boolMapDraw)
-		Locator::getRenderer()->setBool(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setBool(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_intMapDraw)
-		Locator::getRenderer()->setInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_uintMapDraw)
-		Locator::getRenderer()->setuInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setuInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_floatMapDraw)
-		Locator::getRenderer()->setFloat(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setFloat(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_vec3MapDraw)
-		Locator::getRenderer()->setFloat3(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setFloat3(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_mat4MapDraw)
-		Locator::getRenderer()->setMat4f(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setMat4f(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 }
 
 void ShaderManager::forwardFrameUniforms()
 {
 	for (auto uniform : m_boolMapFrame)
-		Locator::getRenderer()->setBool(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setBool(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_intMapFrame)
-		Locator::getRenderer()->setInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_uintMapFrame)
-		Locator::getRenderer()->setuInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setuInt(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_floatMapFrame)
-		Locator::getRenderer()->setFloat(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setFloat(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_vec3MapFrame)
-		Locator::getRenderer()->setFloat3(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setFloat3(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_mat4MapFrame)
-		Locator::getRenderer()->setMat4f(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+		RendererLocator::getRenderer()->setMat4f(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 }
 
 unsigned int ShaderManager::getTexSamplerId(Texture::TextureType type)

@@ -1,9 +1,10 @@
 #include "renderingutils.h"
+#include "service_locator/rendererlocator.h"
 float RenderingUtils::outlineWidth = 1.05f;
 
 void RenderingUtils::maskMeshOutlines(SceneNode* node, ShaderManager* sdrMan)
 {
-	Renderer* rend = Locator::getRenderer();
+	Renderer* rend = RendererLocator::getRenderer();
 	rend->depthTesting(false); // disable depth testing
 	rend->depthMask(false); // disable depth writing
 	rend->setColorMask(false); // disable color writing

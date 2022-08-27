@@ -1,5 +1,5 @@
 #include "submesh.h"
-#include "service_locator/locator.h"
+#include "service_locator/rendererlocator.h"
 #include <stdexcept>
 
 SubMesh::SubMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string name):
@@ -15,22 +15,22 @@ SubMesh::SubMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices
 
 void SubMesh::draw()
 {
-    Locator::getRenderer()->drawMesh(getId());
+    RendererLocator::getRenderer()->drawMesh(getId());
 }
 
 void SubMesh::generateBuffers()
 {
-    Locator::getRenderer()->meshBuffersGenerate(getId());
+    RendererLocator::getRenderer()->meshBuffersGenerate(getId());
 }
 
 void SubMesh::buffersPushData()
 {
-    Locator::getRenderer()->meshBuffersPushData(getId(), vertices, indices);
+    RendererLocator::getRenderer()->meshBuffersPushData(getId(), vertices, indices);
 }
 
 void SubMesh::deleteBuffers()
 {
-    Locator::getRenderer()->meshBuffersDelete(getId());
+    RendererLocator::getRenderer()->meshBuffersDelete(getId());
 }
 
 SubMesh::AssetType SubMesh::getAssetType()

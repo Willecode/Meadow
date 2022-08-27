@@ -1,5 +1,5 @@
 #include "openglrenderer.h"
-#include "../service_locator/locator.h"
+#include "../service_locator/loggerlocator.h"
 #include <glm/gtc/type_ptr.hpp>
 
 //#define VERBOSE
@@ -52,7 +52,7 @@ bool OpenGLRenderer::initialize(WindowManager* windowMan)
 // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)windowMan->getProcAddress()))
     {
-        Locator::getLogger()->getLogger()->info("Failed to initialize GLAD\n");
+        LoggerLocator::getLogger()->getLogger()->info("Failed to initialize GLAD\n");
         return true;
     }
     
@@ -82,7 +82,7 @@ void OpenGLRenderer::setViewportSize(int width, int height)
 void OpenGLRenderer::meshBuffersGenerate(int meshId)
 {
     if (m_meshBufferMap.find(meshId) != m_meshBufferMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: mesh buffer gen failed: buffers already exist\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: mesh buffer gen failed: buffers already exist\n");
         return;
     }
     MeshBufferData data;
@@ -98,7 +98,7 @@ void OpenGLRenderer::meshBuffersPushData(int meshId,
 {
     auto it = m_meshBufferMap.find(meshId);
     if (it == m_meshBufferMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: mesh buffer data push failed: unknown meshId\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: mesh buffer data push failed: unknown meshId\n");
             return;
     }
 
@@ -130,7 +130,7 @@ void OpenGLRenderer::mesh2DBuffersPushData(int meshId, const std::vector<Vertex2
 {
     auto it = m_meshBufferMap.find(meshId);
     if (it == m_meshBufferMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: mesh buffer data push failed: unknown meshId\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: mesh buffer data push failed: unknown meshId\n");
         return;
     }
 
@@ -173,7 +173,7 @@ void OpenGLRenderer::createShaderProgram(const unsigned int &id,const char* vert
     // check if program already exists
     auto it = m_shaderProgMap.find(id);
     if (it != m_shaderProgMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: cant create shader program: id taken\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: cant create shader program: id taken\n");
         return;
     }
 
@@ -206,7 +206,7 @@ void OpenGLRenderer::useShaderProgram(const unsigned int& id)
 {
     auto it = m_shaderProgMap.find(id);
     if (it == m_shaderProgMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: cant use shader program: unknown program id\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: cant use shader program: unknown program id\n");
         return;
     }
     glUseProgram(it->second);
@@ -216,7 +216,7 @@ void OpenGLRenderer::deleteShaderProgram(const unsigned int& id)
 {
     auto it = m_shaderProgMap.find(id);
     if (it == m_shaderProgMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: cant delete shader program: unknown program id\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: cant delete shader program: unknown program id\n");
         return;
     }
     glDeleteProgram(it->second);
@@ -229,7 +229,7 @@ void OpenGLRenderer::setBool(const unsigned int& sdrId, const char* name, bool v
     if (findInshaderProgMap(sdrId, it)) {
         glUniform1i(glGetUniformLocation(it->second, name), (int)value);
 #ifdef VERBOSE
-        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
+        LoggerLocator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
 #endif // VERBOSE
     }
 }
@@ -240,7 +240,7 @@ void OpenGLRenderer::setInt(const unsigned int& sdrId, const char* name, int val
     if (findInshaderProgMap(sdrId, it)) {
         glUniform1i(glGetUniformLocation(it->second, name), value);
 #ifdef VERBOSE
-        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
+        LoggerLocator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
 #endif // VERBOSE
     }
 }
@@ -251,7 +251,7 @@ void OpenGLRenderer::setuInt(const unsigned int& sdrId, const char* name, unsign
     if (findInshaderProgMap(sdrId, it)) {
         glUniform1ui(glGetUniformLocation(it->second, name), value);
 #ifdef VERBOSE
-        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
+        LoggerLocator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
 #endif // VERBOSE
     }
 }
@@ -262,7 +262,7 @@ void OpenGLRenderer::setFloat(const unsigned int& sdrId, const char* name, float
     if (findInshaderProgMap(sdrId, it)) {
         glUniform1f(glGetUniformLocation(it->second, name), value);
 #ifdef VERBOSE
-        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
+        LoggerLocator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
 #endif // VERBOSE
     }
 }
@@ -273,7 +273,7 @@ void OpenGLRenderer::setFloat3(const unsigned int& sdrId, const char* name, glm:
     if (findInshaderProgMap(sdrId, it)) {
         glUniform3f(glGetUniformLocation(it->second, name), value.r, value.g, value.b);
 #ifdef VERBOSE
-        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
+        LoggerLocator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
 #endif // VERBOSE
     }
 }
@@ -284,7 +284,7 @@ void OpenGLRenderer::setMat4f(const unsigned int& sdrId, const char* name, glm::
     if (findInshaderProgMap(sdrId, it)) {
         glUniformMatrix4fv(glGetUniformLocation(it->second, name), 1, GL_FALSE, glm::value_ptr(value));
 #ifdef VERBOSE
-        Locator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
+        LoggerLocator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
 #endif // VERBOSE
     }
 }
@@ -294,7 +294,7 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
 {
     auto it = m_texIdMap.find(id);
     if (it != m_texIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: can't create texture: texture id already in use\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: can't create texture: texture id already in use\n");
         return;
     }
     GLuint glTexId;
@@ -330,7 +330,7 @@ void OpenGLRenderer::create2DTextureMS(const unsigned int& id, const unsigned in
 {
     auto it = m_texIdMap.find(id);
     if (it != m_texIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: can't create texture: texture id already in use\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: can't create texture: texture id already in use\n");
         return;
     }
     GLuint glTexId;
@@ -349,7 +349,7 @@ void OpenGLRenderer::bindTo2DSampler(const unsigned int& texId, const unsigned i
 {
     auto it = m_texIdMap.find(texId);
     if (it == m_texIdMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: can't bind texture: unknown texture id\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: can't bind texture: unknown texture id\n");
         return;
     }
     glActiveTexture(GL_TEXTURE0 + samplerId);
@@ -361,7 +361,7 @@ void OpenGLRenderer::bindTo2DSamplerMS(const unsigned int& texId, const unsigned
 {
     auto it = m_texIdMap.find(texId);
     if (it == m_texIdMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: can't bind MS texture: unknown texture id\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: can't bind MS texture: unknown texture id\n");
         return;
     }
     glActiveTexture(GL_TEXTURE0 + samplerId);
@@ -380,7 +380,7 @@ void OpenGLRenderer::deleteTexture(const unsigned int& id)
 {
     auto it = m_texIdMap.find(id);
     if (it == m_texIdMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: can't delete texture: unknown texture id\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: can't delete texture: unknown texture id\n");
         return;
     }
     glDeleteTextures(1, &(it->second));
@@ -486,14 +486,14 @@ void OpenGLRenderer::createFrameBuffer(int buffId, int texId, unsigned int width
     // Check fb already taken
     auto it = m_fbIdMap.find(buffId);
     if (it != m_fbIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: framebuffer creation failed: framebuffer with id already exists\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: framebuffer creation failed: framebuffer with id already exists\n");
         return;
     }
     
     // Check that tex exists
     auto it2 = m_texIdMap.find(texId);
     if (it2 == m_texIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: framebuffer creation failed: nonexistent texid provided\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: framebuffer creation failed: nonexistent texid provided\n");
         return;
     }
     GLuint oglTexId = it2->second;
@@ -530,13 +530,13 @@ void OpenGLRenderer::createFrameBufferMultisample(int buffId, int texId, unsigne
     // Check fb already taken
     auto it = m_fbIdMap.find(buffId);
     if (it != m_fbIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: MS framebuffer creation failed: framebuffer with id already exists\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: MS framebuffer creation failed: framebuffer with id already exists\n");
         return;
     }
     // Check that tex exists
     auto it2 = m_texIdMap.find(texId);
     if (it2 == m_texIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: MS framebuffer creation failed: nonexistent texid provided\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: MS framebuffer creation failed: nonexistent texid provided\n");
         return;
     }
     GLuint oglTexId = it2->second;
@@ -577,7 +577,7 @@ void OpenGLRenderer::bindFrameBuffer(int buffId)
 {
     auto it = m_fbIdMap.find(buffId);
     if (it == m_fbIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
         return;
     }
     glBindFramebuffer(GL_FRAMEBUFFER, it->second.frameBuffId);
@@ -587,7 +587,7 @@ void OpenGLRenderer::bindFrameBufferDraw(int buffId)
 {
     auto it = m_fbIdMap.find(buffId);
     if (it == m_fbIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
         return;
     }
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, it->second.frameBuffId);
@@ -597,7 +597,7 @@ void OpenGLRenderer::bindFrameBufferRead(int buffId)
 {
     auto it = m_fbIdMap.find(buffId);
     if (it == m_fbIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
         return;
     }
     glBindFramebuffer(GL_READ_FRAMEBUFFER, it->second.frameBuffId);
@@ -624,7 +624,7 @@ void OpenGLRenderer::getFrameBufferDimensions(int buffId, int& width, int& heigh
 {
     auto it = m_fbIdMap.find(buffId);
     if (it == m_fbIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: framebuffer can't be bound: nonexistent fb id\n");
         return;
     }
     width = it->second.frameBuffWidth;
@@ -642,7 +642,7 @@ void OpenGLRenderer::createCubemap(int cmId)
     // Check id already taken
     auto it = m_cubemapIdMap.find(cmId);
     if (it != m_cubemapIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: cubemap creation failed: cubemap with id already exists\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: cubemap creation failed: cubemap with id already exists\n");
         return;
     }
     // Generate cubemap
@@ -662,7 +662,7 @@ void OpenGLRenderer::cubemapLoadTextures(int cmId, std::array<unsigned char*, 6>
     // Check id exists
     auto it = m_cubemapIdMap.find(cmId);
     if (it == m_cubemapIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: cubemap can't be loaded failed: id doesn't exist\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: cubemap can't be loaded failed: id doesn't exist\n");
         return;
     }
 
@@ -688,7 +688,7 @@ void OpenGLRenderer::deleteCubemap(int cmId)
     // Check id exists
     auto it = m_cubemapIdMap.find(cmId);
     if (it == m_cubemapIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: cubemap can't be deleted: id doesn't exist\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: cubemap can't be deleted: id doesn't exist\n");
         return;
     }
     glDeleteTextures(0, &it->second);
@@ -699,7 +699,7 @@ void OpenGLRenderer::bindCubemap(int cmId)
     // Check id exists
     auto it = m_cubemapIdMap.find(cmId);
     if (it == m_cubemapIdMap.end()) {
-        Locator::getLogger()->getLogger()->error("Renderer: cubemap can't be bound: id doesn't exist\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: cubemap can't be bound: id doesn't exist\n");
         return;
     }
     glBindTexture(GL_TEXTURE_CUBE_MAP, it->second);
@@ -736,7 +736,7 @@ void OpenGLRenderer::drawMesh(int meshId)
 {
     auto it = m_meshBufferMap.find(meshId);
     if (it == m_meshBufferMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: mesh draw failed: unknown meshId\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: mesh draw failed: unknown meshId\n");
         return;
     }
 
@@ -755,7 +755,7 @@ void OpenGLRenderer::checkShaderCompileErrors(unsigned int shader, std::string t
         if (!success)
         {
             glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            Locator::getLogger()->getLogger()->info("ERROR::SHADER_COMPILATION_ERROR of type: {}\n{}\n -- --------------------------------------------------- -- ", type.c_str(), infoLog);
+            LoggerLocator::getLogger()->getLogger()->info("ERROR::SHADER_COMPILATION_ERROR of type: {}\n{}\n -- --------------------------------------------------- -- ", type.c_str(), infoLog);
         }
     }
     else
@@ -764,7 +764,7 @@ void OpenGLRenderer::checkShaderCompileErrors(unsigned int shader, std::string t
         if (!success)
         {
             glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            Locator::getLogger()->getLogger()->info("ERROR::PROGRAM_LINKING_ERROR of type: {}\n{}\n -- --------------------------------------------------- -- ", type.c_str(), infoLog);
+            LoggerLocator::getLogger()->getLogger()->info("ERROR::PROGRAM_LINKING_ERROR of type: {}\n{}\n -- --------------------------------------------------- -- ", type.c_str(), infoLog);
         }
     }
 }
@@ -773,7 +773,7 @@ bool OpenGLRenderer::findInshaderProgMap(const unsigned int& sdrId, shader_prog_
 {
     it = m_shaderProgMap.find(sdrId);
     if (it == m_shaderProgMap.end()) {
-        Locator::getLogger()->getLogger()->info("Renderer: cant find shader program: unknown program id\n");
+        LoggerLocator::getLogger()->getLogger()->info("Renderer: cant find shader program: unknown program id\n");
         return false;
     }
     return true;

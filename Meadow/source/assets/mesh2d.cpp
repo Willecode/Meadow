@@ -1,4 +1,5 @@
 #include "mesh2d.h"
+#include <stdexcept>
 //#include "service_locator/locator.h"
 
 Mesh2D::Mesh2D(std::vector<Vertex2D> vertices, std::vector<unsigned int> indices, std::string name):
@@ -19,23 +20,23 @@ void Mesh2D::draw(ShaderManager* sdrMan)
     */
     m_texture->bindToSampler(0);
     sdrMan->setUniformDrawSpecific("screenTexture", 0);
-    Locator::getRenderer()->wireframe(false); // There isn't really a reason to draw a 2D mesh in wireframe
-    Locator::getRenderer()->drawMesh(getId());
+    RendererLocator::getRenderer()->wireframe(false); // There isn't really a reason to draw a 2D mesh in wireframe
+    RendererLocator::getRenderer()->drawMesh(getId());
 }
 
 void Mesh2D::generateBuffers()
 {
-    Locator::getRenderer()->meshBuffersGenerate(getId());
+    RendererLocator::getRenderer()->meshBuffersGenerate(getId());
 }
 
 void Mesh2D::buffersPushData()
 {
-    Locator::getRenderer()->mesh2DBuffersPushData(getId(), vertices, indices);
+    RendererLocator::getRenderer()->mesh2DBuffersPushData(getId(), vertices, indices);
 }
 
 void Mesh2D::deleteBuffers()
 {
-    Locator::getRenderer()->meshBuffersDelete(getId());
+    RendererLocator::getRenderer()->meshBuffersDelete(getId());
 }
 
 void Mesh2D::setTexture(Texture* tex)

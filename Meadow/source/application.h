@@ -20,7 +20,8 @@
 //*******************
 
 #include "ui/ui.h"
-#include "service_locator/locator.h"
+#include "service_locator/rendererlocator.h"
+#include "service_locator/loggerlocator.h"
 #include "windowmanager.h"
 #include "ui/uidatascraper.h"
 #include "postprocessing.h"

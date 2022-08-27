@@ -1,6 +1,5 @@
 #pragma once
 #include "asset.h"
-#include "service_locator/locator.h"
 #include <memory>
 #include <vector>
 #include <array>

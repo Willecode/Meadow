@@ -5,8 +5,10 @@
 #include <assimp/postprocess.h>
 #include <glm/gtx/matrix_decompose.hpp>
 #include "imageloader.h"
-#include "service_locator/locator.h"
+#include "service_locator/loggerlocator.h"
 #include "resourcemanager.h"
+
+#include <stdexcept>
 /*
 TODO:
 Refactor/clean up this mess of a file
@@ -58,7 +60,7 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 			indices.push_back(mesh->mFaces[i].mIndices[2]);
 		}
 		else
-			Locator::getLogger()->getLogger()->info("model encountered a non-triangulated face with vertex count of: {}", indexCount);
+			LoggerLocator::getLogger()->getLogger()->info("model encountered a non-triangulated face with vertex count of: {}", indexCount);
 	}
 	try
 	{
@@ -130,7 +132,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 	ImageLoader imgLoader;
 	for (int i = 0; i < aiscene->mNumMaterials; i++) {
 		aiMaterial* aimat = aiscene->mMaterials[i];
-		Locator::getLogger()->getLogger()->info("Modelimporting: Importing material: {}/", aimat->GetName().C_Str());
+		LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Importing material: {}/", aimat->GetName().C_Str());
 		/*
 		* Get colors
 		*/
@@ -152,7 +154,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			
 		}
 		else {
-			Locator::getLogger()->getLogger()->info("Modelimporting: Material has a {}/", "diffuse map");
+			LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has a {}/", "diffuse map");
 			foundDiffuseMap = true;
 			/*
 			* Load the texture file
@@ -173,7 +175,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			
 		}
 		else {
-			Locator::getLogger()->getLogger()->info("Modelimporting: Material has an {}/", "opacity map");
+			LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has an {}/", "opacity map");
 			foundOpacityMap = true;
 			/*
 			* Load the texture file
@@ -234,7 +236,7 @@ void ModelImporting::objsFromFile(std::string path, Scene* scene, unsigned int p
 	const aiScene* aiscene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 	if (!aiscene || aiscene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !aiscene->mRootNode)
 	{
-		Locator::getLogger()->getLogger()->error("ERROR::ASSIMP::{}", importer.GetErrorString());
+		LoggerLocator::getLogger()->getLogger()->error("ERROR::ASSIMP::{}", importer.GetErrorString());
 		return;
 	}
 	std::string directory = path.substr(0, path.find_last_of('/'));

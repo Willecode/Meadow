@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "service_locator/locator.h"
+#include "service_locator/rendererlocator.h"
 #include "asset.h"
 class Texture : public Asset
 {
