@@ -2,6 +2,8 @@
 #include "input/inputevents.h"
 #include "fmt/format.h"
 #include "service_locator/loggerlocator.h"
+#include "importutility.h"
+#include "imageloader.h"
 
 ResourceManager::ResourceManager()
 {
@@ -240,26 +242,29 @@ void ResourceManager::importTextureHandler()
 	/*
 	* Open file explorer, get path to the chosen file
 	*/
-	
+	std::string filename;
+	if (!ImportUtility::fileBrowserOpenFile(filename, ImportUtility::FileType::PNGJPG))
+		return;
+
 	/*
 	* Load file
 	*/
+	int width, height;
+	auto vecptr = std::make_unique<std::vector<unsigned char>>();
+	Renderer::ImageFormat fmt;
+	ImageLoader loader;
+	loader.loadImage(filename, width, height, fmt, *vecptr.get());
 
 	/*
-	* Create texture
+	* Create texture object
 	*/
+	auto texPtr = std::make_unique<Texture>(std::move(vecptr), width, height, fmt, Renderer::ImageFormat::sRGB, filename);
 
 	/*
-	* Store texture
+	* Store it
 	*/
+	storeTexture(std::move(texPtr));
 
-
-	/*
-	unsigned int newId = generateUniqueId(Asset::AssetType::TEXTURE);
-	texture->setId(newId);
-	texture->loadToGPU();
-	m_texMap.insert({ newId, std::move(texture) });
-	return newId;*/
 }
 
 
