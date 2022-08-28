@@ -38,7 +38,7 @@ void Cubemap::load()
 	auto cube = PrimitiveCreation::createCubeMesh();
 
 	// Store it into resourceman
-	ResourceManager resMan = ResourceManager::getInstance();
+	ResourceManager& resMan = ResourceManager::getInstance();
 	m_cubeId = resMan.storeSubmesh(std::move(cube));
 
 	RendererLocator::getRenderer()->createCubemap(getId());
@@ -56,7 +56,7 @@ void Cubemap::draw(ShaderManager* sdrMan)
 	// Draw
 	RendererLocator::getRenderer()->wireframe(false);
 	RendererLocator::getRenderer()->faceCulling(false);
-	auto resMan = ResourceManager::getInstance();
+	ResourceManager& resMan = ResourceManager::getInstance();
 	resMan.getSubmesh(m_cubeId)->draw();
 }
 

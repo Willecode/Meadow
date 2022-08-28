@@ -3,7 +3,7 @@
 #include <string>
 #include <GLFW/glfw3.h>
 /*
-* Manages one window
+* Manages windows
 */
 class WindowManager
 {
@@ -12,7 +12,9 @@ public:
 	static float width;
 	static float height;
 public:
-	WindowManager();
+	static WindowManager& getInstance();
+	WindowManager(WindowManager const&) = delete;
+	void operator=(WindowManager const&) = delete;
 	~WindowManager();
 	bool createWindow(std::string title);
 	bool shouldClose();
@@ -22,6 +24,7 @@ public:
 	float getTime();
 	void pollEvents();
 private:
+	WindowManager();
 	GLFWwindow* m_window;
 
 private:

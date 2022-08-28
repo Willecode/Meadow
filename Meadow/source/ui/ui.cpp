@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 //#include <backends/imgui_impl_opengl3.h>
-#include "service_locator/locator.h"
+//#include "service_locator/locator.h"
 #include "input/inputevents.h"
 #include "assets/asset.h"
 UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE), m_uiFlags()

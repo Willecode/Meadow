@@ -12,6 +12,12 @@ WindowManager::WindowManager(): m_window(nullptr)
 {
 }
 
+WindowManager& WindowManager::getInstance()
+{
+    static WindowManager instance;
+    return instance;
+}
+
 WindowManager::~WindowManager()
 {
     glfwDestroyWindow(m_window);

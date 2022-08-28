@@ -237,6 +237,29 @@ void ResourceManager::setMaterialTextureEventHandler(unsigned int materialid, un
 void ResourceManager::importTextureHandler()
 {
 
+	/*
+	* Open file explorer, get path to the chosen file
+	*/
+	
+	/*
+	* Load file
+	*/
+
+	/*
+	* Create texture
+	*/
+
+	/*
+	* Store texture
+	*/
+
+
+	/*
+	unsigned int newId = generateUniqueId(Asset::AssetType::TEXTURE);
+	texture->setId(newId);
+	texture->loadToGPU();
+	m_texMap.insert({ newId, std::move(texture) });
+	return newId;*/
 }
 
 

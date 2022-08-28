@@ -6,7 +6,6 @@
 #include "resource_management/modelimporting.h"
 //---------------------------
 Application::Application():
-    m_windowManager(),
     m_ui(),
     m_inputGather(),
     m_renderer(OpenGLRenderer()),
@@ -20,10 +19,15 @@ Application::Application():
 {   
 
     /*
+    * Get a windowmanager instance
+    */
+    WindowManager& windowMan = WindowManager::getInstance();
+
+    /*
     * Provide service locator the addresses of the items it needs to locate
     */
-    m_windowManager.createWindow("Meadow");
-    appFailed = m_renderer.initialize(&m_windowManager);
+    windowMan.createWindow("Meadow");
+    appFailed = m_renderer.initialize(&windowMan);
     m_logger.init();
     LoggerLocator::provide(&m_logger);
     RendererLocator::provide(&m_renderer);
@@ -31,18 +35,18 @@ Application::Application():
     /*
     * Initialize ui
     */
-    m_ui.init(&m_windowManager);
+    m_ui.init(&windowMan);
 
     /*
     * Input gathering needs to locate logger and windowman so lazy init it here
     */
-    m_inputGather.init(&m_windowManager);
+    m_inputGather.init(&windowMan);
     
 
     /*
     * Get a resourceman instance
     */
-    ResourceManager manager = ResourceManager::getInstance();
+    ResourceManager& manager = ResourceManager::getInstance();
     
     /*
     * Provide shaderman some shaders
@@ -216,15 +220,15 @@ void Application::run()
     float time;
     float lastFrameTime = 0.f;
 
-    ResourceManager manager = ResourceManager::getInstance();
-
+    ResourceManager& manager = ResourceManager::getInstance();
+    WindowManager& windowMan = WindowManager::getInstance();
     /////////////////////////
     // Intermediate fb to blit to
     /////////////////////////
     /*
     * Create texture to store render
     */
-    std::unique_ptr<Texture> texptr = std::make_unique<Texture>(m_windowManager.width, m_windowManager.height, false, "normal pass", false);
+    std::unique_ptr<Texture> texptr = std::make_unique<Texture>(windowMan.width, windowMan.height, false, "normal pass", false);
     unsigned int texId = manager.storeTexture(std::move(texptr));
     Texture* tex = manager.getTexture(texId);
 
@@ -242,7 +246,7 @@ void Application::run()
     /*
     * Create texture to store render
     */
-    std::unique_ptr<Texture> texMSptr = std::make_unique<Texture>(m_windowManager.width, m_windowManager.height, true, "MS pass", false);
+    std::unique_ptr<Texture> texMSptr = std::make_unique<Texture>(windowMan.width, windowMan.height, true, "MS pass", false);
     unsigned int texMSId = manager.storeTexture(std::move(texMSptr));
     Texture* texMS = manager.getTexture(texMSId);
     /*
@@ -302,18 +306,18 @@ void Application::run()
 
     // Update loop
     // -----------
-    while (!m_windowManager.shouldClose())
+    while (!windowMan.shouldClose())
     {
         /*
         * Calculate deltatime
         */
-        time = m_windowManager.getTime();
+        time = windowMan.getTime();
         deltatime = time - lastFrameTime;
         lastFrameTime = time;
         /*
         * Poll events
         */
-        m_windowManager.pollEvents();
+        windowMan.pollEvents();
 
         /*
         * Bind MSAA buffer or basic buffer
@@ -401,9 +405,9 @@ void Application::run()
         * Do postprocessing pass
         */
         m_shaderManager.setCurrentShader("postprocess");
-        m_renderer.setViewportSize(m_windowManager.width, m_windowManager.height);
-        /*m_shaderManager.setFrameUniform("viewportWidth", m_windowManager.width);
-        m_shaderManager.setFrameUniform("viewportHeight", m_windowManager.height);*/
+        m_renderer.setViewportSize(windowMan.width, windowMan.height);
+        /*m_shaderManager.setFrameUniform("viewportWidth", windowMan.width);
+        m_shaderManager.setFrameUniform("viewportHeight", windowMan.height);*/
         m_shaderManager.forwardFrameUniforms();
         manager.getMesh2D(screenQuad)->draw(&m_shaderManager);
 
@@ -413,7 +417,7 @@ void Application::run()
         m_UIScraper.update(m_scene.get(), &m_postProcessing);
         m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getSceneState(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags());
 
-        m_windowManager.swapBuffers();
+        windowMan.swapBuffers();
     }
 
 }

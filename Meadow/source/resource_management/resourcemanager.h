@@ -27,6 +27,9 @@ public:
 
 public:
 	static ResourceManager& getInstance();
+	ResourceManager(ResourceManager const&) = delete;
+	void operator=(ResourceManager const&) = delete;
+
 	//static unsigned int loadTexture(std::string filePath, std::string textureName);
 	static unsigned int storeTexture(std::unique_ptr<Texture> texture);
 	static Texture* getTexture(unsigned int texId);

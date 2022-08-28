@@ -75,7 +75,7 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 }
 
-static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode, const aiScene* aiscene, std::string directory, ResourceManager resourceMan, std::map<int, int> aiMatToMeadowMatId)
+static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode, const aiScene* aiscene, std::string directory, ResourceManager& resourceMan, std::map<int, int> aiMatToMeadowMatId)
 {
 	unsigned int newNodeId = scene->addNode(parentNodeId);
 	SceneNode* newNode = scene->getNode(newNodeId);
@@ -125,7 +125,7 @@ static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode,
 	return;
 }
 
-bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* aiscene, std::string directory, ResourceManager resourceMan) {
+bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* aiscene, std::string directory, ResourceManager& resourceMan) {
 	/*
 	* Get materials
 	*/
@@ -240,7 +240,7 @@ void ModelImporting::objsFromFile(std::string path, Scene* scene, unsigned int p
 		return;
 	}
 	std::string directory = path.substr(0, path.find_last_of('/'));
-	ResourceManager resourceMan = ResourceManager::getInstance();
+	ResourceManager& resourceMan = ResourceManager::getInstance();
 	std::map<int, int> aiMatToMeadowMatId;
 	bool success = processMaterials(aiMatToMeadowMatId, aiscene, directory, resourceMan);
 	if (success)

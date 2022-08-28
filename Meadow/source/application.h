@@ -35,7 +35,6 @@ public:
 	void run();
 private:
 	std::unique_ptr<Scene> m_scene;
-	WindowManager m_windowManager;
 	InputGather m_inputGather;
 	UIDataScraper m_UIScraper;
 	OpenGLRenderer m_renderer;
