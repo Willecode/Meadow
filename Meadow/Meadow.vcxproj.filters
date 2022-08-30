@@ -144,6 +144,9 @@
     <ClCompile Include="source\service_locator\loggerlocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\resource_management\importer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\object.vs" />
@@ -301,6 +304,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\service_locator\loggerlocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource_management\importer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,9 +16,9 @@ ResourceManager::ResourceManager()
 	InputEvents::setMaterialTextureEvent::subscribe(
 		std::bind(&ResourceManager::setMaterialTextureEventHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 	);
-	InputEvents::importTextureEvent::subscribe(
+	/*InputEvents::importTextureEvent::subscribe(
 		std::bind(&ResourceManager::importTextureHandler, this)
-	);
+	);*/
 }
 
 unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
@@ -236,35 +236,35 @@ void ResourceManager::setMaterialTextureEventHandler(unsigned int materialid, un
 	}
 }
 
-void ResourceManager::importTextureHandler()
-{
-
-	/*
-	* Open file explorer, get path to the chosen file
-	*/
-	std::string filename;
-	if (!ImportUtility::fileBrowserOpenFile(filename, ImportUtility::FileType::PNGJPG))
-		return;
-
-	/*
-	* Load file
-	*/
-	int width, height;
-	auto vecptr = std::make_unique<std::vector<unsigned char>>();
-	Renderer::ImageFormat fmt;
-	ImageLoader loader;
-	loader.loadImage(filename, width, height, fmt, *vecptr.get());
-
-	/*
-	* Create texture object
-	*/
-	auto texPtr = std::make_unique<Texture>(std::move(vecptr), width, height, fmt, Renderer::ImageFormat::sRGB, filename);
-
-	/*
-	* Store it
-	*/
-	storeTexture(std::move(texPtr));
-
-}
+//void ResourceManager::importTextureHandler()
+//{
+//
+//	/*
+//	* Open file explorer, get path to the chosen file
+//	*/
+//	std::string filename;
+//	if (!ImportUtility::fileBrowserOpenFile(filename, ImportUtility::FileType::PNGJPG))
+//		return;
+//
+//	/*
+//	* Load file
+//	*/
+//	int width, height;
+//	auto vecptr = std::make_unique<std::vector<unsigned char>>();
+//	Renderer::ImageFormat fmt;
+//	ImageLoader loader;
+//	loader.loadImage(filename, width, height, fmt, *vecptr.get());
+//
+//	/*
+//	* Create texture object
+//	*/
+//	auto texPtr = std::make_unique<Texture>(std::move(vecptr), width, height, fmt, Renderer::ImageFormat::sRGB, filename);
+//
+//	/*
+//	* Store it
+//	*/
+//	storeTexture(std::move(texPtr));
+//
+//}
 
 

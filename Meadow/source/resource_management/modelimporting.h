@@ -11,6 +11,5 @@
 
 namespace ModelImporting
 {
-	//std::shared_ptr<Model> importWavefront(std::string path, ImageCache &textureCache);
 	void objsFromFile(std::string path, Scene* scene, unsigned int parentId);
 }

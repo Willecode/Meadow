@@ -31,8 +31,8 @@ bool ImportUtility::OpenFile(std::string& retFilename, const char* filter, GLFWw
 
 	// Try to find a good starting directory for the dialog
 	CHAR currentDir[256] = { 0 };
-	if (GetCurrentDirectoryA(256, currentDir)) {}
-	ofn.lpstrInitialDir = currentDir;
+	if (GetCurrentDirectoryA(256, currentDir))
+		ofn.lpstrInitialDir = currentDir;
 
 	// filter visible files in dialog (for example, ".TXT;.DOC;.BAK")
 	ofn.lpstrFilter = filter;

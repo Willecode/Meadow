@@ -79,14 +79,8 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
                 if (ImGui::MenuItem("Texture")) {
                     InputEvents::importTextureEvent::notify();
                 }
-                if (ImGui::BeginMenu("3D model")) {
-                    if (ImGui::MenuItem("FBX")) {
-
-                    }
-                    if (ImGui::MenuItem("OBJ")) {
-
-                    }
-                    ImGui::EndMenu();
+                if (ImGui::MenuItem("3D model")) {
+                    InputEvents::import3DModelEvent::notify();
                 }
                 ImGui::EndMenu();
             }

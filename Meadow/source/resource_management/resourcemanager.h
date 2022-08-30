@@ -59,7 +59,8 @@ public:
 	*/
 	void setSubmeshMaterialHandler(unsigned int meshid, unsigned int submeshid, unsigned int materialid);
 	void setMaterialTextureEventHandler(unsigned int materialid, unsigned int textureid, Texture::TextureType textureType);
-	void importTextureHandler();
+	//void importTextureHandler();
+
 private:
 
 	/*

@@ -284,6 +284,21 @@ namespace InputEvents
 		inline static std::vector<std::function<void()>> m_handlers;
 	};
 
+	class import3DModelEvent
+	{
+	public:
+		static void subscribe(std::function<void()> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify() {
+			for (auto h : m_handlers) {
+				h();
+			}
+		}
+	private:
+		inline static std::vector<std::function<void()>> m_handlers;
+	};
+
 	class PostprocSharpnessEvent
 	{
 	public:

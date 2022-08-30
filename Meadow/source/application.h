@@ -10,7 +10,7 @@
 
 #include "resource_management/shadermanager.h"
 #include "resource_management/resourcemanager.h"
-
+#include "resource_management/importer.h"
 /*
 * Debug includes
 * ******************/
@@ -43,5 +43,6 @@ private:
 	UI m_ui;
 	PostProcessing m_postProcessing;
 	Lighting m_lighting;
+	Importer m_importer;
 };
 

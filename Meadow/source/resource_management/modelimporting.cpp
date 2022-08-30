@@ -132,7 +132,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 	ImageLoader imgLoader;
 	for (int i = 0; i < aiscene->mNumMaterials; i++) {
 		aiMaterial* aimat = aiscene->mMaterials[i];
-		LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Importing material: {}/", aimat->GetName().C_Str());
+		LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Importing material: {}", aimat->GetName().C_Str());
 		/*
 		* Get colors
 		*/
@@ -154,7 +154,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			
 		}
 		else {
-			LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has a {}/", "diffuse map");
+			LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has a {}", "diffuse map");
 			foundDiffuseMap = true;
 			/*
 			* Load the texture file

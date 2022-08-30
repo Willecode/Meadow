@@ -15,7 +15,8 @@ Application::Application():
     appFailed(false),
     m_UIScraper(),
     m_postProcessing(PostProcessing()),
-    m_lighting(Lighting())
+    m_lighting(Lighting()),
+    m_importer()
 {   
 
     /*
@@ -79,6 +80,11 @@ Application::Application():
     * Create a scene for entities
     */
     m_scene = std::make_unique<Scene>();
+
+    /*
+    * Provide importer a scene to import files to
+    */
+    m_importer.setScene(m_scene.get());
 
     /*
     * DEFAULT SCENE
