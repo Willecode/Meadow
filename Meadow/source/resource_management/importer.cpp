@@ -81,7 +81,7 @@ void Importer::fileBrowserImport3DModel()
 	* Open file explorer, get path to the chosen file
 	*/
 	std::string filepath;
-	if (!ImportUtility::fileBrowserOpenFile(filepath, ImportUtility::FileType::OBJ)) {
+	if (!ImportUtility::fileBrowserOpenFile(filepath, ImportUtility::FileType::OBJFBX)) {
 		LoggerLocator::getLogger()->getLogger()->info("File import interrupted.");
 		return;
 	}

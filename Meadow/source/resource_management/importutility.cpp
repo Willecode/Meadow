@@ -6,8 +6,8 @@
 #include <windows.h>
 
 const std::map<ImportUtility::FileType, const char*> ImportUtility::m_filetypes = {
-	{ImportUtility::FileType::PNGJPG, "PNG,JPG\0*.png\0\0"},
-	{ImportUtility::FileType::OBJ, "OBJ\0*.obj\0\0"}
+	{ImportUtility::FileType::PNGJPG, "PNG,JPG\0*.png;*.jpg\0\0"},
+	{ImportUtility::FileType::OBJFBX, "OBJ,FBX\0*.obj;*.fbx\0\0"}
 };
 
 bool ImportUtility::OpenFile(std::string& retFilename, const char* filter, GLFWwindow* window)
