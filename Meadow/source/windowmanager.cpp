@@ -8,8 +8,9 @@ namespace WindowConf {
 }
 float WindowManager::width = WindowConf::DEFAULT_SCR_WIDTH;
 float WindowManager::height = WindowConf::DEFAULT_SCR_HEIGHT;
-WindowManager::WindowManager(): m_window(nullptr)
+WindowManager::WindowManager(): m_window(nullptr), m_borderless(false)
 {
+    InputEvents::WindowBordersToggleEvent::subscribe(std::bind(&WindowManager::toggleWindowBorders, this));
 }
 
 WindowManager& WindowManager::getInstance()
@@ -38,12 +39,24 @@ bool WindowManager::createWindow(std::string title)
 
     // glfw window creation
    // --------------------
-    m_window = glfwCreateWindow(WindowConf::DEFAULT_SCR_WIDTH, WindowConf::DEFAULT_SCR_HEIGHT, title.c_str(), NULL, NULL);
+
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+    if (m_borderless)
+        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE); // borderless window
+
+    m_window = glfwCreateWindow(mode->width, mode->height, "My Title", NULL, NULL);
     if (m_window == NULL)
     {
         glfwTerminate();
         return false;
     }
+
     glfwMakeContextCurrent(m_window);
 
     /*
@@ -112,10 +125,34 @@ void WindowManager::pollEvents()
     glfwPollEvents();
 }
 
+void WindowManager::borderlessWindow()
+{
+    glfwSetWindowAttrib(m_window, GLFW_DECORATED, GLFW_FALSE);
+    glfwSetWindowPos(m_window, 0, 0);
+    m_borderless = true;
+}
+
+void WindowManager::borderedWindow()
+{
+    glfwSetWindowAttrib(m_window, GLFW_DECORATED, GLFW_TRUE);
+    glfwSetWindowPos(m_window, 0, 30);
+    glfwSetWindowAttrib(m_window, GLFW_MAXIMIZED, GLFW_TRUE);
+    m_borderless = false;
+}
+
+void WindowManager::toggleWindowBorders()
+{
+    if (m_borderless)
+        borderedWindow();
+    else
+        borderlessWindow();
+}
+
 void WindowManager::framebufferResizeCallback(GLFWwindow* window, int w, int h)
 {
     width = w;
     height = h;
+    InputEvents::WindowDimensionsChangedEvent::notify(w, h);
 }
 
 void WindowManager::errorCallback(int error, const char* description)

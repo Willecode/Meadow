@@ -1,6 +1,5 @@
 #include "camera.h"
-#include "service_locator/locator.h"
-
+#include "input/inputevents.h"
 Camera::Camera(float aspect, float zNear, float zFar, glm::vec3 position, glm::vec3 up) :
 	aspect(aspect),
 	zNear(zNear),
@@ -17,6 +16,7 @@ Camera::Camera(float aspect, float zNear, float zFar, glm::vec3 position, glm::v
 	lastMouseY(-1.f),
 	firstMouseMove(true)
 {
+	InputEvents::WindowDimensionsChangedEvent::subscribe(std::bind(&Camera::setAspect, this, std::placeholders::_1, std::placeholders::_2));
 }
 void Camera::processMouseMovement(float mouseX, float mouseY, float deltaTime) {
 	if (firstMouseMove) {
@@ -56,6 +56,11 @@ void Camera::setFov(float fovIn) {
 	if (fov > 45.0f)
 		fov = 45.0f;
 }
+void Camera::setAspect(const int width, const int height)
+{
+	aspect = static_cast<float>(width) / static_cast<float>(height);
+}
+
 float Camera::getFov() {
 	return fov;
 }

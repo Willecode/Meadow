@@ -23,9 +23,15 @@ public:
 	GLFWwindow* getWindow();
 	float getTime();
 	void pollEvents();
+	
+	// Window styles
+	void borderlessWindow();
+	void borderedWindow();
+	void toggleWindowBorders();
 private:
 	WindowManager();
 	GLFWwindow* m_window;
+	bool m_borderless;
 
 private:
 	/*

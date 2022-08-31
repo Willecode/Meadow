@@ -12,6 +12,7 @@ public:
 	* Public flags
 	*/
 	bool imguiStackToolVisible;
+	bool imguiDemoVisible;
 
 	/*
 	* Event managed flag getters

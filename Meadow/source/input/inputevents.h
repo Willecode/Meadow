@@ -135,6 +135,36 @@ namespace InputEvents
 		inline static std::vector<std::function<void()>> m_handlers;
 	};
 
+	class WindowBordersToggleEvent
+	{
+	public:
+		static void subscribe(std::function<void()> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify() {
+			for (auto h : m_handlers) {
+				h();
+			}
+		}
+	private:
+		inline static std::vector<std::function<void()>> m_handlers;
+	};
+
+	class WindowDimensionsChangedEvent
+	{
+	public:
+		static void subscribe(std::function<void(int, int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(int width, int height) {
+			for (auto h : m_handlers) {
+				h(width, height);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(int, int)>> m_handlers;
+	};
+
 	class MouseButtonLeftPressedEvent
 	{
 	public:

@@ -23,7 +23,8 @@ public:
 	/*
 	* Camera parameters
 	*/
-	void setFov(float fovIn);
+	void setFov(const float fovIn);
+	void setAspect(const int width, const int height);
 	float getFov();
 
 	/*

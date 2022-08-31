@@ -48,13 +48,6 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    /*
-    * Display demo window for reference?
-    */
-    bool show_demo_window = true;
-    if (show_demo_window)
-        ImGui::ShowDemoWindow(&show_demo_window);
-
     //////////////////////
     //Create a main menu bar
     //////////////////////
@@ -114,8 +107,12 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
                 }
                 ImGui::EndMenu();
             }
+            if (ImGui::Button("Borderless/Bordered")) {
+                InputEvents::WindowBordersToggleEvent::notify();
+            }
             if (ImGui::BeginMenu("Debug")) {
                 ImGui::Checkbox("Dear ImGui stack tool", &m_uiFlags.imguiStackToolVisible);
+                ImGui::Checkbox("Dear ImGui Demo", &m_uiFlags.imguiDemoVisible);
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -378,7 +375,14 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
     //////////////////////
     if (m_uiFlags.imguiStackToolVisible)
         ImGui::ShowStackToolWindow();
-
+    //////////////////////
+    
+    //////////////////////
+    // Dear Imgui demo window
+    //////////////////////
+    if (m_uiFlags.imguiDemoVisible)
+        ImGui::ShowDemoWindow(&m_uiFlags.imguiDemoVisible);
+    //////////////////////
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

@@ -6,7 +6,8 @@ UIFlags::UIFlags():
 	m_showAssets(true),
 	m_showMainMenu(true),
 	m_showSceneNodeInspector(true),
-	imguiStackToolVisible(false)
+	imguiStackToolVisible(false),
+	imguiDemoVisible(false)
 {
 	InputEvents::MainMenuVisibilityToggleEvent::subscribe(std::bind(&UIFlags::toggleMainMenuVisibility, this));
 	InputEvents::AssetWindowVisibilityEvent::subscribe(std::bind(&UIFlags::setAssetsVisibility, this, std::placeholders::_1));
