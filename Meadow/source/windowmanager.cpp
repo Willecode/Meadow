@@ -8,7 +8,8 @@ namespace WindowConf {
 }
 float WindowManager::width = WindowConf::DEFAULT_SCR_WIDTH;
 float WindowManager::height = WindowConf::DEFAULT_SCR_HEIGHT;
-WindowManager::WindowManager(): m_window(nullptr), m_borderless(false)
+WindowManager::WindowManager(): m_window(nullptr), m_borderless(false),
+m_maxWidth(WindowConf::DEFAULT_SCR_WIDTH), m_maxHeight(WindowConf::DEFAULT_SCR_HEIGHT)
 {
     InputEvents::WindowBordersToggleEvent::subscribe(std::bind(&WindowManager::toggleWindowBorders, this));
 }
@@ -41,7 +42,8 @@ bool WindowManager::createWindow(std::string title)
    // --------------------
 
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
+    m_maxHeight = mode->height;
+    m_maxWidth = mode->width;
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
@@ -50,7 +52,7 @@ bool WindowManager::createWindow(std::string title)
     if (m_borderless)
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE); // borderless window
 
-    m_window = glfwCreateWindow(mode->width, mode->height, "My Title", NULL, NULL);
+    m_window = glfwCreateWindow(m_maxWidth, m_maxHeight, "My Title", NULL, NULL);
     if (m_window == NULL)
     {
         glfwTerminate();
@@ -129,6 +131,7 @@ void WindowManager::borderlessWindow()
 {
     glfwSetWindowAttrib(m_window, GLFW_DECORATED, GLFW_FALSE);
     glfwSetWindowPos(m_window, 0, 0);
+    glfwSetWindowSize(m_window, m_maxWidth, m_maxHeight);
     m_borderless = true;
 }
 

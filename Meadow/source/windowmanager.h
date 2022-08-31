@@ -32,6 +32,7 @@ private:
 	WindowManager();
 	GLFWwindow* m_window;
 	bool m_borderless;
+	int m_maxWidth, m_maxHeight;
 
 private:
 	/*
