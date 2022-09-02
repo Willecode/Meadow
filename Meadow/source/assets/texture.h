@@ -13,7 +13,8 @@ public:
 		DIFFUSE_MAP = 0,
 		SPECULAR_MAP,
 		OPACITY_MAP,
-		CUBE_MAP
+		CUBE_MAP,
+		NORMAL_MAP
 	};
 public:
 	/*

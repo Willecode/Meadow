@@ -16,6 +16,7 @@ void Material::passToShader(ShaderManager* sdrMan)
 	bool diffmap = false;
 	bool specmap = false;
 	bool opacmap = false;
+	bool normmap = false;
 	for (auto tex : m_textures) {
 		if (tex.second != nullptr) {
 			RendererLocator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
@@ -29,6 +30,10 @@ void Material::passToShader(ShaderManager* sdrMan)
 			else if (tex.first == Texture::TextureType::OPACITY_MAP) {
 				opacmap = true;
 			}
+			else if (tex.first == Texture::TextureType::NORMAL_MAP) {
+				normmap = true;
+			}
+
 		}
 		else
 			RendererLocator::getRenderer()->unbindTexture(sdrMan->getTexSamplerId(tex.first));
@@ -39,6 +44,8 @@ void Material::passToShader(ShaderManager* sdrMan)
 	setProperty("material.specular_map_present", specmap);
 	m_uintPropsHidden["material.opacity_map"] = sdrMan->getTexSamplerId(Texture::TextureType::OPACITY_MAP);
 	setProperty("material.opacity_map_present", opacmap);
+	m_uintPropsHidden["material.normal_map"] = sdrMan->getTexSamplerId(Texture::TextureType::NORMAL_MAP);
+	setProperty("material.normal_map_present", normmap);
 
 	/*
 	* Pass properties to shader as uniforms

@@ -143,12 +143,15 @@ MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
 	Texture* diff = mat->getTexture(Texture::TextureType::DIFFUSE_MAP);
 	Texture* spec = mat->getTexture(Texture::TextureType::SPECULAR_MAP);
 	Texture* opac = mat->getTexture(Texture::TextureType::OPACITY_MAP);
+	Texture* norm = mat->getTexture(Texture::TextureType::NORMAL_MAP);
 	if (diff != nullptr)
 		newAss.diffuseMap = diff->getId();
 	if (spec != nullptr)
 		newAss.specularMap = spec->getId();
 	if (opac != nullptr)
 		newAss.opacityMap = opac->getId();
+	if (norm != nullptr)
+		newAss.normalMap = norm->getId();
 
 	return newAss;
 }

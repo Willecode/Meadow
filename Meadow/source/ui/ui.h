@@ -34,13 +34,15 @@ struct MaterialUI : public AssetUI {
 	unsigned int diffuseMap;
 	unsigned int specularMap;
 	unsigned int opacityMap;
+	unsigned int normalMap;
 	MaterialUI(std::string name, const unsigned int id) :
 		AssetUI(name, Asset::AssetType::MATERIAL, id),
 		propertiesf(),
 		propertiesv3(),
 		diffuseMap(0),
 		specularMap(0),
-		opacityMap(0)
+		opacityMap(0),
+		normalMap(0)
 	{}
 };
 struct SubmeshUI : public AssetUI{

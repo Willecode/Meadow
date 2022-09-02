@@ -16,10 +16,11 @@ ShaderManager::ShaderManager() :
 	m_mat4MapFrame(),
 	m_texSamplerMap()
 {
+	m_texSamplerMap.insert({ Texture::TextureType::CUBE_MAP, 0 });
 	m_texSamplerMap.insert({ Texture::TextureType::DIFFUSE_MAP, 0 });
 	m_texSamplerMap.insert({ Texture::TextureType::SPECULAR_MAP, 1 });
 	m_texSamplerMap.insert({ Texture::TextureType::OPACITY_MAP, 2 });
-	m_texSamplerMap.insert({ Texture::TextureType::CUBE_MAP, 0 });
+	m_texSamplerMap.insert({ Texture::TextureType::NORMAL_MAP, 3 });
 
 	/*
 	* Subscribe to events

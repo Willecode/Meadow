@@ -350,6 +350,26 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
                 }
 
                 /*
+                * Normal map combobox
+                */
+                std::string normComboLabel = "";
+                if (chosenMat->normalMap == 0)
+                    normComboLabel = "No texture";
+                else
+                    normComboLabel = uiAssets->textures.at(chosenMat->normalMap).name;
+                if (ImGui::BeginCombo("Normal map", normComboLabel.c_str())) {
+                    if (ImGui::Selectable("No texture", false)) {
+                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::NORMAL_MAP);
+                    }
+                    for (auto const& tex : uiAssets->textures) {
+                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
+                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::NORMAL_MAP);
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+
+                /*
                 * Material properties
                 */
                 for (auto& prop : *chosenMat->propertiesf) {
