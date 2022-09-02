@@ -1,5 +1,6 @@
 # Meadow
 [Short demo of the software on Youtube](https://youtu.be/NpmxBtYRNJU)
+
 ![](https://github.com/Willecode/Meadow/blob/c1b37014e97ff206c5079712d8631b7ba411b30f/docs/gifs/goofy_demo10-5.gif)
 Demo from 10th of May 2022:
 A 3D model created by me, rendered in Meadow :).
@@ -27,7 +28,7 @@ Meadow is an interactive graphics software for Windows, it is an ongoing persona
 - Shadows
 - Basic collision and physics simulation
 - Object selection by clicking an object in the 3D world
-- Object highlighting, selection 
+- ~~Object highlighting, selection~~ ✓
 
 # Funky stuff
 ![](https://github.com/Willecode/Meadow/blob/a546cd7f2eda68c37171eb0044a7f5662d2e7939/docs/gifs/transparency_bug.gif)
