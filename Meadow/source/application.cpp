@@ -152,14 +152,14 @@ Application::Application():
     /*
     * Add some transform to the node
     */
-    node->scale = glm::vec3(4.0f, 4.0f, 1.0f);
-    node->position = glm::vec3(0.0f, 2.0f, -1.0f);
+    /*node->scale = glm::vec3(4.0f, 4.0f, 1.0f);
+    node->position = glm::vec3(0.0f, 2.0f, -1.0f);*/
     /*
     * Add another node
     */
-    unsigned int node2Id = m_scene->addNode();
-    SceneNode* node2 = m_scene->getNode(node2Id);
-    node2->name = "Sphere";
+    //unsigned int node2Id = m_scene->addNode();
+    //SceneNode* node2 = m_scene->getNode(node2Id);
+    //node2->name = "Sphere";
 
     auto m2 = PrimitiveCreation::createSphere(15, 20);
     unsigned int mesh2id = manager.storeSubmesh(std::move(m2));
@@ -167,14 +167,14 @@ Application::Application():
     
     unsigned int meshNode2id = manager.storeMesh(std::make_unique<Mesh>("Sphere"));
     Mesh* meshNode2 = manager.getMesh(meshNode2id);
-    node2->setMesh(meshNode2);
+    //node2->setMesh(meshNode2);
 
-    node2->getMesh()->addSubMesh(mat4, mesh2);
+    meshNode2->addSubMesh(mat4, mesh2);
     /*
     * Transform the second node 
     */
-    node2->position = glm::vec3(.0f, -0.1f, .0f);
-    node2->scale = glm::vec3(3.0f, 0.01f, 3.0f);
+    /*node2->position = glm::vec3(.0f, -0.1f, .0f);
+    node2->scale = glm::vec3(3.0f, 0.01f, 3.0f);*/
     
     /*
     * Add third node and mesh and mat
@@ -204,19 +204,19 @@ Application::Application():
         auto dirLight = std::make_unique<DirectionalLight>();
         m_scene->getNode(0)->setLightSource(std::move(dirLight));
     }*/
-    if (!PointLight::maxInstanceCapacity()) {
+    /*if (!PointLight::maxInstanceCapacity()) {
         auto pointLight = std::make_unique<PointLight>();
         m_scene->getNode(thirdNodeID)->setLightSource(std::move(pointLight));
-    }
+    }*/
 
     /*
     * import a model
     */
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/old-office-window/source/office window.fbx", m_scene.get(), 0);
-    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
+    //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/modular-lowpoly-medieval-environment/medieval_scene.fbx", m_scene.get(), 0);
 
-    m_scene->getNode(4)->scale = glm::vec3(0.1f);
+    //m_scene->getNode(4)->scale = glm::vec3(0.1f);
 #endif
 }
 

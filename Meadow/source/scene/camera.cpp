@@ -58,7 +58,8 @@ void Camera::setFov(float fovIn) {
 }
 void Camera::setAspect(const int width, const int height)
 {
-	aspect = static_cast<float>(width) / static_cast<float>(height);
+	if (height != 0) // Prevent division by zero
+		aspect = static_cast<float>(width) / static_cast<float>(height);
 }
 
 float Camera::getFov() {

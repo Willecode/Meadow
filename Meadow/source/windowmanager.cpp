@@ -52,7 +52,7 @@ bool WindowManager::createWindow(std::string title)
     if (m_borderless)
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE); // borderless window
 
-    m_window = glfwCreateWindow(m_maxWidth, m_maxHeight, "My Title", NULL, NULL);
+    m_window = glfwCreateWindow(m_maxWidth, m_maxHeight, "Meadow", NULL, NULL);
     if (m_window == NULL)
     {
         glfwTerminate();
