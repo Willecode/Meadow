@@ -4,6 +4,7 @@ out vec4 FragColor;
 in vec3 normal;
 in vec3 fragPos;
 in vec2 TexCoords;
+in mat3 TBN;
 
 struct DirectionalLight {
     vec3 direction;
@@ -30,9 +31,11 @@ struct Material {
     sampler2D diffuse_map;
     sampler2D specular_map;
     sampler2D opacity_map;
+    sampler2D normal_map;
     bool diffuse_map_present;
     bool specular_map_present;
     bool opacity_map_present;
+    bool normal_map_present;
 };
 
 #define MAX_POINT_LIGHTS 30
@@ -54,22 +57,29 @@ vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 fragToC
 vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 fragToCamDir, vec3 materialDiffuse, vec3 materialSpecular);
 vec3 calcDiffuse(vec3 fragToLightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 normalDir);
 vec3 calcSpecular(vec3 fragToLightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 fragToCamDir);
-
-
+vec3 getNormalDir();
 
 void main()
 {
-
+    // Base output color
+    // ------------------
     vec4 outputCol = vec4(0.0, 0.0, 0.0, 1.0);
+
     // Check for opacity map
+    // ------------------
     if (material.opacity_map_present)
         outputCol.a = texture(material.opacity_map, TexCoords).r;
-
-    vec3 fragToCamDir = normalize(viewPos - fragPos);
-    vec3 normalDir = normalize(normal);
     
-    // Check if textures are present for diffuse and specular
-    // ----
+    // frag -> Camera direction
+    // ------------------
+    vec3 fragToCamDir = normalize(viewPos - fragPos);
+
+    // Normal vector direction
+    // ------------------
+    vec3 normalDir = getNormalDir();
+        
+    // Diffuse and specular colors
+    // ------------------
     vec3 materialDiffuse = material.diffuse;
     vec3 materialSpecular = material.specular;
     if (material.diffuse_map_present){
@@ -77,10 +87,9 @@ void main()
     }
     if(material.specular_map_present)
         materialSpecular *= vec3(texture(material.specular_map, TexCoords)) * material.specular;
-    // ----
 
-
-
+    // Calculate lightsources' contribution to fragment color
+    // ------------------
     for (int i = 0; i < pointLightCount; i++){
         outputCol.rgb += calcPointLight(pointLights[i], normalDir, fragPos, fragToCamDir, materialDiffuse, materialSpecular);
     }
@@ -88,31 +97,35 @@ void main()
         outputCol.rgb += calcDirLight(dirLight[i], normalDir, fragPos, fragToCamDir, materialDiffuse, materialSpecular);
     }
     
-    // DEBUG ***************************************
+    // Quick DEBUG
+    // ------------------
 //    outputCol = texture(material.diffuse_map, TexCoords);
+//    if (material.normal_map_present){
+//        outputCol = texture(material.normal_map, TexCoords);
+//    }
 //    outputCol.a = 1;
-//    if (material.opacity_map_present)
-     //outputCol = vec4(normalize(normal), 1.0);
-
-    //outputCol = material.specular;
-    //outputCol = dirLight[0].direction;
-
-//    DirectionalLight debugDirLight;
-//    debugDirLight.direction = vec3(-1.0f);
-//    debugDirLight.ambient = vec3(0.2);
-//    debugDirLight.diffuse = vec3(0.5);
-//    debugDirLight.specular = vec3(0.6);
-//    outputCol += calcDirLight(debugDirLight, normalDir, fragPos, fragToCamDir, materialDiffuse, materialSpecular);
-//    outputCol = vec4(texture(material.diffuse_map, TexCoords).a);
-//    if (material.opacity_map_present)
-//        outputCol = vec4(texture(material.opacity_map, TexCoords));
-//    else
-//        outputCol = vec4(1.0);
-    // ***************************************
-
+    //outputCol.xyz = B;
+    //outputCol.xyz = vec3(1.0);
+    
+    // Color out
+    // ------------------
     FragColor = outputCol;
 }
+// ------------------------------------------------------------------------
+// Get normal direction from normal map or vs output
+vec3 getNormalDir(){
+    vec3 normalDir = normalize(normal);
 
+    if (material.normal_map_present){
+        normalDir = texture(material.normal_map, TexCoords).rgb;
+        normalDir = normalDir * 2.0 - 1.0;   
+        normalDir = normalize(TBN * normalDir);
+    }
+
+    return normalDir;
+}
+// ------------------------------------------------------------------------
+// Calculate pointlight color contribution
 vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 fragToCamDir, vec3 materialDiffuse, vec3 materialSpecular){
 
     vec3 fragToLightDir = normalize(light.position - fragPos);
@@ -129,6 +142,8 @@ vec3 calcPointLight(PointLight light, vec3 normalDir, vec3 fragPos, vec3 fragToC
 
     return (ambient + diffuse + specular) * attenuation;
 }
+// ------------------------------------------------------------------------
+// Calculate directional light color contribution
 vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 fragToCamDir, vec3 materialDiffuse, vec3 materialSpecular){
 
     vec3 fragToLightDir = normalize(-light.direction);
@@ -137,12 +152,15 @@ vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 fra
     vec3 specular = calcSpecular(fragToLightDir, light.specular, materialSpecular, material.shininess, normalDir, fragToCamDir);
     return (ambient + diffuse + specular);
 }
-
+// ------------------------------------------------------------------------
+// Calculate light diffuse component
 vec3 calcDiffuse(vec3 fragToLightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 normalDir){
     float diff = max(dot(fragToLightDir, normalDir), 0.0);
     vec3 diffuse =  lightDiffuse * (diff) * materialDiffuse;
     return diffuse;
 }
+// ------------------------------------------------------------------------
+// Calculate light specular component
 vec3 calcSpecular(vec3 fragToLightDir, vec3 lightSpecular, vec3 materialSpecular, float shininess, vec3 normalDir, vec3 fragToCamDir){
     // Prevent spec on back-surfaces
     if (dot(-fragToLightDir, normalDir) > 0)

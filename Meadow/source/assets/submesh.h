@@ -8,9 +8,16 @@ struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoords;
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
 
-	Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoords):
-		position(position), normal(normal), texCoords(texCoords)
+	Vertex(
+		glm::vec3 position,
+		glm::vec3 normal,
+		glm::vec2 texCoords,
+		glm::vec3 tangent   = glm::vec3(1.0f), // init these to zero until primitivecreation.cpp implements these 
+		glm::vec3 bitangent = glm::vec3(1.0f)):
+		position(position), normal(normal), texCoords(texCoords), tangent(tangent), bitangent(bitangent)
 	{
 
 	}

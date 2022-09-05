@@ -32,22 +32,34 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 		
 		glm::vec3 position;
-		position.x = mesh->mVertices[i].x;
+		position.x = mesh->mVertices[i].x; // position
 		position.y = mesh->mVertices[i].y;
 		position.z = mesh->mVertices[i].z;
 		glm::vec3 normal = glm::vec3(0.0f);
+		glm::vec3 tangent = glm::vec3(0.0f);
+		glm::vec3 bitangent = glm::vec3(0.0f);
 		if (mesh->HasNormals()) {
-			normal.x = mesh->mNormals[i].x;
+			normal.x = mesh->mNormals[i].x; // normals
 			normal.y = mesh->mNormals[i].y;
 			normal.z = mesh->mNormals[i].z;
+
+			tangent.x = mesh->mTangents[i].x; // tangents
+			tangent.y = mesh->mTangents[i].y;
+			tangent.z = mesh->mTangents[i].z;
+
+			bitangent.x = mesh->mBitangents[i].x; // bitangents
+			bitangent.y = mesh->mBitangents[i].y;
+			bitangent.z = mesh->mBitangents[i].z;
+
+			
 		}
 		glm::vec2 texCoords = glm::vec2(0.0f);
 		if (mesh->HasTextureCoords(0)) {
-			texCoords.x = mesh->mTextureCoords[0][i].x;
+			texCoords.x = mesh->mTextureCoords[0][i].x; // tex coords
 			texCoords.y = mesh->mTextureCoords[0][i].y;
 
 		}
-		Vertex vertex(position, normal, texCoords);
+		Vertex vertex(position, normal, texCoords, tangent, bitangent);
 		vertices.push_back(vertex);
 	}
 	// Loop through indices and copy their data
@@ -55,7 +67,7 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 		// triangulated mesh expected
 		unsigned int indexCount = mesh->mFaces[i].mNumIndices;
 		if (indexCount == 3) {
-			indices.push_back(mesh->mFaces[i].mIndices[0]);
+			indices.push_back(mesh->mFaces[i].mIndices[0]);	// indices
 			indices.push_back(mesh->mFaces[i].mIndices[1]);
 			indices.push_back(mesh->mFaces[i].mIndices[2]);
 		}
@@ -93,7 +105,7 @@ static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode,
 
 	
 	/*
-	* If there are aimeshes, the scenenode will be given a new Mesh and each aimesh will be linked as it's SubMesh
+	* If there are aimeshes, the scenenode will be given a new Mesh with x submeshes, x being the number of aimeshes
 	*/
 	if (ainode->mNumMeshes > 0) {
 		std::unique_ptr<Mesh> newMesh = std::make_unique<Mesh>(ainode->mName.C_Str());
@@ -125,6 +137,33 @@ static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode,
 	return;
 }
 
+Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string& directory, ResourceManager& resourceMan, Renderer::ImageFormat engineFormat) {
+	ImageLoader imgLoader;
+	Renderer::ImageFormat textureFormat;
+	int texWidth, texHeight;
+	auto vecptrDiffuseMap = std::make_unique<std::vector<unsigned char>>();
+	aiString path;
+	aiReturn ret = aimat->GetTexture(type, 0, &path);
+	if (ret != aiReturn_SUCCESS) {
+		return nullptr;
+	}
+	else {
+		LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has a texture:{}", path.C_Str());
+		/*
+		* Load the texture file
+		*/
+		if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), texWidth, texHeight, textureFormat, *vecptrDiffuseMap.get()))
+			return nullptr;
+	}
+
+	/*
+	* Create new Texture
+	*/
+	auto newTex = std::make_unique<Texture>(std::move(vecptrDiffuseMap), texWidth, texHeight, textureFormat, engineFormat, path.C_Str());
+	unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
+	return resourceMan.getTexture(newTexId);
+}
+
 bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* aiscene, std::string directory, ResourceManager& resourceMan) {
 	/*
 	* Get materials
@@ -142,49 +181,6 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		aimat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 
 		/*
-		* Get diffuse map
-		*/
-		Renderer::ImageFormat diffuseMapFormat;
-		bool foundDiffuseMap = false;
-		int widthDiffuseMap, heightDiffuseMap;
-		auto vecptrDiffuseMap = std::make_unique<std::vector<unsigned char>>();
-		aiString path;
-		aiReturn ret = aimat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-		if (ret != aiReturn_SUCCESS) {
-			
-		}
-		else {
-			LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has a {}", "diffuse map");
-			foundDiffuseMap = true;
-			/*
-			* Load the texture file
-			*/
-			if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), widthDiffuseMap, heightDiffuseMap, diffuseMapFormat, *vecptrDiffuseMap.get()))
-				return false;
-		}
-
-		/*
-		* Get opacity map
-		*/
-		Renderer::ImageFormat opacityMapFormat;
-		bool foundOpacityMap = false;
-		int widthOpacityMap, heightOpacityMap;
-		auto vecptrOpacityMap = std::make_unique<std::vector<unsigned char>>();
-		ret = aimat->GetTexture(aiTextureType_OPACITY, 0, &path);
-		if (ret != aiReturn_SUCCESS) {
-			
-		}
-		else {
-			LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has an {}/", "opacity map");
-			foundOpacityMap = true;
-			/*
-			* Load the texture file
-			*/
-			if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), widthOpacityMap, heightOpacityMap, opacityMapFormat, *vecptrOpacityMap.get()))
-				return false;
-		}
-
-		/*
 		* Create new Meadow material
 		*/
 		auto newMat = std::make_unique<Material>(aiscene->mMaterials[i]->GetName().C_Str());
@@ -199,27 +195,33 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		newMatPtr->setProperty("material.specular", glm::vec3(diffuse.r, diffuse.g, diffuse.b), true);
 
 		/*
-		* Store and set textures
+		* Import diffuse map
 		*/
-		if (foundDiffuseMap) {
-			/*
-			* Create new Texture
-			*/
-			auto newTex = std::make_unique<Texture>(std::move(vecptrDiffuseMap), widthDiffuseMap, heightDiffuseMap, diffuseMapFormat, Renderer::ImageFormat::sRGBA, path.C_Str());
-			unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
-			Texture* newTexPtr = resourceMan.getTexture(newTexId);
-
-			newMatPtr->setTexture(newTexPtr, Texture::TextureType::DIFFUSE_MAP);
+		{
+			Texture* diffMap = importTexture(aiTextureType_DIFFUSE, aimat, directory, resourceMan, Renderer::ImageFormat::sRGBA);
+			if (diffMap != nullptr) {
+				newMatPtr->setTexture(diffMap, Texture::TextureType::DIFFUSE_MAP);
+			}
 		}
-		if (foundOpacityMap) {
-			/*
-			* Create new Texture
-			*/
-			auto newTex = std::make_unique<Texture>(std::move(vecptrOpacityMap), widthOpacityMap, heightOpacityMap, opacityMapFormat, Renderer::ImageFormat::R, path.C_Str());
-			unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
-			Texture* newTexPtr = resourceMan.getTexture(newTexId);
+		
+		/*
+		* Import opac map
+		*/
+		{
+			Texture* opacMap = importTexture(aiTextureType_OPACITY, aimat, directory, resourceMan, Renderer::ImageFormat::R);
+			if (opacMap != nullptr) {
+				newMatPtr->setTexture(opacMap, Texture::TextureType::OPACITY_MAP);
+			}
+		}
 
-			newMatPtr->setTexture(newTexPtr, Texture::TextureType::OPACITY_MAP);
+		/*
+		* Import normal map
+		*/
+		{
+			Texture* normalMap = importTexture(aiTextureType_OPACITY, aimat, directory, resourceMan, Renderer::ImageFormat::RGB);
+			if (normalMap != nullptr) {
+				newMatPtr->setTexture(normalMap, Texture::TextureType::NORMAL_MAP);
+			}
 		}
 
 		/*
@@ -233,16 +235,36 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 void ModelImporting::objsFromFile(std::string path, Scene* scene, unsigned int parentId)
 {
 	Assimp::Importer importer;
-	const aiScene* aiscene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+	/*
+	* When importing, triangulate, flip UVs and calculate tangent and bitangent vectors
+	*/
+	const aiScene* aiscene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+	/*
+	* Check for failures
+	*/
 	if (!aiscene || aiscene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !aiscene->mRootNode)
 	{
 		LoggerLocator::getLogger()->getLogger()->error("ERROR::ASSIMP::{}", importer.GetErrorString());
 		return;
 	}
+
+	/*
+	* Find file directory
+	*/
 	std::string directory = path.substr(0, path.find_last_of('/'));
+	
+	/*
+	* Import materials from the file
+	*/
 	ResourceManager& resourceMan = ResourceManager::getInstance();
 	std::map<int, int> aiMatToMeadowMatId;
 	bool success = processMaterials(aiMatToMeadowMatId, aiscene, directory, resourceMan);
+
+	/*
+	* If materials successfully imported, import the meshes
+	*/
 	if (success)
 		processNode(parentId, scene, aiscene->mRootNode, aiscene, directory, resourceMan, aiMatToMeadowMatId);
 	return;

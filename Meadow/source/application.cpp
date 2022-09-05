@@ -204,16 +204,16 @@ Application::Application():
         auto dirLight = std::make_unique<DirectionalLight>();
         m_scene->getNode(0)->setLightSource(std::move(dirLight));
     }*/
-    /*if (!PointLight::maxInstanceCapacity()) {
+    if (!PointLight::maxInstanceCapacity()) {
         auto pointLight = std::make_unique<PointLight>();
         m_scene->getNode(thirdNodeID)->setLightSource(std::move(pointLight));
-    }*/
+    }
 
     /*
     * import a model
     */
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/old-office-window/source/office window.fbx", m_scene.get(), 0);
-    //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
+    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/modular-lowpoly-medieval-environment/medieval_scene.fbx", m_scene.get(), 0);
 
     //m_scene->getNode(4)->scale = glm::vec3(0.1f);
