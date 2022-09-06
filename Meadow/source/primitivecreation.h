@@ -12,4 +12,10 @@ public:
 	* returns a quad that fills the screen, used for post processing
 	*/
 	static std::unique_ptr<Mesh2D> createScreenQuad();
+
+private:
+	/*
+	* 
+	*/
+	static void addTangentBitangent(Vertex& vert1, Vertex& vert2, Vertex& vert3);
 };

@@ -8,7 +8,7 @@ std::unique_ptr<SubMesh> PrimitiveCreation::createCubeMesh()
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-                                       //pos                           //normal                       //texCoord
+                              //pos                           //normal                      //texCoord
     vertices.push_back(Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f))); // back
     vertices.push_back(Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f)));
     vertices.push_back(Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f)));
@@ -38,7 +38,7 @@ std::unique_ptr<SubMesh> PrimitiveCreation::createCubeMesh()
     vertices.push_back(Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
     vertices.push_back(Vertex(glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 0.0f)));
     vertices.push_back(Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-    
+
     indices = { // consider the CCW winding order
         0, 2, 1, 0, 3, 2,
         4, 5, 6, 4, 6, 7,
@@ -47,6 +47,12 @@ std::unique_ptr<SubMesh> PrimitiveCreation::createCubeMesh()
         16, 17, 18, 16, 18, 19,
         20, 22, 21, 20, 23, 22
     };
+
+    // Add tangents and bitangents
+    for (int i = 0; i < indices.size(); i += 3) {
+        addTangentBitangent(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]]);
+    }
+
     return std::make_unique<SubMesh>(vertices, indices, "Cube");
     
 }
@@ -110,4 +116,32 @@ std::unique_ptr<Mesh2D> PrimitiveCreation::createScreenQuad()
     };
 
     return std::make_unique<Mesh2D>(vertices, indices, "Screen Quad");
+}
+
+void PrimitiveCreation::addTangentBitangent(Vertex& vert1, Vertex& vert2, Vertex& vert3)
+{
+    glm::vec3 edge1 = vert2.position - vert1.position;
+    glm::vec3 edge2 = vert3.position - vert1.position;
+    glm::vec2 deltaUV1 = vert2.texCoords - vert1.texCoords;
+    glm::vec2 deltaUV2 = vert3.texCoords - vert1.texCoords;
+
+    float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+    glm::vec3 tangent, bitangent;
+
+    tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+    tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+    tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+
+    bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+    bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+    bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+
+    vert1.tangent = tangent;
+    vert2.tangent = tangent;
+    vert3.tangent = tangent;
+
+    vert1.bitangent = bitangent;
+    vert2.bitangent = bitangent;
+    vert3.bitangent = bitangent;
 }
