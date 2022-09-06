@@ -4,6 +4,8 @@
 #include <fmt/format.h>
 #include "service_locator/rendererlocator.h"
 #include "service_locator/loggerlocator.h"
+#include <stdio.h>
+#include <errno.h>
 
 Shader::Shader(const unsigned int& id, const char* vertexPath, const char* fragmentPath):
     m_id(id),m_vertexPath(vertexPath),m_fragmentPath(fragmentPath)
@@ -54,7 +56,7 @@ void Shader::sourceFromFile(const char* vertexPath, const char* fragmentPath, st
     }
     catch (std::ifstream::failure& e)
     {
-        LoggerLocator::getLogger()->getLogger()->info("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n");
+        LoggerLocator::getLogger()->getLogger()->error("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: {}\n", e.what());
         vertexCode = "";
         fragmentCode = "";
     }

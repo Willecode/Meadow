@@ -38,7 +38,12 @@ bool ImportUtility::OpenFile(std::string& retFilename, const char* filter, GLFWw
 	ofn.lpstrFilter = filter;
 	ofn.nFilterIndex = 1;
 
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST /* | OFN_NOCHANGEDIR*/;
+	/*
+	* file/path must exist to ease error handling on our end.
+	* OFN_NOCHANGEDIR must be set, otherwise the current working directory
+	* will change, making other file open functions hard to use... (fopen etc.)
+	*/
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST  | OFN_NOCHANGEDIR;
 
 	if (GetOpenFileNameA(&ofn) == TRUE)
 	{

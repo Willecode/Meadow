@@ -50,7 +50,7 @@ private:
 	* Rootnode is always 0 and added in initialization
 	*/
 	//std::unordered_map<unsigned int, std::shared_ptr<SceneNode>> m_nodeMap;
-	static constexpr unsigned int MAX_NODES = 200;
+	static constexpr unsigned int MAX_NODES = 2000;
 	std::array<std::unique_ptr<SceneNode>, MAX_NODES> m_nodes;
 	unsigned int m_nodeIdCtr;
 
