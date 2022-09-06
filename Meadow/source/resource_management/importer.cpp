@@ -7,10 +7,15 @@
 
 Importer::Importer(): m_scene(nullptr)
 {
-	InputEvents::importTextureEvent::subscribe(
-		std::bind(&Importer::fileBrowserImportTexture, this)
+	InputEvents::importTextureREvent::subscribe(
+		std::bind(&Importer::fileBrowserImportTextureR, this)
 	);
-
+	InputEvents::importTextureRGBEvent::subscribe(
+		std::bind(&Importer::fileBrowserImportTextureRGB, this)
+	);
+	InputEvents::importTextureSRGBEvent::subscribe(
+		std::bind(&Importer::fileBrowserImportTextureSRGB, this)
+	);
 	InputEvents::import3DModelEvent::subscribe(
 		std::bind(&Importer::fileBrowserImport3DModel, this)
 	);
@@ -22,7 +27,7 @@ void Importer::setScene(Scene* scene)
 	m_scene = scene;
 }
 
-void Importer::importTexture(const std::string filepath)
+void Importer::importTexture(const std::string filepath, Renderer::ImageFormat toFmt)
 {
 	std::string pathCopy = filepath;
 	fixPath(pathCopy);
@@ -41,7 +46,7 @@ void Importer::importTexture(const std::string filepath)
 	/*
 	* Create texture object
 	*/
-	auto texPtr = std::make_unique<Texture>(std::move(vecptr), width, height, fmt, Renderer::ImageFormat::sRGB, pathCopy);
+	auto texPtr = std::make_unique<Texture>(std::move(vecptr), width, height, fmt, toFmt, pathCopy);
 
 	/*
 	* Store it
@@ -59,7 +64,23 @@ void Importer::import3DModel(const std::string path)
 	ModelImporting::objsFromFile(pathCopy, m_scene, 0);
 }
 
-void Importer::fileBrowserImportTexture()
+void Importer::fileBrowserImportTextureR()
+{
+	fileBrowserImportTexture(Renderer::ImageFormat::R);
+}
+
+void Importer::fileBrowserImportTextureRGB()
+{
+	fileBrowserImportTexture(Renderer::ImageFormat::RGB);
+}
+
+void Importer::fileBrowserImportTextureSRGB()
+{
+	fileBrowserImportTexture(Renderer::ImageFormat::sRGB);
+
+}
+
+void Importer::fileBrowserImportTexture(Renderer::ImageFormat toFmt)
 {
 	/*
 	* Open file explorer, get path to the chosen file
@@ -72,7 +93,7 @@ void Importer::fileBrowserImportTexture()
 	/*
 	* Import file at path
 	*/
-	importTexture(filepath);
+	importTexture(filepath, toFmt);
 }
 
 void Importer::fileBrowserImport3DModel()

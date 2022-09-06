@@ -105,7 +105,7 @@ void main()
 //    }
 //    outputCol.a = 1;
     //outputCol.xyz = B;
-    //outputCol.xyz = vec3(1.0);
+    //outputCol.xyz = normalDir;
     
     // Color out
     // ------------------
@@ -114,15 +114,15 @@ void main()
 // ------------------------------------------------------------------------
 // Get normal direction from normal map or vs output
 vec3 getNormalDir(){
-    vec3 normalDir = normalize(normal);
+    vec3 dir = normalize(normal);
 
     if (material.normal_map_present){
-        normalDir = texture(material.normal_map, TexCoords).rgb;
-        normalDir = normalDir * 2.0 - 1.0;   
-        normalDir = normalize(TBN * normalDir);
+        dir = texture(material.normal_map, TexCoords).rgb;
+        dir = (dir * 2.0) - 1.0;   
+        dir = normalize(TBN * dir);
     }
 
-    return normalDir;
+    return dir;
 }
 // ------------------------------------------------------------------------
 // Calculate pointlight color contribution
@@ -157,6 +157,11 @@ vec3 calcDirLight(DirectionalLight light, vec3 normalDir, vec3 fragPos, vec3 fra
 vec3 calcDiffuse(vec3 fragToLightDir, vec3 lightDiffuse, vec3 materialDiffuse, vec3 normalDir){
     float diff = max(dot(fragToLightDir, normalDir), 0.0);
     vec3 diffuse =  lightDiffuse * (diff) * materialDiffuse;
+
+    //debug
+    // ---------
+    //diffuse = vec3(0);
+    // ---------
     return diffuse;
 }
 // ------------------------------------------------------------------------
@@ -179,7 +184,7 @@ vec3 calcSpecular(vec3 fragToLightDir, vec3 lightSpecular, vec3 materialSpecular
     // Calculate specular
     vec3 specular = lightSpecular *  spec * materialSpecular;
     // debug
-    //specular = vec3(spec);
+    //specular = vec3(vec3(0));
     return specular;
     
 }

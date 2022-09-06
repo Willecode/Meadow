@@ -12,10 +12,13 @@ public:
 	Importer();
 	void setScene(Scene* scene);
 
-	void importTexture(const std::string path);
+	void importTexture(const std::string path, Renderer::ImageFormat toFmt);
 	void import3DModel(const std::string path);
 	
-	void fileBrowserImportTexture();
+	void fileBrowserImportTextureR();
+	void fileBrowserImportTextureRGB();
+	void fileBrowserImportTextureSRGB();
+
 	void fileBrowserImport3DModel();
 
 private:
@@ -28,6 +31,8 @@ private:
 	* Check whether scene has been provided
 	*/
 	bool sceneProvided();
+
+	void fileBrowserImportTexture(Renderer::ImageFormat toFmt);
 	Scene* m_scene;
 };
 

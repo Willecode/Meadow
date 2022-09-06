@@ -69,8 +69,19 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
             }
 
             if (ImGui::BeginMenu("Import")) {
-                if (ImGui::MenuItem("Texture")) {
-                    InputEvents::importTextureEvent::notify();
+                if (ImGui::BeginMenu("Texture")) {
+                    if (ImGui::MenuItem("R")) {
+                        InputEvents::importTextureREvent::notify();
+                    }
+                    if (ImGui::MenuItem("RGB")) {
+                        InputEvents::importTextureRGBEvent::notify();
+                    }
+                    if (ImGui::MenuItem("sRGB")) {
+                        InputEvents::importTextureSRGBEvent::notify();
+                    }
+                    
+                    ImGui::EndMenu();
+
                 }
                 if (ImGui::MenuItem("3D model")) {
                     InputEvents::import3DModelEvent::notify();
