@@ -209,6 +209,7 @@
     <None Include="shaders\depth.fs" />
     <None Include="shaders\object.vs" />
     <None Include="shaders\coloronly.fs" />
+    <None Include="shaders\pbr.fs" />
     <None Include="shaders\postprocessing.fs" />
     <None Include="shaders\postprocessingmultisample.fs" />
     <None Include="shaders\skybox.fs" />

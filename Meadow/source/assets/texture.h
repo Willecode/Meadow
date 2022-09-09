@@ -10,8 +10,11 @@ public:
 	* The texture object itself doesn't use this.
 	*/
 	enum class TextureType {
-		DIFFUSE_MAP = 0,
-		SPECULAR_MAP,
+		ALBEDO_MAP = 0,
+		//SPECULAR_MAP,
+		METALLIC_MAP,
+		ROUGHNESS_MAP,
+		AO_MAP,
 		OPACITY_MAP,
 		CUBE_MAP,
 		NORMAL_MAP

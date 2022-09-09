@@ -200,7 +200,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		{
 			Texture* diffMap = importTexture(aiTextureType_DIFFUSE, aimat, directory, resourceMan, Renderer::ImageFormat::sRGBA);
 			if (diffMap != nullptr) {
-				newMatPtr->setTexture(diffMap, Texture::TextureType::DIFFUSE_MAP);
+				newMatPtr->setTexture(diffMap, Texture::TextureType::ALBEDO_MAP);
 			}
 		}
 		

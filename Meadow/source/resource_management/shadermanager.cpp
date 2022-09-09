@@ -17,10 +17,13 @@ ShaderManager::ShaderManager() :
 	m_texSamplerMap()
 {
 	m_texSamplerMap.insert({ Texture::TextureType::CUBE_MAP, 0 });
-	m_texSamplerMap.insert({ Texture::TextureType::DIFFUSE_MAP, 0 });
-	m_texSamplerMap.insert({ Texture::TextureType::SPECULAR_MAP, 1 });
+	m_texSamplerMap.insert({ Texture::TextureType::ALBEDO_MAP, 0 });
+	//m_texSamplerMap.insert({ Texture::TextureType::SPECULAR_MAP, 1 });
 	m_texSamplerMap.insert({ Texture::TextureType::OPACITY_MAP, 2 });
 	m_texSamplerMap.insert({ Texture::TextureType::NORMAL_MAP, 3 });
+	m_texSamplerMap.insert({ Texture::TextureType::METALLIC_MAP, 4 });
+	m_texSamplerMap.insert({ Texture::TextureType::ROUGHNESS_MAP, 5 });
+	m_texSamplerMap.insert({ Texture::TextureType::AO_MAP, 6 });
 
 	/*
 	* Subscribe to events

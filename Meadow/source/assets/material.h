@@ -36,7 +36,7 @@ public:
 	*/
 	void defaultPhong();
 	void defaultColorOnlyMat();
-
+	void defaultPBR();
 
 	/*
 	* Get exposed properties

@@ -13,39 +13,61 @@ void Material::passToShader(ShaderManager* sdrMan)
 	/*
 	* Bind textures assigned for this material. Set appropriate samplers.
 	*/
-	bool diffmap = false;
-	bool specmap = false;
+	bool albedomap = false;
+	//bool specmap = false;
 	bool opacmap = false;
 	bool normmap = false;
+	bool metalmap = false;
+	bool roughmap = false;
+	bool aomap = false;
 	for (auto tex : m_textures) {
 		if (tex.second != nullptr) {
 			RendererLocator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
 			//tex.second->bindToSampler(sdrMan->getTexSamplerId(tex.first));
-			if (tex.first == Texture::TextureType::DIFFUSE_MAP) {
-				diffmap = true;
+			if (tex.first == Texture::TextureType::ALBEDO_MAP) {
+				albedomap = true;
 			}
-			else if (tex.first == Texture::TextureType::SPECULAR_MAP) {
-				specmap = true;
-			}
+			//else if (tex.first == Texture::TextureType::SPECULAR_MAP) {
+			//	specmap = true;
+			//}
 			else if (tex.first == Texture::TextureType::OPACITY_MAP) {
 				opacmap = true;
 			}
 			else if (tex.first == Texture::TextureType::NORMAL_MAP) {
 				normmap = true;
 			}
+			else if (tex.first == Texture::TextureType::METALLIC_MAP) {
+				metalmap = true;
+			}
+			else if (tex.first == Texture::TextureType::ROUGHNESS_MAP) {
+				roughmap = true;
+			}
+			else if (tex.first == Texture::TextureType::AO_MAP) {
+				aomap = true;
+			}
 
 		}
 		else
 			RendererLocator::getRenderer()->unbindTexture(sdrMan->getTexSamplerId(tex.first));
 	}
-	m_uintPropsHidden["material.diffuse_map"] = sdrMan->getTexSamplerId(Texture::TextureType::DIFFUSE_MAP);
-	setProperty("material.diffuse_map_present", diffmap);
-	m_uintPropsHidden["material.specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
-	setProperty("material.specular_map_present", specmap);
-	m_uintPropsHidden["material.opacity_map"] = sdrMan->getTexSamplerId(Texture::TextureType::OPACITY_MAP);
-	setProperty("material.opacity_map_present", opacmap);
-	m_uintPropsHidden["material.normal_map"] = sdrMan->getTexSamplerId(Texture::TextureType::NORMAL_MAP);
-	setProperty("material.normal_map_present", normmap);
+
+	/*
+	* Pass maps to shader
+	*/
+	m_uintPropsHidden["material.albedoMap"] = sdrMan->getTexSamplerId(Texture::TextureType::ALBEDO_MAP);
+	setProperty("material.hasAlbedoMap", albedomap);
+	//m_uintPropsHidden["material.specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
+	//setProperty("material.specular_map_present", specmap);
+	m_uintPropsHidden["material.opacityMap"] = sdrMan->getTexSamplerId(Texture::TextureType::OPACITY_MAP);
+	setProperty("material.hasOpacityMap", opacmap);
+	m_uintPropsHidden["material.normalMap"] = sdrMan->getTexSamplerId(Texture::TextureType::NORMAL_MAP);
+	setProperty("material.hasNormalMap", normmap);
+	m_uintPropsHidden["material.metallicMap"] = sdrMan->getTexSamplerId(Texture::TextureType::METALLIC_MAP);
+	setProperty("material.hasMetallicMap", metalmap);
+	m_uintPropsHidden["material.roughnessMap"] = sdrMan->getTexSamplerId(Texture::TextureType::ROUGHNESS_MAP);
+	setProperty("material.hasRoughnessMap", roughmap);
+	m_uintPropsHidden["material.aoMap"] = sdrMan->getTexSamplerId(Texture::TextureType::AO_MAP);
+	setProperty("material.hasAoMap", aomap);
 
 	/*
 	* Pass properties to shader as uniforms
@@ -160,6 +182,14 @@ void Material::defaultColorOnlyMat()
 {
 	clearProperties();
 	setProperty("color", MaterialConstants::DEFAULT_COLOR);
+}
+
+void Material::defaultPBR()
+{
+	clearProperties();
+	setProperty("material.albedo", MaterialConstants::DEFAULT_COLOR, true);
+	setProperty("material.metallic", 0.f, true);
+	setProperty("material.roughness", 0.5f, true);
 }
 
 std::unordered_map<std::string, bool>* Material::getExposedPropertiesb()

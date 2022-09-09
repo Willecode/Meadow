@@ -140,18 +140,27 @@ MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
 	MaterialUI newAss(mat->name, mat->getId());
 	newAss.propertiesf = mat->getExposedPropertiesf();
 	newAss.propertiesv3 = mat->getExposedPropertiesv3();
-	Texture* diff = mat->getTexture(Texture::TextureType::DIFFUSE_MAP);
-	Texture* spec = mat->getTexture(Texture::TextureType::SPECULAR_MAP);
+	Texture* albe = mat->getTexture(Texture::TextureType::ALBEDO_MAP);
+	//Texture* spec = mat->getTexture(Texture::TextureType::SPECULAR_MAP);
 	Texture* opac = mat->getTexture(Texture::TextureType::OPACITY_MAP);
 	Texture* norm = mat->getTexture(Texture::TextureType::NORMAL_MAP);
-	if (diff != nullptr)
-		newAss.diffuseMap = diff->getId();
-	if (spec != nullptr)
-		newAss.specularMap = spec->getId();
+	Texture* meta = mat->getTexture(Texture::TextureType::METALLIC_MAP);
+	Texture* roug = mat->getTexture(Texture::TextureType::ROUGHNESS_MAP);
+	Texture* ao   = mat->getTexture(Texture::TextureType::AO_MAP);
+	if (albe != nullptr)
+		newAss.albedoMap = albe->getId();
+	/*if (spec != nullptr)
+		newAss.specularMap = spec->getId();*/
 	if (opac != nullptr)
 		newAss.opacityMap = opac->getId();
 	if (norm != nullptr)
 		newAss.normalMap = norm->getId();
+	if (meta != nullptr)
+		newAss.metallicMap = meta->getId();
+	if (roug != nullptr)
+		newAss.roughnessMap = roug->getId();
+	if (ao   != nullptr)
+		newAss.aoMap = ao->getId();
 
 	return newAss;
 }

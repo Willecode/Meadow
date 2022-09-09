@@ -89,9 +89,7 @@ bool PointLight::maxInstanceCapacity()
 void PointLight::resetToDefault()
 {
 	clearProperties();
-	setProperty("pointLights[].ambient", DEFAULT_LIGHT_COLOR * 0.2f);
-	setProperty("pointLights[].diffuse", DEFAULT_LIGHT_COLOR * 0.5f);
-	setProperty("pointLights[].specular", DEFAULT_LIGHT_COLOR * 0.6f);
+	setProperty("pointLights[].color", DEFAULT_LIGHT_COLOR);
 	setProperty("pointLights[].constant", 1.0f);
 	setProperty("pointLights[].linear", 0.09f);
 	setProperty("pointLights[].quadratic", 0.032f);

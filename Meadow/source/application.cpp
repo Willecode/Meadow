@@ -52,7 +52,7 @@ Application::Application():
     /*
     * Provide shaderman some shaders
     */
-    auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/texwithlight.fs");
+    auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/pbr.fs");
     auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
     auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
     auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessing.fs");
@@ -145,8 +145,8 @@ Application::Application():
     Texture* tex = manager.getTexture(texId);
     Texture* tex2 = manager.getTexture(texId2);
 
-    mat2->setTexture(tex, Texture::TextureType::DIFFUSE_MAP);
-    mat4->setTexture(tex2, Texture::TextureType::DIFFUSE_MAP);
+    mat2->setTexture(tex, Texture::TextureType::ALBEDO_MAP);
+    mat4->setTexture(tex2, Texture::TextureType::ALBEDO_MAP);
 
 
     /*
