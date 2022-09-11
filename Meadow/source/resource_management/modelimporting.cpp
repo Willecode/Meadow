@@ -7,7 +7,7 @@
 #include "imageloader.h"
 #include "service_locator/loggerlocator.h"
 #include "resourcemanager.h"
-
+#include "assets/materials/PBRMaterial.h"
 #include <stdexcept>
 /*
 TODO:
@@ -183,10 +183,10 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		/*
 		* Create new Meadow material
 		*/
-		auto newMat = std::make_unique<Material>(aiscene->mMaterials[i]->GetName().C_Str());
+		auto newMat = std::make_unique<PBRMaterial>(aiscene->mMaterials[i]->GetName().C_Str());
 		unsigned int newMatId = resourceMan.storeMaterial(std::move(newMat));
 		Material* newMatPtr = resourceMan.getMaterial(newMatId);
-		newMatPtr->defaultPhong();
+		//newMatPtr->defaultPhong();
 
 		/*
 		* Set colors

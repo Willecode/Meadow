@@ -47,6 +47,9 @@ void Cubemap::load()
 
 void Cubemap::draw(ShaderManager* sdrMan)
 {
+	// Set shader
+	sdrMan->bindShader(ShaderManager::ShaderType::SKYBOX);
+
 	// Set sampler
 	sdrMan->setUniformDrawSpecific("skybox", sdrMan->getTexSamplerId(Texture::TextureType::CUBE_MAP));
 

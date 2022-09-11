@@ -5,6 +5,7 @@
 //#include "service_locator/locator.h"
 #include "input/inputevents.h"
 #include "assets/asset.h"
+#include "resource_management/shadermanager.h"
 UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE), m_uiFlags()
 {
 }
@@ -114,7 +115,7 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
                 if (ImGui::Button("Blinn-Phong"))
                     InputEvents::LightingBlinnEvent::notify(true);
                 if (ImGui::Button("Hot reload")) {
-                    InputEvents::ShaderHotReloadEvent::notify("phong");
+                    InputEvents::ShaderHotReloadEvent::notify(ShaderManager::ShaderType::PBR);
                 }
                 ImGui::EndMenu();
             }

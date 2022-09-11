@@ -140,13 +140,14 @@ MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
 	MaterialUI newAss(mat->name, mat->getId());
 	newAss.propertiesf = mat->getExposedPropertiesf();
 	newAss.propertiesv3 = mat->getExposedPropertiesv3();
-	Texture* albe = mat->getTexture(Texture::TextureType::ALBEDO_MAP);
+	auto matTextures = mat->getTextures();
+	Texture* albe = matTextures[Texture::TextureType::ALBEDO_MAP];
 	//Texture* spec = mat->getTexture(Texture::TextureType::SPECULAR_MAP);
-	Texture* opac = mat->getTexture(Texture::TextureType::OPACITY_MAP);
-	Texture* norm = mat->getTexture(Texture::TextureType::NORMAL_MAP);
-	Texture* meta = mat->getTexture(Texture::TextureType::METALLIC_MAP);
-	Texture* roug = mat->getTexture(Texture::TextureType::ROUGHNESS_MAP);
-	Texture* ao   = mat->getTexture(Texture::TextureType::AO_MAP);
+	Texture* opac = matTextures[Texture::TextureType::OPACITY_MAP];
+	Texture* norm = matTextures[Texture::TextureType::NORMAL_MAP];
+	Texture* meta = matTextures[Texture::TextureType::METALLIC_MAP];
+	Texture* roug = matTextures[Texture::TextureType::ROUGHNESS_MAP];
+	Texture* ao   = matTextures[Texture::TextureType::AO_MAP];
 	if (albe != nullptr)
 		newAss.albedoMap = albe->getId();
 	/*if (spec != nullptr)

@@ -15,14 +15,14 @@ void Lighting::init(ShaderManager* sdrMan)
 }
 void Lighting::setPhongShading()
 {
-	m_sdrMan->setCurrentShader("phong");
-	m_sdrMan->setFrameUniform("blinn", false);
+	/*m_sdrMan->setCurrentShader("phong");
+	m_sdrMan->setFrameUniform("blinn", false);*/
 }
 
 void Lighting::setBlinnShading()
 {
-	m_sdrMan->setCurrentShader("phong");
-	m_sdrMan->setFrameUniform("blinn", true);
+	/*m_sdrMan->setCurrentShader("phong");
+	m_sdrMan->setFrameUniform("blinn", true);*/
 }
 
 void Lighting::lightingEventHandler(bool blinn)

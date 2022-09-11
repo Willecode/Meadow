@@ -1,6 +1,6 @@
 #pragma once
 #include "assets/submesh.h"
-#include "assets/material.h"
+#include "assets/materials/material.h"
 #include <glm/glm.hpp>
 #include "resource_management/shadermanager.h"
 #include <map>

@@ -37,21 +37,24 @@ void PostProcessing::init(ShaderManager* sdrMan)
 
 void PostProcessing::sharpen(bool f)
 {
-    m_sdrMan->setCurrentShader("postprocess");
+    //m_sdrMan->setCurrentShader("postprocess");
+    m_sdrMan->bindShader(ShaderManager::ShaderType::POSTPROCESS);
     m_sdrMan->setFrameUniform("sharpen", f);
     m_sharpen = f;
 }
 
 void PostProcessing::grayscale(bool f)
 {
-    m_sdrMan->setCurrentShader("postprocess");
+    //m_sdrMan->setCurrentShader("postprocess");
+    m_sdrMan->bindShader(ShaderManager::ShaderType::POSTPROCESS);
     m_sdrMan->setFrameUniform("grayscale", f);
     m_grayscale = f;
 }
 
 void PostProcessing::negate(bool f)
 {
-    m_sdrMan->setCurrentShader("postprocess");
+    //m_sdrMan->setCurrentShader("postprocess");
+    m_sdrMan->bindShader(ShaderManager::ShaderType::POSTPROCESS);
     m_sdrMan->setFrameUniform("negate", f);
     m_negate = f;
 }

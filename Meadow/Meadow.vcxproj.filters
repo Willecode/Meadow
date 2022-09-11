@@ -66,9 +66,6 @@
     <ClCompile Include="source\assets\asset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\assets\material.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\scene\scenenode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -147,6 +144,15 @@
     <ClCompile Include="source\resource_management\importer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\assets\materials\PBRMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\assets\materials\material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\shaderuniformnamemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\object.vs" />
@@ -157,7 +163,7 @@
     <None Include="shaders\skybox.vs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\texwithlight.fs" />
-    <None Include="shaders\postprocessingmultisample.fs" />
+    <None Include="source\deprecated\postprocessingmultisample.fs" />
     <None Include="shaders\pbr.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +200,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\stb\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\assets\material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\primitivecreation.h">
@@ -308,6 +311,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resource_management\importer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\assets\materials\PBRMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\assets\materials\material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\shaderuniformnames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\shaderuniformnamemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

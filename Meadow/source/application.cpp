@@ -4,6 +4,7 @@
 #include "scene/directionallight.h"
 #include "scene/pointlight.h"
 #include "resource_management/modelimporting.h"
+#include "assets/materials/PBRMaterial.h"
 //---------------------------
 Application::Application():
     m_ui(),
@@ -50,21 +51,25 @@ Application::Application():
     ResourceManager& manager = ResourceManager::getInstance();
     
     /*
+    * Init shadermanager
+    */
+    m_shaderManager.init();
+    /*
     * Provide shaderman some shaders
     */
-    auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/pbr.fs");
-    auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
-    auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
-    auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessing.fs");
-    auto screenQuadSdrMS = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessingmultisample.fs");
-    auto skyboxSdr     = std::make_unique<Shader>(4, "shaders/skybox.vs"     , "shaders/skybox.fs");
-    m_shaderManager.provideShader("phong", std::move(phongSdr));
-    m_shaderManager.provideShader("color", std::move(colorSdr));
-    m_shaderManager.provideShader("depth", std::move(depthSdr));
-    m_shaderManager.provideShader("postprocess", std::move(screenQuadSdr));
-    m_shaderManager.provideShader("postprocessMS", std::move(screenQuadSdrMS));
-    m_shaderManager.provideShader("skybox", std::move(skyboxSdr));
-    m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
+    //auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/pbr.fs");
+    //auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
+    //auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
+    //auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessing.fs");
+    //auto screenQuadSdrMS = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessingmultisample.fs");
+    //auto skyboxSdr     = std::make_unique<Shader>(4, "shaders/skybox.vs"     , "shaders/skybox.fs");
+    //m_shaderManager.provideShader("phong", std::move(phongSdr));
+    //m_shaderManager.provideShader("color", std::move(colorSdr));
+    //m_shaderManager.provideShader("depth", std::move(depthSdr));
+    //m_shaderManager.provideShader("postprocess", std::move(screenQuadSdr));
+    //m_shaderManager.provideShader("postprocessMS", std::move(screenQuadSdrMS));
+    //m_shaderManager.provideShader("skybox", std::move(skyboxSdr));
+    //m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
 
     /*
     * Initialize postprocessing
@@ -103,13 +108,13 @@ Application::Application():
     /*
     * create materials and store them
     */
-    auto mat = std::make_unique<Material>("Woodblock");
-    mat->defaultPhong();
+    auto mat = std::make_unique<PBRMaterial>("Woodblock");
+    //mat->defaultPhong();
     auto matid = manager.storeMaterial(std::move(mat));
     auto mat2 = manager.getMaterial(matid);
     
-    auto mat3 = std::make_unique<Material>("Bricks");
-    mat3->defaultPhong();
+    auto mat3 = std::make_unique<PBRMaterial>("Bricks");
+    //mat3->defaultPhong();
     matid = manager.storeMaterial(std::move(mat3));
     auto mat4 = manager.getMaterial(matid);
 
@@ -123,7 +128,7 @@ Application::Application():
 
     Camera c(1920.0f / 1080.0f, 0.1f, 100.0f);
     auto renderer = RendererLocator::getRenderer();
-    unsigned int sdrId = m_shaderManager.getCurrentShader()->getId();
+    //unsigned int sdrId = m_shaderManager.getCurrentShader()->getId();
 
     ImageLoader loader;
     Renderer::ImageFormat fmt1;
@@ -179,9 +184,9 @@ Application::Application():
     /*
     * Add third node and mesh and mat
     */
-    unsigned int thirdMaterialID = manager.storeMaterial(std::make_unique<Material>("Color Material"));
+    unsigned int thirdMaterialID = manager.storeMaterial(std::make_unique<PBRMaterial>("Color Material"));
     Material* thirdMaterial = manager.getMaterial(thirdMaterialID);
-    thirdMaterial->defaultPhong();
+    //thirdMaterial->defaultPhong();
 
     unsigned int sphereSubmeshID = manager.storeSubmesh(std::move(PrimitiveCreation::createSphere(30, 50)));
     SubMesh* sphereSubmesh = manager.getSubmesh(sphereSubmeshID);
@@ -213,7 +218,7 @@ Application::Application():
     * import a model
     */
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/old-office-window/source/office window.fbx", m_scene.get(), 0);
-    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
+    //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/modular-lowpoly-medieval-environment/medieval_scene.fbx", m_scene.get(), 0);
 
     //m_scene->getNode(4)->scale = glm::vec3(0.1f);
@@ -352,7 +357,8 @@ void Application::run()
         */
         if (m_scene->getActiveNode() != nullptr)
         {
-            m_shaderManager.setCurrentShader("phong");
+            //m_shaderManager.setCurrentShader("phong");
+            m_shaderManager.bindShader(ShaderManager::ShaderType::COLOR_ONLY);
             RenderingUtils::maskMeshOutlines(m_scene->getActiveNode(), &m_shaderManager);
         }
             
@@ -368,7 +374,8 @@ void Application::run()
         */
         m_renderer.depthMask(false);
         m_renderer.depthTesting(false);
-        m_shaderManager.setCurrentShader("skybox");
+        //m_shaderManager.setCurrentShader("skybox");
+        m_shaderManager.bindShader(ShaderManager::ShaderType::SKYBOX);
         Camera* cam = m_scene->getCamera();
         m_shaderManager.setFrameUniform("view", glm::mat4(glm::mat3(cam->getViewMatrix()))); // for vertex shader
         m_shaderManager.setFrameUniform("projection", cam->getProjectionMatrix()); // for vertex shader
@@ -386,7 +393,8 @@ void Application::run()
         m_renderer.depthTesting(true);
         m_renderer.blending(true);
         m_renderer.depthMask(true);
-        m_shaderManager.setCurrentShader("phong");
+        //m_shaderManager.setCurrentShader("phong");
+        m_shaderManager.bindShader(ShaderManager::ShaderType::PBR);
         m_scene->render(&m_shaderManager);
 
         /*
@@ -410,7 +418,8 @@ void Application::run()
         /*
         * Do postprocessing pass
         */
-        m_shaderManager.setCurrentShader("postprocess");
+        //m_shaderManager.setCurrentShader("postprocess");
+        m_shaderManager.bindShader(ShaderManager::ShaderType::POSTPROCESS);
         m_renderer.setViewportSize(windowMan.width, windowMan.height);
         /*m_shaderManager.setFrameUniform("viewportWidth", windowMan.width);
         m_shaderManager.setFrameUniform("viewportHeight", windowMan.height);*/

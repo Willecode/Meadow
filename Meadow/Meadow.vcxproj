@@ -157,6 +157,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\shaderuniformnamemap.cpp" />
+    <ClCompile Include="source\assets\materials\material.cpp" />
+    <ClCompile Include="source\assets\materials\PBRMaterial.cpp" />
     <ClCompile Include="source\resource_management\importer.cpp" />
     <ClCompile Include="source\service_locator\loggerlocator.cpp" />
     <ClCompile Include="source\renderer\renderingutils.cpp" />
@@ -180,7 +183,6 @@
     <ClCompile Include="source\input\inputgather.cpp" />
     <ClCompile Include="source\input\inputmap.cpp" />
     <ClCompile Include="source\assets\asset.cpp" />
-    <ClCompile Include="source\assets\material.cpp" />
     <ClCompile Include="source\logger.cpp" />
     <ClCompile Include="source\resource_management\imageloader.cpp" />
     <ClCompile Include="source\resource_management\resourcemanager.cpp" />
@@ -211,7 +213,7 @@
     <None Include="shaders\coloronly.fs" />
     <None Include="shaders\pbr.fs" />
     <None Include="shaders\postprocessing.fs" />
-    <None Include="shaders\postprocessingmultisample.fs" />
+    <None Include="source\deprecated\postprocessingmultisample.fs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\skybox.vs" />
     <None Include="shaders\texwithlight.fs" />
@@ -229,6 +231,9 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\shaderuniformnamemap.h" />
+    <ClInclude Include="source\assets\materials\material.h" />
+    <ClInclude Include="source\assets\materials\PBRMaterial.h" />
     <ClInclude Include="source\resource_management\importer.h" />
     <ClInclude Include="source\service_locator\loggerlocator.h" />
     <ClInclude Include="source\renderer\renderingutils.h" />
@@ -259,11 +264,11 @@
     <ClInclude Include="source\resource_management\shadermanager.h" />
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\scene\camera.h" />
-    <ClInclude Include="source\assets\material.h" />
     <ClInclude Include="source\resource_management\modelimporting.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\primitivecreation.h" />
+    <ClInclude Include="source\shaderuniformnames.h" />
     <ClInclude Include="source\stb\stb_image.h" />
     <ClInclude Include="source\windowmanager.h" />
     <ClInclude Include="source\assets\texture.h" />

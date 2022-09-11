@@ -1,6 +1,7 @@
 #include "shadermanager.h"
 #include "service_locator/rendererlocator.h"
 #include "input/inputevents.h"
+#include "service_locator/loggerlocator.h"
 ShaderManager::ShaderManager() :
 	m_currentShader(nullptr),
 	m_shaderMap(),
@@ -16,14 +17,17 @@ ShaderManager::ShaderManager() :
 	m_mat4MapFrame(),
 	m_texSamplerMap()
 {
-	m_texSamplerMap.insert({ Texture::TextureType::CUBE_MAP, 0 });
-	m_texSamplerMap.insert({ Texture::TextureType::ALBEDO_MAP, 0 });
-	//m_texSamplerMap.insert({ Texture::TextureType::SPECULAR_MAP, 1 });
-	m_texSamplerMap.insert({ Texture::TextureType::OPACITY_MAP, 2 });
-	m_texSamplerMap.insert({ Texture::TextureType::NORMAL_MAP, 3 });
-	m_texSamplerMap.insert({ Texture::TextureType::METALLIC_MAP, 4 });
+	/*
+	* Texture sampler id mapping
+	*/
+	m_texSamplerMap.insert({ Texture::TextureType::CUBE_MAP,      0 });
+	m_texSamplerMap.insert({ Texture::TextureType::ALBEDO_MAP,    0 });
+	m_texSamplerMap.insert({ Texture::TextureType::OPACITY_MAP,   2 });
+	m_texSamplerMap.insert({ Texture::TextureType::NORMAL_MAP,    3 });
+	m_texSamplerMap.insert({ Texture::TextureType::METALLIC_MAP,  4 });
 	m_texSamplerMap.insert({ Texture::TextureType::ROUGHNESS_MAP, 5 });
-	m_texSamplerMap.insert({ Texture::TextureType::AO_MAP, 6 });
+	m_texSamplerMap.insert({ Texture::TextureType::AO_MAP,		  6 });
+
 
 	/*
 	* Subscribe to events
@@ -33,24 +37,56 @@ ShaderManager::ShaderManager() :
 	);
 }
 
-
-void ShaderManager::provideShader(std::string name, std::unique_ptr<Shader> shader)
+void ShaderManager::init()
 {
-	m_shaderMap.insert({ name, std::move(shader) });
+	/*
+	* Shader compilation
+	*/
+	auto pbrSdr = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/pbr.fs");
+	auto colorSdr = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
+	auto depthSdr = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
+	auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs", "shaders/postprocessing.fs");
+	auto skyboxSdr = std::make_unique<Shader>(4, "shaders/skybox.vs", "shaders/skybox.fs");
+
+	m_shaderMap.insert({ ShaderType::COLOR_ONLY,  std::move(colorSdr) });
+	m_shaderMap.insert({ ShaderType::DEPTH,	   std::move(depthSdr) });
+	m_shaderMap.insert({ ShaderType::POSTPROCESS, std::move(screenQuadSdr) });
+	m_shaderMap.insert({ ShaderType::PBR,		   std::move(pbrSdr) });
+	m_shaderMap.insert({ ShaderType::SKYBOX,      std::move(skyboxSdr) });
+	bindShader(ShaderType::PBR);
+	return;
 }
 
-void ShaderManager::setCurrentShader(std::string name)
+
+Shader* ShaderManager::getShader(ShaderType sdr)
 {
-	auto it = m_shaderMap.find(name);
-	if (it != m_shaderMap.end())
-		m_currentShader = (it->second).get();
-		RendererLocator::getRenderer()->useShaderProgram(it->second->getId());
+	return m_shaderMap[sdr].get();
 }
 
-Shader* ShaderManager::getCurrentShader()
+void ShaderManager::bindShader(ShaderType sdr)
 {
-	return m_currentShader;
+	Shader* s = m_shaderMap[sdr].get();
+	if (s != nullptr) {
+		RendererLocator::getRenderer()->useShaderProgram(s->getId());
+		m_currentShader = s;
+	}
+	else {
+		LoggerLocator::getLogger()->getLogger()->error("ShaderManager: tried to use nullptr shader");
+	}
 }
+
+//void ShaderManager::setCurrentShader(std::string name)
+//{
+//	auto it = m_shaderMap.find(name);
+//	if (it != m_shaderMap.end())
+//		m_currentShader = (it->second).get();
+//		RendererLocator::getRenderer()->useShaderProgram(it->second->getId());
+//}
+
+//Shader* ShaderManager::getCurrentShader()
+//{
+//	return m_currentShader;
+//}
 
 void ShaderManager::setUniformDrawSpecific(std::string uName, bool uValue)
 {
@@ -149,9 +185,9 @@ unsigned int ShaderManager::getTexSamplerId(Texture::TextureType type)
 	return m_texSamplerMap.at(type);
 }
 
-void ShaderManager::hotReloadShader(std::string name)
+void ShaderManager::hotReloadShader(ShaderType type)
 {
-	auto it = m_shaderMap.find(name);
+	auto it = m_shaderMap.find(type);
 	if (it != m_shaderMap.end())
 		it->second->hotReload();
 }

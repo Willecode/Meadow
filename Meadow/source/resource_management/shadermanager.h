@@ -7,10 +7,21 @@
 class ShaderManager
 {
 public:
+	enum class ShaderType {
+		PBR = 0,
+		COLOR_ONLY,
+		POSTPROCESS,
+		DEPTH,
+		SKYBOX
+	};
+
 	ShaderManager();
-	void provideShader(std::string name, std::unique_ptr<Shader> shader);
-	void setCurrentShader(std::string name);
-	Shader* getCurrentShader();
+	void init();
+	//void provideShader(std::string name, std::unique_ptr<Shader> shader);
+	//void setCurrentShader(std::string name);
+	//Shader* getCurrentShader();
+	Shader* getShader(ShaderType sdr);
+	void bindShader(ShaderType sdr);
 
 	/*
 	* Set shader uniforms that should be forwarded every draw call
@@ -37,7 +48,9 @@ public:
 
 	unsigned int getTexSamplerId(Texture::TextureType type);
 private:
-	std::unordered_map<std::string, std::unique_ptr<Shader>> m_shaderMap;
+	//std::unordered_map<std::string, std::unique_ptr<Shader>> m_shaderMap;
+	std::unordered_map<ShaderType, std::unique_ptr<Shader>> m_shaderMap;
+
 	Shader* m_currentShader;
 
 	/*
@@ -65,6 +78,6 @@ private:
 	std::unordered_map<Texture::TextureType, unsigned int> m_texSamplerMap;
 
 private:
-	void hotReloadShader(std::string name);
+	void hotReloadShader(ShaderType type);
 };
 

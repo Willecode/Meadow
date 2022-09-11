@@ -13,6 +13,7 @@
 #include <vector>
 #include <functional>
 #include "assets/texture.h"
+#include "resource_management/shadermanager.h"
 namespace InputEvents
 {
 	class CameraUpEvent
@@ -433,16 +434,16 @@ namespace InputEvents
 	class ShaderHotReloadEvent
 	{
 	public:
-		static void subscribe(std::function<void(std::string)> f) {
+		static void subscribe(std::function<void(ShaderManager::ShaderType)> f) {
 			m_handlers.push_back(f);
 		}
-		static void notify(std::string s) {
+		static void notify(ShaderManager::ShaderType s) {
 			for (auto h : m_handlers) {
 				h(s);
 			}
 		}
 	private:
-		inline static std::vector<std::function<void(std::string)>> m_handlers;
+		inline static std::vector<std::function<void(ShaderManager::ShaderType)>> m_handlers;
 	};
 
 	class MainMenuVisibilityToggleEvent

@@ -1,7 +1,19 @@
 #include "material.h"
-#include "resource_management/shadermanager.h"
 Material::Material(std::string name): Asset(name)
 {
+}
+void Material::passToShader()
+{
+	/*
+	* Use shader
+	*/
+	ShaderManager::
+	/*
+	* Pass textures
+	*/
+	for (auto tex : m_textures) {
+
+	}
 }
 Material::AssetType Material::getAssetType()
 {
@@ -56,8 +68,6 @@ void Material::passToShader(ShaderManager* sdrMan)
 	*/
 	m_uintPropsHidden["material.albedoMap"] = sdrMan->getTexSamplerId(Texture::TextureType::ALBEDO_MAP);
 	setProperty("material.hasAlbedoMap", albedomap);
-	//m_uintPropsHidden["material.specular_map"] = sdrMan->getTexSamplerId(Texture::TextureType::SPECULAR_MAP);
-	//setProperty("material.specular_map_present", specmap);
 	m_uintPropsHidden["material.opacityMap"] = sdrMan->getTexSamplerId(Texture::TextureType::OPACITY_MAP);
 	setProperty("material.hasOpacityMap", opacmap);
 	m_uintPropsHidden["material.normalMap"] = sdrMan->getTexSamplerId(Texture::TextureType::NORMAL_MAP);
@@ -147,15 +157,6 @@ void Material::clearProperties()
 
 void Material::setTexture(Texture* tex, Texture::TextureType type)
 {
-	/*
-	* nullptr disables the texturemap
-	*/
-	/*if (type == Texture::TextureType::DIFFUSE_MAP)
-		setProperty("material.diffuse_map_present", !(tex == nullptr));
-	else if (type == Texture::TextureType::SPECULAR_MAP)
-		setProperty("material.specular_map_present", !(tex == nullptr));
-	else if (type == Texture::TextureType::OPACITY_MAP)
-		setProperty("material.opacity_map_present", !(tex == nullptr));*/
 	m_textures[type] = tex;
 }
 
