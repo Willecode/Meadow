@@ -11,7 +11,7 @@
 #include "assets/asset.h"
 #include "ui/uiflags.h"
 #include <backends/imgui_impl_opengl3.h>
-
+#include "assets/texture.h"
 /*
 * Contains the data for a UI element representing an asset 
 */
@@ -28,27 +28,16 @@ struct TextureUI : public AssetUI {
 		AssetUI(name, Asset::AssetType::TEXTURE, id)
 	{}
 };
+
 struct MaterialUI : public AssetUI {
 	std::unordered_map<std::string, float>* propertiesf;
 	std::unordered_map<std::string, glm::vec3>* propertiesv3;
-	unsigned int albedoMap;
-	//unsigned int specularMap;
-	unsigned int opacityMap;
-	unsigned int normalMap;
-	unsigned int metallicMap;
-	unsigned int roughnessMap;
-	unsigned int aoMap;
+	std::unordered_map <Texture::TextureType, unsigned int> textures;
 	MaterialUI(std::string name, const unsigned int id) :
 		AssetUI(name, Asset::AssetType::MATERIAL, id),
 		propertiesf(),
 		propertiesv3(),
-		albedoMap(0),
-		//specularMap(0),
-		opacityMap(0),
-		normalMap(0),
-		metallicMap(0),
-		roughnessMap(0),
-		aoMap(0)
+		textures()
 	{}
 };
 struct SubmeshUI : public AssetUI{
@@ -154,6 +143,11 @@ private:
 	*/
 	UIFlags m_uiFlags;
 
+	/*
+	* Mapping from texture type to label string
+	*/
+	static std::map<Texture::TextureType, std::string> m_texLabels;
+
 private:
 	/*
 	* Event handlers
@@ -167,5 +161,6 @@ private:
 	*/
 	void processNode(SceneNodeUI* node, UIAssetMaps* uiAssets);
 	void createSceneTree(SceneNodeUI* rootNode, ImGuiTreeNodeFlags treeflags);
+	void createMatTexCombos(MaterialUI* mat, UIAssetMaps* uiAssets);
 };
 

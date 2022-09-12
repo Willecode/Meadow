@@ -6,6 +6,17 @@
 #include "input/inputevents.h"
 #include "assets/asset.h"
 #include "resource_management/shadermanager.h"
+
+std::map<Texture::TextureType, std::string> UI::m_texLabels = {
+    {Texture::TextureType::ALBEDO_MAP, "Albedo map"},
+    {Texture::TextureType::METALLIC_MAP, "Metallic map"},
+    {Texture::TextureType::ROUGHNESS_MAP, "Roughness map"},
+    {Texture::TextureType::AO_MAP, "AO map"},
+    {Texture::TextureType::OPACITY_MAP, "Opacity map"},
+    {Texture::TextureType::CUBE_MAP, "Cube map"},
+    {Texture::TextureType::NORMAL_MAP, "Normal map"},
+};
+
 UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE), m_uiFlags()
 {
 }
@@ -142,15 +153,6 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
         if (ImGui::Button("Add node")) {
             InputEvents::AddNodeEvent::notify(0);
         }
-
-        /*
-        * Create a table (old implementetion) of scene nodes
-        */
-        /*if (ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
-        {
-            processNode(node, uiAssets);
-            ImGui::EndTable();
-        }*/
 
         /*
         * Create a tree of scene nodes
@@ -301,145 +303,8 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
             */
             if (m_chosenAssetType == Asset::AssetType::MATERIAL) {
                 MaterialUI* chosenMat = &uiAssets->materials.at(m_chosenAssetId);
-
-                /*
-                * Albedo map combobox
-                */
-                std::string diffComboLabel = "";
-                if (chosenMat->albedoMap == 0)
-                    diffComboLabel = "No texture";
-                else
-                    diffComboLabel = uiAssets->textures.at(chosenMat->albedoMap).name;
-                if (ImGui::BeginCombo("Diffuse map", diffComboLabel.c_str())) {
-                    if (ImGui::Selectable("No texture", false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::ALBEDO_MAP);
-                    }
-                    for (auto const& tex : uiAssets->textures) {
-                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::ALBEDO_MAP);
-                        }
-                    }
-                    ImGui::EndCombo();
-
-                }
-                /*
-                * Specular map combobox
-                */
-                /*std::string specComboLabel = "";
-                if (chosenMat->specularMap == 0)
-                    specComboLabel = "No texture";
-                else
-                    specComboLabel = uiAssets->textures.at(chosenMat->specularMap).name;
-                if (ImGui::BeginCombo("Specular map", specComboLabel.c_str())) {
-                    if (ImGui::Selectable("No texture", false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::SPECULAR_MAP);
-                    }
-                    for (auto const& tex : uiAssets->textures) {
-                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::SPECULAR_MAP);
-                        }
-                    }
-                    ImGui::EndCombo();
-                }*/
-                /*
-                * Opacity map combobox
-                */
-                std::string opacComboLabel = "";
-                if (chosenMat->opacityMap == 0)
-                    opacComboLabel = "No texture";
-                else
-                    opacComboLabel = uiAssets->textures.at(chosenMat->opacityMap).name;
-                if (ImGui::BeginCombo("Opacity map", opacComboLabel.c_str())) {
-                    if (ImGui::Selectable("No texture", false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::OPACITY_MAP);
-                    }
-                    for (auto const& tex : uiAssets->textures) {
-                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::OPACITY_MAP);
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-
-                /*
-                * Normal map combobox
-                */
-                std::string normComboLabel = "";
-                if (chosenMat->normalMap == 0)
-                    normComboLabel = "No texture";
-                else
-                    normComboLabel = uiAssets->textures.at(chosenMat->normalMap).name;
-                if (ImGui::BeginCombo("Normal map", normComboLabel.c_str())) {
-                    if (ImGui::Selectable("No texture", false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::NORMAL_MAP);
-                    }
-                    for (auto const& tex : uiAssets->textures) {
-                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::NORMAL_MAP);
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-                /*
-                * Metallic map combobox
-                */
-                std::string metalComboLabel = "";
-                if (chosenMat->metallicMap == 0)
-                    metalComboLabel = "No texture";
-                else
-                    metalComboLabel = uiAssets->textures.at(chosenMat->metallicMap).name;
-                if (ImGui::BeginCombo("Metallic map", metalComboLabel.c_str())) {
-                    if (ImGui::Selectable("No texture", false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::METALLIC_MAP);
-                    }
-                    for (auto const& tex : uiAssets->textures) {
-                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::METALLIC_MAP);
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-
-                /*
-                * Roughness map combobox
-                */
-                std::string roughComboLabel = "";
-                if (chosenMat->roughnessMap == 0)
-                    roughComboLabel = "No texture";
-                else
-                    roughComboLabel = uiAssets->textures.at(chosenMat->roughnessMap).name;
-                if (ImGui::BeginCombo("Roughness map", roughComboLabel.c_str())) {
-                    if (ImGui::Selectable("No texture", false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::ROUGHNESS_MAP);
-                    }
-                    for (auto const& tex : uiAssets->textures) {
-                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::ROUGHNESS_MAP);
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-
-                 /*
-                * AO map combobox
-                */
-                std::string aoComboLabel = "";
-                if (chosenMat->aoMap == 0)
-                    aoComboLabel = "No texture";
-                else
-                    aoComboLabel = uiAssets->textures.at(chosenMat->aoMap).name;
-                if (ImGui::BeginCombo("AO map", aoComboLabel.c_str())) {
-                    if (ImGui::Selectable("No texture", false)) {
-                        InputEvents::setMaterialTextureEvent::notify(chosenMat->id, 0, Texture::TextureType::AO_MAP);
-                    }
-                    for (auto const& tex : uiAssets->textures) {
-                        if (ImGui::Selectable(tex.second.name.c_str(), false)) {
-                            InputEvents::setMaterialTextureEvent::notify(chosenMat->id, tex.first, Texture::TextureType::AO_MAP);
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-
+                createMatTexCombos(chosenMat, uiAssets);
+ 
                 /*
                 * Material properties
                 */
@@ -494,6 +359,33 @@ void UI::createSceneTree(SceneNodeUI* rootNode, ImGuiTreeNodeFlags treeflags)
             createSceneTree(&child, treeflags);
         }
         ImGui::TreePop();
+    }
+}
+
+void UI::createMatTexCombos(MaterialUI* mat, UIAssetMaps* uiAssets)
+{
+    std::string comboLabel = "";
+    for (auto const& tex : mat->textures) {
+        if (tex.second == 0)
+        {
+            comboLabel = "No texture";
+        }
+        else
+        {
+            comboLabel = uiAssets->textures.at(tex.second).name;
+        }
+        if (ImGui::BeginCombo(m_texLabels.at(tex.first).c_str(), comboLabel.c_str())) {
+            if (ImGui::Selectable("No texture", false)) {
+                InputEvents::setMaterialTextureEvent::notify(mat->id, 0, tex.first);
+            }
+            for (auto const& asset : uiAssets->textures) {
+                if (ImGui::Selectable(asset.second.name.c_str(), false)) {
+                    InputEvents::setMaterialTextureEvent::notify(mat->id, asset.second.id, tex.first);
+                }
+            }
+            ImGui::EndCombo();
+
+        }
     }
 }
 
