@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\assets\materials\colormaterial.cpp" />
     <ClCompile Include="source\shaderuniformnamemap.cpp" />
     <ClCompile Include="source\assets\materials\material.cpp" />
     <ClCompile Include="source\assets\materials\PBRMaterial.cpp" />
@@ -231,6 +232,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\assets\materials\colormaterial.h" />
     <ClInclude Include="source\shaderuniformnamemap.h" />
     <ClInclude Include="source\assets\materials\material.h" />
     <ClInclude Include="source\assets\materials\PBRMaterial.h" />

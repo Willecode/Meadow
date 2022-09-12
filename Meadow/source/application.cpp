@@ -5,6 +5,7 @@
 #include "scene/pointlight.h"
 #include "resource_management/modelimporting.h"
 #include "assets/materials/PBRMaterial.h"
+#include "assets/materials/colormaterial.h"
 //---------------------------
 Application::Application():
     m_ui(),
@@ -108,12 +109,12 @@ Application::Application():
     /*
     * create materials and store them
     */
-    auto mat = std::make_unique<PBRMaterial>("Woodblock");
+    auto mat = std::make_unique<PBRMaterial>("First material");
     //mat->defaultPhong();
     auto matid = manager.storeMaterial(std::move(mat));
     auto mat2 = manager.getMaterial(matid);
     
-    auto mat3 = std::make_unique<PBRMaterial>("Bricks");
+    auto mat3 = std::make_unique<PBRMaterial>("Second material");
     //mat3->defaultPhong();
     matid = manager.storeMaterial(std::move(mat3));
     auto mat4 = manager.getMaterial(matid);
@@ -184,9 +185,8 @@ Application::Application():
     /*
     * Add third node and mesh and mat
     */
-    unsigned int thirdMaterialID = manager.storeMaterial(std::make_unique<PBRMaterial>("Color Material"));
+    unsigned int thirdMaterialID = manager.storeMaterial(std::make_unique<ColorMaterial>("Color Material"));
     Material* thirdMaterial = manager.getMaterial(thirdMaterialID);
-    //thirdMaterial->defaultPhong();
 
     unsigned int sphereSubmeshID = manager.storeSubmesh(std::move(PrimitiveCreation::createSphere(30, 50)));
     SubMesh* sphereSubmesh = manager.getSubmesh(sphereSubmeshID);
@@ -403,7 +403,6 @@ void Application::run()
         m_renderer.depthTesting(true);
         m_renderer.blending(true);
         m_renderer.depthMask(true);
-        //m_shaderManager.setCurrentShader("phong");
         m_shaderManager.bindShader(ShaderManager::ShaderType::PBR);
         m_scene->render(&m_shaderManager);
 
