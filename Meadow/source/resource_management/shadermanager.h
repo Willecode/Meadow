@@ -21,6 +21,7 @@ public:
 	//void setCurrentShader(std::string name);
 	//Shader* getCurrentShader();
 	Shader* getShader(ShaderType sdr);
+	const std::vector<ShaderType>* getCameraDependant();
 	void bindShader(ShaderType sdr);
 
 	/*
@@ -48,9 +49,14 @@ public:
 
 	unsigned int getTexSamplerId(Texture::TextureType type);
 private:
-	//std::unordered_map<std::string, std::unique_ptr<Shader>> m_shaderMap;
+	/*
+	* All shaders
+	*/
 	std::unordered_map<ShaderType, std::unique_ptr<Shader>> m_shaderMap;
-
+	/*
+	* Shaders that need proj and view matrix
+	*/
+	std::vector<ShaderType> m_cameraUnifDependantShaders;
 	Shader* m_currentShader;
 
 	/*

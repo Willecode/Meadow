@@ -358,7 +358,7 @@ void Application::run()
         if (m_scene->getActiveNode() != nullptr)
         {
             //m_shaderManager.setCurrentShader("phong");
-            m_shaderManager.bindShader(ShaderManager::ShaderType::COLOR_ONLY);
+            m_shaderManager.bindShader(ShaderManager::ShaderType::PBR);
             RenderingUtils::maskMeshOutlines(m_scene->getActiveNode(), &m_shaderManager);
         }
             
@@ -370,16 +370,26 @@ void Application::run()
         m_renderer.setStencilOp(Renderer::TestingActions::KEEP, Renderer::TestingActions::KEEP, Renderer::TestingActions::REPLACE);
 
         /*
+        * Forward view and proj matrices to all relevant shaders
+        * This is should be done some other way.
+        */
+        Camera* cam = m_scene->getCamera();
+        auto cameraDependantSdrs = m_shaderManager.getCameraDependant();
+        m_shaderManager.setFrameUniform("viewSkybox", glm::mat4(glm::mat3(cam->getViewMatrix()))); 
+        m_shaderManager.setFrameUniform("view", cam->getViewMatrix()); // for vertex shader
+        m_shaderManager.setFrameUniform("projection", cam->getProjectionMatrix());
+        m_shaderManager.setFrameUniform("viewPos", cam->position);
+        for (int i = 0; i < cameraDependantSdrs->size(); i++) {
+            m_shaderManager.bindShader((*cameraDependantSdrs)[i]);
+            m_shaderManager.forwardFrameUniforms();
+        }
+
+        /*
         * Render skybox
         */
+        m_shaderManager.bindShader(ShaderManager::ShaderType::SKYBOX);
         m_renderer.depthMask(false);
         m_renderer.depthTesting(false);
-        //m_shaderManager.setCurrentShader("skybox");
-        m_shaderManager.bindShader(ShaderManager::ShaderType::SKYBOX);
-        Camera* cam = m_scene->getCamera();
-        m_shaderManager.setFrameUniform("view", glm::mat4(glm::mat3(cam->getViewMatrix()))); // for vertex shader
-        m_shaderManager.setFrameUniform("projection", cam->getProjectionMatrix()); // for vertex shader
-        m_shaderManager.forwardFrameUniforms();
         manager.getcubemap(skyboxId)->draw(&m_shaderManager);
 
         /*
@@ -418,11 +428,8 @@ void Application::run()
         /*
         * Do postprocessing pass
         */
-        //m_shaderManager.setCurrentShader("postprocess");
         m_shaderManager.bindShader(ShaderManager::ShaderType::POSTPROCESS);
         m_renderer.setViewportSize(windowMan.width, windowMan.height);
-        /*m_shaderManager.setFrameUniform("viewportWidth", windowMan.width);
-        m_shaderManager.setFrameUniform("viewportHeight", windowMan.height);*/
         m_shaderManager.forwardFrameUniforms();
         manager.getMesh2D(screenQuad)->draw(&m_shaderManager);
 

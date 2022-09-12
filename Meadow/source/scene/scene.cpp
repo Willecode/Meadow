@@ -60,9 +60,9 @@ void Scene::render(ShaderManager* sdrMan)
 	/*
 	* Set camera uniforms
 	*/
-	sdrMan->setFrameUniform("view", m_camera.getViewMatrix()); // for vertex shader
-	sdrMan->setFrameUniform("projection", m_camera.getProjectionMatrix()); // for vertex shader
-	sdrMan->setFrameUniform("viewPos", m_camera.position); // for phong fragment shader
+	//sdrMan->setFrameUniform("view", m_camera.getViewMatrix()); // for vertex shader
+	//sdrMan->setFrameUniform("projection", m_camera.getProjectionMatrix()); // for vertex shader
+	//sdrMan->setFrameUniform("viewPos", m_camera.position); // for fragment shader
 
 	/*
 	* Set light uniforms

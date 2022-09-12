@@ -15,7 +15,8 @@ ShaderManager::ShaderManager() :
 	m_floatMapFrame(),
 	m_vec3MapFrame(),
 	m_mat4MapFrame(),
-	m_texSamplerMap()
+	m_texSamplerMap(),
+	m_cameraUnifDependantShaders()
 {
 	/*
 	* Texture sampler id mapping
@@ -53,6 +54,12 @@ void ShaderManager::init()
 	m_shaderMap.insert({ ShaderType::POSTPROCESS, std::move(screenQuadSdr) });
 	m_shaderMap.insert({ ShaderType::PBR,		   std::move(pbrSdr) });
 	m_shaderMap.insert({ ShaderType::SKYBOX,      std::move(skyboxSdr) });
+
+	m_cameraUnifDependantShaders.push_back(ShaderType::COLOR_ONLY);
+	//m_cameraUnifDependantShaders.push_back(ShaderType::DEPTH);
+	m_cameraUnifDependantShaders.push_back(ShaderType::PBR);
+	m_cameraUnifDependantShaders.push_back(ShaderType::SKYBOX);
+
 	bindShader(ShaderType::PBR);
 	return;
 }
@@ -61,6 +68,11 @@ void ShaderManager::init()
 Shader* ShaderManager::getShader(ShaderType sdr)
 {
 	return m_shaderMap[sdr].get();
+}
+
+const std::vector<ShaderManager::ShaderType>* ShaderManager::getCameraDependant()
+{
+	return &m_cameraUnifDependantShaders;
 }
 
 void ShaderManager::bindShader(ShaderType sdr)
