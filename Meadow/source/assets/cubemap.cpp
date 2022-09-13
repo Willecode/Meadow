@@ -45,13 +45,14 @@ void Cubemap::load()
 	RendererLocator::getRenderer()->cubemapLoadTextures(getId(), imgData, m_imgWidth, m_imgHeight);
 }
 
-void Cubemap::draw(ShaderManager* sdrMan)
+void Cubemap::draw()
 {
+	ShaderManager& sdrMan = ShaderManager::getInstance();
 	// Set shader
-	sdrMan->bindShader(ShaderManager::ShaderType::SKYBOX);
+	sdrMan.bindShader(ShaderManager::ShaderType::SKYBOX);
 
 	// Set sampler
-	sdrMan->setUniformDrawSpecific("skybox", sdrMan->getTexSamplerId(Texture::TextureType::CUBE_MAP));
+	sdrMan.setUniformDrawSpecific("skybox", sdrMan.getTexSamplerId(Texture::TextureType::CUBE_MAP));
 
 	// Bind texture
 	RendererLocator::getRenderer()->bindCubemap(getId());

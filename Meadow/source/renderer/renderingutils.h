@@ -10,7 +10,7 @@ public:
 	*	rend->setStencilMask(1);
 	*	rend->stencilTesting(true);
 	*/
-	static void maskMeshOutlines(SceneNode* node, ShaderManager* sdrMan);
+	static void maskMeshOutlines(SceneNode* node);
 
 private:
 	RenderingUtils() {};

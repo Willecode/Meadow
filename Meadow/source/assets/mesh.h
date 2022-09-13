@@ -20,12 +20,12 @@ public:
 	/*
 	* Draw each submesh, passing their materials to the shader
 	*/
-	void draw(glm::mat4 modelMat, ShaderManager* sdrMan);
+	void draw(glm::mat4 modelMat);
 
 	/*
 	* Draw each submesh without passing materials
 	*/
-	void drawWithoutMaterial(glm::mat4 modelMat, ShaderManager* sdrMan);
+	void drawWithoutMaterial(glm::mat4 modelMat);
 
 	/*
 	* If submesh not in map, add it and assign it to param material

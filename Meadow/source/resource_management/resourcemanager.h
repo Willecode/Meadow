@@ -44,7 +44,10 @@ public:
 	static const MeshMap* getMeshMap();
 
 	static unsigned int storeMaterial(std::unique_ptr<Material> material);
+	void deleteMaterial(unsigned int materialId);
 	static Material* getMaterial(unsigned int materialId);
+	Material* getFallbackMaterial();
+	static unsigned int getMaterialId(Material* mat);
 	static const MaterialMap* getMaterialMap();
 
 	static unsigned int storeMesh2D(std::unique_ptr<Mesh2D> Mesh2D);
@@ -59,7 +62,8 @@ public:
 	*/
 	void setSubmeshMaterialHandler(unsigned int meshid, unsigned int submeshid, unsigned int materialid);
 	void setMaterialTextureEventHandler(unsigned int materialid, unsigned int textureid, Texture::TextureType textureType);
-	//void importTextureHandler();
+	
+	void removeMatFromMeshes(unsigned int mat);
 
 private:
 
@@ -82,6 +86,11 @@ private:
 	inline static SubmeshMap  m_submeshMap  = {};
 	inline static ShaderMap   m_shaderMap   = {};
 	inline static MaterialMap m_materialMap = {};
+
+	/*
+	* Fallback assets
+	*/
+	std::unique_ptr<Material> m_fallbackMaterial;
 
 private:
 	ResourceManager();

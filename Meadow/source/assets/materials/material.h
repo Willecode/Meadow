@@ -10,9 +10,10 @@ class Material : public Asset
 {
 public:
 	Material(std::string name = "Nameless material");
+	bool operator==(const Material& other);
 	AssetType getAssetType() override;
 
-	void passToShader(ShaderManager* sdrMan);
+	void passToShader();
 	/*
 	* Texture map setter. Pass in nullptr to disable map.
 	*/

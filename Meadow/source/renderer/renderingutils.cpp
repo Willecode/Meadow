@@ -2,7 +2,7 @@
 #include "service_locator/rendererlocator.h"
 float RenderingUtils::outlineWidth = 1.05f;
 
-void RenderingUtils::maskMeshOutlines(SceneNode* node, ShaderManager* sdrMan)
+void RenderingUtils::maskMeshOutlines(SceneNode* node)
 {
 	Renderer* rend = RendererLocator::getRenderer();
 	rend->depthTesting(false); // disable depth testing
@@ -19,7 +19,7 @@ void RenderingUtils::maskMeshOutlines(SceneNode* node, ShaderManager* sdrMan)
 	glm::mat4 scaledModelMat = glm::scale(modelMat, glm::vec3(outlineWidth)); // scale the modelmat
 
 	if (node->getMesh() != nullptr)
-		node->getMesh()->drawWithoutMaterial(scaledModelMat, sdrMan); // render scaled mesh
+		node->getMesh()->drawWithoutMaterial(scaledModelMat); // render scaled mesh
 
 	rend->setStencilFunc(Renderer::TestingFuncs::ALWAYS, 1, 0xFF);
 	rend->setStencilOp(
@@ -28,7 +28,7 @@ void RenderingUtils::maskMeshOutlines(SceneNode* node, ShaderManager* sdrMan)
 		Renderer::TestingActions::REPLACE); // Render mesh in 1's
 
 	if (node->getMesh() != nullptr)
-		node->getMesh()->drawWithoutMaterial(modelMat, sdrMan); // render mesh
+		node->getMesh()->drawWithoutMaterial(modelMat); // render mesh
 	
 	rend->setStencilMask(0);
 

@@ -12,12 +12,10 @@ Application::Application():
     m_inputGather(),
     m_renderer(OpenGLRenderer()),
     m_logger(Logger()),
-    m_shaderManager(),
     m_scene(nullptr),
     appFailed(false),
     m_UIScraper(),
     m_postProcessing(PostProcessing()),
-    m_lighting(Lighting()),
     m_importer()
 {   
 
@@ -54,33 +52,12 @@ Application::Application():
     /*
     * Init shadermanager
     */
-    m_shaderManager.init();
-    /*
-    * Provide shaderman some shaders
-    */
-    //auto phongSdr      = std::make_unique<Shader>(0, "shaders/object.vs", "shaders/pbr.fs");
-    //auto colorSdr      = std::make_unique<Shader>(1, "shaders/object.vs", "shaders/coloronly.fs");
-    //auto depthSdr      = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
-    //auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessing.fs");
-    //auto screenQuadSdrMS = std::make_unique<Shader>(3, "shaders/2d.vs"    , "shaders/postprocessingmultisample.fs");
-    //auto skyboxSdr     = std::make_unique<Shader>(4, "shaders/skybox.vs"     , "shaders/skybox.fs");
-    //m_shaderManager.provideShader("phong", std::move(phongSdr));
-    //m_shaderManager.provideShader("color", std::move(colorSdr));
-    //m_shaderManager.provideShader("depth", std::move(depthSdr));
-    //m_shaderManager.provideShader("postprocess", std::move(screenQuadSdr));
-    //m_shaderManager.provideShader("postprocessMS", std::move(screenQuadSdrMS));
-    //m_shaderManager.provideShader("skybox", std::move(skyboxSdr));
-    //m_shaderManager.setCurrentShader("phong"); // Set current shader to prevent nullptr
+    ShaderManager::getInstance().init();
 
     /*
     * Initialize postprocessing
     */
-    m_postProcessing.init(&m_shaderManager);
-
-    /*
-    * Initialize lighting
-    */
-    m_lighting.init(&m_shaderManager);
+    m_postProcessing.init();
 
     /*
     * Create a scene for entities
@@ -233,6 +210,7 @@ void Application::run()
 
     ResourceManager& manager = ResourceManager::getInstance();
     WindowManager& windowMan = WindowManager::getInstance();
+    ShaderManager& sdrMan = ShaderManager::getInstance();
     /////////////////////////
     // Intermediate fb to blit to
     /////////////////////////
@@ -358,8 +336,8 @@ void Application::run()
         if (m_scene->getActiveNode() != nullptr)
         {
             //m_shaderManager.setCurrentShader("phong");
-            m_shaderManager.bindShader(ShaderManager::ShaderType::PBR);
-            RenderingUtils::maskMeshOutlines(m_scene->getActiveNode(), &m_shaderManager);
+            sdrMan.bindShader(ShaderManager::ShaderType::PBR);
+            RenderingUtils::maskMeshOutlines(m_scene->getActiveNode());
         }
             
         /*
@@ -374,23 +352,23 @@ void Application::run()
         * This is should be done some other way.
         */
         Camera* cam = m_scene->getCamera();
-        auto cameraDependantSdrs = m_shaderManager.getCameraDependant();
-        m_shaderManager.setFrameUniform("viewSkybox", glm::mat4(glm::mat3(cam->getViewMatrix()))); 
-        m_shaderManager.setFrameUniform("view", cam->getViewMatrix()); // for vertex shader
-        m_shaderManager.setFrameUniform("projection", cam->getProjectionMatrix());
-        m_shaderManager.setFrameUniform("viewPos", cam->position);
+        auto cameraDependantSdrs = sdrMan.getCameraDependant();
+        sdrMan.setFrameUniform("viewSkybox", glm::mat4(glm::mat3(cam->getViewMatrix()))); 
+        sdrMan.setFrameUniform("view", cam->getViewMatrix()); // for vertex shader
+        sdrMan.setFrameUniform("projection", cam->getProjectionMatrix());
+        sdrMan.setFrameUniform("viewPos", cam->position);
         for (int i = 0; i < cameraDependantSdrs->size(); i++) {
-            m_shaderManager.bindShader((*cameraDependantSdrs)[i]);
-            m_shaderManager.forwardFrameUniforms();
+            sdrMan.bindShader((*cameraDependantSdrs)[i]);
+            sdrMan.forwardFrameUniforms();
         }
 
         /*
         * Render skybox
         */
-        m_shaderManager.bindShader(ShaderManager::ShaderType::SKYBOX);
+        sdrMan.bindShader(ShaderManager::ShaderType::SKYBOX);
         m_renderer.depthMask(false);
         m_renderer.depthTesting(false);
-        manager.getcubemap(skyboxId)->draw(&m_shaderManager);
+        manager.getcubemap(skyboxId)->draw();
 
         /*
         * Update scene
@@ -403,8 +381,8 @@ void Application::run()
         m_renderer.depthTesting(true);
         m_renderer.blending(true);
         m_renderer.depthMask(true);
-        m_shaderManager.bindShader(ShaderManager::ShaderType::PBR);
-        m_scene->render(&m_shaderManager);
+        sdrMan.bindShader(ShaderManager::ShaderType::PBR);
+        m_scene->render();
 
         /*
         * If MSAA on then blit to intermediate frame buffer
@@ -427,16 +405,21 @@ void Application::run()
         /*
         * Do postprocessing pass
         */
-        m_shaderManager.bindShader(ShaderManager::ShaderType::POSTPROCESS);
+        sdrMan.bindShader(ShaderManager::ShaderType::POSTPROCESS);
         m_renderer.setViewportSize(windowMan.width, windowMan.height);
-        m_shaderManager.forwardFrameUniforms();
-        manager.getMesh2D(screenQuad)->draw(&m_shaderManager);
+        sdrMan.forwardFrameUniforms();
+        manager.getMesh2D(screenQuad)->draw();
 
         /*
         * Render UI
         */
         m_UIScraper.update(m_scene.get(), &m_postProcessing);
         m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getSceneState(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags());
+
+        /*
+        * Process event queue
+        */
+        InputEvents::EventQueue::processQueue();
 
         windowMan.swapBuffers();
     }

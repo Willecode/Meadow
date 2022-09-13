@@ -4,6 +4,7 @@
 #include "service_locator/loggerlocator.h"
 #include "importutility.h"
 #include "imageloader.h"
+#include "assets/materials/colormaterial.h"
 
 ResourceManager::ResourceManager()
 {
@@ -16,9 +17,16 @@ ResourceManager::ResourceManager()
 	InputEvents::setMaterialTextureEvent::subscribe(
 		std::bind(&ResourceManager::setMaterialTextureEventHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 	);
-	/*InputEvents::importTextureEvent::subscribe(
-		std::bind(&ResourceManager::importTextureHandler, this)
-	);*/
+	InputEvents::DeleteMaterialEvent::subscribe(
+		std::bind(&ResourceManager::deleteMaterial, this, std::placeholders::_1)
+	);
+
+	/*
+	* Create a fallback material
+	*/
+	m_fallbackMaterial = std::make_unique<ColorMaterial>("Engine default material");
+	m_fallbackMaterial->setId(0);
+
 }
 
 unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
@@ -150,6 +158,12 @@ unsigned int ResourceManager::storeMaterial(std::unique_ptr<Material> material)
 	return newId;
 }
 
+void ResourceManager::deleteMaterial(unsigned int materialId)
+{
+	removeMatFromMeshes(materialId);
+	m_materialMap.erase(materialId);
+}
+
 Material* ResourceManager::getMaterial(unsigned int materialId)
 {
 	if (materialId == 0)
@@ -160,6 +174,21 @@ Material* ResourceManager::getMaterial(unsigned int materialId)
 		return nullptr;
 	}
 	return it->second.get();
+}
+
+Material* ResourceManager::getFallbackMaterial()
+{
+	return m_fallbackMaterial.get();
+}
+
+unsigned int ResourceManager::getMaterialId(Material* mat)
+{
+	for (auto const& m : m_materialMap) {
+		if ((*m.second) == *mat) {
+			return m.first;
+		}
+	}
+	return 0;
 }
 
 const ResourceManager::MaterialMap* ResourceManager::getMaterialMap()
@@ -236,35 +265,23 @@ void ResourceManager::setMaterialTextureEventHandler(unsigned int materialid, un
 	}
 }
 
-//void ResourceManager::importTextureHandler()
-//{
-//
-//	/*
-//	* Open file explorer, get path to the chosen file
-//	*/
-//	std::string filename;
-//	if (!ImportUtility::fileBrowserOpenFile(filename, ImportUtility::FileType::PNGJPG))
-//		return;
-//
-//	/*
-//	* Load file
-//	*/
-//	int width, height;
-//	auto vecptr = std::make_unique<std::vector<unsigned char>>();
-//	Renderer::ImageFormat fmt;
-//	ImageLoader loader;
-//	loader.loadImage(filename, width, height, fmt, *vecptr.get());
-//
-//	/*
-//	* Create texture object
-//	*/
-//	auto texPtr = std::make_unique<Texture>(std::move(vecptr), width, height, fmt, Renderer::ImageFormat::sRGB, filename);
-//
-//	/*
-//	* Store it
-//	*/
-//	storeTexture(std::move(texPtr));
-//
-//}
+void ResourceManager::removeMatFromMeshes(unsigned int matId)
+{
+	for (auto &mesh : m_meshMap) {
+		for (auto& submeshes : mesh.second->submeshes) {
+			if (submeshes.first->getId() == matId) {
+				// Copy the submeshes of found material
+				std::vector<SubMesh*> newVec;
+				newVec = submeshes.second;
 
+				// Append them to the fallback material submeshes
+				mesh.second->submeshes[m_fallbackMaterial.get()].insert(mesh.second->submeshes[m_fallbackMaterial.get()].end(), newVec.begin(), newVec.end());
 
+				//Remove the material from the mesh
+				mesh.second->submeshes.erase(submeshes.first);
+				break;
+			}
+				
+		}
+	}
+}

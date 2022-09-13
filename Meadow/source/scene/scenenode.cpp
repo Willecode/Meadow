@@ -101,7 +101,7 @@ void SceneNode::render(ShaderManager* sdrMan)
 		/*
 		* Draw!
 		*/
-		m_mesh->draw(m_modelMatrix, sdrMan);
+		m_mesh->draw(m_modelMatrix);
 	}
 		
 }

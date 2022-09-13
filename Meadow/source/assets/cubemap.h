@@ -16,7 +16,7 @@ public:
 		int height,
 		std::string name = "Nameless cubemap");
 	void load();
-	void draw(ShaderManager* sdrMan);
+	void draw();
 
 	AssetType getAssetType() override;
 private:

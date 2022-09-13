@@ -12,14 +12,16 @@ Mesh2D::Mesh2D(std::vector<Vertex2D> vertices, std::vector<unsigned int> indices
         throw std::invalid_argument("Mesh2D: received an empty vertices or indices vector");
 }
 
-void Mesh2D::draw(ShaderManager* sdrMan)
+void Mesh2D::draw()
 {
+    ShaderManager& sdrMan = ShaderManager::getInstance();
+
     /*
     * 2D meshes have one texture to sample from in the shaders,
     * The sampler will always be sampler 0
     */
     m_texture->bindToSampler(0);
-    sdrMan->setUniformDrawSpecific("screenTexture", 0);
+    sdrMan.setUniformDrawSpecific("screenTexture", 0);
     RendererLocator::getRenderer()->wireframe(false); // There isn't really a reason to draw a 2D mesh in wireframe
     RendererLocator::getRenderer()->drawMesh(getId());
 }

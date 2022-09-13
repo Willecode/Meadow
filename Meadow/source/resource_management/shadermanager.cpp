@@ -38,6 +38,12 @@ ShaderManager::ShaderManager() :
 	);
 }
 
+ShaderManager& ShaderManager::getInstance()
+{
+	static ShaderManager instance;
+	return instance;
+}
+
 void ShaderManager::init()
 {
 	/*
@@ -61,6 +67,12 @@ void ShaderManager::init()
 	m_cameraUnifDependantShaders.push_back(ShaderType::SKYBOX);
 
 	bindShader(ShaderType::PBR);
+
+	// Logging
+	// -------------
+	LoggerLocator::getLogger()->getLogger()->info("ShaderManager initialized");
+	// -------------
+
 	return;
 }
 
@@ -190,6 +202,26 @@ void ShaderManager::forwardFrameUniforms()
 		RendererLocator::getRenderer()->setFloat3(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_mat4MapFrame)
 		RendererLocator::getRenderer()->setMat4f(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+}
+
+void ShaderManager::clearDrawUniforms()
+{
+	m_boolMapDraw.clear();
+	m_intMapDraw.clear();
+	m_uintMapDraw.clear();
+	m_floatMapDraw.clear();
+	m_vec3MapDraw.clear();
+	m_mat4MapDraw.clear();
+}
+
+void ShaderManager::clearFrameUniforms()
+{
+	m_boolMapFrame.clear();
+	m_intMapFrame.clear();
+	m_uintMapFrame.clear();
+	m_floatMapFrame.clear();
+	m_vec3MapFrame.clear();
+	m_mat4MapFrame.clear();
 }
 
 unsigned int ShaderManager::getTexSamplerId(Texture::TextureType type)

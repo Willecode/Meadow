@@ -38,11 +38,9 @@ private:
 	InputGather m_inputGather;
 	UIDataScraper m_UIScraper;
 	OpenGLRenderer m_renderer;
-	ShaderManager m_shaderManager;
 	Logger m_logger;
 	UI m_ui;
 	PostProcessing m_postProcessing;
-	Lighting m_lighting;
 	Importer m_importer;
 };
 

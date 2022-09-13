@@ -6,7 +6,6 @@
 #include "input/inputevents.h"
 
 PostProcessing::PostProcessing() :
-    m_sdrMan(nullptr),
     m_grayscale(false),
     m_sharpen(false),
     m_negate(false)
@@ -26,9 +25,8 @@ PostProcessing::PostProcessing() :
     InputEvents::MSAAToggleEvent::subscribe(std::bind(&PostProcessing::MSAA, this, std::placeholders::_1));
 }
 
-void PostProcessing::init(ShaderManager* sdrMan)
+void PostProcessing::init()
 {
-    m_sdrMan = sdrMan;
     sharpen(false);
     grayscale(false);
     negate(false);
@@ -37,25 +35,25 @@ void PostProcessing::init(ShaderManager* sdrMan)
 
 void PostProcessing::sharpen(bool f)
 {
-    //m_sdrMan->setCurrentShader("postprocess");
-    m_sdrMan->bindShader(ShaderManager::ShaderType::POSTPROCESS);
-    m_sdrMan->setFrameUniform("sharpen", f);
+    ShaderManager& sdrMan = ShaderManager::getInstance();
+    sdrMan.bindShader(ShaderManager::ShaderType::POSTPROCESS);
+    sdrMan.setFrameUniform("sharpen", f);
     m_sharpen = f;
 }
 
 void PostProcessing::grayscale(bool f)
 {
-    //m_sdrMan->setCurrentShader("postprocess");
-    m_sdrMan->bindShader(ShaderManager::ShaderType::POSTPROCESS);
-    m_sdrMan->setFrameUniform("grayscale", f);
+    ShaderManager& sdrMan = ShaderManager::getInstance();
+    sdrMan.bindShader(ShaderManager::ShaderType::POSTPROCESS);
+    sdrMan.setFrameUniform("grayscale", f);
     m_grayscale = f;
 }
 
 void PostProcessing::negate(bool f)
 {
-    //m_sdrMan->setCurrentShader("postprocess");
-    m_sdrMan->bindShader(ShaderManager::ShaderType::POSTPROCESS);
-    m_sdrMan->setFrameUniform("negate", f);
+    ShaderManager& sdrMan = ShaderManager::getInstance();
+    sdrMan.bindShader(ShaderManager::ShaderType::POSTPROCESS);
+    sdrMan.setFrameUniform("negate", f);
     m_negate = f;
 }
 

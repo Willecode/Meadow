@@ -16,6 +16,22 @@
 #include "resource_management/shadermanager.h"
 namespace InputEvents
 {
+	/*
+	* This class stores the callbacks of notified events.
+	*/
+	class EventQueue {
+	public:
+		static void addCallback(std::function<void(unsigned int)> f, unsigned int arg) {
+			m_voidUintHandlers.push_back(std::make_pair(f, arg));
+		}
+		static void processQueue() {
+			for (auto h : m_voidUintHandlers) {
+				h.first(h.second);
+			}
+		}
+	private:
+		inline static std::vector<std::pair<std::function<void(unsigned int)>, unsigned int>> m_voidUintHandlers;
+	};
 	class CameraUpEvent
 	{
 	public:
@@ -249,6 +265,21 @@ namespace InputEvents
 		static void notify(unsigned int x) {
 			for (auto h : m_handlers) {
 				h(x);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class DeleteMaterialEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int x) {
+			for (auto h : m_handlers) {
+				EventQueue::addCallback(h, x);
 			}
 		}
 	private:

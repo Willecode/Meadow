@@ -1,28 +1,30 @@
 #include "mesh.h"
-
 Mesh::Mesh(std::string name) :
 	Asset(name),
 	submeshes()
 {
+
 }
 
-void Mesh::draw(glm::mat4 modelMat, ShaderManager* sdrMan)
+void Mesh::draw(glm::mat4 modelMat)
 {
-	sdrMan->setUniformDrawSpecific("model", modelMat);
+	ShaderManager& sdrMan = ShaderManager::getInstance();
+	sdrMan.setUniformDrawSpecific("model", modelMat);
 	for (auto const& materialMesh : submeshes) {
-		materialMesh.first->passToShader(sdrMan);
-		sdrMan->forwardUniformsDrawSpecific();
+		materialMesh.first->passToShader();
+		sdrMan.forwardUniformsDrawSpecific();
 		for (auto const& submesh : materialMesh.second) {
 			submesh->draw();
 		}
 	}
 }
 
-void Mesh::drawWithoutMaterial(glm::mat4 modelMat, ShaderManager* sdrMan)
+void Mesh::drawWithoutMaterial(glm::mat4 modelMat)
 {
-	sdrMan->setUniformDrawSpecific("model", modelMat);
+	ShaderManager& sdrMan = ShaderManager::getInstance();
+	sdrMan.setUniformDrawSpecific("model", modelMat);
 	for (auto const& materialMesh : submeshes) {
-		sdrMan->forwardUniformsDrawSpecific();
+		sdrMan.forwardUniformsDrawSpecific();
 		for (auto const& submesh : materialMesh.second) {
 			submesh->draw();
 		}

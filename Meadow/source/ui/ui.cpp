@@ -303,6 +303,10 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
             */
             if (m_chosenAssetType == Asset::AssetType::MATERIAL) {
                 MaterialUI* chosenMat = &uiAssets->materials.at(m_chosenAssetId);
+                if (ImGui::Button("Delete Material")) {
+                    InputEvents::DeleteMaterialEvent::notify(chosenMat->id);
+                    m_chosenAssetId = 0;
+                }
                 createMatTexCombos(chosenMat, uiAssets);
  
                 /*

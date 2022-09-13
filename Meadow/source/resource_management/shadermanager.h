@@ -4,6 +4,10 @@
 #include <unordered_map>
 #include "shader.h"
 #include "assets/texture.h"
+
+/*
+* Singleton shader manager
+*/
 class ShaderManager
 {
 public:
@@ -14,12 +18,12 @@ public:
 		DEPTH,
 		SKYBOX
 	};
+	static ShaderManager& getInstance();
+	ShaderManager(ShaderManager const&) = delete;
+	void operator=(ShaderManager const&) = delete;
 
-	ShaderManager();
 	void init();
-	//void provideShader(std::string name, std::unique_ptr<Shader> shader);
-	//void setCurrentShader(std::string name);
-	//Shader* getCurrentShader();
+
 	Shader* getShader(ShaderType sdr);
 	const std::vector<ShaderType>* getCameraDependant();
 	void bindShader(ShaderType sdr);
@@ -46,6 +50,9 @@ public:
 
 	void forwardUniformsDrawSpecific();
 	void forwardFrameUniforms();
+
+	void clearDrawUniforms();
+	void clearFrameUniforms();
 
 	unsigned int getTexSamplerId(Texture::TextureType type);
 private:
@@ -84,6 +91,7 @@ private:
 	std::unordered_map<Texture::TextureType, unsigned int> m_texSamplerMap;
 
 private:
+	ShaderManager();
 	void hotReloadShader(ShaderType type);
 };
 

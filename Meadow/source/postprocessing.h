@@ -4,7 +4,7 @@ class PostProcessing
 {
 public:
 	PostProcessing();
-	void init(ShaderManager* sdrMan);
+	void init();
 
 	/*
 	* Set postprocessing and antialiasing flags
@@ -22,7 +22,6 @@ public:
 	bool getNegate() const;
 	bool getMSAA() const;
 private:
-	ShaderManager* m_sdrMan;
 	// These are passed to postproc shader
 	bool m_sharpen, m_grayscale, m_negate;
 

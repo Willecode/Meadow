@@ -23,7 +23,7 @@ public:
 	/*
 	* Render all nodes in the scene
 	*/
-	void render(ShaderManager* sdrMan);
+	void render();
 	unsigned int addNode(unsigned int parent = 0);
 	unsigned int addNode(SceneNode* parent);
 	SceneNode* getNode(unsigned int id) const;

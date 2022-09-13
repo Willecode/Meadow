@@ -9,12 +9,18 @@ Material::Material(std::string name): Asset(name)
 {
 }
 
-void Material::passToShader(ShaderManager* sdrMan)
+bool Material::operator==(const Material& other)
+{
+	return getId() == other.getId();
+}
+
+void Material::passToShader()
 {
 	/*
 	* Set shader
 	*/
-	sdrMan->bindShader(getShaderType());
+	ShaderManager& sdrMan = ShaderManager::getInstance();
+	sdrMan.bindShader(getShaderType());
 
 	/*
 	* Pass in textures
@@ -22,10 +28,10 @@ void Material::passToShader(ShaderManager* sdrMan)
 	ShaderUniformNameMap uniNames;
 	for (auto tex : m_textures) {
 		// Set sampler id property
-		setProperty(uniNames.getTexMapName(tex.first), sdrMan->getTexSamplerId(tex.first));
+		setProperty(uniNames.getTexMapName(tex.first), sdrMan.getTexSamplerId(tex.first));
 		if (tex.second != nullptr) {
 			// bind the tex
-			RendererLocator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan->getTexSamplerId(tex.first));
+			RendererLocator::getRenderer()->bindTo2DSampler(tex.second->getId(), sdrMan.getTexSamplerId(tex.first));
 			
 			// Set tex present property
 			setProperty(uniNames.getHasTexMapName(tex.first), true);
@@ -40,30 +46,30 @@ void Material::passToShader(ShaderManager* sdrMan)
 	* Pass properties to shader as uniforms
 	*/
 	for (auto prop : m_boolPropsHidden)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_intPropsHidden)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_uintPropsHidden)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_floatPropsHidden)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_vec3PropsHidden)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_mat4PropsHidden)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 
 	for (auto prop : m_boolPropsExposed)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_intPropsExposed)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_uintPropsExposed)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_floatPropsExposed)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_vec3PropsExposed)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_mat4PropsExposed)
-		sdrMan->setUniformDrawSpecific(prop.first, prop.second);
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 }
 
 void Material::setProperty(std::string name, bool value, bool expose)

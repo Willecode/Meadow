@@ -55,8 +55,9 @@ void Scene::update(float deltatime, InputGather* input)
 	updateNode(m_nodes[0].get(), m_nodes[0].get(), m_camera.position);
 }
 
-void Scene::render(ShaderManager* sdrMan)
+void Scene::render()
 {
+	ShaderManager& sdrMan = ShaderManager::getInstance();
 	/*
 	* Set camera uniforms
 	*/
@@ -67,15 +68,16 @@ void Scene::render(ShaderManager* sdrMan)
 	/*
 	* Set light uniforms
 	*/
-	DirectionalLight::passAllInstancesToShader(sdrMan);
-	PointLight::passAllInstancesToShader(sdrMan);
+	DirectionalLight::passAllInstancesToShader(&sdrMan);
+	PointLight::passAllInstancesToShader(&sdrMan);
 	//Pointlight....
 	//nodePassLights(m_nodeMap[0].get(), sdrMan);
+
 
 	/*
 	* This is a good spot to forward frame constant uniforms to GPU
 	*/
-	sdrMan->forwardFrameUniforms();
+	sdrMan.forwardFrameUniforms();
 
 	/*
 	* Sort the drawing order
@@ -85,7 +87,7 @@ void Scene::render(ShaderManager* sdrMan)
 	/*
 	* Render each node
 	*/
-	drawNodes(sdrMan);
+	drawNodes(&sdrMan);
 }
 
 unsigned int Scene::addNode(unsigned int parent)
