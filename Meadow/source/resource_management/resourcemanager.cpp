@@ -5,6 +5,7 @@
 #include "importutility.h"
 #include "imageloader.h"
 #include "assets/materials/colormaterial.h"
+#include "shadermanager.h"
 
 ResourceManager::ResourceManager()
 {
@@ -162,6 +163,8 @@ void ResourceManager::deleteMaterial(unsigned int materialId)
 {
 	removeMatFromMeshes(materialId);
 	m_materialMap.erase(materialId);
+	ShaderManager::getInstance().clearDrawUniforms(); // Material might have had unique properties
+
 }
 
 Material* ResourceManager::getMaterial(unsigned int materialId)

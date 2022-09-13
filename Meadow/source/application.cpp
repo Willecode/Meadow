@@ -101,36 +101,86 @@ Application::Application():
     SubMesh* smesh = manager.getSubmesh(smeshid);
 
     newMeshPtr->addSubMesh(mat2, smesh);
-
     node->setMesh(newMeshPtr);
 
-    Camera c(1920.0f / 1080.0f, 0.1f, 100.0f);
-    auto renderer = RendererLocator::getRenderer();
-    //unsigned int sdrId = m_shaderManager.getCurrentShader()->getId();
-
+    /*
+    * Import some textures
+    */
     ImageLoader loader;
-    Renderer::ImageFormat fmt1;
-    int width1, height1;
-    auto vecptr1 = std::make_unique<std::vector<unsigned char>>();
-    Renderer::ImageFormat fmt2;
-    int width2, height2;
-    auto vecptr2 = std::make_unique<std::vector<unsigned char>>();
+    auto vecptr = std::make_unique<std::vector<unsigned char>>();
+    struct Tex {
+        std::string path;
+        Renderer::ImageFormat fmt;
+    };
 
-    loader.loadImage("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg", width1, height1, fmt1, *vecptr1.get());
-    loader.loadImage("C:/dev/Meadow/data/images/Bricks054_1K_Color.jpg", width2, height2, fmt2, *vecptr2.get());
+    // Material 1 textures
+    {
+        Tex t1;
+        t1.path = "C:/dev/Meadow/data/images/rustediron1-alt2-bl/rustediron1-alt2-bl/rustediron2_basecolor.png";
+        t1.fmt = Renderer::ImageFormat::sRGB;
+        Tex t2;
+        t2.path = "C:/dev/Meadow/data/images/rustediron1-alt2-bl/rustediron1-alt2-bl/rustediron2_metallic.png";
+        t2.fmt = Renderer::ImageFormat::R;
+        Tex t3;
+        t3.path = "C:/dev/Meadow/data/images/rustediron1-alt2-bl/rustediron1-alt2-bl/rustediron2_normal.png";
+        t3.fmt = Renderer::ImageFormat::RGB;
+        Tex t4;
+        t4.path = "C:/dev/Meadow/data/images/rustediron1-alt2-bl/rustediron1-alt2-bl/rustediron2_roughness.png";
+        t4.fmt = Renderer::ImageFormat::R;
 
-    auto texPtr = std::make_unique<Texture>(std::move(vecptr1), width1, height1, fmt1, Renderer::ImageFormat::sRGB, "WoodTex");
-    auto texPtr2 = std::make_unique<Texture>(std::move(vecptr2), width2, height2, fmt2, Renderer::ImageFormat::sRGB, "BrickTex");
+        std::vector<Tex> texVec = { t1, t2, t3, t4 };
+        std::vector<unsigned int> texIdVec;
+        int w, h;
+        Renderer::ImageFormat inFmt;
+        for (auto& t : texVec) {
+            loader.loadImage(t.path, w, h, inFmt, *vecptr.get());
+            auto texPtr = std::make_unique<Texture>(std::move(vecptr), w, h, inFmt, t.fmt, t.path);
+            unsigned int texId = manager.storeTexture(std::move(texPtr));
+            texIdVec.push_back(texId);
+            vecptr = std::make_unique<std::vector<unsigned char>>();
+        }
 
-    unsigned int texId = manager.storeTexture(std::move(texPtr));
-    unsigned int texId2 = manager.storeTexture(std::move(texPtr2));
+        mat2->setTexture(manager.getTexture(texIdVec[0]), Texture::TextureType::ALBEDO_MAP);
+        mat2->setTexture(manager.getTexture(texIdVec[1]), Texture::TextureType::METALLIC_MAP);
+        mat2->setTexture(manager.getTexture(texIdVec[2]), Texture::TextureType::NORMAL_MAP);
+        mat2->setTexture(manager.getTexture(texIdVec[3]), Texture::TextureType::ROUGHNESS_MAP);
+    }
+    // Material 2 textures
+    {
+        Tex t1;
+        t1.path = "C:/dev/Meadow/data/images/ravine-rock1-ue/ravine-rock1-ue/ravine-rock1_albedo.png";
+        t1.fmt = Renderer::ImageFormat::sRGB;
+        Tex t2;
+        t2.path = "C:/dev/Meadow/data/images/ravine-rock1-ue/ravine-rock1-ue/ravine-rock1_metallic.png";
+        t2.fmt = Renderer::ImageFormat::R;
+        Tex t3;
+        t3.path = "C:/dev/Meadow/data/images/ravine-rock1-ue/ravine-rock1-ue/ravine-rock1_normal-ogl.png";
+        t3.fmt = Renderer::ImageFormat::RGB;
+        Tex t4;
+        t4.path = "C:/dev/Meadow/data/images/ravine-rock1-ue/ravine-rock1-ue/ravine-rock1_roughness.png";
+        t4.fmt = Renderer::ImageFormat::R;
+        Tex t5;
+        t5.path = "C:/dev/Meadow/data/images/ravine-rock1-ue/ravine-rock1-ue/ravine-rock1_ao.png";
+        t5.fmt = Renderer::ImageFormat::R;
 
-    Texture* tex = manager.getTexture(texId);
-    Texture* tex2 = manager.getTexture(texId2);
+        std::vector<Tex> texVec = { t1, t2, t3, t4, t5 };
+        std::vector<unsigned int> texIdVec;
+        int w, h;
+        Renderer::ImageFormat inFmt;
+        for (auto& t : texVec) {
+            loader.loadImage(t.path, w, h, inFmt, *vecptr.get());
+            auto texPtr = std::make_unique<Texture>(std::move(vecptr), w, h, inFmt, t.fmt, t.path);
+            unsigned int texId = manager.storeTexture(std::move(texPtr));
+            texIdVec.push_back(texId);
+            vecptr = std::make_unique<std::vector<unsigned char>>();
+        }
 
-    mat2->setTexture(tex, Texture::TextureType::ALBEDO_MAP);
-    mat4->setTexture(tex2, Texture::TextureType::ALBEDO_MAP);
-
+        mat4->setTexture(manager.getTexture(texIdVec[0]), Texture::TextureType::ALBEDO_MAP);
+        mat4->setTexture(manager.getTexture(texIdVec[1]), Texture::TextureType::METALLIC_MAP);
+        mat4->setTexture(manager.getTexture(texIdVec[2]), Texture::TextureType::NORMAL_MAP);
+        mat4->setTexture(manager.getTexture(texIdVec[3]), Texture::TextureType::ROUGHNESS_MAP);
+        mat4->setTexture(manager.getTexture(texIdVec[4]), Texture::TextureType::AO_MAP);
+    }
 
     /*
     * Add some transform to the node
@@ -140,9 +190,9 @@ Application::Application():
     /*
     * Add another node
     */
-    //unsigned int node2Id = m_scene->addNode();
-    //SceneNode* node2 = m_scene->getNode(node2Id);
-    //node2->name = "Sphere";
+    unsigned int node2Id = m_scene->addNode();
+    SceneNode* node2 = m_scene->getNode(node2Id);
+    node2->name = "Sphere";
 
     auto m2 = PrimitiveCreation::createSphere(15, 20);
     unsigned int mesh2id = manager.storeSubmesh(std::move(m2));
@@ -150,14 +200,14 @@ Application::Application():
     
     unsigned int meshNode2id = manager.storeMesh(std::make_unique<Mesh>("Sphere"));
     Mesh* meshNode2 = manager.getMesh(meshNode2id);
-    //node2->setMesh(meshNode2);
+    node2->setMesh(meshNode2);
 
     meshNode2->addSubMesh(mat4, mesh2);
     /*
     * Transform the second node 
     */
-    /*node2->position = glm::vec3(.0f, -0.1f, .0f);
-    node2->scale = glm::vec3(3.0f, 0.01f, 3.0f);*/
+    node2->position = glm::vec3(-3.0f, -0.1f, .0f);
+    //node2->scale = glm::vec3(3.0f, 0.01f, 3.0f);
     
     /*
     * Add third node and mesh and mat
@@ -173,7 +223,7 @@ Application::Application():
     Mesh* thirdMesh = manager.getMesh(thirdMeshID);
     thirdMesh->addSubMesh(thirdMaterial, sphereSubmesh);
     thirdNode->setMesh(thirdMesh);
-    thirdNode->scale = glm::vec3(0.2f);
+    thirdNode->scale = glm::vec3(0.1f);
     thirdNode->position = glm::vec3(0.9f, 1.f, 1.5f);
     thirdNode->name = "LampNode";
 

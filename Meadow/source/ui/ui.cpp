@@ -287,7 +287,12 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
                 for (auto const& smesh : uiAssets->meshes.at(m_chosenAssetId).submeshes) {
                     ImGui::Text(uiAssets->submeshes.at(smesh.first).name.c_str());
                     ImGui::SameLine();
-                    if (ImGui::BeginCombo("##materialcombo", uiAssets->materials.at(smesh.second).name.c_str())) {
+                    std::string previewVal;
+                    if (smesh.second == 0)
+                        previewVal = "No material";
+                    else
+                        previewVal = uiAssets->materials.at(smesh.second).name;
+                    if (ImGui::BeginCombo("##materialcombo", previewVal.c_str())) {
                         for (auto const& mat : uiAssets->materials) {
                             if (ImGui::Selectable(mat.second.name.c_str(), false)) {
                                 InputEvents::SetSubmeshMaterialEvent::notify(
@@ -314,7 +319,7 @@ void UI::renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps*
                 */
                 for (auto& prop : *chosenMat->propertiesf) {
                     ImGui::Text(prop.first.c_str());
-                    ImGui::DragFloat(prop.first.c_str(), &prop.second, 2);
+                    ImGui::DragFloat(prop.first.c_str(), &prop.second, 0.01);
                 }
                 for (auto& prop : *chosenMat->propertiesv3) {
                     ImGui::Text(prop.first.c_str());

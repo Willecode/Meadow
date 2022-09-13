@@ -106,15 +106,43 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 // ----------------------------------------------------------------------------
+vec3 getAlbedo(){
+    if (material.hasAlbedoMap)
+        return texture(material.albedoMap, TexCoords).rgb;
+    else
+        return material.albedo;
+}
+// ----------------------------------------------------------------------------
+float getMetallic(){
+    if (material.hasMetallicMap)
+        return texture(material.metallicMap, TexCoords).r;
+    else
+        return material.metallic;
+}
+// ----------------------------------------------------------------------------
+float getRoughness(){
+    if (material.hasRoughnessMap)
+        return texture(material.roughnessMap, TexCoords).r;
+    else
+        return material.roughness;
+}
+// ----------------------------------------------------------------------------
+float getAo(){
+    if (material.hasAoMap)
+        return texture(material.aoMap, TexCoords).r;
+    else
+        return 1;
+}
+
 void main()
-{		
-    vec3 albedo     = pow(texture(material.albedoMap, TexCoords).rgb, vec3(2.2));
-    float metallic  = texture(material.metallicMap, TexCoords).r;
-    float roughness = texture(material.roughnessMap, TexCoords).r;
-    float ao        = 1;
-    if (material.hasAlbedoMap){
-        ao = texture(material.aoMap, TexCoords).r;
-    }
+{	
+    // Check for texture maps
+    // -----------------------------
+    vec3 albedo     = getAlbedo();
+    float metallic  = getMetallic();
+    float roughness = getRoughness();
+    float ao        = getAo();
+    // -----------------------------
 
     vec3 N = getNormalDir();
     vec3 V = normalize(viewPos - fragPos);
