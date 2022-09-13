@@ -96,6 +96,12 @@ std::unique_ptr<SubMesh> PrimitiveCreation::createSphere(int sectorCount, int st
             indices.push_back(nextStackFirst + j + 1);
         }
     }
+
+    // Add tangents and bitangents (just copypasted this from the cube generation... hope this works lmao)
+    for (int i = 0; i < indices.size(); i += 3) {
+        addTangentBitangent(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]]);
+    }
+
     LoggerLocator::getLogger()->getLogger()->info("created a sphere with {} vertices", vertices.size());
     return std::make_unique<SubMesh>(vertices, indices, "Sphere");
 }
