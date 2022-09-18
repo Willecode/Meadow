@@ -1,5 +1,5 @@
 #include "modelimporting.h"
-#if 1
+#if 0
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>

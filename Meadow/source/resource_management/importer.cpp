@@ -1,3 +1,4 @@
+#if 0
 #include "importer.h"
 #include "resource_management/resourcemanager.h"
 #include "resource_management/imageloader.h"
@@ -124,3 +125,4 @@ bool Importer::sceneProvided()
 	else
 		return true;
 }
+#endif

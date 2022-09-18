@@ -18,7 +18,7 @@
     <ClCompile Include="source\primitivecreation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\scene\camera.cpp">
+    <ClCompile Include="source\ecs\core\editorcamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\resource_management\modelimporting.cpp">
@@ -43,9 +43,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\service_locator\rendererlocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\scene\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\shader.cpp">
@@ -156,6 +153,39 @@
     <ClCompile Include="source\assets\materials\colormaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\ecs\core\scenegraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\core\componentmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\systems\rendersystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\systems\physicssystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\systems\controlsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\systems\lightsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\core\ecscoordinator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\core\systemmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\systems\camerasystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\core\scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ecs\systems\scenegraphsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\object.vs" />
@@ -208,7 +238,7 @@
     <ClInclude Include="source\primitivecreation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\scene\camera.h">
+    <ClInclude Include="source\ecs\core\editorcamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resource_management\modelimporting.h">
@@ -230,9 +260,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\service_locator\rendererlocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\scene\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\shader.h">
@@ -329,6 +356,66 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\assets\materials\colormaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\ecstypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\componentarray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\scenegraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\components\transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\componentmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\components\model3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\systems\rendersystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\systems\physicssystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\systems\controlsystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\components\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\components\controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\systems\lightsystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\components\light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\ecscoordinator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\systemmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\systems\camerasystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\systems\scenegraphsystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\internalevents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

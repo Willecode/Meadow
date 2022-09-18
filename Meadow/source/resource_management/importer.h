@@ -1,3 +1,4 @@
+#if 0
 #pragma once
 #include "scene/scene.h"
 /*
@@ -36,3 +37,4 @@ private:
 	Scene* m_scene;
 };
 
+#endif

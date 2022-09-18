@@ -1,3 +1,4 @@
+#if 0
 #pragma once
 #include <memory>
 #include <string>
@@ -13,3 +14,4 @@ namespace ModelImporting
 {
 	void objsFromFile(std::string path, Scene* scene, unsigned int parentId);
 }
+#endif 

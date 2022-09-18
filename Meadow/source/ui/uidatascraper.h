@@ -1,3 +1,4 @@
+#if 0
 #pragma once
 #include "scene/scene.h"
 #include "postprocessing.h"
@@ -57,3 +58,4 @@ private:
 	MaterialUI constructMaterialUI(Material*);
 };
 
+#endif

@@ -10,6 +10,9 @@ InputGather::InputGather():
 	m_inputFlags[InputFlag::CameraBackward] = false;
 	m_inputFlags[InputFlag::CameraLeft] = false;
 	m_inputFlags[InputFlag::CameraRight] = false;
+
+	InputEvents::MouseMoveEvent::subscribe(std::bind(&InputGather::mousePosHandler, this, std::placeholders::_1, std::placeholders::_2));
+
 }
 
 void InputGather::init(WindowManager* windowMan)
@@ -57,7 +60,7 @@ void InputGather::pollInputs()
 	m_inputFlags[InputFlag::CameraRight] = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
 }
 
-bool InputGather::getInputFlag(InputFlag flag)
+bool InputGather::getInputFlag(InputFlag flag) const
 {
 	return m_inputFlags.at(flag);
 }
@@ -83,4 +86,12 @@ void InputGather::mouseButtonCallback(GLFWwindow* window, int button, int action
 		auto func = m_inputMap.getEventFunc(button, action == GLFW_PRESS);
 		func();
 	}
+}
+
+void InputGather::mousePosHandler(float x, float y)
+{
+	lastFrameMouseX = mouseX;
+	lastFrameMouseY = mouseY;
+	mouseX = x;
+	mouseY = y;
 }

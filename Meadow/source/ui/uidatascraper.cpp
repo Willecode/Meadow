@@ -1,3 +1,4 @@
+#if 0
 #include "uidatascraper.h"
 
 UIDataScraper::UIDataScraper() : m_UIAssetMaps()
@@ -152,3 +153,5 @@ MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
 
 	return newAss;
 }
+
+#endif

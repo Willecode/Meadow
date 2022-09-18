@@ -1,7 +1,9 @@
+#if 1
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-class Camera
+#include <input/inputgather.h>
+class EditorCamera
 {
 public:
 	glm::vec3 position;
@@ -12,8 +14,10 @@ public:
 	float pitch;
 	float speed;
 	
-	Camera(float aspect, float zNear, float zFar, glm::vec3 position = glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
+	EditorCamera(float aspect, float zNear, float zFar, glm::vec3 position = glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
 	
+	void update(float dt, const InputGather& input, bool lockMovement);
+
 	/*
 	* Camera matrix access
 	*/
@@ -25,6 +29,7 @@ public:
 	*/
 	void setFov(const float fovIn);
 	void setAspect(const int width, const int height);
+	void setAspect(float aspect);
 	float getFov();
 
 	/*
@@ -46,3 +51,4 @@ private:
 	bool firstMouseMove;
 };
 
+#endif 0

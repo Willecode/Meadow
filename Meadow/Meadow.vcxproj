@@ -157,6 +157,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\ecs\systems\scenegraphsystem.cpp" />
+    <ClCompile Include="source\ecs\core\scene.cpp" />
+    <ClCompile Include="source\ecs\systems\camerasystem.cpp" />
+    <ClCompile Include="source\ecs\core\ecscoordinator.cpp" />
+    <ClCompile Include="source\ecs\systems\lightsystem.cpp" />
+    <ClCompile Include="source\ecs\core\componentmanager.cpp" />
+    <ClCompile Include="source\ecs\systems\controlsystem.cpp" />
+    <ClCompile Include="source\ecs\systems\physicssystem.cpp" />
+    <ClCompile Include="source\ecs\systems\rendersystem.cpp" />
+    <ClCompile Include="source\ecs\core\scenegraph.cpp" />
     <ClCompile Include="source\assets\materials\colormaterial.cpp" />
     <ClCompile Include="source\shaderuniformnamemap.cpp" />
     <ClCompile Include="source\assets\materials\material.cpp" />
@@ -189,13 +199,12 @@
     <ClCompile Include="source\resource_management\resourcemanager.cpp" />
     <ClCompile Include="source\scene\scenenode.cpp" />
     <ClCompile Include="source\shader.cpp" />
-    <ClCompile Include="source\scene\scene.cpp" />
     <ClCompile Include="source\service_locator\rendererlocator.cpp" />
     <ClCompile Include="source\renderer\openglrenderer.cpp" />
     <ClCompile Include="source\renderer\renderer.cpp" />
     <ClCompile Include="source\resource_management\shadermanager.cpp" />
     <ClCompile Include="source\application.cpp" />
-    <ClCompile Include="source\scene\camera.cpp" />
+    <ClCompile Include="source\ecs\core\editorcamera.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\resource_management\modelimporting.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -206,6 +215,7 @@
     <ClCompile Include="source\ui\ui.cpp" />
     <ClCompile Include="source\ui\uidatascraper.cpp" />
     <ClCompile Include="source\ui\uiflags.cpp" />
+    <ClCompile Include="source\ecs\core\systemmanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\2d.vs" />
@@ -232,7 +242,25 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\ecs\core\internalevents.h" />
+    <ClInclude Include="source\ecs\systems\scenegraphsystem.h" />
+    <ClInclude Include="source\ecs\core\scene.h" />
+    <ClInclude Include="source\ecs\systems\camerasystem.h" />
+    <ClInclude Include="source\ecs\core\ecscoordinator.h" />
+    <ClInclude Include="source\ecs\systems\lightsystem.h" />
+    <ClInclude Include="source\ecs\core\componentmanager.h" />
+    <ClInclude Include="source\ecs\components\camera.h" />
+    <ClInclude Include="source\ecs\components\controller.h" />
+    <ClInclude Include="source\ecs\components\light.h" />
+    <ClInclude Include="source\ecs\systems\controlsystem.h" />
+    <ClInclude Include="source\ecs\systems\physicssystem.h" />
+    <ClInclude Include="source\ecs\systems\rendersystem.h" />
+    <ClInclude Include="source\ecs\components\model3d.h" />
+    <ClInclude Include="source\ecs\components\transform.h" />
+    <ClInclude Include="source\ecs\core\scenegraph.h" />
     <ClInclude Include="source\assets\materials\colormaterial.h" />
+    <ClInclude Include="source\ecs\core\componentarray.h" />
+    <ClInclude Include="source\ecs\core\ecstypes.h" />
     <ClInclude Include="source\shaderuniformnamemap.h" />
     <ClInclude Include="source\assets\materials\material.h" />
     <ClInclude Include="source\assets\materials\PBRMaterial.h" />
@@ -259,13 +287,12 @@
     <ClInclude Include="source\resource_management\resourcemanager.h" />
     <ClInclude Include="source\scene\scenenode.h" />
     <ClInclude Include="source\shader.h" />
-    <ClInclude Include="source\scene\scene.h" />
     <ClInclude Include="source\service_locator\rendererlocator.h" />
     <ClInclude Include="source\renderer\openglrenderer.h" />
     <ClInclude Include="source\renderer\renderer.h" />
     <ClInclude Include="source\resource_management\shadermanager.h" />
     <ClInclude Include="source\application.h" />
-    <ClInclude Include="source\scene\camera.h" />
+    <ClInclude Include="source\ecs\core\editorcamera.h" />
     <ClInclude Include="source\resource_management\modelimporting.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -277,6 +304,8 @@
     <ClInclude Include="source\ui\ui.h" />
     <ClInclude Include="source\ui\uidatascraper.h" />
     <ClInclude Include="source\ui\uiflags.h" />
+    <ClInclude Include="source\ecs\core\systemmanager.h" />
+    <ClInclude Include="source\ecs\core\system.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
