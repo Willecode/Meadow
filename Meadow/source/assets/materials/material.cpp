@@ -1,5 +1,5 @@
 #include "material.h"
-#include "shaderuniformnamemap.h"
+#include "shader/shaderuniformnamemap.h"
 Material::AssetType Material::getAssetType()
 {
 	return AssetType::MATERIAL;

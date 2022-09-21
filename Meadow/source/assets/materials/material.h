@@ -1,7 +1,7 @@
 #pragma once
 #include "assets/texture.h"
 #include <unordered_map>
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 
 namespace MaterialConstants {
 	const glm::vec3 DEFAULT_COLOR = glm::vec3(1.0f);

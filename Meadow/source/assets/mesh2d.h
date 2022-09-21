@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 //#include "assets/texture.h"
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 
 /*
 * Used to render in 2D

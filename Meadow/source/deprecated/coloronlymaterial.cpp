@@ -1,6 +1,6 @@
 #include "coloronlymaterial.h"
 #include "service_locator/locator.h"
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 
 ColorOnlyMaterial::ColorOnlyMaterial(): ColorOnlyMaterial(MaterialConstants::DEFAULT_COLOR)
 {

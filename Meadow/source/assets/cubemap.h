@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 #include <array>
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 class Cubemap : public Asset
 {
 public:

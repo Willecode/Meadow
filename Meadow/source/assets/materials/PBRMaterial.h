@@ -1,6 +1,6 @@
 #pragma once
 #include "material.h"
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 class PBRMaterial : public Material
 {
 public:

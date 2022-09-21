@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\primitivecreation.cpp">
+    <ClCompile Include="source\utils\primitivecreation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\ecs\core\editorcamera.cpp">
@@ -33,7 +33,7 @@
     <ClCompile Include="source\windowmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\resource_management\shadermanager.cpp">
+    <ClCompile Include="source\shader\shadermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\renderer.cpp">
@@ -45,7 +45,7 @@
     <ClCompile Include="source\service_locator\rendererlocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\shader.cpp">
+    <ClCompile Include="source\shader\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\resource_management\resourcemanager.cpp">
@@ -61,9 +61,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\assets\asset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\scene\scenenode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\input\inputmap.cpp">
@@ -120,13 +117,10 @@
     <ClCompile Include="source\assets\mesh2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\postprocessing.cpp">
+    <ClCompile Include="source\postprocessing\postprocessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\assets\cubemap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\lighting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\ui\uiflags.cpp">
@@ -147,7 +141,7 @@
     <ClCompile Include="source\assets\materials\material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\shaderuniformnamemap.cpp">
+    <ClCompile Include="source\shader\shaderuniformnamemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\assets\materials\colormaterial.cpp">
@@ -235,7 +229,7 @@
     <ClInclude Include="source\stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\primitivecreation.h">
+    <ClInclude Include="source\utils\primitivecreation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ecs\core\editorcamera.h">
@@ -250,7 +244,7 @@
     <ClInclude Include="source\windowmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\resource_management\shadermanager.h">
+    <ClInclude Include="source\shader\shadermanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\renderer.h">
@@ -262,7 +256,7 @@
     <ClInclude Include="source\service_locator\rendererlocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\shader.h">
+    <ClInclude Include="source\shader\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resource_management\resourcemanager.h">
@@ -278,9 +272,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\assets\asset.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\scene\scenenode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\input\inputmap.h">
@@ -322,13 +313,10 @@
     <ClInclude Include="source\assets\vertex2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\postprocessing.h">
+    <ClInclude Include="source\postprocessing\postprocessing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\assets\cubemap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\lighting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ui\uiflags.h">
@@ -349,10 +337,10 @@
     <ClInclude Include="source\assets\materials\material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\shaderuniformnames.h">
+    <ClInclude Include="source\shader\shaderuniformnames.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\shaderuniformnamemap.h">
+    <ClInclude Include="source\shader\shaderuniformnamemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\assets\materials\colormaterial.h">

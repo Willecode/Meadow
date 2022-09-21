@@ -8,13 +8,13 @@
 #include "renderer/openglrenderer.h"
 #include "resource_management/imageloader.h"
 
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 #include "resource_management/resourcemanager.h"
 #include "resource_management/importer.h"
 /*
 * Debug includes
 * ******************/
-#include "primitivecreation.h"
+#include "utils/primitivecreation.h"
 #include "assets/texture.h"
 //*******************
 
@@ -23,8 +23,7 @@
 #include "service_locator/loggerlocator.h"
 #include "windowmanager.h"
 #include "ui/uidatascraper.h"
-#include "postprocessing.h"
-#include "lighting.h"
+#include "postprocessing/postprocessing.h"
 
 //ECS
 #include "ecs/systems/rendersystem.h"

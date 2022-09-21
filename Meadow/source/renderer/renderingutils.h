@@ -1,3 +1,4 @@
+#if 0
 #pragma once
 #include "scene/scenenode.h"
 
@@ -17,3 +18,4 @@ private:
 	static float outlineWidth;
 };
 
+#endif

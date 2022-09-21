@@ -1,4 +1,4 @@
-#include "shaderuniformnamemap.h"
+#include "shader/shaderuniformnamemap.h"
 
 std::unordered_map<Texture::TextureType, std::string> ShaderUniformNameMap::m_textureMaps = {
 	{Texture::TextureType::ALBEDO_MAP, ShaderUniformNames::MATERIAL_ALBEDOMAP},

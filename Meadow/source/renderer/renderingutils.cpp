@@ -1,3 +1,4 @@
+#if 0
 #include "renderingutils.h"
 #include "service_locator/rendererlocator.h"
 float RenderingUtils::outlineWidth = 1.05f;
@@ -34,3 +35,4 @@ void RenderingUtils::maskMeshOutlines(SceneNode* node)
 
 	return;
 }
+#endif

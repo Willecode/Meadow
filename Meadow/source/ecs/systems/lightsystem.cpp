@@ -1,7 +1,7 @@
 #include "lightsystem.h"
 #include "ecs/components/transform.h"
 #include "ecs/components/light.h"
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 void LightSystem::init()
 {
 }

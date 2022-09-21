@@ -5,7 +5,7 @@
 //#include "service_locator/locator.h"
 #include "input/inputevents.h"
 #include "assets/asset.h"
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 
 std::map<Texture::TextureType, std::string> UI::m_texLabels = {
     {Texture::TextureType::ALBEDO_MAP, "Albedo map"},

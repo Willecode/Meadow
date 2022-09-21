@@ -1,5 +1,5 @@
 #include "cubemap.h"
-#include "primitivecreation.h"
+#include "utils/primitivecreation.h"
 #include "resource_management/resourcemanager.h"
 #include "service_locator/loggerlocator.h"
 Cubemap::Cubemap(

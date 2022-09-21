@@ -13,7 +13,7 @@
 #include <vector>
 #include <functional>
 #include "assets/texture.h"
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 namespace InputEvents
 {
 	/*

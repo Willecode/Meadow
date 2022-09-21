@@ -2,7 +2,7 @@
 #include "assets/submesh.h"
 #include "assets/materials/material.h"
 #include <glm/glm.hpp>
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 #include <map>
 class Mesh : public Asset
 {

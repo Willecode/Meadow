@@ -5,7 +5,7 @@
 #include "assets/texture.h"
 #include "assets/submesh.h"
 #include "assets/mesh.h"
-#include "shader.h"
+#include "shader/shader.h"
 #include "assets/materials/material.h"
 #include "ui/ui.h"
 #include "assets/mesh2d.h"

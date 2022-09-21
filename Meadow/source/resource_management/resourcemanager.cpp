@@ -5,7 +5,7 @@
 #include "importutility.h"
 #include "imageloader.h"
 #include "assets/materials/colormaterial.h"
-#include "shadermanager.h"
+#include "shader/shadermanager.h"
 
 ResourceManager::ResourceManager()
 {

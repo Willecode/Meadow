@@ -2,7 +2,7 @@
 #include "ecs/components/camera.h"
 #include "ecs/components/transform.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 #include "input/inputevents.h"
 
 CameraSystem::CameraSystem() :m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),

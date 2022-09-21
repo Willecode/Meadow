@@ -2,7 +2,7 @@
 #include "assets/texture.h"
 #include "service_locator/rendererlocator.h"
 #include "resource_management/resourcemanager.h"
-#include "primitivecreation.h"
+#include "utils/primitivecreation.h"
 #include "input/inputevents.h"
 
 PostProcessing::PostProcessing() :

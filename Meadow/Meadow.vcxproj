@@ -168,15 +168,14 @@
     <ClCompile Include="source\ecs\systems\rendersystem.cpp" />
     <ClCompile Include="source\ecs\core\scenegraph.cpp" />
     <ClCompile Include="source\assets\materials\colormaterial.cpp" />
-    <ClCompile Include="source\shaderuniformnamemap.cpp" />
+    <ClCompile Include="source\shader\shaderuniformnamemap.cpp" />
     <ClCompile Include="source\assets\materials\material.cpp" />
     <ClCompile Include="source\assets\materials\PBRMaterial.cpp" />
     <ClCompile Include="source\resource_management\importer.cpp" />
     <ClCompile Include="source\service_locator\loggerlocator.cpp" />
     <ClCompile Include="source\renderer\renderingutils.cpp" />
-    <ClCompile Include="source\lighting.cpp" />
     <ClCompile Include="source\assets\cubemap.cpp" />
-    <ClCompile Include="source\postprocessing.cpp" />
+    <ClCompile Include="source\postprocessing\postprocessing.cpp" />
     <ClCompile Include="source\assets\mesh2d.cpp" />
     <ClCompile Include="source\assets\submesh.cpp" />
     <ClCompile Include="source\assets\mesh.cpp" />
@@ -197,19 +196,18 @@
     <ClCompile Include="source\logger.cpp" />
     <ClCompile Include="source\resource_management\imageloader.cpp" />
     <ClCompile Include="source\resource_management\resourcemanager.cpp" />
-    <ClCompile Include="source\scene\scenenode.cpp" />
-    <ClCompile Include="source\shader.cpp" />
+    <ClCompile Include="source\shader\shader.cpp" />
     <ClCompile Include="source\service_locator\rendererlocator.cpp" />
     <ClCompile Include="source\renderer\openglrenderer.cpp" />
     <ClCompile Include="source\renderer\renderer.cpp" />
-    <ClCompile Include="source\resource_management\shadermanager.cpp" />
+    <ClCompile Include="source\shader\shadermanager.cpp" />
     <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\ecs\core\editorcamera.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\resource_management\modelimporting.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\primitivecreation.cpp" />
+    <ClCompile Include="source\utils\primitivecreation.cpp" />
     <ClCompile Include="source\windowmanager.cpp" />
     <ClCompile Include="source\assets\texture.cpp" />
     <ClCompile Include="source\ui\ui.cpp" />
@@ -261,15 +259,14 @@
     <ClInclude Include="source\assets\materials\colormaterial.h" />
     <ClInclude Include="source\ecs\core\componentarray.h" />
     <ClInclude Include="source\ecs\core\ecstypes.h" />
-    <ClInclude Include="source\shaderuniformnamemap.h" />
+    <ClInclude Include="source\shader\shaderuniformnamemap.h" />
     <ClInclude Include="source\assets\materials\material.h" />
     <ClInclude Include="source\assets\materials\PBRMaterial.h" />
     <ClInclude Include="source\resource_management\importer.h" />
     <ClInclude Include="source\service_locator\loggerlocator.h" />
     <ClInclude Include="source\renderer\renderingutils.h" />
-    <ClInclude Include="source\lighting.h" />
     <ClInclude Include="source\assets\cubemap.h" />
-    <ClInclude Include="source\postprocessing.h" />
+    <ClInclude Include="source\postprocessing\postprocessing.h" />
     <ClInclude Include="source\assets\mesh2d.h" />
     <ClInclude Include="source\assets\submesh.h" />
     <ClInclude Include="source\assets\mesh.h" />
@@ -285,19 +282,18 @@
     <ClInclude Include="source\logger.h" />
     <ClInclude Include="source\resource_management\imageloader.h" />
     <ClInclude Include="source\resource_management\resourcemanager.h" />
-    <ClInclude Include="source\scene\scenenode.h" />
-    <ClInclude Include="source\shader.h" />
+    <ClInclude Include="source\shader\shader.h" />
     <ClInclude Include="source\service_locator\rendererlocator.h" />
     <ClInclude Include="source\renderer\openglrenderer.h" />
     <ClInclude Include="source\renderer\renderer.h" />
-    <ClInclude Include="source\resource_management\shadermanager.h" />
+    <ClInclude Include="source\shader\shadermanager.h" />
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\ecs\core\editorcamera.h" />
     <ClInclude Include="source\resource_management\modelimporting.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="source\primitivecreation.h" />
-    <ClInclude Include="source\shaderuniformnames.h" />
+    <ClInclude Include="source\utils\primitivecreation.h" />
+    <ClInclude Include="source\shader\shaderuniformnames.h" />
     <ClInclude Include="source\stb\stb_image.h" />
     <ClInclude Include="source\windowmanager.h" />
     <ClInclude Include="source\assets\texture.h" />

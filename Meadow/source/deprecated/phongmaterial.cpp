@@ -1,5 +1,5 @@
 #include "phongmaterial.h"
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 #include "../service_locator/locator.h"
 
 PhongMaterial::PhongMaterial(glm::vec3 diffuse, glm::vec3 specular, float shininess) :

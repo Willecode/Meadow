@@ -1,5 +1,5 @@
 #pragma once
-#include "resource_management/shadermanager.h"
+#include "shader/shadermanager.h"
 #include <map>
 /*
 * A Lightsource can only exist as an attribute of a SceneNode.
