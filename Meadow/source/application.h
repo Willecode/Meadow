@@ -45,7 +45,7 @@ private:
 	//std::unique_ptr<Scene> m_scene;
 	ECSCoordinator m_ecs;
 	InputGather m_inputGather;
-	//UIDataScraper m_UIScraper;
+	UIDataScraper m_UIScraper;
 	OpenGLRenderer m_renderer;
 	Logger m_logger;
 	UI m_ui;

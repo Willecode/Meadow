@@ -1,9 +1,9 @@
-#if 0
+
 #pragma once
-#include "scene/scene.h"
-#include "postprocessing.h"
+#include "postprocessing/postprocessing.h"
 #include "resource_management/resourcemanager.h"
 #include "ui/ui.h"
+#include "ecs/core/scenegraph.h"
 class UIDataScraper
 {
 private:
@@ -14,7 +14,7 @@ private:
 	/*
 	* UI Scene graph, tree of nodes with child pointers. Properties of the nodes are pointers to UIAssets in m_UIAssetMaps
 	*/
-	SceneNodeUI m_uiSceneGraph;
+	EntityUI m_sceneRoot;
 	/*
 	* Postprocessing flags for UI
 	*/
@@ -28,11 +28,11 @@ public:
 	/*
 	* Generate UI representation from back end data
 	*/
-	void update(const Scene* scene, const PostProcessing* postproc);
+	void update(const SceneGraph::Node& graph, const PostProcessing* postproc);
 	/*
 	* Get UI scene graph
 	*/
-	SceneNodeUI* getUINodeGraph();
+	EntityUI* getSceneGraph();
 	/*
 	* Get the list of all stored assets in a UI representation format
 	*/
@@ -54,8 +54,7 @@ private:
 	* description: Scrape the SceneNode from all relevant data that the uiNode should have, so
 	*			   that it can represent the SceneNode in UI
 	*/
-	void scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemId);
+	//void scrapeNode(const SceneGraph& node, EntityUI& uiNode, int uiElemId);
+	void scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiNode);
 	MaterialUI constructMaterialUI(Material*);
 };
-
-#endif

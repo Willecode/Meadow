@@ -1,10 +1,9 @@
-#if 0
 #include "uidatascraper.h"
 
 UIDataScraper::UIDataScraper() : m_UIAssetMaps()
 {}
 
-void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
+void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* postproc)
 {
 	//////////////////////////////////
 	// ASSETS
@@ -60,8 +59,8 @@ void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
 	// SCENE GRAPH AND STATE
 	//////////////////////////////////
 	m_sceneState.activeNode = std::nullopt;
-	SceneNode* root = scene->getNode(0);
-	scrapeNode(root, m_uiSceneGraph, 0);
+
+	scrapeSceneGraph(graph, m_sceneRoot);
 
 	//////////////////////////////////
 	// POSTPROCESSING
@@ -72,9 +71,9 @@ void UIDataScraper::update(const Scene* scene, const PostProcessing* postproc)
 	m_postprocFlags.MSAA = postproc->getMSAA();
 }
 
-SceneNodeUI* UIDataScraper::getUINodeGraph()
+EntityUI* UIDataScraper::getSceneGraph()
 {
-	return &m_uiSceneGraph;
+	return &m_sceneRoot;
 }
 
 UIAssetMaps* UIDataScraper::getUIAssets()
@@ -92,47 +91,58 @@ SceneState* UIDataScraper::getSceneState()
 	return &m_sceneState;
 }
 
-void UIDataScraper::scrapeNode(SceneNode* node, SceneNodeUI& uiNode, int uiElemId)
+//void UIDataScraper::scrapeNode(const SceneGraph& node, EntityUI& uiNode, int uiElemId)
+//{
+//	/*
+//	* Populate the UINode with data from the SceneNode
+//	*/
+//	uiNode = EntityUI();
+//	uiNode.id = node->id;
+//	uiNode.uiElemId = uiElemId;
+//	uiNode.name = &node->name;
+//	uiNode.scale = &node->scale;
+//	uiNode.pos = &node->position;
+//	uiNode.orientationEuler = &node->orientationEuler;
+//	uiNode.wireframeMode = &node->wireframeMode;
+//	uiNode.hasLightsource = node->hasLightSource;
+//	uiNode.selected = node->selected;
+//	uiNode.active = node->active;
+//
+//	/*
+//	* Get mesh data
+//	*/
+//	Mesh* mesh = node->getMesh();
+//	if (mesh == nullptr) {
+//		uiNode.mesh = nullptr;
+//	}
+//	else {
+//		uiNode.mesh = &m_UIAssetMaps.meshes.at(mesh->getId());
+//	}
+//
+//	/*
+//	* Check if the node is actice, if yes save a copy
+//	*/
+//	if (uiNode.active = node->active)
+//		m_sceneState.activeNode = uiNode;
+//
+//	/*
+//	* Now do the same for each of the SceneNodes children
+//	*/
+//	for (auto child : node->children) {
+//		EntityUI uiChild;
+//		uiNode.children.push_back(uiChild);
+//		scrapeNode(child, uiNode.children.back(), uiElemId++);
+//	}
+//}
+
+void UIDataScraper::scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiNode)
 {
-	/*
-	* Populate the UINode with data from the SceneNode
-	*/
-	uiNode = SceneNodeUI();
-	uiNode.id = node->id;
-	uiNode.uiElemId = uiElemId;
-	uiNode.name = &node->name;
-	uiNode.scale = &node->scale;
-	uiNode.pos = &node->position;
-	uiNode.orientationEuler = &node->orientationEuler;
-	uiNode.wireframeMode = &node->wireframeMode;
-	uiNode.hasLightsource = node->hasLightSource;
-	uiNode.selected = node->selected;
-	uiNode.active = node->active;
-
-	/*
-	* Get mesh data
-	*/
-	Mesh* mesh = node->getMesh();
-	if (mesh == nullptr) {
-		uiNode.mesh = nullptr;
-	}
-	else {
-		uiNode.mesh = &m_UIAssetMaps.meshes.at(mesh->getId());
-	}
-
-	/*
-	* Check if the node is actice, if yes save a copy
-	*/
-	if (uiNode.active = node->active)
-		m_sceneState.activeNode = uiNode;
-
-	/*
-	* Now do the same for each of the SceneNodes children
-	*/
-	for (auto child : node->children) {
-		SceneNodeUI uiChild;
+	uiNode = EntityUI();
+	uiNode.id = node.entity;
+	for (auto const& child : node.children) {
+		EntityUI uiChild;
 		uiNode.children.push_back(uiChild);
-		scrapeNode(child, uiNode.children.back(), uiElemId++);
+		scrapeSceneGraph(child, uiChild);
 	}
 }
 
@@ -153,5 +163,3 @@ MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
 
 	return newAss;
 }
-
-#endif

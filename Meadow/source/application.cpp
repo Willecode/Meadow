@@ -21,7 +21,7 @@ Application::Application() :
     m_renderer(OpenGLRenderer()),
     m_logger(Logger()),
     appFailed(false),
-    //m_UIScraper(),
+    m_UIScraper(),
     m_postProcessing(PostProcessing()),
     //m_importer(),
     m_ecs(),
@@ -283,8 +283,8 @@ void Application::run()
         /*
         * Render UI
         */
-        //m_UIScraper.update(m_scene.get(), &m_postProcessing);
-        //m_ui.renderInterface(m_UIScraper.getUINodeGraph(), m_UIScraper.getSceneState(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags());
+        m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing);
+        m_ui.renderInterface(m_UIScraper.getSceneGraph(), m_UIScraper.getSceneState(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags());
 
         /*
         * Process event queue

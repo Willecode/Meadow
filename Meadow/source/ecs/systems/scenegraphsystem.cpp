@@ -19,6 +19,11 @@ void SceneGraphSystem::update(ECSCoordinator& ecs)
 	}
 }
 
+const SceneGraph::Node& SceneGraphSystem::getSceneGraph()
+{
+	return m_sceneGraph.getGraph();
+}
+
 void SceneGraphSystem::changeParent(Entity ent, Entity parent)
 {
 	m_sceneGraph.changeParent(ent, parent);

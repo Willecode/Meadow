@@ -10,6 +10,7 @@ class SceneGraphSystem : public System
 public:
 	void init();
 	void update(ECSCoordinator& ecs);
+	const SceneGraph::Node& getSceneGraph();
 private:
 	SceneGraph m_sceneGraph;
 	void changeParent(Entity ent, Entity parent);

@@ -24,7 +24,7 @@ void SceneGraph::deleteNode(Entity ent)
 	deleteNodeRec(ent, m_rootNode);
 }
 
-SceneGraph::Node SceneGraph::getGraph()
+const SceneGraph::Node& SceneGraph::getGraph()
 {
 	return m_rootNode;
 }

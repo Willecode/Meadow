@@ -54,9 +54,6 @@ struct MeshUI : public AssetUI{
 		AssetUI(name, Asset::AssetType::MESH, id)
 	{}
 };
-struct LightSourceUI {
-
-};
 
 struct UIAssetMaps {
 	std::map<const unsigned int, TextureUI>  textures;
@@ -65,35 +62,27 @@ struct UIAssetMaps {
 	std::map<const unsigned int, MaterialUI> materials;
 };
 /*
-* Containst the data for a UI element representing a single scene node (links to other nodes through children)
+* Containst the data for a UI element representing a single entity (links to other entities through children)
 */
-struct SceneNodeUI {
+struct EntityUI {
 	int id;
 	int uiElemId;
-	std::string* name;
-	glm::vec3* scale;
-	glm::vec3* pos;
-	glm::vec3* orientationEuler;
-	std::vector<SceneNodeUI> children;
-	MeshUI* mesh;
-	bool* wireframeMode;
-	bool hasLightsource;
+	std::string name;
+	std::vector<EntityUI> children;
 	bool selected;
 	bool active;
-	SceneNodeUI() :
+	EntityUI() :
 		id(-1),
 		uiElemId(-1),
-		name(nullptr),
-		scale(nullptr),
-		pos(nullptr),
-		orientationEuler(nullptr),
+		name("Placeholder name"),
 		children({}),
-		mesh(nullptr),
-		wireframeMode(nullptr),
-		hasLightsource(false),
 		selected(false),
 		active(false) {}
 
+};
+
+struct ComponentUI {
+	std::string type;
 };
 
 struct PostprocessingFlags {
@@ -109,7 +98,7 @@ struct PostprocessingFlags {
 struct SceneState
 {
 	// Optional because it can be empty (no active node)
-	std::optional<SceneNodeUI> activeNode;
+	std::optional<EntityUI> activeNode;
 };
 
 class UI
@@ -129,7 +118,7 @@ public:
 	/*
 	* Render UI
 	*/
-	void renderInterface(SceneNodeUI* node, SceneState* sceneState, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags);
+	void renderInterface(EntityUI* node, SceneState* sceneState, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags);
 
 private:
 	/*
@@ -159,8 +148,8 @@ private:
 	/*
 	* Other
 	*/
-	void processNode(SceneNodeUI* node, UIAssetMaps* uiAssets);
-	void createSceneTree(SceneNodeUI* rootNode, ImGuiTreeNodeFlags treeflags);
+	void processNode(EntityUI* node, UIAssetMaps* uiAssets);
+	void createSceneTree(EntityUI* rootNode, ImGuiTreeNodeFlags treeflags);
 	void createMatTexCombos(MaterialUI* mat, UIAssetMaps* uiAssets);
 };
 
