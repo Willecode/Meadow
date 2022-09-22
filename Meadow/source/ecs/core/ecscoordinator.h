@@ -1,6 +1,6 @@
 #pragma once
 #include "componentmanager.h";
-#include "scene.h";
+#include "entitymanager.h";
 #include "systemmanager.h";
 #include <memory>
 class ECSCoordinator
@@ -62,6 +62,6 @@ public:
 
 private:
 	std::unique_ptr<ComponentManager> m_componentManager;
-	std::unique_ptr<Scene> m_scene;
+	std::unique_ptr<EntityManager> m_scene;
 	std::unique_ptr<SystemManager> m_systemManager;
 };

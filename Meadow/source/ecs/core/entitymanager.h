@@ -4,10 +4,10 @@
 #include <array>
 using namespace ECSTypes;
 
-class Scene
+class EntityManager
 {
 public:
-	Scene();
+	EntityManager();
 	Entity createEntity();
 	void destroyEntity(Entity ent);
 	void setSignature(Entity ent, Signature signature);

@@ -1,7 +1,7 @@
-#include "scene.h"
+#include "entitymanager.h"
 #include "ecs/core/internalevents.h"
 #include <cassert>
-Scene::Scene()
+EntityManager::EntityManager()
 {
 	for (Entity ent = 0; ent < MAX_ENTITIES; ++ent)
 	{
@@ -10,7 +10,7 @@ Scene::Scene()
 	// Create root node
 	createEntity();
 }
-Entity Scene::createEntity()
+Entity EntityManager::createEntity()
 {
 	assert(m_livingEntityCount < MAX_ENTITIES && "Too many entities in existence.");
 
@@ -22,7 +22,7 @@ Entity Scene::createEntity()
 
 	return id;
 }
-void Scene::destroyEntity(Entity ent)
+void EntityManager::destroyEntity(Entity ent)
 {
 	assert(ent < MAX_ENTITIES && "Entity out of range.");
 
@@ -32,13 +32,13 @@ void Scene::destroyEntity(Entity ent)
 
 	InternalEvents::EntityDeletedEvent::notify(ent);
 }
-void Scene::setSignature(Entity ent, Signature signature)
+void EntityManager::setSignature(Entity ent, Signature signature)
 {
 	assert(ent < MAX_ENTITIES && "Entity out of range.");
 
 	m_signatures[ent] = signature;
 }
-Signature Scene::getSignature(Entity ent)
+Signature EntityManager::getSignature(Entity ent)
 {
 	assert(ent < MAX_ENTITIES && "Entity out of range.");
 

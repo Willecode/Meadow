@@ -158,7 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.cpp" />
-    <ClCompile Include="source\ecs\core\scene.cpp" />
+    <ClCompile Include="source\ecs\core\entitymanager.cpp" />
     <ClCompile Include="source\ecs\systems\camerasystem.cpp" />
     <ClCompile Include="source\ecs\core\ecscoordinator.cpp" />
     <ClCompile Include="source\ecs\systems\lightsystem.cpp" />
@@ -242,7 +242,7 @@
   <ItemGroup>
     <ClInclude Include="source\ecs\core\internalevents.h" />
     <ClInclude Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.h" />
-    <ClInclude Include="source\ecs\core\scene.h" />
+    <ClInclude Include="source\ecs\core\entitymanager.h" />
     <ClInclude Include="source\ecs\systems\camerasystem.h" />
     <ClInclude Include="source\ecs\core\ecscoordinator.h" />
     <ClInclude Include="source\ecs\systems\lightsystem.h" />

@@ -3,7 +3,7 @@
 void ECSCoordinator::init()
 {
 	m_componentManager = std::make_unique<ComponentManager>();
-	m_scene = std::make_unique<Scene>();
+	m_scene = std::make_unique<EntityManager>();
 	m_systemManager = std::make_unique<SystemManager>();
 	
 	registerComponent<Transform>(); // All entities have transform
