@@ -1,6 +1,5 @@
 #pragma once
 #include "ecstypes.h"
-#include "scenegraph.h"
 #include <queue>
 #include <array>
 using namespace ECSTypes;

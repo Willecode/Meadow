@@ -3,7 +3,7 @@
 #include "postprocessing/postprocessing.h"
 #include "resource_management/resourcemanager.h"
 #include "ui/ui.h"
-#include "ecs/core/scenegraph.h"
+#include "ecs/systems/scenegraphsystem/scenegraph.h"
 class UIDataScraper
 {
 private:

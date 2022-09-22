@@ -18,7 +18,7 @@
     <ClCompile Include="source\utils\primitivecreation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\ecs\core\editorcamera.cpp">
+    <ClCompile Include="source\ecs\systems\camerasystem\editorcamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\resource_management\modelimporting.cpp">
@@ -147,7 +147,7 @@
     <ClCompile Include="source\assets\materials\colormaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\ecs\core\scenegraph.cpp">
+    <ClCompile Include="source\ecs\systems\scenegraphsystem\scenegraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\ecs\core\componentmanager.cpp">
@@ -177,7 +177,7 @@
     <ClCompile Include="source\ecs\core\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\ecs\systems\scenegraphsystem.cpp">
+    <ClCompile Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -232,7 +232,7 @@
     <ClInclude Include="source\utils\primitivecreation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\ecs\core\editorcamera.h">
+    <ClInclude Include="source\ecs\systems\camerasystem\editorcamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resource_management\modelimporting.h">
@@ -352,7 +352,7 @@
     <ClInclude Include="source\ecs\core\componentarray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\ecs\core\scenegraph.h">
+    <ClInclude Include="source\ecs\systems\scenegraphsystem\scenegraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ecs\components\transform.h">
@@ -400,7 +400,7 @@
     <ClInclude Include="source\ecs\core\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\ecs\systems\scenegraphsystem.h">
+    <ClInclude Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ecs\core\internalevents.h">

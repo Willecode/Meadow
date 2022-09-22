@@ -1,6 +1,6 @@
 #pragma once
 #include "ecs/core/system.h"
-#include "ecs/core/scenegraph.h"
+#include "ecs/systems/scenegraphsystem/scenegraph.h"
 #include "ecs/core/ecscoordinator.h"
 #include <glm/mat4x4.hpp>
 
