@@ -3,7 +3,7 @@
 void ECSCoordinator::init()
 {
 	m_componentManager = std::make_unique<ComponentManager>();
-	m_scene = std::make_unique<EntityManager>();
+	m_entityManager = std::make_unique<EntityManager>();
 	m_systemManager = std::make_unique<SystemManager>();
 	
 	registerComponent<Transform>(); // All entities have transform
@@ -11,7 +11,7 @@ void ECSCoordinator::init()
 
 Entity ECSCoordinator::createEntity()
 {
-	auto ent = m_scene->createEntity();
+	auto ent = m_entityManager->createEntity();
 	Transform t;
 	addComponent(ent, t);
 	return ent;
@@ -19,7 +19,12 @@ Entity ECSCoordinator::createEntity()
 
 void ECSCoordinator::destroyEntity(Entity entity)
 {
-	m_scene->destroyEntity(entity);
+	m_entityManager->destroyEntity(entity);
 	m_componentManager->entityDestroyed(entity);
 	m_systemManager->entityDestroyed(entity);
+}
+
+Signature ECSCoordinator::getEntitySignature(Entity ent) const
+{
+	return m_entityManager->getSignature(ent);
 }

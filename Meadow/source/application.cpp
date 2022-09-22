@@ -283,8 +283,8 @@ void Application::run()
         /*
         * Render UI
         */
-        m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing);
-        m_ui.renderInterface(m_UIScraper.getSceneGraph(), m_UIScraper.getSceneState(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags());
+        m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing, m_ecs);
+        m_ui.renderInterface(m_UIScraper.getSceneGraph(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags(), m_UIScraper.getComponentMap());
 
         /*
         * Process event queue

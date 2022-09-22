@@ -4,6 +4,7 @@
 #include "resource_management/resourcemanager.h"
 #include "ui/ui.h"
 #include "ecs/systems/scenegraphsystem/scenegraph.h"
+#include "ecs/core/ecscoordinator.h"
 class UIDataScraper
 {
 private:
@@ -12,6 +13,10 @@ private:
 	*/
 	UIAssetMaps m_UIAssetMaps;
 	/*
+	* UI representation of components
+	*/ 
+	ComponentMapUI m_componentMap;
+	/*
 	* UI Scene graph, tree of nodes with child pointers. Properties of the nodes are pointers to UIAssets in m_UIAssetMaps
 	*/
 	EntityUI m_sceneRoot;
@@ -19,16 +24,14 @@ private:
 	* Postprocessing flags for UI
 	*/
 	PostprocessingFlags m_postprocFlags;
-	/*
-	* Scene's state
-	*/
-	SceneState m_sceneState;
+	
+
 public:
 	UIDataScraper();
 	/*
 	* Generate UI representation from back end data
 	*/
-	void update(const SceneGraph::Node& graph, const PostProcessing* postproc);
+	void update(const SceneGraph::Node& graph, const PostProcessing* postproc, const ECSCoordinator& ecs);
 	/*
 	* Get UI scene graph
 	*/
@@ -41,10 +44,8 @@ public:
 	* Get postproc flags
 	*/
 	PostprocessingFlags* getPostprocessingFlags();
-	/*
-	* Get scene state
-	*/
-	SceneState* getSceneState();
+	
+	ComponentMapUI* getComponentMap();
 private:
 	/*
 	* param SceneNode* node: Back end node that exists in the scene
@@ -57,4 +58,5 @@ private:
 	//void scrapeNode(const SceneGraph& node, EntityUI& uiNode, int uiElemId);
 	void scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiNode);
 	MaterialUI constructMaterialUI(Material*);
+	void constructComponentMap(const SceneGraph::Node& node, const ECSCoordinator& ecs);
 };

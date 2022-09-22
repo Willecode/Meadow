@@ -6,7 +6,6 @@
 #include <map>
 #include <unordered_map>
 #include <set>
-#include <optional>
 #include "windowmanager.h"
 #include "assets/asset.h"
 #include "ui/uiflags.h"
@@ -81,9 +80,23 @@ struct EntityUI {
 
 };
 
-struct ComponentUI {
-	std::string type;
+struct IComponentUI{
+	virtual void render() = 0;
 };
+struct TransformComponentUI : public IComponentUI {
+	glm::vec3 position;
+	glm::vec3 orientation;
+	glm::vec3 scale;
+	void render() override {
+		ImGui::Text("transform component");
+	}
+};
+struct Model3DComponentUI : public IComponentUI {
+	void render() override {
+		ImGui::Text("model3d component");
+	}
+};
+using ComponentMapUI = std::map<int, std::vector<std::unique_ptr<IComponentUI>>>;
 
 struct PostprocessingFlags {
 	bool sharpness;
@@ -95,11 +108,11 @@ struct PostprocessingFlags {
 /*
 * Contains data about the scene's state
 */
-struct SceneState
-{
-	// Optional because it can be empty (no active node)
-	std::optional<EntityUI> activeNode;
-};
+//struct SceneState
+//{
+//	// Optional because it can be empty (no active node)
+//	std::optional<EntityUI> activeNode;
+//};
 
 class UI
 {
@@ -118,7 +131,7 @@ public:
 	/*
 	* Render UI
 	*/
-	void renderInterface(EntityUI* node, SceneState* sceneState, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags);
+	void renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags, const ComponentMapUI* componentMap);
 
 private:
 	/*
@@ -127,6 +140,8 @@ private:
 	unsigned int m_chosenAssetId;
 	Asset::AssetType m_chosenAssetType;
 
+	// for node inspector
+	int m_activeNode;
 	/*
 	* Various UI flags
 	*/

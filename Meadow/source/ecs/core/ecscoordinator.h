@@ -9,7 +9,7 @@ public:
 	void init();
 	Entity createEntity();
 	void destroyEntity(Entity entity);
-
+	Signature getEntitySignature(Entity ent) const;
 	template<typename T>
 	void registerComponent()
 	{
@@ -21,9 +21,9 @@ public:
 	{
 		m_componentManager->addComponent<T>(entity, component);
 
-		auto signature = m_scene->getSignature(entity);
+		auto signature = m_entityManager->getSignature(entity);
 		signature.set(m_componentManager->getComponentType<T>(), true);
-		m_scene->setSignature(entity, signature);
+		m_entityManager->setSignature(entity, signature);
 
 		m_systemManager->entitySignatureChanged(entity, signature);
 	}
@@ -33,20 +33,20 @@ public:
 	{
 		m_componentManager->removeComponent<T>(entity);
 
-		auto signature = m_scene->getSignature(entity);
+		auto signature = m_entityManager->getSignature(entity);
 		signature.set(m_componentManager->getComponentType<T>(), false);
-		m_scene->setSignature(entity, signature);
+		m_entityManager->setSignature(entity, signature);
 
 		m_systemManager->entitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
-	T& getComponent(Entity entity) {
+	T& getComponent(Entity entity) const{
 		return m_componentManager->getComponent<T>(entity);
 	}
 
 	template<typename T>
-	ComponentType getComponentType() {
+	ComponentType getComponentType() const{
 		return m_componentManager->getComponentType<T>();
 	}
 
@@ -62,6 +62,6 @@ public:
 
 private:
 	std::unique_ptr<ComponentManager> m_componentManager;
-	std::unique_ptr<EntityManager> m_scene;
+	std::unique_ptr<EntityManager> m_entityManager;
 	std::unique_ptr<SystemManager> m_systemManager;
 };

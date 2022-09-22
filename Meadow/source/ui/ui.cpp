@@ -17,7 +17,7 @@ std::map<Texture::TextureType, std::string> UI::m_texLabels = {
     {Texture::TextureType::NORMAL_MAP, "Normal map"},
 };
 
-UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE), m_uiFlags()
+UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE), m_uiFlags(), m_activeNode(-1)
 {
 }
 UI::~UI()
@@ -54,7 +54,7 @@ void UI::init(WindowManager* winMan)
     InputEvents::MouseMoveEvent::subscribe(mousefunc2);
 }
 
-void UI::renderInterface(EntityUI* node, SceneState* sceneState, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags)
+void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags, const ComponentMapUI* componentMap)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -172,10 +172,18 @@ void UI::renderInterface(EntityUI* node, SceneState* sceneState, UIAssetMaps* ui
     //////////////////////
     if (m_uiFlags.sceneNodeInspectorVisible()) {
         ImGui::Begin("Node Inspector");
-        //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-        //if (sceneState->activeNode == std::nullopt) {
-        //    ImGui::Text("Choose a node from the scene graph.");
-        //}
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+        if (m_activeNode == -1) {
+            ImGui::Text("Choose a node from the scene graph.");
+        }
+        else
+        {
+            float sliderSpeed = 0.01f;
+            for (auto& component : componentMap->at(m_activeNode)) {
+                component->render();
+            }
+            
+        }
         //else
         //{
         //    EntityUI activenode = sceneState->activeNode.value();
@@ -224,7 +232,7 @@ void UI::renderInterface(EntityUI* node, SceneState* sceneState, UIAssetMaps* ui
         //            InputEvents::SceneNodeLightsourceAddEvent::notify(activenode.id);
         //    }
         //}
-        //ImGui::PopStyleVar();
+        ImGui::PopStyleVar();
         ImGui::End();
     }
     //////////////////////
@@ -359,8 +367,10 @@ void UI::createSceneTree(EntityUI* rootNode, ImGuiTreeNodeFlags treeflags)
         nodeflags |= ImGuiTreeNodeFlags_Selected;
 
     bool node_open = ImGui::TreeNodeEx((void*)rootNode->uiElemId, nodeflags, rootNode->name.c_str());
-    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
         InputEvents::SetActiveNodeEvent::notify(rootNode->id);
+        m_activeNode = rootNode->id;
+    }
     if (node_open)
     {
         for (auto child : rootNode->children)

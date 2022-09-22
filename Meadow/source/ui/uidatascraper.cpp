@@ -1,9 +1,12 @@
 #include "uidatascraper.h"
-
+#include "ecs/components/transform.h"
+#include "ecs/components/light.h"
+#include "ecs/components/model3d.h"
+#include "ecs/components/camera.h"
 UIDataScraper::UIDataScraper() : m_UIAssetMaps()
 {}
 
-void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* postproc)
+void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* postproc, const ECSCoordinator& ecs)
 {
 	//////////////////////////////////
 	// ASSETS
@@ -58,9 +61,17 @@ void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* 
 	//////////////////////////////////
 	// SCENE GRAPH AND STATE
 	//////////////////////////////////
-	m_sceneState.activeNode = std::nullopt;
-
+	//m_sceneState.activeNode = std::nullopt;
+	//for (auto const& child : graph.children)
 	scrapeSceneGraph(graph, m_sceneRoot);
+
+	//////////////////////////////////
+	// GET COMPONENTS
+	//////////////////////////////////
+	m_componentMap.clear();
+	for (auto const& child : graph.children)
+		constructComponentMap(child, ecs);
+	
 
 	//////////////////////////////////
 	// POSTPROCESSING
@@ -86,9 +97,9 @@ PostprocessingFlags* UIDataScraper::getPostprocessingFlags()
 	return &m_postprocFlags;
 }
 
-SceneState* UIDataScraper::getSceneState()
+ComponentMapUI* UIDataScraper::getComponentMap()
 {
-	return &m_sceneState;
+	return &m_componentMap;
 }
 
 //void UIDataScraper::scrapeNode(const SceneGraph& node, EntityUI& uiNode, int uiElemId)
@@ -142,7 +153,7 @@ void UIDataScraper::scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiN
 	for (auto const& child : node.children) {
 		EntityUI uiChild;
 		uiNode.children.push_back(uiChild);
-		scrapeSceneGraph(child, uiChild);
+		scrapeSceneGraph(child, uiNode.children.back());
 	}
 }
 
@@ -162,4 +173,28 @@ MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
 	}
 
 	return newAss;
+}
+
+void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const ECSCoordinator& ecs)
+{
+	Entity ent = node.entity;
+	Signature sign = ecs.getEntitySignature(ent);
+	auto transType = ecs.getComponentType<Transform>();
+	auto modelType = ecs.getComponentType<Model3D>();
+
+	if (sign.test(transType)) {
+		auto trans = ecs.getComponent<Transform>(ent);
+		auto transUI = std::make_unique<TransformComponentUI>();
+		transUI->position = trans.position;
+		transUI->orientation = trans.orientationEuler;
+		transUI->scale = trans.scale;
+
+		m_componentMap[ent].push_back(std::move(transUI));
+	}
+	if (sign.test(modelType)) {
+		auto model = ecs.getComponent<Model3D>(ent);
+		auto modelUI = std::make_unique<Model3DComponentUI>();
+
+		m_componentMap[ent].push_back(std::move(modelUI));
+	}
 }

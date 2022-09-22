@@ -31,6 +31,7 @@ public:
 		m_signatures.insert({ typeName, signature });
 	}
 
+
 	void entityDestroyed(Entity entity);
 	void entitySignatureChanged(Entity entity, Signature entitySignature);
 private:
