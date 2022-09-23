@@ -3,7 +3,6 @@
 #include <backends/imgui_impl_glfw.h>
 //#include <backends/imgui_impl_opengl3.h>
 //#include "service_locator/locator.h"
-#include "input/inputevents.h"
 #include "assets/asset.h"
 #include "shader/shadermanager.h"
 
@@ -180,7 +179,7 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
         {
             float sliderSpeed = 0.01f;
             for (auto& component : componentMap->at(m_activeNode)) {
-                component->render();
+                component->render(m_activeNode, *uiAssets);
             }
             
         }
@@ -360,24 +359,32 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void UI::createSceneTree(EntityUI* rootNode, ImGuiTreeNodeFlags treeflags)
+void UI::sceneTreeRec(EntityUI* node, ImGuiTreeNodeFlags treeflags)
 {
     ImGuiTreeNodeFlags nodeflags = treeflags;
-    if (rootNode->active)
+    if (node->active)
         nodeflags |= ImGuiTreeNodeFlags_Selected;
 
-    bool node_open = ImGui::TreeNodeEx((void*)rootNode->uiElemId, nodeflags, rootNode->name.c_str());
+    bool node_open = ImGui::TreeNodeEx((void*)node->uiElemId, nodeflags, node->name.c_str());
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
-        InputEvents::SetActiveNodeEvent::notify(rootNode->id);
-        m_activeNode = rootNode->id;
+        InputEvents::SetActiveNodeEvent::notify(node->id);
+        m_activeNode = node->id;
     }
     if (node_open)
     {
-        for (auto child : rootNode->children)
+        for (auto child : node->children)
         {
-            createSceneTree(&child, treeflags);
+            sceneTreeRec(&child, treeflags);
         }
         ImGui::TreePop();
+    }
+}
+
+void UI::createSceneTree(EntityUI* rootNode, ImGuiTreeNodeFlags treeflags)
+{
+    for (auto child : rootNode->children)
+    {
+        sceneTreeRec(&child, treeflags);
     }
 }
 

@@ -11,6 +11,8 @@
 #include "ui/uiflags.h"
 #include <backends/imgui_impl_opengl3.h>
 #include "assets/texture.h"
+#include "input/inputevents.h"
+
 /*
 * Contains the data for a UI element representing an asset 
 */
@@ -81,19 +83,68 @@ struct EntityUI {
 };
 
 struct IComponentUI{
-	virtual void render() = 0;
+	virtual void render(const int& activenode, const UIAssetMaps& assets) = 0;
 };
 struct TransformComponentUI : public IComponentUI {
-	glm::vec3 position;
-	glm::vec3 orientation;
-	glm::vec3 scale;
-	void render() override {
-		ImGui::Text("transform component");
+	glm::vec3* position;
+	glm::vec3* orientation;
+	glm::vec3* scale;
+	void render(const int& activenode, const UIAssetMaps& assets) override {
+		ImGui::Text("Transform component:");
+		ImGui::DragFloat3("Position", &((* position).x), 0.1f);
+        ImGui::DragFloat3("Scale", &((*scale).x), 0.1f);
+        ImGui::DragFloat3("Rotation", &((*orientation).x), 0.1f);
 	}
 };
+
 struct Model3DComponentUI : public IComponentUI {
-	void render() override {
-		ImGui::Text("model3d component");
+	MeshUI* mesh;
+	bool wireframe;
+	void render(const int& activenode, const UIAssetMaps& assets) override {
+		ImGui::Text("Model3D component:");
+		const char* meshboxlabel;
+		if (ImGui::BeginCombo("##inspmeshcombo", mesh->name.c_str())) {
+		    if (ImGui::Selectable("No Mesh", false))
+		    {
+		        InputEvents::SetNodeMeshEvent::notify(activenode, 0);
+		    }
+		    for (auto const& mesh : assets.meshes) {
+		        if (ImGui::Selectable(mesh.second.name.c_str(), false))
+		        {
+		            InputEvents::SetNodeMeshEvent::notify(activenode, mesh.second.id);
+		        }
+		    }
+		    ImGui::EndCombo();
+		}
+		// Wireframe mode checkbox
+		//ImGui::TableSetColumnIndex(2);
+		ImGui::Checkbox("Wireframe", &wireframe);
+
+	}
+};
+struct LightComponentUI : public IComponentUI {
+	int lightType;
+	glm::vec3* color;
+	glm::vec3* direction;
+	// Attenuation related
+	// ------------------------
+	float* constant;
+	float* linear;
+	float* quadratic;
+	void render(const int& activenode, const UIAssetMaps& assets) override {
+		ImGui::Text("Light component:");
+		if (lightType == 0) {// pointlight
+			ImGui::Text("Type: pointlight");
+			ImGui::DragFloat3("Color", &((*color).x), 0.1f);
+			ImGui::DragFloat("Constant", &(*constant), 0.1f);
+			ImGui::DragFloat("Linear", &(*linear), 0.1f);
+			ImGui::DragFloat("Quadratic", &(*quadratic), 0.1f);
+		} 
+		else if (lightType == 1) { // dirlight
+			ImGui::Text("Type: dirlight");
+			ImGui::DragFloat3("Color", &((*color).x), 0.1f);
+			ImGui::DragFloat3("Direction", &((*direction).x), 0.1f);
+		}
 	}
 };
 using ComponentMapUI = std::map<int, std::vector<std::unique_ptr<IComponentUI>>>;
@@ -165,6 +216,7 @@ private:
 	*/
 	void processNode(EntityUI* node, UIAssetMaps* uiAssets);
 	void createSceneTree(EntityUI* rootNode, ImGuiTreeNodeFlags treeflags);
+	void sceneTreeRec(EntityUI* node, ImGuiTreeNodeFlags treeflags);
 	void createMatTexCombos(MaterialUI* mat, UIAssetMaps* uiAssets);
 };
 

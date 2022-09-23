@@ -179,22 +179,49 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 {
 	Entity ent = node.entity;
 	Signature sign = ecs.getEntitySignature(ent);
-	auto transType = ecs.getComponentType<Transform>();
-	auto modelType = ecs.getComponentType<Model3D>();
+	{
+		auto comptype = ecs.getComponentType<Transform>();
+		if (sign.test(comptype)) {
+			auto& trans = ecs.getComponent<Transform>(ent);
+			auto transUI = std::make_unique<TransformComponentUI>();
+			transUI->position = &trans.position;
+			transUI->orientation = &trans.orientationEuler;
+			transUI->scale = &trans.scale;
 
-	if (sign.test(transType)) {
-		auto trans = ecs.getComponent<Transform>(ent);
-		auto transUI = std::make_unique<TransformComponentUI>();
-		transUI->position = trans.position;
-		transUI->orientation = trans.orientationEuler;
-		transUI->scale = trans.scale;
-
-		m_componentMap[ent].push_back(std::move(transUI));
+			m_componentMap[ent].push_back(std::move(transUI));
+		}
 	}
-	if (sign.test(modelType)) {
-		auto model = ecs.getComponent<Model3D>(ent);
-		auto modelUI = std::make_unique<Model3DComponentUI>();
-
-		m_componentMap[ent].push_back(std::move(modelUI));
+	{
+		auto comptype = ecs.getComponentType<Model3D>();
+		if (sign.test(comptype)) {
+			auto& model = ecs.getComponent<Model3D>(ent);
+			auto modelUI = std::make_unique<Model3DComponentUI>();
+			modelUI->mesh = &m_UIAssetMaps.meshes.at(model.mesh->getId());
+			m_componentMap[ent].push_back(std::move(modelUI));
+		}
 	}
+	
+	{
+		auto comptype = ecs.getComponentType<Light>();
+		if (sign.test(comptype)) {
+			auto& comp = ecs.getComponent<Light>(ent);
+			auto compUI = std::make_unique<LightComponentUI>();
+
+				compUI->color = &comp.color;
+			if (comp.lightType == LightType::POINTLIGHT) {
+				compUI->lightType = 0;
+				compUI->constant = &comp.constant;
+				compUI->linear = &comp.linear;
+				compUI->quadratic = &comp.quadratic;
+			}
+			if (comp.lightType == LightType::DIRLIGHT) {
+				compUI->lightType = 1;
+				compUI->direction = &comp.direction;
+			}
+
+
+			m_componentMap[ent].push_back(std::move(compUI));
+		}
+	}
+
 }
