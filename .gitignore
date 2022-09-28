@@ -1,7 +1,11 @@
 # My additions
-**/old/
-build/
-
+#**/old/
+build/x64-Debug-int/
+build/x64-Release-int/
+*.exe*
+*-Debug-int/
+*-Release-int/
+external/glad/build/x64-Debug/Glad.idb
 # -----------------------------------------------------------------------------------------------------------
 # Visual Studio .gitignore template from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 # -----------------------------------------------------------------------------------------------------------
