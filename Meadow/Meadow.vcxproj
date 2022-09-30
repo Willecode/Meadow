@@ -218,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\2d.vs" />
+    <None Include="shaders\collider.fs" />
     <None Include="shaders\depth.fs" />
     <None Include="shaders\object.vs" />
     <None Include="shaders\coloronly.fs" />

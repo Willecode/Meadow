@@ -134,6 +134,10 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
                     InputEvents::PhysicsToggleEvent::notify(true);
                 if (ImGui::Button("Off"))
                     InputEvents::PhysicsToggleEvent::notify(false);
+                if (ImGui::Button("Collider Visibility: off"))
+                    InputEvents::ColliderVisibilityEvent::notify(false);
+                if (ImGui::Button("Collider Visibility: on"))
+                    InputEvents::ColliderVisibilityEvent::notify(true);
 
                 ImGui::EndMenu();
             }

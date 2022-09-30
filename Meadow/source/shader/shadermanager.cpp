@@ -54,17 +54,20 @@ void ShaderManager::init()
 	auto depthSdr = std::make_unique<Shader>(2, "shaders/object.vs", "shaders/depth.fs");
 	auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs", "shaders/postprocessing.fs");
 	auto skyboxSdr = std::make_unique<Shader>(4, "shaders/skybox.vs", "shaders/skybox.fs");
+	auto colliderSdr = std::make_unique<Shader>(5, "shaders/object.vs", "shaders/collider.fs");
 
 	m_shaderMap.insert({ ShaderType::COLOR_ONLY,  std::move(colorSdr) });
 	m_shaderMap.insert({ ShaderType::DEPTH,	   std::move(depthSdr) });
 	m_shaderMap.insert({ ShaderType::POSTPROCESS, std::move(screenQuadSdr) });
 	m_shaderMap.insert({ ShaderType::PBR,		   std::move(pbrSdr) });
 	m_shaderMap.insert({ ShaderType::SKYBOX,      std::move(skyboxSdr) });
+	m_shaderMap.insert({ ShaderType::COLLIDER,      std::move(colliderSdr) });
 
 	m_cameraUnifDependantShaders.push_back(ShaderType::COLOR_ONLY);
 	//m_cameraUnifDependantShaders.push_back(ShaderType::DEPTH);
 	m_cameraUnifDependantShaders.push_back(ShaderType::PBR);
 	m_cameraUnifDependantShaders.push_back(ShaderType::SKYBOX);
+	m_cameraUnifDependantShaders.push_back(ShaderType::COLLIDER);
 
 	bindShader(ShaderType::PBR);
 

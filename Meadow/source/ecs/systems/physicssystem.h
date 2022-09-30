@@ -9,11 +9,13 @@ public:
 	~PhysicsSystem();
 	void init(ECSCoordinator* ecs);
 	void update(float deltaT);
+	void drawColliders();
 protected:
 	void onEntityAdded(Entity ent) override;
 	void onEntityRemoved(Entity ent) override;
 private:
 	void togglePhysics(bool f);
+	void toggleColliderVisibility(bool f);
 private:
 	physx::PxDefaultErrorCallback  m_PxDefaultErrorCallback;
 	physx::PxDefaultAllocator	   m_PxDefaultAllocator;
@@ -28,7 +30,11 @@ private:
 	float m_timeAccumulate;
 	float m_stepSize;
 
+	unsigned int m_boxColliderMesh;
+	unsigned int m_sphereColliderMesh;
+
 	bool m_physicsEnabled;
+	bool m_visibleColliders;
 	ECSCoordinator* m_ecs;
 };
 

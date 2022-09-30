@@ -255,6 +255,13 @@ void Application::run()
         //m_scene->render();
         m_renderSystem->update(deltatime);
 
+        /*
+        * Render colliders
+        */
+        m_renderer.depthTesting(false);
+        m_renderer.wireframe(true);
+        sdrMan.bindShader(ShaderManager::ShaderType::COLLIDER);
+        m_physicsSystem->drawColliders();
 
         /*
         * If MSAA on then blit to intermediate frame buffer
@@ -486,6 +493,7 @@ void Application::createDefaultScene()
 
         Entity entity = m_ecs.createEntity();
         Entity entity2 = m_ecs.createEntity();
+        Entity entity3 = m_ecs.createEntity();
 
         // Add model components to entities
         {
@@ -493,6 +501,7 @@ void Application::createDefaultScene()
                 Model3D m;
                 m.mesh = mesh;
                 m_ecs.addComponent(entity, m);
+                m_ecs.addComponent(entity3, m);
             }
             
             {
@@ -512,7 +521,7 @@ void Application::createDefaultScene()
         {
             auto& t = m_ecs.getComponent<Transform>(entity2);
             t.position = glm::vec3(1.f);
-            m_ecs.getComponent<Transform>(entity2).scale = glm::vec3(0.1f);
+            //m_ecs.getComponent<Transform>(entity2).scale = glm::vec3(0.1f);
         }
 
         // Move entity 1 up
@@ -520,10 +529,21 @@ void Application::createDefaultScene()
             auto& t = m_ecs.getComponent<Transform>(entity);
             t.position = glm::vec3(0.f, 10.f, 0.f);
         }
-        // Add physics to entity 1
+        
+        // Move entity 3 up
         {
-            RigidBody r;
+            auto& t = m_ecs.getComponent<Transform>(entity3);
+            t.position = glm::vec3(0.f, 2.f, 0.f);
+        }
+
+        // Add physics
+        {
+            RigidBody r(RigidBody::RigidBodyType::DBOX);
             m_ecs.addComponent(entity, r);
+            m_ecs.addComponent(entity3, r);
+
+            RigidBody r2(RigidBody::RigidBodyType::SSPHERE);
+            m_ecs.addComponent(entity2, r2);
         }
 
     }

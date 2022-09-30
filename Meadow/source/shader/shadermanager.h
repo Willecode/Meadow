@@ -16,7 +16,8 @@ public:
 		COLOR_ONLY,
 		POSTPROCESS,
 		DEPTH,
-		SKYBOX
+		SKYBOX,
+		COLLIDER
 	};
 	static ShaderManager& getInstance();
 	ShaderManager(ShaderManager const&) = delete;

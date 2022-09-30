@@ -612,4 +612,19 @@ namespace InputEvents
 		inline static std::vector<std::function<void(bool)>> m_handlers;
 	};
 
+	class ColliderVisibilityEvent
+	{
+	public:
+		static void subscribe(std::function<void(bool)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(bool flag) {
+			for (auto h : m_handlers) {
+				h(flag);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(bool)>> m_handlers;
+	};
+
 }

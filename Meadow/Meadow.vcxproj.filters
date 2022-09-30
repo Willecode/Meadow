@@ -192,6 +192,7 @@
     <None Include="shaders\texwithlight.fs" />
     <None Include="source\deprecated\postprocessingmultisample.fs" />
     <None Include="shaders\pbr.fs" />
+    <None Include="shaders\collider.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\Wood066_1K_Color.jpg">
