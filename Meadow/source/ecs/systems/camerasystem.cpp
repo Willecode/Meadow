@@ -5,19 +5,21 @@
 #include "shader/shadermanager.h"
 #include "input/inputevents.h"
 
-CameraSystem::CameraSystem() :m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-m_editorCameraMode(true), m_editorCamera(EditorCamera(1080.f/1920.f, 0.1f,100.f))
+CameraSystem::CameraSystem():
+    m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
+    m_editorCameraMode(true), m_editorCamera(EditorCamera(1080.f/1920.f, 0.1f,100.f))
 {
     InputEvents::WindowDimensionsChangedEvent::subscribe(std::bind(&CameraSystem::setAspect, this, std::placeholders::_1, std::placeholders::_2));
     InputEvents::MouseLockEvent::subscribe(std::bind(&CameraSystem::cameraUnlock, this));
     InputEvents::MouseUnlockEvent::subscribe(std::bind(&CameraSystem::cameraLock, this));
 }
 
-void CameraSystem::init()
+void CameraSystem::init(ECSCoordinator* ecs)
 {
+    m_ecs = ecs;
 }
 
-void CameraSystem::update(float deltaT, ECSCoordinator& ecs, const InputGather& input)
+void CameraSystem::update(float deltaT, const InputGather& input)
 {
 
     glm::mat4 viewMat(1.0f);
@@ -36,8 +38,8 @@ void CameraSystem::update(float deltaT, ECSCoordinator& ecs, const InputGather& 
     else
     {
         for (auto& ent : m_entities) {
-            Transform& trans = ecs.getComponent<Transform>(ent);
-            Camera& cam = ecs.getComponent<Camera>(ent);
+            Transform& trans = m_ecs->getComponent<Transform>(ent);
+            Camera& cam = m_ecs->getComponent<Camera>(ent);
 
             viewMat = getViewMatrix(trans.position, glm::vec3(0.f, 0.f, -1.f));
             projMat = getProjectionMatrix(cam.fov, m_aspectRatio, cam.zNear, cam.zFar);

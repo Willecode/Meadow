@@ -4,18 +4,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-
-void SceneGraphSystem::init()
+void SceneGraphSystem::init(ECSCoordinator* ecs)
 {
+	m_ecs = ecs;
 	InternalEvents::EntityCreatedEvent::subscribe(std::bind(&SceneGraphSystem::entityCreated, this, std::placeholders::_1));
 	InternalEvents::EntityDeletedEvent::subscribe(std::bind(&SceneGraphSystem::entityDestroyed, this, std::placeholders::_1));
 }
 
-void SceneGraphSystem::update(ECSCoordinator& ecs)
+void SceneGraphSystem::update()
 {
 	SceneGraph::Node root = m_sceneGraph.getGraph();
 	for (auto& child : root.children) {
-		calcModelMatrices(child, glm::mat4(1.0f), ecs);
+		calcModelMatrices(child, glm::mat4(1.0f));
 	}
 }
 
@@ -39,17 +39,17 @@ void SceneGraphSystem::entityCreated(Entity ent)
 	m_sceneGraph.addNode(ent);
 }
 
-void SceneGraphSystem::calcModelMatrices(const SceneGraph::Node &node, glm::mat4 matrixAccumulated, ECSCoordinator& ecs)
+void SceneGraphSystem::calcModelMatrices(const SceneGraph::Node &node, glm::mat4 matrixAccumulated)
 {
 	Entity ent = node.entity;
-	Transform& trans = ecs.getComponent<Transform>(ent);
-	trans.orientation = glm::quat(trans.orientationEuler);
+	Transform& trans = m_ecs->getComponent<Transform>(ent);
+	//trans.orientation = glm::quat(trans.orientationEuler);
 	trans.modelMatrix = glm::translate(glm::mat4(1.0), trans.position);
 	trans.modelMatrix *= glm::toMat4(trans.orientation);
 	trans.modelMatrix = glm::scale(trans.modelMatrix, trans.scale);
 	trans.modelMatrix = matrixAccumulated * trans.modelMatrix;
 
 	for (auto& child : node.children) {
-		calcModelMatrices(child, matrixAccumulated, ecs);
+		calcModelMatrices(child, matrixAccumulated);
 	}
 }

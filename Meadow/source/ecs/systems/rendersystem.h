@@ -4,7 +4,9 @@
 class RenderSystem : public System
 {
 public:
-	void init();
-	void update(float deltaT, ECSCoordinator& ecs);
+	void init(ECSCoordinator* ecs);
+	void update(float deltaT);
+private:
+	ECSCoordinator* m_ecs;
 };
 

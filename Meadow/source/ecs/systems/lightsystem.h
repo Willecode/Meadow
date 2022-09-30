@@ -4,9 +4,10 @@
 class LightSystem : public System
 {
 public:
-	void init();
-	void update(float deltaT, ECSCoordinator& ecs);
+	void init(ECSCoordinator* ecs);
+	void update(float deltaT);
 private:
+	ECSCoordinator* m_ecs;
 	// parse str and if "[]" found then change to "[<id>]
 	std::string injectId(const std::string& str, int id);
 };

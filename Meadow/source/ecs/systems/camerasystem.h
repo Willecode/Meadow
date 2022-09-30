@@ -9,11 +9,12 @@ class CameraSystem : public System
 {
 public:
 	CameraSystem();
-	void init();
-	void update(float deltaT, ECSCoordinator& ecs, const InputGather& input);
+	void init(ECSCoordinator* ecs);
+	void update(float deltaT, const InputGather& input);
 	void setAspect(const int width, const int height);
 
 private:
+	ECSCoordinator* m_ecs;
 	glm::vec3 m_worldUp;
 	glm::mat4 getViewMatrix(const glm::vec3& pos, const glm::vec3& dir);
 	glm::mat4 getProjectionMatrix(const float& fov, const float& aspect, const float& zNear, const float& zFar);

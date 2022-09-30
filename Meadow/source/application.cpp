@@ -6,6 +6,7 @@
 #include "ecs/components/model3d.h"
 #include "ecs/components/camera.h"
 #include "ecs/components/light.h"
+#include "ecs/components/rigidbody.h"
 
 //---------------------------
 // DEBUG --------------------
@@ -28,7 +29,8 @@ Application::Application() :
     m_cameraSystem(nullptr),
     m_renderSystem(nullptr),
     m_sceneGraphSystem(nullptr),
-    m_lightSystem(nullptr)
+    m_lightSystem(nullptr),
+    m_physicsSystem(nullptr)
 {   
 
     /*
@@ -231,10 +233,10 @@ void Application::run()
         m_renderer.setStencilOp(Renderer::TestingActions::KEEP, Renderer::TestingActions::KEEP, Renderer::TestingActions::REPLACE);
 
         
-        m_sceneGraphSystem->update(m_ecs);
-        m_lightSystem->update(deltatime, m_ecs);
-        m_cameraSystem->update(deltatime, m_ecs, m_inputGather);
-
+        m_sceneGraphSystem->update();
+        m_lightSystem->update(deltatime);
+        m_cameraSystem->update(deltatime, m_inputGather);
+        m_physicsSystem->update(deltatime);
         /*
         * Render skybox
         */
@@ -251,7 +253,7 @@ void Application::run()
         m_renderer.depthMask(true);
         sdrMan.bindShader(ShaderManager::ShaderType::PBR);
         //m_scene->render();
-        m_renderSystem->update(deltatime, m_ecs);
+        m_renderSystem->update(deltatime);
 
 
         /*
@@ -305,8 +307,8 @@ void Application::initSystems()
         signature.set(m_ecs.getComponentType<Transform>());
         m_ecs.setSystemSignature<RenderSystem>(signature);
     }
-    m_renderSystem->init();
-
+    m_renderSystem->init(&m_ecs);
+    // -------------------------------------------------------------
     m_cameraSystem = m_ecs.registerSystem<CameraSystem>();
     {
         Signature signature;
@@ -314,15 +316,16 @@ void Application::initSystems()
         signature.set(m_ecs.getComponentType<Transform>());
         m_ecs.setSystemSignature<CameraSystem>(signature);
     }
-    m_cameraSystem->init();
-
+    m_cameraSystem->init(&m_ecs);
+    // -------------------------------------------------------------
     m_sceneGraphSystem = m_ecs.registerSystem<SceneGraphSystem>();
     {
         Signature signature;
         signature.set(m_ecs.getComponentType<Transform>());
         m_ecs.setSystemSignature<SceneGraphSystem>(signature);
     }
-    m_sceneGraphSystem->init();
+    m_sceneGraphSystem->init(&m_ecs);
+    // -------------------------------------------------------------
     m_lightSystem = m_ecs.registerSystem<LightSystem>();
     {
         Signature signature;
@@ -330,8 +333,16 @@ void Application::initSystems()
         signature.set(m_ecs.getComponentType<Light>());
         m_ecs.setSystemSignature<LightSystem>(signature);
     }
-    m_lightSystem->init();
-
+    m_lightSystem->init(&m_ecs);
+    // -------------------------------------------------------------
+    m_physicsSystem = m_ecs.registerSystem<PhysicsSystem>();
+    {
+        Signature signature;
+        signature.set(m_ecs.getComponentType<Transform>());
+        signature.set(m_ecs.getComponentType<RigidBody>());
+        m_ecs.setSystemSignature<PhysicsSystem>(signature);
+    }
+    m_physicsSystem->init(&m_ecs);
 }
 
 void Application::registerComponents()
@@ -339,14 +350,13 @@ void Application::registerComponents()
     m_ecs.registerComponent<Model3D>();
     m_ecs.registerComponent<Camera>();
     m_ecs.registerComponent<Light>();
+    m_ecs.registerComponent<RigidBody>();
 }
 
 void Application::createDefaultScene()
 {
-    // Add some entities
     {
-        Entity entity = m_ecs.createEntity();
-        Entity entity2 = m_ecs.createEntity();
+
         /*Camera cam;
         cam.fov = 45.f;
         cam.zNear = 0.1f;
@@ -474,6 +484,9 @@ void Application::createDefaultScene()
             mesh2->addSubMesh(mat3, submesh);
         }
 
+        Entity entity = m_ecs.createEntity();
+        Entity entity2 = m_ecs.createEntity();
+
         // Add model components to entities
         {
             {
@@ -500,6 +513,17 @@ void Application::createDefaultScene()
             auto& t = m_ecs.getComponent<Transform>(entity2);
             t.position = glm::vec3(1.f);
             m_ecs.getComponent<Transform>(entity2).scale = glm::vec3(0.1f);
+        }
+
+        // Move entity 1 up
+        {
+            auto& t = m_ecs.getComponent<Transform>(entity);
+            t.position = glm::vec3(0.f, 10.f, 0.f);
+        }
+        // Add physics to entity 1
+        {
+            RigidBody r;
+            m_ecs.addComponent(entity, r);
         }
 
     }

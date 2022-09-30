@@ -30,6 +30,7 @@
 #include "ecs/systems/camerasystem.h"
 #include "ecs/systems/scenegraphsystem/scenegraphsystem.h"
 #include "ecs/systems/lightsystem.h"
+#include "ecs/systems/physicssystem.h"
 
 class Application
 {
@@ -55,5 +56,6 @@ private:
 	std::shared_ptr<RenderSystem> m_renderSystem;
 	std::shared_ptr<SceneGraphSystem> m_sceneGraphSystem;
 	std::shared_ptr<LightSystem> m_lightSystem;
+	std::shared_ptr<PhysicsSystem> m_physicsSystem;
 };
 

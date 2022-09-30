@@ -5,8 +5,15 @@
 class PhysicsSystem : public System
 {
 public:
-	void init();
-	void update(float deltaT, ECSCoordinator& ecs);
+	PhysicsSystem();
+	~PhysicsSystem();
+	void init(ECSCoordinator* ecs);
+	void update(float deltaT);
+protected:
+	void onEntityAdded(Entity ent) override;
+	void onEntityRemoved(Entity ent) override;
+private:
+	void togglePhysics(bool f);
 private:
 	physx::PxDefaultErrorCallback  m_PxDefaultErrorCallback;
 	physx::PxDefaultAllocator	   m_PxDefaultAllocator;
@@ -20,5 +27,8 @@ private:
 
 	float m_timeAccumulate;
 	float m_stepSize;
+
+	bool m_physicsEnabled;
+	ECSCoordinator* m_ecs;
 };
 

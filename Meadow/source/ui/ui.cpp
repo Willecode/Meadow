@@ -129,6 +129,14 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
                 }
                 ImGui::EndMenu();
             }
+            if (ImGui::BeginMenu("Physics")) {
+                if (ImGui::Button("On"))
+                    InputEvents::PhysicsToggleEvent::notify(true);
+                if (ImGui::Button("Off"))
+                    InputEvents::PhysicsToggleEvent::notify(false);
+
+                ImGui::EndMenu();
+            }
             if (ImGui::Button("Borderless/Bordered")) {
                 InputEvents::WindowBordersToggleEvent::notify();
             }

@@ -2,18 +2,20 @@
 #include "ecs/components/transform.h"
 #include "ecs/components/light.h"
 #include "shader/shadermanager.h"
-void LightSystem::init()
+
+void LightSystem::init(ECSCoordinator* ecs)
 {
+	m_ecs = ecs;
 }
 
-void LightSystem::update(float deltaT, ECSCoordinator& ecs)
+void LightSystem::update(float deltaT)
 {
 	ShaderManager& sdrMan = ShaderManager::getInstance();
 	int pointLightId = 0;
 	int dirLightId = 0;
 	for (auto& ent : m_entities) {
-		Transform& trans = ecs.getComponent<Transform>(ent);
-		Light& light = ecs.getComponent<Light>(ent);
+		Transform& trans = m_ecs->getComponent<Transform>(ent);
+		Light& light = m_ecs->getComponent<Light>(ent);
 		
 		if (light.lightType == LightType::POINTLIGHT) {
 			sdrMan.setFrameUniform(injectId("pointLights[].color",     pointLightId), light.color);

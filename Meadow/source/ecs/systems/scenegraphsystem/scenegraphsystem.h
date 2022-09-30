@@ -8,14 +8,15 @@
 class SceneGraphSystem : public System
 {
 public:
-	void init();
-	void update(ECSCoordinator& ecs);
+	void init(ECSCoordinator* ecs);
+	void update();
 	const SceneGraph::Node& getSceneGraph();
 private:
+	ECSCoordinator* m_ecs;
 	SceneGraph m_sceneGraph;
 	void changeParent(Entity ent, Entity parent);
 	void entityDestroyed(Entity ent);
 	void entityCreated(Entity ent);
-	void calcModelMatrices(const SceneGraph::Node& node, glm::mat4 matrix, ECSCoordinator& ecs);
+	void calcModelMatrices(const SceneGraph::Node& node, glm::mat4 matrix);
 };
 
