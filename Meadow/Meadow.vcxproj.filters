@@ -180,6 +180,9 @@
     <ClCompile Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\ecs\core\componenteventhandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\object.vs" />
@@ -408,6 +411,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ecs\components\rigidbody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\core\componenteventhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

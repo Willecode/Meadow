@@ -15,7 +15,9 @@ class ComponentArray : public IComponentArray
 {
 public:
 	void insertComponent(Entity entity, T component) {
-		assert(m_entityToIndexMap.find(entity) == m_entityToIndexMap.end() && "Component added to same entity more than once.");
+		if (m_entityToIndexMap.find(entity) != m_entityToIndexMap.end()) {
+			return;
+		}
 
 		size_t newIndex = m_size;
 		m_entityToIndexMap[entity] = newIndex;

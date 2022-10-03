@@ -1,6 +1,7 @@
 #include "ecscoordinator.h"
 #include "ecs/components/transform.h"
 #include "input/inputevents.h"
+
 ECSCoordinator::ECSCoordinator()
 {
 	InputEvents::AddNodeEvent::subscribe(std::bind(&ECSCoordinator::createEntity, this));
@@ -34,3 +35,4 @@ Signature ECSCoordinator::getEntitySignature(Entity ent) const
 {
 	return m_entityManager->getSignature(ent);
 }
+

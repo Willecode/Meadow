@@ -26,6 +26,7 @@ Application::Application() :
     m_postProcessing(PostProcessing()),
     //m_importer(),
     m_ecs(),
+    m_componentEventHandler(),
     m_cameraSystem(nullptr),
     m_renderSystem(nullptr),
     m_sceneGraphSystem(nullptr),
@@ -82,7 +83,7 @@ Application::Application() :
     m_ecs.init();
     registerComponents();
     initSystems();
-
+    m_componentEventHandler.init(&m_ecs);
     createDefaultScene();
 
 }
@@ -538,11 +539,13 @@ void Application::createDefaultScene()
 
         // Add physics
         {
-            RigidBody r(RigidBody::RigidBodyType::DBOX);
+            RigidBody r;
+            r.type = (RigidBody::RigidBodyType::DBOX);
             m_ecs.addComponent(entity, r);
             m_ecs.addComponent(entity3, r);
 
-            RigidBody r2(RigidBody::RigidBodyType::SSPHERE);
+            RigidBody r2;
+            r2.type = (RigidBody::RigidBodyType::SSPHERE);
             m_ecs.addComponent(entity2, r2);
         }
 

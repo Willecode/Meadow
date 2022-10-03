@@ -11,4 +11,5 @@ struct RigidBody {
 		SSPHERE
 	};
 	RigidBodyType type;
+	RigidBody(): type(RigidBodyType::SBOX){}
 };

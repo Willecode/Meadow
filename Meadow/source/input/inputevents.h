@@ -14,6 +14,7 @@
 #include <functional>
 #include "assets/texture.h"
 #include "shader/shadermanager.h"
+#include "ecs/components/rigidbody.h"
 namespace InputEvents
 {
 	/*
@@ -28,6 +29,7 @@ namespace InputEvents
 			for (auto h : m_voidUintHandlers) {
 				h.first(h.second);
 			}
+			m_voidUintHandlers.clear();
 		}
 	private:
 		inline static std::vector<std::pair<std::function<void(unsigned int)>, unsigned int>> m_voidUintHandlers;
@@ -583,6 +585,96 @@ namespace InputEvents
 	};
 
 	class SetActiveNodeEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id) {
+			for (auto h : m_handlers) {
+				h(id);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class AddLightComponentEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id) {
+			for (auto h : m_handlers) {
+				h(id);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class RemoveLightComponentEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id) {
+			for (auto h : m_handlers) {
+				h(id);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class Add3DModelComponentEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id) {
+			for (auto h : m_handlers) {
+				h(id);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class Remove3DModelComponentEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id) {
+			for (auto h : m_handlers) {
+				h(id);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class AddRigidBodyComponentEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int, RigidBody::RigidBodyType)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int id, RigidBody::RigidBodyType t) {
+			for (auto h : m_handlers) {
+				h(id, t);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int, RigidBody::RigidBodyType)>> m_handlers;
+	};
+
+	class removeRigidBodyComponentEvent
 	{
 	public:
 		static void subscribe(std::function<void(unsigned int)> f) {

@@ -189,6 +189,16 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
         }
         else
         {
+            if (ImGui::Button("Add Lightsoure")) {
+                InputEvents::AddLightComponentEvent::notify(m_activeNode);
+            };
+            if (ImGui::Button("Add 3D Model")) {
+                InputEvents::Add3DModelComponentEvent::notify(m_activeNode);
+            };
+             if (ImGui::Button("Add RigidBody")) {
+                InputEvents::AddRigidBodyComponentEvent::notify(m_activeNode, RigidBody::RigidBodyType::SBOX);
+            };
+            
             float sliderSpeed = 0.01f;
             for (auto& component : componentMap->at(m_activeNode)) {
                 component->render(m_activeNode, *uiAssets);

@@ -196,7 +196,10 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 		if (sign.test(comptype)) {
 			auto& model = ecs.getComponent<Model3D>(ent);
 			auto modelUI = std::make_unique<Model3DComponentUI>();
-			modelUI->mesh = &m_UIAssetMaps.meshes.at(model.mesh->getId());
+			if (model.mesh == nullptr)
+				modelUI->mesh = nullptr;
+			else
+				modelUI->mesh = &m_UIAssetMaps.meshes.at(model.mesh->getId());
 			m_componentMap[ent].push_back(std::move(modelUI));
 		}
 	}
@@ -219,7 +222,17 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 				compUI->direction = &comp.direction;
 			}
 
+			m_componentMap[ent].push_back(std::move(compUI));
+		}
+	}
 
+	{
+		auto comptype = ecs.getComponentType<RigidBody>();
+		if (sign.test(comptype)) {
+			auto& comp = ecs.getComponent<RigidBody>(ent);
+			auto compUI = std::make_unique<RigidBodyComponentUI>();
+			
+			compUI->t = comp.type;
 			m_componentMap[ent].push_back(std::move(compUI));
 		}
 	}

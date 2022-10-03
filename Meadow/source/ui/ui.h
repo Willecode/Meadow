@@ -13,6 +13,11 @@
 #include "assets/texture.h"
 #include "input/inputevents.h"
 
+// Probably shouldn't be here
+// ----------------------------------
+#include "ecs/components/rigidbody.h"
+// ----------------------------------
+
 /*
 * Contains the data for a UI element representing an asset 
 */
@@ -102,8 +107,19 @@ struct Model3DComponentUI : public IComponentUI {
 	bool wireframe;
 	void render(const int& activenode, const UIAssetMaps& assets) override {
 		ImGui::Text("Model3D component:");
+		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::ImColor(7.0f, 0.6f, 0.6f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::ImColor(7.0f, 0.7f, 0.7f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::ImColor(7.0f, 0.8f, 0.8f));
+		if (ImGui::Button("Remove 3D model"))
+			InputEvents::Remove3DModelComponentEvent::notify(activenode);
+		ImGui::PopStyleColor(3);
+
 		const char* meshboxlabel;
-		if (ImGui::BeginCombo("##inspmeshcombo", mesh->name.c_str())) {
+		if (mesh == nullptr)
+			meshboxlabel = "No mesh";
+		else
+			meshboxlabel = mesh->name.c_str();
+		if (ImGui::BeginCombo("##inspmeshcombo", meshboxlabel)) {
 		    if (ImGui::Selectable("No Mesh", false))
 		    {
 		        InputEvents::SetNodeMeshEvent::notify(activenode, 0);
@@ -133,6 +149,13 @@ struct LightComponentUI : public IComponentUI {
 	float* quadratic;
 	void render(const int& activenode, const UIAssetMaps& assets) override {
 		ImGui::Text("Light component:");
+		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::ImColor(7.0f, 0.6f, 0.6f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::ImColor(7.0f, 0.7f, 0.7f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::ImColor(7.0f, 0.8f, 0.8f));
+		if (ImGui::Button("Remove light"))
+			InputEvents::RemoveLightComponentEvent::notify(activenode);
+		ImGui::PopStyleColor(3);
+
 		if (lightType == 0) {// pointlight
 			ImGui::Text("Type: pointlight");
 			ImGui::DragFloat3("Color", &((*color).x), 0.1f);
@@ -147,6 +170,39 @@ struct LightComponentUI : public IComponentUI {
 		}
 	}
 };
+struct RigidBodyComponentUI : public IComponentUI {
+
+	RigidBody::RigidBodyType t;
+	glm::vec3 position;
+	glm::vec3 orientation;
+	glm::vec3 scale;
+	std::unordered_map<RigidBody::RigidBodyType, const char*> typeNames;
+
+	RigidBodyComponentUI():
+		typeNames({
+			{RigidBody::RigidBodyType::DBOX, "DBox"},
+			{RigidBody::RigidBodyType::SBOX, "SBox"},
+			{RigidBody::RigidBodyType::DCAPSULE, "DCapsule"},
+			{RigidBody::RigidBodyType::SCAPSULE, "SCapsule"},
+			{RigidBody::RigidBodyType::TRIANGLEMESH, "Trianglemesh"},
+			{RigidBody::RigidBodyType::DSPHERE, "DSphere"},
+			{RigidBody::RigidBodyType::SSPHERE, "SSphere"}
+			})
+	{}
+	void render(const int& activenode, const UIAssetMaps& assets) override {
+		ImGui::Text("RigidBody component:");
+		if (ImGui::BeginCombo("RB type", typeNames.at(t))) {
+			for (auto const& type : typeNames) {
+				if (ImGui::Selectable(type.second, false))
+				{
+					InputEvents::AddRigidBodyComponentEvent::notify(activenode, type.first);
+				}
+			}
+			ImGui::EndCombo();
+		}
+	}
+};
+
 using ComponentMapUI = std::map<int, std::vector<std::unique_ptr<IComponentUI>>>;
 
 struct PostprocessingFlags {

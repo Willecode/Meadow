@@ -14,6 +14,8 @@ namespace InternalEvents
 	//		for (auto h : m_voidEntityHandlers) {
 	//			h.first(h.second);
 	//		}
+	//		m_voidUintHandlers.clear();
+	// 
 	//	}
 	//private:
 	//	inline static std::vector<std::pair<std::function<void(Entity)>, Entity>> m_voidEntityHandlers;

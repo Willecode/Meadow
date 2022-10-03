@@ -31,6 +31,7 @@
 #include "ecs/systems/scenegraphsystem/scenegraphsystem.h"
 #include "ecs/systems/lightsystem.h"
 #include "ecs/systems/physicssystem.h"
+#include "ecs/core/componenteventhandler.h"
 
 class Application
 {
@@ -51,6 +52,7 @@ private:
 	Logger m_logger;
 	UI m_ui;
 	PostProcessing m_postProcessing;
+	ComponentEventHandler m_componentEventHandler;
 	//Importer m_importer;
 	std::shared_ptr<CameraSystem> m_cameraSystem;
 	std::shared_ptr<RenderSystem> m_renderSystem;

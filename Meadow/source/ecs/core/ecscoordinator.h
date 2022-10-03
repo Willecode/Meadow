@@ -65,4 +65,5 @@ private:
 	std::unique_ptr<ComponentManager> m_componentManager;
 	std::unique_ptr<EntityManager> m_entityManager;
 	std::unique_ptr<SystemManager> m_systemManager;
+
 };

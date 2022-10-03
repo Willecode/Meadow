@@ -22,7 +22,7 @@ void RenderSystem::update(float deltaT)
 		//const float* pSource = (const float*)glm::value_ptr(trans.modelMatrix);
 		//for (int i = 0; i < 16; ++i)
 		//	dArray[i] = pSource[i];
-
-		model.mesh->draw(trans.modelMatrix);
+		if (model.mesh != nullptr)
+			model.mesh->draw(trans.modelMatrix);
 	}
 }
