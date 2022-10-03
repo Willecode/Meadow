@@ -1,5 +1,11 @@
 #include "ecscoordinator.h"
 #include "ecs/components/transform.h"
+#include "input/inputevents.h"
+ECSCoordinator::ECSCoordinator()
+{
+	InputEvents::AddNodeEvent::subscribe(std::bind(&ECSCoordinator::createEntity, this));
+	InputEvents::DeleteEntityEvent::subscribe(std::bind(&ECSCoordinator::destroyEntity, this, std::placeholders::_1));
+}
 void ECSCoordinator::init()
 {
 	m_componentManager = std::make_unique<ComponentManager>();

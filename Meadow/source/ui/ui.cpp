@@ -193,6 +193,10 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
             for (auto& component : componentMap->at(m_activeNode)) {
                 component->render(m_activeNode, *uiAssets);
             }
+            if (ImGui::Button("Delete Node >:)")) {
+                InputEvents::DeleteEntityEvent::notify(m_activeNode);
+                m_activeNode = -1;
+            }
             
         }
         //else

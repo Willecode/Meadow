@@ -13,6 +13,9 @@ public:
 	struct Node {
 		ECSTypes::Entity entity;
 		std::vector<Node> children;
+		bool operator==(const Entity& ent) {
+			return this->entity == ent;
+		}
 	};
 	SceneGraph();
 	// if no parent provided then parented to root

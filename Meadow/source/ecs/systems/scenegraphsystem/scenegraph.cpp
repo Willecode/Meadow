@@ -52,4 +52,12 @@ void SceneGraph::changeParentRec(Entity ent, Entity parent, Node& recNode)
 
 void SceneGraph::deleteNodeRec(Entity ent, Node& recNode)
 {
+	auto it = std::find(recNode.children.begin(), recNode.children.end(), ent);
+	if (it != recNode.children.end()) {
+		recNode.children.erase(it);
+		return;
+	}
+	for (auto& Node : recNode.children) {
+		deleteNodeRec(ent, Node);
+	}
 }

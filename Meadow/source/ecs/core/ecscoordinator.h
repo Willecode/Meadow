@@ -6,6 +6,7 @@
 class ECSCoordinator
 {
 public:
+	ECSCoordinator();
 	void init();
 	Entity createEntity();
 	void destroyEntity(Entity entity);
