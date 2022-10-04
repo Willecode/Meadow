@@ -5,7 +5,7 @@
 //#include "service_locator/locator.h"
 #include "assets/asset.h"
 #include "shader/shadermanager.h"
-
+#include "input/inputevents.h"
 std::map<Texture::TextureType, std::string> UI::m_texLabels = {
     {Texture::TextureType::ALBEDO_MAP, "Albedo map"},
     {Texture::TextureType::METALLIC_MAP, "Metallic map"},
@@ -18,6 +18,8 @@ std::map<Texture::TextureType, std::string> UI::m_texLabels = {
 
 UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE), m_uiFlags(), m_activeNode(-1)
 {
+    InputEvents::MouseButtonLeftPressedEvent::subscribe(std::bind(&UI::setNoActiveNode, this));
+
 }
 UI::~UI()
 {
@@ -205,6 +207,7 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
             }
             if (ImGui::Button("Delete Node >:)")) {
                 InputEvents::DeleteEntityEvent::notify(m_activeNode);
+                InputEvents::SetActiveNodeEvent::notify(0);
                 m_activeNode = -1;
             }
             
@@ -383,6 +386,11 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
     //////////////////////
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void UI::setNoActiveNode()
+{
+    m_activeNode = -1;
 }
 
 void UI::sceneTreeRec(EntityUI* node, ImGuiTreeNodeFlags treeflags)

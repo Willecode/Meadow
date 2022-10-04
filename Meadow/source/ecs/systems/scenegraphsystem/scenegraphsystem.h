@@ -11,12 +11,17 @@ public:
 	void init(ECSCoordinator* ecs);
 	void update();
 	const SceneGraph::Node& getSceneGraph();
+	Entity getActiveNode();
 private:
 	ECSCoordinator* m_ecs;
 	SceneGraph m_sceneGraph;
+	Entity m_activeNode;
 	void changeParent(Entity ent, Entity parent);
 	void entityDestroyed(Entity ent);
 	void entityCreated(Entity ent);
 	void calcModelMatrices(const SceneGraph::Node& node, glm::mat4 matrix);
+
+	void setActiveNode(Entity ent);
+	void deactivateNodes();
 };
 

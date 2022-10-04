@@ -23,6 +23,7 @@ public:
 	void changeParent(Entity ent, Entity parent);
 	void deleteNode(Entity ent);
 	const Node& getGraph();
+	const Node& getNode(Entity ent);
 private:
 	Node m_rootNode;
 	void validate();

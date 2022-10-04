@@ -219,12 +219,12 @@ void Application::run()
         /*
         * Render active node highlighting
         */
-        //if (m_scene->getActiveNode() != nullptr)
-        //{
-        //    //m_shaderManager.setCurrentShader("phong");
-        //    sdrMan.bindShader(ShaderManager::ShaderType::PBR);
-        //    RenderingUtils::maskMeshOutlines(m_scene->getActiveNode());
-        //}
+        if (m_sceneGraphSystem->getActiveNode() != NullEntity)
+        {
+            //m_shaderManager.setCurrentShader("phong");
+            sdrMan.bindShader(ShaderManager::ShaderType::PBR);
+            RenderingUtils::maskMeshOutlines(m_sceneGraphSystem->getActiveNode(), m_ecs);
+        }
             
         /*
         * Allow color rendering and disable rendering on stencil buffer's mask of 0's

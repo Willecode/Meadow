@@ -1,6 +1,7 @@
 #include "scenegraphsystem.h"
 #include "ecs/components/transform.h"
 #include "ecs/core/internalevents.h"
+#include "input/inputevents.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -9,6 +10,8 @@ void SceneGraphSystem::init(ECSCoordinator* ecs)
 	m_ecs = ecs;
 	InternalEvents::EntityCreatedEvent::subscribe(std::bind(&SceneGraphSystem::entityCreated, this, std::placeholders::_1));
 	InternalEvents::EntityDeletedEvent::subscribe(std::bind(&SceneGraphSystem::entityDestroyed, this, std::placeholders::_1));
+	InputEvents::SetActiveNodeEvent::subscribe(std::bind(&SceneGraphSystem::setActiveNode, this, std::placeholders::_1));
+	InputEvents::MouseButtonLeftPressedEvent::subscribe(std::bind(&SceneGraphSystem::deactivateNodes, this));
 }
 
 void SceneGraphSystem::update()
@@ -52,4 +55,22 @@ void SceneGraphSystem::calcModelMatrices(const SceneGraph::Node &node, glm::mat4
 	for (auto& child : node.children) {
 		calcModelMatrices(child, matrixAccumulated);
 	}
+}
+
+Entity SceneGraphSystem::getActiveNode()
+{
+	return m_activeNode;
+}
+
+void SceneGraphSystem::setActiveNode(Entity ent)
+{
+	if (ent == 0)
+		m_activeNode = NullEntity;
+	else
+		m_activeNode = ent;
+}
+
+void SceneGraphSystem::deactivateNodes()
+{
+	setActiveNode(0);
 }

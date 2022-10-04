@@ -1,6 +1,6 @@
-#if 0
+
 #pragma once
-#include "scene/scenenode.h"
+#include "ecs/core/ecscoordinator.h"
 
 class RenderingUtils
 {
@@ -11,11 +11,10 @@ public:
 	*	rend->setStencilMask(1);
 	*	rend->stencilTesting(true);
 	*/
-	static void maskMeshOutlines(SceneNode* node);
+	static void maskMeshOutlines(Entity ent, ECSCoordinator& ecs);
 
 private:
 	RenderingUtils() {};
 	static float outlineWidth;
 };
 
-#endif

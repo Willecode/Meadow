@@ -274,5 +274,6 @@ private:
 	void createSceneTree(EntityUI* rootNode, ImGuiTreeNodeFlags treeflags);
 	void sceneTreeRec(EntityUI* node, ImGuiTreeNodeFlags treeflags);
 	void createMatTexCombos(MaterialUI* mat, UIAssetMaps* uiAssets);
+	void setNoActiveNode();
 };
 
