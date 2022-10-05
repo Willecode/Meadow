@@ -30,8 +30,8 @@
 #ifndef PX_FOUNDATION_PX_ASSERT_H
 #define PX_FOUNDATION_PX_ASSERT_H
 
-#include "foundation/PxFoundationConfig.h"
-#include "foundation/Px.h"
+#include "physx/foundation/PxFoundationConfig.h"
+#include "physx/foundation/Px.h"
 
 /** \addtogroup foundation
   @{

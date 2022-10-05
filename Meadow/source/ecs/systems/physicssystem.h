@@ -24,6 +24,7 @@ private:
 	physx::PxPhysics*			   m_PxPhysics;
 	physx::PxPvd*				   m_PxPvd;
 	physx::PxScene*				   m_PxScene;
+	physx::PxCooking*			   m_PxCooking;
 
 	physx::PxMaterial* m_defaultMaterial;
 

@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include "shader/shadermanager.h"
 #include <map>
+#include <set>
 class Mesh : public Asset
 {
 public:
@@ -14,6 +15,7 @@ public:
 	*/
 	typedef std::map<Material*, std::vector<SubMesh*>> SubmeshMap;
 	SubmeshMap submeshes;
+	std::set<SubMesh*> submeshlist;
 public:
 	Mesh(std::string name = "Nameless mesh");
 

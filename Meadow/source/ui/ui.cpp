@@ -18,7 +18,7 @@ std::map<Texture::TextureType, std::string> UI::m_texLabels = {
 
 UI::UI(): m_chosenAssetId(0), m_chosenAssetType(Asset::AssetType::TEXTURE), m_uiFlags(), m_activeNode(-1)
 {
-    InputEvents::MouseButtonLeftPressedEvent::subscribe(std::bind(&UI::setNoActiveNode, this));
+    //InputEvents::MouseButtonLeftPressedEvent::subscribe(std::bind(&UI::setNoActiveNode, this));
 
 }
 UI::~UI()

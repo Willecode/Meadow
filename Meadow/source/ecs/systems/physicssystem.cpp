@@ -2,10 +2,11 @@
 #include "input/inputevents.h"
 #include "ecs/components/transform.h"
 #include "ecs/components/rigidbody.h"
+#include "ecs/components/model3d.h"
 #include "resource_management/resourcemanager.h"
 #include "shader/shadermanager.h"
 #include "utils/primitivecreation.h"
-
+#include <physx/extensions/PxRigidActorExt.h>
 using namespace physx;
 PhysicsSystem::PhysicsSystem() : m_physicsEnabled(false), m_visibleColliders(false)
 {
@@ -41,7 +42,7 @@ void PhysicsSystem::init(ECSCoordinator* ecs)
 	// Foundation
 	m_PxFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_PxDefaultAllocator, m_PxDefaultErrorCallback);
 	if (!m_PxFoundation)
-		throw("physics init failed");
+		throw("PxCreateFoundation failed");
 	
 	// Physx Visual Debugger
 	physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
@@ -51,8 +52,13 @@ void PhysicsSystem::init(ECSCoordinator* ecs)
 	// Physics
 	m_PxPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_PxFoundation, PxTolerancesScale(), true, m_PxPvd);
 	if (!m_PxPhysics) {
-		throw("physics init failed");
+		throw("PxCreatePhysics failed");
 	}
+
+	// Cooking
+	m_PxCooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_PxFoundation, PxCookingParams(PxTolerancesScale()));
+	if (!m_PxCooking)
+		throw("PxCreateCooking failed!");
 
 	// Create PhysX scene
 	PxSceneDesc sceneDesc(m_PxPhysics->getTolerancesScale());
@@ -183,7 +189,41 @@ void PhysicsSystem::onEntityAdded(Entity ent)
 		body->userData = (void*)ent; // attach entity id
 		m_PxScene->addActor(*body);
 	}
+	else if (r.type == RigidBody::RigidBodyType::TRIANGLEMESH) {
+		auto signature = m_ecs->getEntitySignature(ent);
+		if (!signature.test(m_ecs->getComponentType<Model3D>()))
+			return;
+		// use one submesh from the mesh
+		SubMesh* smesh = *m_ecs->getComponent<Model3D>(ent).mesh->submeshlist.begin();
+			
+		PxTriangleMeshDesc meshDesc;
+		meshDesc.points.count = smesh->vertices.size();
+		meshDesc.points.stride = sizeof(Vertex);
+		meshDesc.points.data = &smesh->vertices[0];
 
+		meshDesc.triangles.count = smesh->indices.size() / 3;
+		meshDesc.triangles.stride = 3 * sizeof(unsigned int);
+		meshDesc.triangles.data = &smesh->indices[0];
+
+		PxDefaultMemoryOutputStream writeBuffer;
+		PxTriangleMeshCookingResult::Enum result;
+		bool status = m_PxCooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
+		if (!status)
+			return;
+
+		PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+		PxTriangleMesh* aTriangleMesh = m_PxPhysics->createTriangleMesh(readBuffer);
+
+		PxRigidStatic* body = m_PxPhysics->createRigidStatic(localTm);
+		PxTriangleMeshGeometry triGeom;
+		triGeom.triangleMesh = aTriangleMesh;
+		//shape = PxRigidActorExt::createExclusiveShape();
+		shape = PxRigidActorExt::createExclusiveShape(*body, triGeom, *m_defaultMaterial);
+		//body->attachShape(*shape);
+		body->userData = (void*)ent; // attach entity id
+		m_PxScene->addActor(*body);
+
+	}
 	shape->release();
 }
 
@@ -196,7 +236,7 @@ void PhysicsSystem::onEntityRemoved(Entity ent)
 		m_PxScene->getActors(PxActorTypeFlag::eRIGID_DYNAMIC | PxActorTypeFlag::eRIGID_STATIC, reinterpret_cast<PxActor**>(&actors[0]), nbActors);
 		for (auto& act : actors) {
 			if (act->userData == (void*)ent) {
-				act->release();
+				m_PxScene->removeActor(*act);
 			}
 		}
 	}

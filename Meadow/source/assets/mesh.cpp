@@ -1,7 +1,8 @@
 #include "mesh.h"
 Mesh::Mesh(std::string name) :
 	Asset(name),
-	submeshes()
+	submeshes(),
+	submeshlist()
 {
 
 }
@@ -36,8 +37,10 @@ void Mesh::addSubMesh(Material* material, SubMesh* submesh)
 	/*
 	* Check if smesh already exists
 	*/
-	if(findSubmesh(submesh) == submeshes.end())
+	if (findSubmesh(submesh) == submeshes.end()) {
 		submeshes[material].push_back(submesh);
+		submeshlist.insert(submesh);
+	}
 }
 
 void Mesh::setSubMeshMaterial(Material* material, SubMesh* submesh)
