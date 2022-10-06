@@ -1,17 +1,16 @@
-#if 0
+#if 1
 #pragma once
 #include <memory>
 #include <string>
 #include "assets/mesh.h"
 #include "imageloader.h"
-#include "scene/scene.h"
-
+#include "ecs/core/ecscoordinator.h"
 
 
 
 
 namespace ModelImporting
 {
-	void objsFromFile(std::string path, Scene* scene, unsigned int parentId);
+	void objsFromFile(std::string path, ECSCoordinator* ecs);
 }
 #endif 

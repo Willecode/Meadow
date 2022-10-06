@@ -24,7 +24,7 @@ Application::Application() :
     appFailed(false),
     m_UIScraper(),
     m_postProcessing(PostProcessing()),
-    //m_importer(),
+    m_importer(),
     m_ecs(),
     m_componentEventHandler(),
     m_cameraSystem(nullptr),
@@ -77,7 +77,7 @@ Application::Application() :
     /*
     * Provide importer a scene to import files to
     */
-    //m_importer.setScene(m_scene.get());
+    m_importer.init(&m_ecs);
 
     //ECS
     m_ecs.init();
@@ -548,7 +548,6 @@ void Application::createDefaultScene()
             r2.type = (RigidBody::RigidBodyType::SSPHERE);
             m_ecs.addComponent(entity2, r2);
         }
-
     }
 #if 0
 
@@ -723,7 +722,7 @@ void Application::createDefaultScene()
     * import a model
     */
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/old-office-window/source/office window.fbx", m_scene.get(), 0);
-    //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
+    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/modular-lowpoly-medieval-environment/medieval_scene.fbx", m_scene.get(), 0);
 
     //m_scene->getNode(4)->scale = glm::vec3(0.1f);

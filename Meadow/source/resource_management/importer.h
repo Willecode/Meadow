@@ -1,6 +1,7 @@
-#if 0
+#if 1
 #pragma once
-#include "scene/scene.h"
+#include "ecs/core/ecscoordinator.h"
+#include "renderer/renderer.h"
 /*
 * Imports files into the program.
 * This includes:
@@ -11,7 +12,7 @@ class Importer
 {
 public:
 	Importer();
-	void setScene(Scene* scene);
+	void init(ECSCoordinator* ecs);
 
 	void importTexture(const std::string path, Renderer::ImageFormat toFmt);
 	void import3DModel(const std::string path);
@@ -28,13 +29,9 @@ private:
 	*/
 	void fixPath(std::string& path);
 
-	/*
-	* Check whether scene has been provided
-	*/
-	bool sceneProvided();
-
 	void fileBrowserImportTexture(Renderer::ImageFormat toFmt);
-	Scene* m_scene;
+	ECSCoordinator* m_ecs;
+	bool m_initialized;
 };
 
 #endif

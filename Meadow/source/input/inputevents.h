@@ -25,14 +25,24 @@ namespace InputEvents
 		static void addCallback(std::function<void(unsigned int)> f, unsigned int arg) {
 			m_voidUintHandlers.push_back(std::make_pair(f, arg));
 		}
+		static void addCallback(std::function<void(unsigned int, unsigned int)> f, unsigned int argx, unsigned int argy) {
+			m_voidUintUintHandlers.push_back(std::make_pair(f, std::make_pair(argx, argy)));
+		}
+
 		static void processQueue() {
 			for (auto h : m_voidUintHandlers) {
 				h.first(h.second);
 			}
 			m_voidUintHandlers.clear();
+			for (auto h : m_voidUintUintHandlers) {
+				h.first(h.second.first, h.second.second);
+			}
+			m_voidUintUintHandlers.clear();
+
 		}
 	private:
 		inline static std::vector<std::pair<std::function<void(unsigned int)>, unsigned int>> m_voidUintHandlers;
+		inline static std::vector<std::pair<std::function<void(unsigned int, unsigned int)>, std::pair<unsigned int, unsigned int>>> m_voidUintUintHandlers;
 	};
 	class CameraUpEvent
 	{
@@ -732,6 +742,37 @@ namespace InputEvents
 		}
 	private:
 		inline static std::vector<std::function<void(bool)>> m_handlers;
+	};
+
+	class SetNodeParentEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int, unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int a, unsigned int b) {
+			for (auto h : m_handlers) {
+				//h(a, b);
+				EventQueue::addCallback(h, a, b);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int, unsigned int)>> m_handlers;
+	};
+
+	class SetNodeParentToRootEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int x) {
+			for (auto h : m_handlers) {
+				EventQueue::addCallback(h, x);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
 	};
 
 }

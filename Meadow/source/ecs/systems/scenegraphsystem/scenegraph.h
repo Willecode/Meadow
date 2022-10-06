@@ -23,13 +23,16 @@ public:
 	void changeParent(Entity ent, Entity parent);
 	void deleteNode(Entity ent);
 	const Node& getGraph();
-	const Node& getNode(Entity ent);
+	Node* getNode(Entity ent);
 private:
 	Node m_rootNode;
 	void validate();
 	void addNodeRec(Entity ent, Entity parent, Node& recNode);
 	void changeParentRec(Entity ent, Entity parent, Node& recNode);
 	void deleteNodeRec(Entity ent, Node& recNode);
+	void getNodeRec(Entity ent, Node* recNode, Node*& result);
+	bool parented(Entity child, Entity parent);
+
 	//std::array<Node, MAX_ENTITIES> m_nodes;
 	//unsigned int m_nodeIdCtr;
 };

@@ -166,11 +166,14 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
         if (ImGui::Button("Add node")) {
             InputEvents::AddNodeEvent::notify(0);
         }
-
+        if (ImGui::Button("Parent to root")) {
+            if (m_activeNode >= 0)
+                InputEvents::SetNodeParentToRootEvent::notify(m_activeNode);
+        }
         /*
         * Create a tree of scene nodes
         */
-        ImGuiTreeNodeFlags treeflags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+        ImGuiTreeNodeFlags treeflags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
         createSceneTree(node, treeflags);
 
         ImGui::PopStyleVar();
@@ -212,54 +215,7 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
             }
             
         }
-        //else
-        //{
-        //    EntityUI activenode = sceneState->activeNode.value();
-        //    /*if (ImGui::BeginTable("nodeinsp", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
-        //    {
-        //        ImGui::TableNextRow();
-        //        float sliderSpeed = 0.01f;
-        //        ImGui::TableSetColumnIndex(0);
-
-        //        ImGui::EndTable();
-        //    }*/
-        //    //ImGui::Text("Chosen node: %s", m_chosenNode->name->c_str());
-        //    float sliderSpeed = 0.01f;
-        //    ImGui::DragFloat3("Position", &activenode.pos->x, sliderSpeed);
-        //    ImGui::DragFloat3("Scale", &activenode.scale->x, sliderSpeed);
-        //    ImGui::DragFloat3("Rotation", &activenode.orientationEuler->x, sliderSpeed);
-
-        //    const char* meshboxlabel;
-        //    if (activenode.mesh != nullptr)
-        //        meshboxlabel = activenode.mesh->name.c_str();
-        //    else
-        //        meshboxlabel = "No Mesh";
-        //    if (ImGui::BeginCombo("##inspmeshcombo", meshboxlabel)) {
-        //        if (ImGui::Selectable("No Mesh", false))
-        //        {
-        //            InputEvents::SetNodeMeshEvent::notify(activenode.id, 0);
-        //        }
-        //        for (auto const& mesh : uiAssets->meshes) {
-        //            if (ImGui::Selectable(mesh.second.name.c_str(), false))
-        //            {
-        //                InputEvents::SetNodeMeshEvent::notify(activenode.id, mesh.second.id);
-        //            }
-        //        }
-        //        ImGui::EndCombo();
-        //    }
-        //    // Wireframe mode checkbox
-        //    //ImGui::TableSetColumnIndex(2);
-        //    ImGui::Checkbox("Wireframe", activenode.wireframeMode);
-
-        //    // LightSource adding/removing
-        //    bool hasLight = activenode.hasLightsource;
-        //    if (ImGui::Checkbox("Light Source", &activenode.hasLightsource)) {
-        //        if (hasLight)
-        //            InputEvents::SceneNodeLightsourceRemoveEvent::notify(activenode.id);
-        //        else
-        //            InputEvents::SceneNodeLightsourceAddEvent::notify(activenode.id);
-        //    }
-        //}
+        
         ImGui::PopStyleVar();
         ImGui::End();
     }
@@ -398,11 +354,29 @@ void UI::sceneTreeRec(EntityUI* node, ImGuiTreeNodeFlags treeflags)
     ImGuiTreeNodeFlags nodeflags = treeflags;
     if (node->active)
         nodeflags |= ImGuiTreeNodeFlags_Selected;
-
-    bool node_open = ImGui::TreeNodeEx((void*)node->uiElemId, nodeflags, node->name.c_str());
+    ImGui::PushID(node);
+    bool node_open = ImGui::TreeNodeEx((void*)node->id, nodeflags, node->name.c_str());
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
         InputEvents::SetActiveNodeEvent::notify(node->id);
         m_activeNode = node->id;
+    }
+    ImGui::PopID();
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+    {
+        // Set payload to carry the index of our item (could be anything)
+        ImGui::SetDragDropPayload("SCENENODE", &node->id, sizeof(int));
+        ImGui::Text("Reparent %s", node->name.c_str());
+        ImGui::EndDragDropSource();
+    }
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCENENODE"))
+        {
+            IM_ASSERT(payload->DataSize == sizeof(int));
+            int payload_n = *(const int*)payload->Data;
+            InputEvents::SetNodeParentEvent::notify(payload_n, node->id);
+        }
+        ImGui::EndDragDropTarget();
     }
     if (node_open)
     {

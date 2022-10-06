@@ -53,7 +53,7 @@ private:
 	UI m_ui;
 	PostProcessing m_postProcessing;
 	ComponentEventHandler m_componentEventHandler;
-	//Importer m_importer;
+	Importer m_importer;
 	std::shared_ptr<CameraSystem> m_cameraSystem;
 	std::shared_ptr<RenderSystem> m_renderSystem;
 	std::shared_ptr<SceneGraphSystem> m_sceneGraphSystem;

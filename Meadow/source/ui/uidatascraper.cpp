@@ -150,6 +150,7 @@ void UIDataScraper::scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiN
 {
 	uiNode = EntityUI();
 	uiNode.id = node.entity;
+
 	for (auto const& child : node.children) {
 		EntityUI uiChild;
 		uiNode.children.push_back(uiChild);
@@ -235,6 +236,9 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 			compUI->t = comp.type;
 			m_componentMap[ent].push_back(std::move(compUI));
 		}
+	}
+	for (auto& child : node.children) {
+		constructComponentMap(child, ecs);
 	}
 
 }

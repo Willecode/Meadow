@@ -1,4 +1,4 @@
-#if 0
+#if 1
 #include "importer.h"
 #include "resource_management/resourcemanager.h"
 #include "resource_management/imageloader.h"
@@ -6,7 +6,7 @@
 #include "resource_management/importutility.h"
 #include "resource_management/modelimporting.h"
 
-Importer::Importer(): m_scene(nullptr)
+Importer::Importer(): m_ecs(nullptr), m_initialized(false)
 {
 	InputEvents::importTextureREvent::subscribe(
 		std::bind(&Importer::fileBrowserImportTextureR, this)
@@ -23,9 +23,10 @@ Importer::Importer(): m_scene(nullptr)
 
 }
 
-void Importer::setScene(Scene* scene)
+void Importer::init(ECSCoordinator* ecs)
 {
-	m_scene = scene;
+	m_ecs = ecs;
+	m_initialized = true;
 }
 
 void Importer::importTexture(const std::string filepath, Renderer::ImageFormat toFmt)
@@ -57,12 +58,12 @@ void Importer::importTexture(const std::string filepath, Renderer::ImageFormat t
 
 void Importer::import3DModel(const std::string path)
 {
-	if (!sceneProvided())
+	if (!m_initialized)
 		return;
 	std::string pathCopy = path;
 	fixPath(pathCopy);
 
-	ModelImporting::objsFromFile(pathCopy, m_scene, 0);
+	ModelImporting::objsFromFile(pathCopy, m_ecs);
 }
 
 void Importer::fileBrowserImportTextureR()
@@ -118,11 +119,4 @@ void Importer::fixPath(std::string& path)
 	std::replace(path.begin(), path.end(), '\\', '/');
 }
 
-bool Importer::sceneProvided()
-{
-	if (m_scene == nullptr)
-		return false;
-	else
-		return true;
-}
 #endif

@@ -11,7 +11,9 @@ void SceneGraphSystem::init(ECSCoordinator* ecs)
 	InternalEvents::EntityCreatedEvent::subscribe(std::bind(&SceneGraphSystem::entityCreated, this, std::placeholders::_1));
 	InternalEvents::EntityDeletedEvent::subscribe(std::bind(&SceneGraphSystem::entityDestroyed, this, std::placeholders::_1));
 	InputEvents::SetActiveNodeEvent::subscribe(std::bind(&SceneGraphSystem::setActiveNode, this, std::placeholders::_1));
+	InputEvents::SetNodeParentToRootEvent::subscribe(std::bind(&SceneGraphSystem::setEntityParentToRoot, this, std::placeholders::_1));
 	InputEvents::MouseButtonLeftPressedEvent::subscribe(std::bind(&SceneGraphSystem::deactivateNodes, this));
+	InputEvents::SetNodeParentEvent::subscribe(std::bind(&SceneGraphSystem::changeParent, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void SceneGraphSystem::update()
@@ -53,7 +55,7 @@ void SceneGraphSystem::calcModelMatrices(const SceneGraph::Node &node, glm::mat4
 	trans.modelMatrix = matrixAccumulated * trans.modelMatrix;
 
 	for (auto& child : node.children) {
-		calcModelMatrices(child, matrixAccumulated);
+		calcModelMatrices(child, trans.modelMatrix);
 	}
 }
 
@@ -73,4 +75,9 @@ void SceneGraphSystem::setActiveNode(Entity ent)
 void SceneGraphSystem::deactivateNodes()
 {
 	setActiveNode(0);
+}
+
+void SceneGraphSystem::setEntityParentToRoot(Entity ent)
+{
+	m_sceneGraph.changeParent(ent, NullEntity);
 }

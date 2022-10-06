@@ -1,5 +1,5 @@
 #include "modelimporting.h"
-#if 0
+#if 1
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -8,6 +8,9 @@
 #include "service_locator/loggerlocator.h"
 #include "resourcemanager.h"
 #include "assets/materials/PBRMaterial.h"
+#include "ecs/components/transform.h"
+#include "ecs/components/model3d.h"
+
 #include <stdexcept>
 /*
 TODO:
@@ -87,27 +90,29 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 }
 
-static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode, const aiScene* aiscene, std::string directory, ResourceManager& resourceMan, std::map<int, int> aiMatToMeadowMatId)
+static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* ainode, const aiScene* aiscene, std::string directory, ResourceManager& resourceMan, std::map<int, int> aiMatToMeadowMatId)
 {
-	unsigned int newNodeId = scene->addNode(parentNodeId);
-	SceneNode* newNode = scene->getNode(newNodeId);
+	Entity ent = ecs->createEntity();;
+	
 	/*
 	* Set scenenode name
 	*/
-	newNode->name = ainode->mName.C_Str();
+	//newNode->name = ainode->mName.C_Str();
 	/*
 	* Set scenenode transform
 	*/
+	auto& t = ecs->getComponent<Transform>(ent);
 	glm::vec3 skew;
 	glm::vec4 perspective;
 	glm::mat4 transf = glm::scale(matAssimpToGlm(ainode->mTransformation), glm::vec3(1.0));
-	glm::decompose(transf, newNode->scale, newNode->orientation, newNode->position, skew, perspective);
+	glm::decompose(transf, t.scale, t.orientation, t.position, skew, perspective);
 
 	
 	/*
 	* If there are aimeshes, the scenenode will be given a new Mesh with x submeshes, x being the number of aimeshes
 	*/
 	if (ainode->mNumMeshes > 0) {
+		Model3D model;
 		std::unique_ptr<Mesh> newMesh = std::make_unique<Mesh>(ainode->mName.C_Str());
 		// process all the ainode meshes (our submeshes)
 		for (unsigned int i = 0; i < ainode->mNumMeshes; i++) {
@@ -127,12 +132,13 @@ static void processNode(unsigned int parentNodeId, Scene* scene, aiNode* ainode,
 			}
 		}
 		unsigned int newMeshId = resourceMan.storeMesh(std::move(newMesh));
-		newNode->setMesh(resourceMan.getMesh(newMeshId));
+		model.mesh = (resourceMan.getMesh(newMeshId));
+		ecs->addComponent(ent, model);
 	}
 	//// then do the same for each of the ainode's children
 	for (unsigned int i = 0; i < ainode->mNumChildren; i++)
 	{
-		processNode(newNodeId, scene, ainode->mChildren[i], aiscene, directory, resourceMan, aiMatToMeadowMatId);
+		processNode(ent, ecs, ainode->mChildren[i], aiscene, directory, resourceMan, aiMatToMeadowMatId);
 	}
 	return;
 }
@@ -232,7 +238,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 	return true;
 }
 
-void ModelImporting::objsFromFile(std::string path, Scene* scene, unsigned int parentId)
+void ModelImporting::objsFromFile(std::string path, ECSCoordinator* ecs)
 {
 	Assimp::Importer importer;
 
@@ -266,7 +272,7 @@ void ModelImporting::objsFromFile(std::string path, Scene* scene, unsigned int p
 	* If materials successfully imported, import the meshes
 	*/
 	if (success)
-		processNode(parentId, scene, aiscene->mRootNode, aiscene, directory, resourceMan, aiMatToMeadowMatId);
+		processNode(0, ecs, aiscene->mRootNode, aiscene, directory, resourceMan, aiMatToMeadowMatId);
 	return;
 }
 
