@@ -48,12 +48,12 @@ void SceneGraphSystem::calcModelMatrices(const SceneGraph::Node &node, glm::mat4
 {
 	Entity ent = node.entity;
 	Transform& trans = m_ecs->getComponent<Transform>(ent);
-	//trans.orientation = glm::quat(trans.orientationEuler);
+	trans.orientation = glm::normalize(trans.orientation); // Normalize quat
 	trans.modelMatrix = glm::translate(glm::mat4(1.0), trans.position);
 	trans.modelMatrix *= glm::toMat4(trans.orientation);
 	trans.modelMatrix = glm::scale(trans.modelMatrix, trans.scale);
 	trans.modelMatrix = matrixAccumulated * trans.modelMatrix;
-
+	
 	for (auto& child : node.children) {
 		calcModelMatrices(child, trans.modelMatrix);
 	}

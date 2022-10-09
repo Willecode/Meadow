@@ -158,6 +158,9 @@ void PhysicsSystem::onEntityAdded(Entity ent)
 
 	// Add a physx shape
 	PxTransform localTm(t.position.x, t.position.y, t.position.z);
+	glm::quat q = glm::normalize(t.orientation);
+
+	localTm.q = PxQuat(q.x, q.y, q.z, q.w);
 	PxShape* shape = nullptr;
 	if (r.type == RigidBody::RigidBodyType::DBOX) {
 		shape = m_PxPhysics->createShape(PxBoxGeometry(0.5f, 0.5f, 0.5f), *m_defaultMaterial);
@@ -194,34 +197,35 @@ void PhysicsSystem::onEntityAdded(Entity ent)
 		if (!signature.test(m_ecs->getComponentType<Model3D>()))
 			return;
 		// use one submesh from the mesh
-		SubMesh* smesh = *m_ecs->getComponent<Model3D>(ent).mesh->submeshlist.begin();
-			
-		PxTriangleMeshDesc meshDesc;
-		meshDesc.points.count = smesh->vertices.size();
-		meshDesc.points.stride = sizeof(Vertex);
-		meshDesc.points.data = &smesh->vertices[0];
+		for (auto const& smesh : m_ecs->getComponent<Model3D>(ent).mesh->submeshlist) {
+			PxTriangleMeshDesc meshDesc;
+			meshDesc.points.count = smesh->vertices.size();
+			meshDesc.points.stride = sizeof(Vertex);
+			meshDesc.points.data = &smesh->vertices[0];
 
-		meshDesc.triangles.count = smesh->indices.size() / 3;
-		meshDesc.triangles.stride = 3 * sizeof(unsigned int);
-		meshDesc.triangles.data = &smesh->indices[0];
+			meshDesc.triangles.count = smesh->indices.size() / 3;
+			meshDesc.triangles.stride = 3 * sizeof(unsigned int);
+			meshDesc.triangles.data = &smesh->indices[0];
 
-		PxDefaultMemoryOutputStream writeBuffer;
-		PxTriangleMeshCookingResult::Enum result;
-		bool status = m_PxCooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
-		if (!status)
-			return;
+			PxDefaultMemoryOutputStream writeBuffer;
+			PxTriangleMeshCookingResult::Enum result;
+			bool status = m_PxCooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
+			if (!status)
+				return;
 
-		PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-		PxTriangleMesh* aTriangleMesh = m_PxPhysics->createTriangleMesh(readBuffer);
+			PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+			PxTriangleMesh* aTriangleMesh = m_PxPhysics->createTriangleMesh(readBuffer);
 
-		PxRigidStatic* body = m_PxPhysics->createRigidStatic(localTm);
-		PxTriangleMeshGeometry triGeom;
-		triGeom.triangleMesh = aTriangleMesh;
-		//shape = PxRigidActorExt::createExclusiveShape();
-		shape = PxRigidActorExt::createExclusiveShape(*body, triGeom, *m_defaultMaterial);
-		//body->attachShape(*shape);
-		body->userData = (void*)ent; // attach entity id
-		m_PxScene->addActor(*body);
+			PxRigidStatic* body = m_PxPhysics->createRigidStatic(localTm);
+			PxTriangleMeshGeometry triGeom;
+			triGeom.triangleMesh = aTriangleMesh;
+			//shape = PxRigidActorExt::createExclusiveShape();
+			shape = PxRigidActorExt::createExclusiveShape(*body, triGeom, *m_defaultMaterial);
+			//body->attachShape(*shape);
+			body->userData = (void*)ent; // attach entity id
+			m_PxScene->addActor(*body);
+		}
+		
 
 	}
 	shape->release();

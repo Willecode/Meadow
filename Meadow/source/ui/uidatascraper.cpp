@@ -186,7 +186,7 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 			auto& trans = ecs.getComponent<Transform>(ent);
 			auto transUI = std::make_unique<TransformComponentUI>();
 			transUI->position = &trans.position;
-			transUI->orientation = &trans.orientationEuler;
+			transUI->orientation = &trans.orientation;
 			transUI->scale = &trans.scale;
 
 			m_componentMap[ent].push_back(std::move(transUI));

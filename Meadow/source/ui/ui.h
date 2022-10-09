@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM 
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -92,13 +93,13 @@ struct IComponentUI{
 };
 struct TransformComponentUI : public IComponentUI {
 	glm::vec3* position;
-	glm::vec3* orientation;
+	glm::quat* orientation;
 	glm::vec3* scale;
 	void render(const int& activenode, const UIAssetMaps& assets) override {
 		ImGui::Text("Transform component:");
 		ImGui::DragFloat3("Position", &((* position).x), 0.1f);
         ImGui::DragFloat3("Scale", &((*scale).x), 0.1f);
-        ImGui::DragFloat3("Rotation", &((*orientation).x), 0.1f);
+        ImGui::DragFloat4("Orientation", &((*orientation).x), 0.1f);
 	}
 };
 
