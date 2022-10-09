@@ -20,10 +20,14 @@ private:
 	glm::mat4 getProjectionMatrix(const float& fov, const float& aspect, const float& zNear, const float& zFar);
 	void cameraLock();
 	void cameraUnlock();
+	void setActiveCamera(Entity ent);
+	void useSceneCamera(bool f);
+	glm::vec3 rotateVecByQuat(const glm::vec3& v, const glm::quat& q);
 
 	float m_aspectRatio;
 	bool m_editorCameraMode;
 	EditorCamera m_editorCamera;
 	bool m_cameraLock;
+	Entity m_activeCam;
 };
 

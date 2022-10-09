@@ -714,7 +714,7 @@ namespace InputEvents
 		inline static std::vector<std::function<void(unsigned int, bool)>> m_handlers;
 	};
 
-	class PhysicsToggleEvent
+	class PlayGameEvent
 	{
 	public:
 		static void subscribe(std::function<void(bool)> f) {
@@ -775,4 +775,48 @@ namespace InputEvents
 		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
 	};
 
+	class SceneCameraMakeActiveEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int x) {
+			for (auto h : m_handlers) {
+				EventQueue::addCallback(h, x);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class AddCameraEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int x) {
+			for (auto h : m_handlers) {
+				EventQueue::addCallback(h, x);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
+
+	class RemoveCameraEvent
+	{
+	public:
+		static void subscribe(std::function<void(unsigned int)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(unsigned int x) {
+			for (auto h : m_handlers) {
+				EventQueue::addCallback(h, x);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+	};
 }

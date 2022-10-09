@@ -132,10 +132,6 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Physics")) {
-                if (ImGui::Button("On"))
-                    InputEvents::PhysicsToggleEvent::notify(true);
-                if (ImGui::Button("Off"))
-                    InputEvents::PhysicsToggleEvent::notify(false);
                 if (ImGui::Button("Collider Visibility: off"))
                     InputEvents::ColliderVisibilityEvent::notify(false);
                 if (ImGui::Button("Collider Visibility: on"))
@@ -151,8 +147,16 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
                 ImGui::Checkbox("Dear ImGui Demo", &m_uiFlags.imguiDemoVisible);
                 ImGui::EndMenu();
             }
-            ImGui::EndMainMenuBar();
+            if (ImGui::BeginMenu("Play")) {
+                if (ImGui::Button("On"))
+                    InputEvents::PlayGameEvent::notify(true);
+                if (ImGui::Button("Off"))
+                    InputEvents::PlayGameEvent::notify(false);
 
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+            
         }
     }
 
@@ -203,6 +207,10 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
              if (ImGui::Button("Add RigidBody")) {
                 InputEvents::AddRigidBodyComponentEvent::notify(m_activeNode, RigidBody::RigidBodyType::SBOX);
             };
+              if (ImGui::Button("Add Camera")) {
+                InputEvents::AddCameraEvent::notify(m_activeNode);
+            };
+
             
             float sliderSpeed = 0.01f;
             for (auto& component : componentMap->at(m_activeNode)) {

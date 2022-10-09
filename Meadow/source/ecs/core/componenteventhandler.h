@@ -10,10 +10,15 @@ private:
 private:
 	void add3DModelEventHandler(Entity ent);
 	void remove3DModelEventHandler(Entity ent);
+
 	void addLightsourceEventHandler(Entity ent);
-	void removeLightsourceEventHandler(Entity ent);
+	void removeLightsourceEventHandler(Entity ent)
+		;
 	void addRigidBodyEventHandler(Entity ent, RigidBody::RigidBodyType t);
 	void removeRigidBodyEventHandler(Entity ent);
+
+	void addCameraEventHandler(Entity ent);
+	void removeCameraEventHandler(Entity ent);
 
 	void setNodeMeshHandler(Entity ent, unsigned int meshid);
 };

@@ -97,9 +97,9 @@ struct TransformComponentUI : public IComponentUI {
 	glm::vec3* scale;
 	void render(const int& activenode, const UIAssetMaps& assets) override {
 		ImGui::Text("Transform component:");
-		ImGui::DragFloat3("Position", &((* position).x), 0.1f);
-        ImGui::DragFloat3("Scale", &((*scale).x), 0.1f);
-        ImGui::DragFloat4("Orientation", &((*orientation).x), 0.1f);
+		ImGui::DragFloat3("Position", &((* position).x), 0.01f);
+        ImGui::DragFloat3("Scale", &((*scale).x), 0.01f);
+        ImGui::DragFloat4("Orientation", &((*orientation).x), 0.01f);
 	}
 };
 
@@ -200,6 +200,26 @@ struct RigidBodyComponentUI : public IComponentUI {
 				}
 			}
 			ImGui::EndCombo();
+		}
+	}
+};
+
+struct CameraComponentUI : public IComponentUI {
+	float* fov;
+	float* zNear;
+	float* zFar;
+	bool active;
+
+	void render(const int& activenode, const UIAssetMaps& assets) override {
+		ImGui::Text("Camera component:");
+		if (ImGui::Button("Remove camera"))
+			InputEvents::RemoveCameraEvent::notify(activenode);
+		ImGui::DragFloat("FOV", fov, 0.01f);
+		ImGui::DragFloat("zNear", zNear, 0.1f);
+		ImGui::DragFloat("zFar", zFar, 0.1f);
+		if (!active) {
+			if (ImGui::Button("Make active camera"))
+				InputEvents::SceneCameraMakeActiveEvent::notify(activenode);
 		}
 	}
 };

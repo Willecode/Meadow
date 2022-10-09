@@ -4,14 +4,20 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "shader/shadermanager.h"
 #include "input/inputevents.h"
+#include "service_locator/loggerlocator.h"
+
 
 CameraSystem::CameraSystem():
     m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-    m_editorCameraMode(true), m_editorCamera(EditorCamera(1080.f/1920.f, 0.1f,100.f))
+    m_editorCameraMode(true), m_editorCamera(EditorCamera(1080.f/1920.f, 0.1f,100.f)),
+    m_activeCam(NullEntity)
 {
     InputEvents::WindowDimensionsChangedEvent::subscribe(std::bind(&CameraSystem::setAspect, this, std::placeholders::_1, std::placeholders::_2));
     InputEvents::MouseLockEvent::subscribe(std::bind(&CameraSystem::cameraUnlock, this));
     InputEvents::MouseUnlockEvent::subscribe(std::bind(&CameraSystem::cameraLock, this));
+    InputEvents::SceneCameraMakeActiveEvent::subscribe(std::bind(&CameraSystem::setActiveCamera, this, std::placeholders::_1));
+    InputEvents::PlayGameEvent::subscribe(std::bind(&CameraSystem::useSceneCamera, this, std::placeholders::_1));
+
 }
 
 void CameraSystem::init(ECSCoordinator* ecs)
@@ -37,15 +43,20 @@ void CameraSystem::update(float deltaT, const InputGather& input)
     // Use active camera component, right now just one cam possible
     else
     {
-        for (auto& ent : m_entities) {
-            Transform& trans = m_ecs->getComponent<Transform>(ent);
-            Camera& cam = m_ecs->getComponent<Camera>(ent);
+        if (m_activeCam != NullEntity) {
+            Transform& trans = m_ecs->getComponent<Transform>(m_activeCam);
+            Camera& cam = m_ecs->getComponent<Camera>(m_activeCam);
 
-            viewMat = getViewMatrix(trans.position, glm::vec3(0.f, 0.f, -1.f));
+            glm::vec3 lookatPos = glm::mat3(trans.modelMatrix) * glm::vec3(0.f, 0.f, -1.f);
+            position = trans.worldPos;
+            viewMat = getViewMatrix(position, lookatPos);
             projMat = getProjectionMatrix(cam.fov, m_aspectRatio, cam.zNear, cam.zFar);
-            position = trans.position;
-
         }
+        else
+        {
+            LoggerLocator::getLogger()->getLogger()->info("No active scene camera!");
+        }
+
     }
 
     auto& sdrMan = ShaderManager::getInstance();
@@ -93,4 +104,28 @@ void CameraSystem::cameraUnlock()
 {
     m_cameraLock = false;
 
+}
+
+void CameraSystem::setActiveCamera(Entity ent)
+{
+    m_activeCam = ent;
+}
+
+void CameraSystem::useSceneCamera(bool f)
+{
+    m_editorCameraMode = !f;
+}
+
+glm::vec3 CameraSystem::rotateVecByQuat(const glm::vec3& v, const glm::quat& q)
+{
+    // Extract the vector part of the quaternion
+    glm::vec3 u(q.x, q.y, q.z);
+
+    // Extract the scalar part of the quaternion
+    float s = q.w;
+
+    // Do the math
+    return 2.0f * glm::dot(u, v) * u
+        + (s * s - glm::dot(u, u)) * v
+        + 2.0f * s * glm::cross(u, v);
 }

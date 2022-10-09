@@ -161,7 +161,7 @@
     <ClCompile Include="source\ecs\core\componenteventhandler.cpp" />
     <ClCompile Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.cpp" />
     <ClCompile Include="source\ecs\core\entitymanager.cpp" />
-    <ClCompile Include="source\ecs\systems\camerasystem.cpp" />
+    <ClCompile Include="source\ecs\systems\camerasystem\camerasystem.cpp" />
     <ClCompile Include="source\ecs\core\ecscoordinator.cpp" />
     <ClCompile Include="source\ecs\systems\lightsystem.cpp" />
     <ClCompile Include="source\ecs\core\componentmanager.cpp" />
@@ -248,7 +248,7 @@
     <ClInclude Include="source\ecs\core\internalevents.h" />
     <ClInclude Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.h" />
     <ClInclude Include="source\ecs\core\entitymanager.h" />
-    <ClInclude Include="source\ecs\systems\camerasystem.h" />
+    <ClInclude Include="source\ecs\systems\camerasystem\camerasystem.h" />
     <ClInclude Include="source\ecs\core\ecscoordinator.h" />
     <ClInclude Include="source\ecs\systems\lightsystem.h" />
     <ClInclude Include="source\ecs\core\componentmanager.h" />

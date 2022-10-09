@@ -27,7 +27,7 @@
 
 //ECS
 #include "ecs/systems/rendersystem.h"
-#include "ecs/systems/camerasystem.h"
+#include "ecs/systems/camerasystem/camerasystem.h"
 #include "ecs/systems/scenegraphsystem/scenegraphsystem.h"
 #include "ecs/systems/lightsystem.h"
 #include "ecs/systems/physicssystem.h"

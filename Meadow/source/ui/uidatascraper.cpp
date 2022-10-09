@@ -238,6 +238,20 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 			m_componentMap[ent].push_back(std::move(compUI));
 		}
 	}
+
+	{
+		auto comptype = ecs.getComponentType<Camera>();
+		if (sign.test(comptype)) {
+			auto& comp = ecs.getComponent<Camera>(ent);
+			auto compUI = std::make_unique<CameraComponentUI>();
+
+			compUI->fov = &comp.fov;
+			compUI->zNear = &comp.zNear;
+			compUI->zFar = &comp.zFar;
+			m_componentMap[ent].push_back(std::move(compUI));
+		}
+	}
+
 	for (auto& child : node.children) {
 		constructComponentMap(child, ecs);
 	}

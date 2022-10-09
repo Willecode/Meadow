@@ -3,6 +3,7 @@
 #include "ecs/systems/scenegraphsystem/scenegraph.h"
 #include "ecs/core/ecscoordinator.h"
 #include <glm/mat4x4.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 
 class SceneGraphSystem : public System
@@ -19,7 +20,7 @@ private:
 	void changeParent(Entity ent, Entity parent);
 	void entityDestroyed(Entity ent);
 	void entityCreated(Entity ent);
-	void calcModelMatrices(const SceneGraph::Node& node, glm::mat4 matrix);
+	void calcModelMatrices(const SceneGraph::Node& node, glm::mat4 matrix, glm::quat orientationAcc);
 
 	void setActiveNode(Entity ent);
 	void deactivateNodes();

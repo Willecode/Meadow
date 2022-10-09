@@ -3,7 +3,7 @@
 #include "ecs/core/internalevents.h"
 #include "input/inputevents.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
+
 
 void SceneGraphSystem::init(ECSCoordinator* ecs)
 {
@@ -20,7 +20,7 @@ void SceneGraphSystem::update()
 {
 	SceneGraph::Node root = m_sceneGraph.getGraph();
 	for (auto& child : root.children) {
-		calcModelMatrices(child, glm::mat4(1.0f));
+		calcModelMatrices(child, glm::mat4(1.0f), glm::quat());
 	}
 }
 
@@ -44,18 +44,19 @@ void SceneGraphSystem::entityCreated(Entity ent)
 	m_sceneGraph.addNode(ent);
 }
 
-void SceneGraphSystem::calcModelMatrices(const SceneGraph::Node &node, glm::mat4 matrixAccumulated)
+void SceneGraphSystem::calcModelMatrices(const SceneGraph::Node &node, glm::mat4 matrixAccumulated, glm::quat orientationAcc)
 {
 	Entity ent = node.entity;
 	Transform& trans = m_ecs->getComponent<Transform>(ent);
 	trans.orientation = glm::normalize(trans.orientation); // Normalize quat
+	trans.worldOrientation = glm::normalize(orientationAcc * trans.orientation);
 	trans.modelMatrix = glm::translate(glm::mat4(1.0), trans.position);
 	trans.modelMatrix *= glm::toMat4(trans.orientation);
 	trans.modelMatrix = glm::scale(trans.modelMatrix, trans.scale);
 	trans.modelMatrix = matrixAccumulated * trans.modelMatrix;
-	
+	trans.worldPos = glm::vec3(trans.modelMatrix[3].x, trans.modelMatrix[3].y, trans.modelMatrix[3].z);
 	for (auto& child : node.children) {
-		calcModelMatrices(child, trans.modelMatrix);
+		calcModelMatrices(child, trans.modelMatrix, trans.worldOrientation);
 	}
 }
 

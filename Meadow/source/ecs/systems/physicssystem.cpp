@@ -10,7 +10,7 @@
 using namespace physx;
 PhysicsSystem::PhysicsSystem() : m_physicsEnabled(false), m_visibleColliders(false)
 {
-	InputEvents::PhysicsToggleEvent::subscribe(std::bind(&PhysicsSystem::togglePhysics, this, std::placeholders::_1));
+	InputEvents::PlayGameEvent::subscribe(std::bind(&PhysicsSystem::togglePhysics, this, std::placeholders::_1));
 	InputEvents::ColliderVisibilityEvent::subscribe(std::bind(&PhysicsSystem::toggleColliderVisibility, this, std::placeholders::_1));
 }
 PhysicsSystem::~PhysicsSystem()
@@ -157,14 +157,14 @@ void PhysicsSystem::onEntityAdded(Entity ent)
 	auto& r = m_ecs->getComponent<RigidBody>(ent);
 
 	// Add a physx shape
-	PxTransform localTm(t.position.x, t.position.y, t.position.z);
+	PxTransform tm(t.worldPos.x, t.worldPos.y, t.worldPos.z);
 	glm::quat q = glm::normalize(t.orientation);
 
-	localTm.q = PxQuat(q.x, q.y, q.z, q.w);
+	tm.q = PxQuat(q.x, q.y, q.z, q.w);
 	PxShape* shape = nullptr;
 	if (r.type == RigidBody::RigidBodyType::DBOX) {
 		shape = m_PxPhysics->createShape(PxBoxGeometry(0.5f, 0.5f, 0.5f), *m_defaultMaterial);
-		PxRigidDynamic* body = m_PxPhysics->createRigidDynamic(localTm);
+		PxRigidDynamic* body = m_PxPhysics->createRigidDynamic(tm);
 		body->attachShape(*shape);
 		PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
 		body->userData = (void*)ent; // attach entity id
@@ -172,7 +172,7 @@ void PhysicsSystem::onEntityAdded(Entity ent)
 	}
 	else if (r.type == RigidBody::RigidBodyType::DSPHERE) {
 		shape = m_PxPhysics->createShape(PxSphereGeometry(1.0f), *m_defaultMaterial);
-		PxRigidDynamic* body = m_PxPhysics->createRigidDynamic(localTm);
+		PxRigidDynamic* body = m_PxPhysics->createRigidDynamic(tm);
 		body->attachShape(*shape);
 		PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
 		body->userData = (void*)ent; // attach entity id
@@ -180,14 +180,14 @@ void PhysicsSystem::onEntityAdded(Entity ent)
 	}
 	else if (r.type == RigidBody::RigidBodyType::SBOX) {
 		shape = m_PxPhysics->createShape(PxBoxGeometry(0.5f, 0.5f, 0.5f), *m_defaultMaterial);
-		PxRigidStatic* body = m_PxPhysics->createRigidStatic(localTm);
+		PxRigidStatic* body = m_PxPhysics->createRigidStatic(tm);
 		body->attachShape(*shape);
 		body->userData = (void*)ent; // attach entity id
 		m_PxScene->addActor(*body);
 	}
 	else if (r.type == RigidBody::RigidBodyType::SSPHERE) {
 		shape = m_PxPhysics->createShape(PxSphereGeometry(1.0f), *m_defaultMaterial);
-		PxRigidStatic* body = m_PxPhysics->createRigidStatic(localTm);
+		PxRigidStatic* body = m_PxPhysics->createRigidStatic(tm);
 		body->attachShape(*shape);
 		body->userData = (void*)ent; // attach entity id
 		m_PxScene->addActor(*body);
@@ -216,7 +216,7 @@ void PhysicsSystem::onEntityAdded(Entity ent)
 			PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
 			PxTriangleMesh* aTriangleMesh = m_PxPhysics->createTriangleMesh(readBuffer);
 
-			PxRigidStatic* body = m_PxPhysics->createRigidStatic(localTm);
+			PxRigidStatic* body = m_PxPhysics->createRigidStatic(tm);
 			PxTriangleMeshGeometry triGeom;
 			triGeom.triangleMesh = aTriangleMesh;
 			//shape = PxRigidActorExt::createExclusiveShape();
