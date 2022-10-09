@@ -105,7 +105,7 @@ struct TransformComponentUI : public IComponentUI {
 
 struct Model3DComponentUI : public IComponentUI {
 	MeshUI* mesh;
-	bool wireframe;
+	bool* wireframe;
 	void render(const int& activenode, const UIAssetMaps& assets) override {
 		ImGui::Text("Model3D component:");
 		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::ImColor(7.0f, 0.6f, 0.6f));
@@ -135,7 +135,7 @@ struct Model3DComponentUI : public IComponentUI {
 		}
 		// Wireframe mode checkbox
 		//ImGui::TableSetColumnIndex(2);
-		ImGui::Checkbox("Wireframe", &wireframe);
+		ImGui::Checkbox("Wireframe", wireframe);
 
 	}
 };

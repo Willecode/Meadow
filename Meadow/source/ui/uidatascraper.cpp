@@ -201,6 +201,7 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 				modelUI->mesh = nullptr;
 			else
 				modelUI->mesh = &m_UIAssetMaps.meshes.at(model.mesh->getId());
+			modelUI->wireframe = &model.wireframe;
 			m_componentMap[ent].push_back(std::move(modelUI));
 		}
 	}

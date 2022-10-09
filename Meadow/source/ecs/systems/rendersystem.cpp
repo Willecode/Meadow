@@ -1,7 +1,7 @@
 #include "RenderSystem.h"
 #include "ecs/components/model3d.h"
 #include "ecs/components/transform.h"
-
+#include "service_locator/rendererlocator.h"
 #include <glm/gtc/type_ptr.hpp>
 
 void RenderSystem::init(ECSCoordinator* ecs)
@@ -22,7 +22,13 @@ void RenderSystem::update(float deltaT)
 		//const float* pSource = (const float*)glm::value_ptr(trans.modelMatrix);
 		//for (int i = 0; i < 16; ++i)
 		//	dArray[i] = pSource[i];
-		if (model.mesh != nullptr)
+		if (model.mesh != nullptr) {
+			if (model.wireframe)
+				RendererLocator::getRenderer()->wireframe(true);
+			else
+				RendererLocator::getRenderer()->wireframe(false);
+
 			model.mesh->draw(trans.modelMatrix);
+		}
 	}
 }

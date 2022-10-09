@@ -2,5 +2,6 @@
 #include "assets/mesh.h"
 struct Model3D{
 	Mesh * mesh;
-	Model3D():mesh(nullptr) {}
+	bool wireframe;
+	Model3D():mesh(nullptr), wireframe(false) {}
 };
