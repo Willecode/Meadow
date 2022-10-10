@@ -391,6 +391,12 @@ void Application::createDefaultScene()
             auto temp = std::make_unique<ColorMaterial>("Color");
             mat3 = manager.getMaterial(manager.storeMaterial(std::move(temp)));
         }
+        // Create material 4
+        Material* mat4;
+        {
+            auto temp = std::make_unique<PBRMaterial>("Floor");
+            mat4 = manager.getMaterial(manager.storeMaterial(std::move(temp)));
+        }
         /*
        * Add some textures to the materials
        */
@@ -469,6 +475,42 @@ void Application::createDefaultScene()
             mat2->setTexture(manager.getTexture(texIdVec[3]), Texture::TextureType::ROUGHNESS_MAP);
             mat2->setTexture(manager.getTexture(texIdVec[4]), Texture::TextureType::AO_MAP);
         }
+        // Material 4 textures
+        {
+            Tex t1;
+            t1.path = "C:/dev/Meadow/data/images/red-scifi-metal-bl/red-scifi-metal-bl/red-scifi-metal_albedo.png";
+            t1.fmt = Renderer::ImageFormat::sRGB;
+            Tex t2;
+            t2.path = "C:/dev/Meadow/data/images/red-scifi-metal-bl/red-scifi-metal-bl/red-scifi-metal_metallic.png";
+            t2.fmt = Renderer::ImageFormat::R;
+            Tex t3;
+            t3.path = "C:/dev/Meadow/data/images/red-scifi-metal-bl/red-scifi-metal-bl/red-scifi-metal_normal-ogl.png";
+            t3.fmt = Renderer::ImageFormat::RGB;
+            Tex t4;
+            t4.path = "C:/dev/Meadow/data/images/red-scifi-metal-bl/red-scifi-metal-bl/red-scifi-metal_roughness.png";
+            t4.fmt = Renderer::ImageFormat::R;
+            Tex t5;
+            t5.path = "C:/dev/Meadow/data/images/red-scifi-metal-bl/red-scifi-metal-bl/red-scifi-metal_ao.png";
+            t5.fmt = Renderer::ImageFormat::R;
+
+            std::vector<Tex> texVec = { t1, t2, t3, t4, t5 };
+            std::vector<unsigned int> texIdVec;
+            int w, h;
+            Renderer::ImageFormat inFmt;
+            for (auto& t : texVec) {
+                loader.loadImage(t.path, w, h, inFmt, *vecptr.get());
+                auto texPtr = std::make_unique<Texture>(std::move(vecptr), w, h, inFmt, t.fmt, t.path);
+                unsigned int texId = manager.storeTexture(std::move(texPtr));
+                texIdVec.push_back(texId);
+                vecptr = std::make_unique<std::vector<unsigned char>>();
+            }
+
+            mat4->setTexture(manager.getTexture(texIdVec[0]), Texture::TextureType::ALBEDO_MAP);
+            mat4->setTexture(manager.getTexture(texIdVec[1]), Texture::TextureType::METALLIC_MAP);
+            mat4->setTexture(manager.getTexture(texIdVec[2]), Texture::TextureType::NORMAL_MAP);
+            mat4->setTexture(manager.getTexture(texIdVec[3]), Texture::TextureType::ROUGHNESS_MAP);
+            mat4->setTexture(manager.getTexture(texIdVec[4]), Texture::TextureType::AO_MAP);
+        }
         // Create a cube mesh
         Mesh* mesh;
         {
@@ -491,10 +533,23 @@ void Application::createDefaultScene()
 
             mesh2->addSubMesh(mat3, submesh);
         }
+        // Create a plane mesh
+        Mesh* mesh3 = nullptr;
+        {
+            std::unique_ptr<Mesh> tempMesh = std::make_unique<Mesh>("Plane");
+            mesh3 = manager.getMesh(manager.storeMesh(std::move(tempMesh)));
+
+            std::unique_ptr<SubMesh> tempSubMesh = PrimitiveCreation::createPlane();
+            SubMesh* submesh = manager.getSubmesh(manager.storeSubmesh(std::move(tempSubMesh)));
+
+            mesh3->addSubMesh(mat4, submesh);
+        }
+
 
         Entity entity = m_ecs.createEntity();
         Entity entity2 = m_ecs.createEntity();
         Entity entity3 = m_ecs.createEntity();
+        Entity entity4 = m_ecs.createEntity();
 
         // Add model components to entities
         {
@@ -511,6 +566,11 @@ void Application::createDefaultScene()
                 m_ecs.addComponent(entity2, m2);
             }
             
+            {
+                Model3D m;
+                m.mesh = mesh3;
+                m_ecs.addComponent(entity4, m);
+            }
 
         }
         // Add light to entity2
@@ -537,6 +597,11 @@ void Application::createDefaultScene()
             t.position = glm::vec3(0.f, 2.f, 0.f);
         }
 
+        // Scale entity 4
+        {
+            auto& t = m_ecs.getComponent<Transform>(entity4);
+            t.scale = glm::vec3(5.f, 1.f, 5.f);
+        }
         // Add physics
         {
             //RigidBody r;
