@@ -539,14 +539,14 @@ void Application::createDefaultScene()
 
         // Add physics
         {
-            RigidBody r;
-            r.type = (RigidBody::RigidBodyType::DBOX);
-            m_ecs.addComponent(entity, r);
-            m_ecs.addComponent(entity3, r);
+            //RigidBody r;
+            //r.type = (RigidBody::RigidBodyType::DBOX);
+            //m_ecs.addComponent(entity, r);
+            //m_ecs.addComponent(entity3, r);
 
-            RigidBody r2;
-            r2.type = (RigidBody::RigidBodyType::SSPHERE);
-            m_ecs.addComponent(entity2, r2);
+            //RigidBody r2;
+            //r2.type = (RigidBody::RigidBodyType::SSPHERE);
+            //m_ecs.addComponent(entity2, r2);
         }
     }
 #if 0

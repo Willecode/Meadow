@@ -20,7 +20,7 @@ private:
 	void changeParent(Entity ent, Entity parent);
 	void entityDestroyed(Entity ent);
 	void entityCreated(Entity ent);
-	void calcModelMatrices(const SceneGraph::Node& node, glm::mat4 matrix, glm::quat orientationAcc);
+	void calcTransforms(const SceneGraph::Node& node, glm::mat4 matrix, glm::quat orientationAcc, const glm::vec3& position);
 
 	void setActiveNode(Entity ent);
 	void deactivateNodes();

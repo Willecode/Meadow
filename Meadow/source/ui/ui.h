@@ -95,11 +95,15 @@ struct TransformComponentUI : public IComponentUI {
 	glm::vec3* position;
 	glm::quat* orientation;
 	glm::vec3* scale;
+	bool* inheritPosOnly;
+
 	void render(const int& activenode, const UIAssetMaps& assets) override {
 		ImGui::Text("Transform component:");
 		ImGui::DragFloat3("Position", &((* position).x), 0.01f);
         ImGui::DragFloat3("Scale", &((*scale).x), 0.01f);
         ImGui::DragFloat4("Orientation", &((*orientation).x), 0.01f);
+		ImGui::Checkbox("Inherit position only", inheritPosOnly);
+
 	}
 };
 
@@ -209,6 +213,7 @@ struct CameraComponentUI : public IComponentUI {
 	float* zNear;
 	float* zFar;
 	bool active;
+	bool* inheritOrientation;
 
 	void render(const int& activenode, const UIAssetMaps& assets) override {
 		ImGui::Text("Camera component:");
@@ -217,6 +222,7 @@ struct CameraComponentUI : public IComponentUI {
 		ImGui::DragFloat("FOV", fov, 0.01f);
 		ImGui::DragFloat("zNear", zNear, 0.1f);
 		ImGui::DragFloat("zFar", zFar, 0.1f);
+		ImGui::Checkbox("Inherit orientation", inheritOrientation);
 		if (!active) {
 			if (ImGui::Button("Make active camera"))
 				InputEvents::SceneCameraMakeActiveEvent::notify(activenode);

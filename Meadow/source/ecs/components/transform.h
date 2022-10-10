@@ -10,12 +10,14 @@ struct Transform
 	glm::quat orientation;
 	glm::quat worldOrientation;
 	glm::mat4 modelMatrix;
+	bool inheritPosOnly;
 	Transform():
 		position(glm::vec3(0.f)),
 		worldPos(glm::vec3(0.f)),
 		scale(glm::vec3(1.f)),
 		orientation(),
 		worldOrientation(),
-		modelMatrix(1.0f)
+		modelMatrix(1.0f),
+		inheritPosOnly(false)
 	{}
 };

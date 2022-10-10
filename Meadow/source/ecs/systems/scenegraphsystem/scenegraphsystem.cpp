@@ -20,7 +20,7 @@ void SceneGraphSystem::update()
 {
 	SceneGraph::Node root = m_sceneGraph.getGraph();
 	for (auto& child : root.children) {
-		calcModelMatrices(child, glm::mat4(1.0f), glm::quat());
+		calcTransforms(child, glm::mat4(1.0f), glm::quat(), glm::vec3(0.f));
 	}
 }
 
@@ -44,19 +44,23 @@ void SceneGraphSystem::entityCreated(Entity ent)
 	m_sceneGraph.addNode(ent);
 }
 
-void SceneGraphSystem::calcModelMatrices(const SceneGraph::Node &node, glm::mat4 matrixAccumulated, glm::quat orientationAcc)
+void SceneGraphSystem::calcTransforms(const SceneGraph::Node &node, glm::mat4 matrixAccumulated, glm::quat orientationAcc, const glm::vec3& parentWorldPos)
 {
 	Entity ent = node.entity;
 	Transform& trans = m_ecs->getComponent<Transform>(ent);
 	trans.orientation = glm::normalize(trans.orientation); // Normalize quat
 	trans.worldOrientation = glm::normalize(orientationAcc * trans.orientation);
 	trans.modelMatrix = glm::translate(glm::mat4(1.0), trans.position);
+	if (trans.inheritPosOnly)
+		trans.modelMatrix = glm::translate(trans.modelMatrix, parentWorldPos);
 	trans.modelMatrix *= glm::toMat4(trans.orientation);
 	trans.modelMatrix = glm::scale(trans.modelMatrix, trans.scale);
-	trans.modelMatrix = matrixAccumulated * trans.modelMatrix;
+	if (!trans.inheritPosOnly)
+		trans.modelMatrix = matrixAccumulated * trans.modelMatrix;
+
 	trans.worldPos = glm::vec3(trans.modelMatrix[3].x, trans.modelMatrix[3].y, trans.modelMatrix[3].z);
 	for (auto& child : node.children) {
-		calcModelMatrices(child, trans.modelMatrix, trans.worldOrientation);
+		calcTransforms(child, trans.modelMatrix, trans.worldOrientation, trans.worldPos);
 	}
 }
 

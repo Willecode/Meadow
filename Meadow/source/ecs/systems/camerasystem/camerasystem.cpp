@@ -47,7 +47,13 @@ void CameraSystem::update(float deltaT, const InputGather& input)
             Transform& trans = m_ecs->getComponent<Transform>(m_activeCam);
             Camera& cam = m_ecs->getComponent<Camera>(m_activeCam);
 
-            glm::vec3 lookatPos = glm::mat3(trans.modelMatrix) * glm::vec3(0.f, 0.f, -1.f);
+            glm::vec3 lookatPos;
+            if (cam.inheritOrientation)
+                lookatPos = glm::mat3(trans.modelMatrix) * glm::vec3(0.f, 0.f, -1.f);
+            else
+                lookatPos = rotateVecByQuat(glm::vec3(0.f, 0.f, -1.f), trans.orientation);
+
+
             position = trans.worldPos;
             viewMat = getViewMatrix(position, lookatPos);
             projMat = getProjectionMatrix(cam.fov, m_aspectRatio, cam.zNear, cam.zFar);

@@ -188,7 +188,7 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 			transUI->position = &trans.position;
 			transUI->orientation = &trans.orientation;
 			transUI->scale = &trans.scale;
-
+			transUI->inheritPosOnly = &trans.inheritPosOnly;
 			m_componentMap[ent].push_back(std::move(transUI));
 		}
 	}
@@ -248,6 +248,7 @@ void UIDataScraper::constructComponentMap(const SceneGraph::Node& node, const EC
 			compUI->fov = &comp.fov;
 			compUI->zNear = &comp.zNear;
 			compUI->zFar = &comp.zFar;
+			compUI->inheritOrientation = &comp.inheritOrientation;
 			m_componentMap[ent].push_back(std::move(compUI));
 		}
 	}
