@@ -550,6 +550,7 @@ void Application::createDefaultScene()
         Entity entity2 = m_ecs.createEntity();
         Entity entity3 = m_ecs.createEntity();
         Entity entity4 = m_ecs.createEntity();
+        Entity cameraEntity = m_ecs.createEntity();
 
         // Add model components to entities
         {
@@ -577,6 +578,17 @@ void Application::createDefaultScene()
         {
             Light l;
             m_ecs.addComponent(entity2, l);
+        }
+        // Add camera to camera entity
+        {
+            Camera c;
+            m_ecs.addComponent(cameraEntity, c);
+            InputEvents::SceneCameraMakeActiveEvent::notify(cameraEntity);
+        }
+        // Move camera entity
+        {
+            auto& t = m_ecs.getComponent<Transform>(cameraEntity);
+            t.position = glm::vec3(0.f, 2.f, 10.f);
         }
         // Move entity 2 a bit
         {

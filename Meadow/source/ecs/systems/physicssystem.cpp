@@ -72,8 +72,8 @@ void PhysicsSystem::init(ECSCoordinator* ecs)
 	m_defaultMaterial = m_PxPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
 	// Add a ground plane
-	PxRigidStatic* groundPlane = PxCreatePlane(*m_PxPhysics, PxPlane(0, 1, 0, 0), *m_defaultMaterial);
-	m_PxScene->addActor(*groundPlane);
+	//PxRigidStatic* groundPlane = PxCreatePlane(*m_PxPhysics, PxPlane(0, 1, 0, 0), *m_defaultMaterial);
+	//m_PxScene->addActor(*groundPlane);
 
 	m_timeAccumulate = 0.0f;
 	m_stepSize = 1.0f / 60.0f;

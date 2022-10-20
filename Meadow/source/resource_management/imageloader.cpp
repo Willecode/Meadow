@@ -22,8 +22,8 @@ bool ImageLoader::loadImage(const std::string& path, int& width, int& height, Re
         LoggerLocator::getLogger()->getLogger()->info("ImageLoader: detected failure: {}", stbi_failure_reason()); // Logging
     if (!byteArr) {
         LoggerLocator::getLogger()->getLogger()->info("ImageLoader: stb failed to load image ({}), returning false", path.c_str()); // Logging
-        byteArr = stbi_load("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg", &width, &height, &nrChannels, 0);
-        //return false;
+        //byteArr = stbi_load("C:/dev/Meadow/data/images/Wood066_1K_Color.jpg", &width, &height, &nrChannels, 0);
+        return false;
     }
     
     /*

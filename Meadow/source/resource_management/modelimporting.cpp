@@ -93,6 +93,7 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* ainode, const aiScene* aiscene, std::string directory, ResourceManager& resourceMan, std::map<int, int> aiMatToMeadowMatId)
 {
 	Entity ent = ecs->createEntity();;
+	InputEvents::SetNodeParentEvent::notify(ent, parentNodeId);
 	
 	/*
 	* Set scenenode name
@@ -217,6 +218,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 			Texture* opacMap = importTexture(aiTextureType_OPACITY, aimat, directory, resourceMan, Renderer::ImageFormat::R);
 			if (opacMap != nullptr) {
 				newMatPtr->setTexture(opacMap, Texture::TextureType::OPACITY_MAP);
+
 			}
 		}
 
@@ -224,12 +226,39 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		* Import normal map
 		*/
 		{
-			Texture* normalMap = importTexture(aiTextureType_OPACITY, aimat, directory, resourceMan, Renderer::ImageFormat::RGB);
+			Texture* normalMap = importTexture(aiTextureType_NORMALS, aimat, directory, resourceMan, Renderer::ImageFormat::RGB);
 			if (normalMap != nullptr) {
 				newMatPtr->setTexture(normalMap, Texture::TextureType::NORMAL_MAP);
 			}
 		}
-
+		/*
+		* Import rough map
+		*/
+		{
+			Texture* roughMap = importTexture(aiTextureType_DIFFUSE_ROUGHNESS, aimat, directory, resourceMan, Renderer::ImageFormat::R);
+			if (roughMap != nullptr) {
+				newMatPtr->setTexture(roughMap, Texture::TextureType::ROUGHNESS_MAP);
+			}
+		}
+		/*
+		* Import metal map
+		*/
+		{
+			Texture* metalMap = importTexture(aiTextureType_METALNESS, aimat, directory, resourceMan, Renderer::ImageFormat::R);
+			if (metalMap != nullptr) {
+				newMatPtr->setTexture(metalMap, Texture::TextureType::METALLIC_MAP);
+			}
+		}
+		/*
+		* Import ao map
+		*/
+		{
+			Texture* aoMap = importTexture(aiTextureType_AMBIENT_OCCLUSION, aimat, directory, resourceMan, Renderer::ImageFormat::R);
+			if (aoMap != nullptr) {
+				LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Found ao map");
+				newMatPtr->setTexture(aoMap, Texture::TextureType::AO_MAP);
+			}
+		}
 		/*
 		* Create mapping from aimaterial id to Meadow material id
 		*/
