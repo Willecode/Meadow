@@ -81,6 +81,21 @@ void SceneGraph::deleteNodeRec(Entity ent, Node& recNode)
 	}
 }
 
+void SceneGraph::markNodeTransformStale(Entity ent)
+{
+	Node* n = getNode(ent);
+	if (n != nullptr) {
+		markNodeTransformStaleRec(*n);
+	}
+}
+
+void SceneGraph::markNodeTransformStaleRec(Node& recNode) {
+	recNode.transformStale = true;
+	for (auto& child : recNode.children) {
+		markNodeTransformStaleRec(child);
+	}
+}
+
 bool SceneGraph::parented(Entity child, Entity parent)
 {
 	Node* ptr = nullptr;

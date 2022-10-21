@@ -51,4 +51,18 @@ namespace InternalEvents
 		inline static std::vector<std::function<void(Entity)>> m_handlers;
 	};
 
+	class MarkNodeTransformStaleEvent
+	{
+	public:
+		static void subscribe(std::function<void(Entity)> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify(Entity id) {
+			for (auto h : m_handlers) {
+				h(id);
+			}
+		}
+	private:
+		inline static std::vector<std::function<void(Entity)>> m_handlers;
+	};
 }

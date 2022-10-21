@@ -10,6 +10,7 @@ void SceneGraphSystem::init(ECSCoordinator* ecs)
 	m_ecs = ecs;
 	InternalEvents::EntityCreatedEvent::subscribe(std::bind(&SceneGraphSystem::entityCreated, this, std::placeholders::_1));
 	InternalEvents::EntityDeletedEvent::subscribe(std::bind(&SceneGraphSystem::entityDestroyed, this, std::placeholders::_1));
+	InternalEvents::MarkNodeTransformStaleEvent::subscribe(std::bind(&SceneGraphSystem::markNodeTransformStale, this, std::placeholders::_1));
 	InputEvents::SetActiveNodeEvent::subscribe(std::bind(&SceneGraphSystem::setActiveNode, this, std::placeholders::_1));
 	InputEvents::SetNodeParentToRootEvent::subscribe(std::bind(&SceneGraphSystem::setEntityParentToRoot, this, std::placeholders::_1));
 	InputEvents::MouseButtonLeftPressedEvent::subscribe(std::bind(&SceneGraphSystem::deactivateNodes, this));
@@ -48,17 +49,21 @@ void SceneGraphSystem::calcTransforms(const SceneGraph::Node &node, glm::mat4 ma
 {
 	Entity ent = node.entity;
 	Transform& trans = m_ecs->getComponent<Transform>(ent);
-	trans.orientation = glm::normalize(trans.orientation); // Normalize quat
-	trans.worldOrientation = glm::normalize(orientationAcc * trans.orientation);
-	trans.modelMatrix = glm::translate(glm::mat4(1.0), trans.position);
-	if (trans.inheritPosOnly)
-		trans.modelMatrix = glm::translate(trans.modelMatrix, parentWorldPos);
-	trans.modelMatrix *= glm::toMat4(trans.orientation);
-	trans.modelMatrix = glm::scale(trans.modelMatrix, trans.scale);
-	if (!trans.inheritPosOnly)
-		trans.modelMatrix = matrixAccumulated * trans.modelMatrix;
+	if (node.transformStale) { // update trans
+		trans.orientation = glm::normalize(trans.orientation); // Normalize quat
+		trans.worldOrientation = glm::normalize(orientationAcc * trans.orientation);
+		trans.modelMatrix = glm::translate(glm::mat4(1.0), trans.position);
+		if (trans.inheritPosOnly)
+			trans.modelMatrix = glm::translate(trans.modelMatrix, parentWorldPos);
+		trans.modelMatrix *= glm::toMat4(trans.orientation);
+		trans.modelMatrix = glm::scale(trans.modelMatrix, trans.scale);
+		if (!trans.inheritPosOnly)
+			trans.modelMatrix = matrixAccumulated * trans.modelMatrix;
 
-	trans.worldPos = glm::vec3(trans.modelMatrix[3].x, trans.modelMatrix[3].y, trans.modelMatrix[3].z);
+		trans.worldPos = glm::vec3(trans.modelMatrix[3].x, trans.modelMatrix[3].y, trans.modelMatrix[3].z);
+		m_sceneGraph.getNode(ent)->transformStale = false;
+	}
+
 	for (auto& child : node.children) {
 		calcTransforms(child, trans.modelMatrix, trans.worldOrientation, trans.worldPos);
 	}
@@ -85,4 +90,9 @@ void SceneGraphSystem::deactivateNodes()
 void SceneGraphSystem::setEntityParentToRoot(Entity ent)
 {
 	m_sceneGraph.changeParent(ent, NullEntity);
+}
+
+void SceneGraphSystem::markNodeTransformStale(Entity ent)
+{
+	m_sceneGraph.markNodeTransformStale(ent);
 }

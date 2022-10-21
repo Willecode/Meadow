@@ -13,6 +13,7 @@
 #include <backends/imgui_impl_opengl3.h>
 #include "assets/texture.h"
 #include "input/inputevents.h"
+#include "ecs/core/internalevents.h"
 
 // Probably shouldn't be here
 // ----------------------------------
@@ -99,11 +100,17 @@ struct TransformComponentUI : public IComponentUI {
 
 	void render(const int& activenode, const UIAssetMaps& assets) override {
 		ImGui::Text("Transform component:");
-		ImGui::DragFloat3("Position", &((* position).x), 0.01f);
-        ImGui::DragFloat3("Scale", &((*scale).x), 0.01f);
-        ImGui::DragFloat4("Orientation", &((*orientation).x), 0.01f);
-		ImGui::Checkbox("Inherit position only", inheritPosOnly);
-
+		bool transChanged = false;
+		if (ImGui::DragFloat3("Position", &((*position).x), 0.01f))
+			transChanged = true;
+        if (ImGui::DragFloat3("Scale", &((*scale).x), 0.01f))
+			transChanged = true;
+        if (ImGui::DragFloat4("Orientation", &((*orientation).x), 0.01f))
+			transChanged = true;
+		if (ImGui::Checkbox("Inherit position only", inheritPosOnly))
+			transChanged = true;
+		if (transChanged)
+			InternalEvents::MarkNodeTransformStaleEvent::notify(activenode);
 	}
 };
 

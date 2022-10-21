@@ -113,6 +113,8 @@ void PhysicsSystem::update(float deltaT)
 					t.orientation.y = act->getGlobalPose().q.y;
 					t.orientation.z = act->getGlobalPose().q.z;
 					t.orientation.w = act->getGlobalPose().q.w;
+
+					InternalEvents::MarkNodeTransformStaleEvent::notify(ent);
 				}
 			}
 		}

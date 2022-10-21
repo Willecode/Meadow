@@ -25,5 +25,6 @@ private:
 	void setActiveNode(Entity ent);
 	void deactivateNodes();
 	void setEntityParentToRoot(Entity ent);
+	void markNodeTransformStale(Entity ent);
 };
 

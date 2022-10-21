@@ -13,9 +13,11 @@ public:
 	struct Node {
 		ECSTypes::Entity entity;
 		std::vector<Node> children;
+		bool transformStale;
 		bool operator==(const Entity& ent) {
 			return this->entity == ent;
 		}
+		Node(Entity entity = NullEntity): entity(NullEntity), transformStale(true) {};
 	};
 	SceneGraph();
 	// if no parent provided then parented to root
@@ -24,6 +26,7 @@ public:
 	void deleteNode(Entity ent);
 	const Node& getGraph();
 	Node* getNode(Entity ent);
+	void markNodeTransformStale(Entity ent);
 private:
 	Node m_rootNode;
 	void validate();
@@ -32,7 +35,7 @@ private:
 	void deleteNodeRec(Entity ent, Node& recNode);
 	void getNodeRec(Entity ent, Node* recNode, Node*& result);
 	bool parented(Entity child, Entity parent);
-
+	void markNodeTransformStaleRec(Node& recNode);
 	//std::array<Node, MAX_ENTITIES> m_nodes;
 	//unsigned int m_nodeIdCtr;
 };

@@ -183,6 +183,9 @@
     <ClCompile Include="source\ecs\core\componenteventhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\benchmarking\benchmarkutils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\object.vs" />
@@ -414,6 +417,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ecs\core\componenteventhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\benchmarking\benchmarkutils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

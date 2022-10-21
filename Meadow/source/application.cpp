@@ -16,6 +16,11 @@
 #include "assets/materials/PBRMaterial.h"
 #include "assets/materials/colormaterial.h"
 //---------------------------
+// BENCHMARK ----------------
+#include "benchmarking/benchmarkutils.h"
+//---------------------------
+
+
 Application::Application() :
     m_ui(),
     m_inputGather(),
@@ -178,10 +183,15 @@ void Application::run()
     m_renderer.stencilTesting(true);
     /*m_renderer.setStencilClearValue(1);*/
 
+    // Benchmarking
+    std::array<std::chrono::time_point<std::chrono::steady_clock>, 13> times;
+    bool renderUI = true;
     // Update loop
     // -----------
     while (!windowMan.shouldClose())
     {
+        times[0] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+
         /*
         * Calculate deltatime
         */
@@ -233,11 +243,16 @@ void Application::run()
         m_renderer.setStencilFunc(Renderer::TestingFuncs::EQUAL, 1, 0xFF);
         m_renderer.setStencilOp(Renderer::TestingActions::KEEP, Renderer::TestingActions::KEEP, Renderer::TestingActions::REPLACE);
 
-        
+        times[1] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
         m_sceneGraphSystem->update();
+        times[2] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
         m_lightSystem->update(deltatime);
+        times[3] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
         m_cameraSystem->update(deltatime, m_inputGather);
+        times[4] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
         m_physicsSystem->update(deltatime);
+        times[5] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+
         /*
         * Render skybox
         */
@@ -245,6 +260,8 @@ void Application::run()
         m_renderer.depthMask(false);
         m_renderer.depthTesting(false);
         manager.getcubemap(skyboxId)->draw();
+
+        times[6] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Render scene 
@@ -255,6 +272,7 @@ void Application::run()
         sdrMan.bindShader(ShaderManager::ShaderType::PBR);
         //m_scene->render();
         m_renderSystem->update(deltatime);
+        times[7] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Render colliders
@@ -263,6 +281,7 @@ void Application::run()
         m_renderer.wireframe(true);
         sdrMan.bindShader(ShaderManager::ShaderType::COLLIDER);
         m_physicsSystem->drawColliders();
+        times[8] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * If MSAA on then blit to intermediate frame buffer
@@ -272,7 +291,8 @@ void Application::run()
             m_renderer.bindFrameBufferDraw(0);
             m_renderer.blitFramebuffer(texMS->getWidth(), texMS->getHeight());
         }
-        
+        times[9] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+
 
         /*
         * Set default framebuffer to render on screen
@@ -289,12 +309,17 @@ void Application::run()
         m_renderer.setViewportSize(windowMan.width, windowMan.height);
         sdrMan.forwardFrameUniforms();
         manager.getMesh2D(screenQuad)->draw();
+        times[10] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Render UI
         */
-        m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing, m_ecs);
-        m_ui.renderInterface(m_UIScraper.getSceneGraph(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags(), m_UIScraper.getComponentMap());
+        if (renderUI)
+            m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing, m_ecs);
+        times[11] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        if (renderUI)
+            m_ui.renderInterface(m_UIScraper.getSceneGraph(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags(), m_UIScraper.getComponentMap());
+        times[12] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Process event queue
@@ -302,6 +327,15 @@ void Application::run()
         InputEvents::EventQueue::processQueue();
 
         windowMan.swapBuffers();
+
+        LoggerLocator::getLogger()->getLogger()->debug("Benchmark times:");
+        std::chrono::duration<double> diff = times.back() - times[0];
+
+        LoggerLocator::getLogger()->getLogger()->debug("Frame time: {}", diff.count());
+        for (int i = 1; i < times.size(); i++) {
+            std::chrono::duration<double> diff = times[i] - times[i-1];
+            LoggerLocator::getLogger()->getLogger()->debug("Time {}: {}", i, diff.count());
+        }
     }
 
 }
@@ -625,6 +659,9 @@ void Application::createDefaultScene()
             //r2.type = (RigidBody::RigidBodyType::SSPHERE);
             //m_ecs.addComponent(entity2, r2);
         }
+
+        // Benchmarking
+        Benchmark::addEntities(1000, &m_ecs);
     }
 #if 0
 
