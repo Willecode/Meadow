@@ -76,6 +76,30 @@ std::unique_ptr<SubMesh> PrimitiveCreation::createPlane()
     return std::make_unique<SubMesh>(vertices, indices, "Plane");
 }
 
+std::unique_ptr<SubMesh> PrimitiveCreation::createPlane(float widthHeight)
+{
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    vertices.push_back(Vertex(glm::vec3(-0.5f, 0.f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f)));
+    vertices.push_back(Vertex(glm::vec3(0.5f, 0.f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+    vertices.push_back(Vertex(glm::vec3(0.5f, 0.f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 0.0f)));
+    vertices.push_back(Vertex(glm::vec3(-0.5f, 0.f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
+
+    for (auto& vert : vertices) {
+        vert.position *= widthHeight;
+    }
+
+    indices = { // consider the CCW winding order
+        0, 2, 1, 0, 3, 2
+    };
+    // Add tangents and bitangents (just copypasted this from the cube generation... hope this works lmao)
+    for (int i = 0; i < indices.size(); i += 3) {
+        addTangentBitangent(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]]);
+    }
+
+    return std::make_unique<SubMesh>(vertices, indices, "Plane");
+}
+
 std::unique_ptr<SubMesh> PrimitiveCreation::createSphere(int sectorCount, int stackCount)
 {
     std::vector<Vertex> vertices;
