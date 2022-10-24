@@ -16,7 +16,8 @@ CameraSystem::CameraSystem():
     InputEvents::MouseLockEvent::subscribe(std::bind(&CameraSystem::cameraUnlock, this));
     InputEvents::MouseUnlockEvent::subscribe(std::bind(&CameraSystem::cameraLock, this));
     InputEvents::SceneCameraMakeActiveEvent::subscribe(std::bind(&CameraSystem::setActiveCamera, this, std::placeholders::_1));
-    InputEvents::PlayGameEvent::subscribe(std::bind(&CameraSystem::useSceneCamera, this, std::placeholders::_1));
+    InputEvents::PlayGameEvent::subscribe(std::bind(&CameraSystem::sceneCameraTrue, this));
+    InputEvents::StopGameEvent::subscribe(std::bind(&CameraSystem::sceneCameraFalse, this));
 
 }
 
@@ -117,9 +118,14 @@ void CameraSystem::setActiveCamera(Entity ent)
     m_activeCam = ent;
 }
 
-void CameraSystem::useSceneCamera(bool f)
+void CameraSystem::sceneCameraTrue()
 {
-    m_editorCameraMode = !f;
+    m_editorCameraMode = false;
+}
+
+void CameraSystem::sceneCameraFalse()
+{
+    m_editorCameraMode = true;
 }
 
 glm::vec3 CameraSystem::rotateVecByQuat(const glm::vec3& v, const glm::quat& q)

@@ -7,6 +7,8 @@
 #include "ecs/components/camera.h"
 #include "ecs/components/light.h"
 #include "ecs/components/rigidbody.h"
+#include "benchmarking/acomponent.h"
+#include "benchmarking/bcomponent.h"
 
 //---------------------------
 // DEBUG --------------------
@@ -184,7 +186,7 @@ void Application::run()
     /*m_renderer.setStencilClearValue(1);*/
 
     // Benchmarking
-    std::array<std::chrono::time_point<std::chrono::steady_clock>, 13> times;
+    std::array<std::chrono::time_point<std::chrono::steady_clock>, 14> times;
     bool renderUI = true;
     // Update loop
     // -----------
@@ -252,6 +254,10 @@ void Application::run()
         times[4] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
         m_physicsSystem->update(deltatime);
         times[5] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        
+        // Benchmark system
+        m_benchmarkSystem->update(deltatime);
+        times[6] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Render skybox
@@ -261,7 +267,7 @@ void Application::run()
         m_renderer.depthTesting(false);
         manager.getcubemap(skyboxId)->draw();
 
-        times[6] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        times[7] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Render scene 
@@ -272,7 +278,7 @@ void Application::run()
         sdrMan.bindShader(ShaderManager::ShaderType::PBR);
         //m_scene->render();
         m_renderSystem->update(deltatime);
-        times[7] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        times[8] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Render colliders
@@ -281,7 +287,7 @@ void Application::run()
         m_renderer.wireframe(true);
         sdrMan.bindShader(ShaderManager::ShaderType::COLLIDER);
         m_physicsSystem->drawColliders();
-        times[8] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        times[9] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * If MSAA on then blit to intermediate frame buffer
@@ -291,7 +297,7 @@ void Application::run()
             m_renderer.bindFrameBufferDraw(0);
             m_renderer.blitFramebuffer(texMS->getWidth(), texMS->getHeight());
         }
-        times[9] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        times[10] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
 
         /*
@@ -309,17 +315,17 @@ void Application::run()
         m_renderer.setViewportSize(windowMan.width, windowMan.height);
         sdrMan.forwardFrameUniforms();
         manager.getMesh2D(screenQuad)->draw();
-        times[10] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        times[11] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Render UI
         */
         if (renderUI)
             m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing, m_ecs);
-        times[11] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        times[12] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
         if (renderUI)
             m_ui.renderInterface(m_UIScraper.getSceneGraph(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags(), m_UIScraper.getComponentMap());
-        times[12] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        times[13] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Process event queue
@@ -332,6 +338,7 @@ void Application::run()
         std::chrono::duration<double> diff = times.back() - times[0];
 
         LoggerLocator::getLogger()->getLogger()->debug("Frame time: {}", diff.count());
+        LoggerLocator::getLogger()->getLogger()->debug("FPS: {}", 1.0f / diff.count());
         for (int i = 1; i < times.size(); i++) {
             std::chrono::duration<double> diff = times[i] - times[i-1];
             LoggerLocator::getLogger()->getLogger()->debug("Time {}: {}", i, diff.count());
@@ -385,6 +392,15 @@ void Application::initSystems()
         m_ecs.setSystemSignature<PhysicsSystem>(signature);
     }
     m_physicsSystem->init(&m_ecs);
+     // -------------------------------------------------------------
+    m_benchmarkSystem = m_ecs.registerSystem<BenchmarkSystem>();
+    {
+        Signature signature;
+        signature.set(m_ecs.getComponentType<AComponent>());
+        m_ecs.setSystemSignature<BenchmarkSystem>(signature);
+    }
+    m_benchmarkSystem->init(&m_ecs);
+
 }
 
 void Application::registerComponents()
@@ -393,6 +409,8 @@ void Application::registerComponents()
     m_ecs.registerComponent<Camera>();
     m_ecs.registerComponent<Light>();
     m_ecs.registerComponent<RigidBody>();
+    m_ecs.registerComponent<AComponent>();
+    m_ecs.registerComponent<BComponent>();
 }
 
 void Application::createDefaultScene()
@@ -565,7 +583,7 @@ void Application::createDefaultScene()
             std::unique_ptr<SubMesh> tempSubMesh = PrimitiveCreation::createSphere(15,30);
             SubMesh* submesh = manager.getSubmesh(manager.storeSubmesh(std::move(tempSubMesh)));
 
-            mesh2->addSubMesh(mat3, submesh);
+            mesh2->addSubMesh(mat2, submesh);
         }
         // Create a plane mesh
         Mesh* mesh3 = nullptr;
@@ -573,33 +591,33 @@ void Application::createDefaultScene()
             std::unique_ptr<Mesh> tempMesh = std::make_unique<Mesh>("Plane");
             mesh3 = manager.getMesh(manager.storeMesh(std::move(tempMesh)));
 
-            std::unique_ptr<SubMesh> tempSubMesh = PrimitiveCreation::createPlane();
+            std::unique_ptr<SubMesh> tempSubMesh = PrimitiveCreation::createPlane(50);
             SubMesh* submesh = manager.getSubmesh(manager.storeSubmesh(std::move(tempSubMesh)));
 
             mesh3->addSubMesh(mat4, submesh);
         }
 
 
-        Entity entity = m_ecs.createEntity();
+        /*Entity entity = m_ecs.createEntity();
         Entity entity2 = m_ecs.createEntity();
-        Entity entity3 = m_ecs.createEntity();
+        Entity entity3 = m_ecs.createEntity();*/
         Entity entity4 = m_ecs.createEntity();
         Entity cameraEntity = m_ecs.createEntity();
 
         // Add model components to entities
         {
-            {
-                Model3D m;
-                m.mesh = mesh;
-                m_ecs.addComponent(entity, m);
-                m_ecs.addComponent(entity3, m);
-            }
-            
-            {
-                Model3D m2;
-                m2.mesh = mesh2;
-                m_ecs.addComponent(entity2, m2);
-            }
+            //{
+            //    Model3D m;
+            //    m.mesh = mesh;
+            //    m_ecs.addComponent(entity, m);
+            //    m_ecs.addComponent(entity3, m);
+            //}
+            //
+            //{
+            //    Model3D m2;
+            //    m2.mesh = mesh2;
+            //    m_ecs.addComponent(entity2, m2);
+            //}
             
             {
                 Model3D m;
@@ -609,10 +627,10 @@ void Application::createDefaultScene()
 
         }
         // Add light to entity2
-        {
+       /* {
             Light l;
             m_ecs.addComponent(entity2, l);
-        }
+        }*/
         // Add camera to camera entity
         {
             Camera c;
@@ -625,29 +643,29 @@ void Application::createDefaultScene()
             t.position = glm::vec3(0.f, 2.f, 10.f);
         }
         // Move entity 2 a bit
-        {
-            auto& t = m_ecs.getComponent<Transform>(entity2);
-            t.position = glm::vec3(1.f);
-            //m_ecs.getComponent<Transform>(entity2).scale = glm::vec3(0.1f);
-        }
+        //{
+        //    auto& t = m_ecs.getComponent<Transform>(entity2);
+        //    t.position = glm::vec3(1.f);
+        //    //m_ecs.getComponent<Transform>(entity2).scale = glm::vec3(0.1f);
+        //}
 
-        // Move entity 1 up
-        {
-            auto& t = m_ecs.getComponent<Transform>(entity);
-            t.position = glm::vec3(0.f, 10.f, 0.f);
-        }
-        
-        // Move entity 3 up
-        {
-            auto& t = m_ecs.getComponent<Transform>(entity3);
-            t.position = glm::vec3(0.f, 2.f, 0.f);
-        }
+        //// Move entity 1 up
+        //{
+        //    auto& t = m_ecs.getComponent<Transform>(entity);
+        //    t.position = glm::vec3(0.f, 10.f, 0.f);
+        //}
+        //
+        //// Move entity 3 up
+        //{
+        //    auto& t = m_ecs.getComponent<Transform>(entity3);
+        //    t.position = glm::vec3(0.f, 2.f, 0.f);
+        //}
 
         // Scale entity 4
-        {
+        /*{
             auto& t = m_ecs.getComponent<Transform>(entity4);
             t.scale = glm::vec3(5.f, 1.f, 5.f);
-        }
+        }*/
         // Add physics
         {
             //RigidBody r;
@@ -658,10 +676,17 @@ void Application::createDefaultScene()
             //RigidBody r2;
             //r2.type = (RigidBody::RigidBodyType::SSPHERE);
             //m_ecs.addComponent(entity2, r2);
+
+            RigidBody r3;
+            r3.type = RigidBody::RigidBodyType::TRIANGLEMESH;
+            m_ecs.addComponent(entity4, r3);
         }
 
         // Benchmarking
-        Benchmark::addEntities(1000, &m_ecs);
+        //Benchmark::addEntities(1000, &m_ecs);
+        //Benchmark::addBenchmarkComponents(1000, &m_ecs);
+        //Benchmark::addRigidBodySpheres(&m_ecs, mesh2, m_sceneGraphSystem.get());
+
     }
 #if 0
 

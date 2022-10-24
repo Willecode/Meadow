@@ -36,6 +36,8 @@ void InputGather::init(WindowManager* windowMan)
 	newMap[std::make_pair(GLFW_MOUSE_BUTTON_RIGHT, true)] = InputEvents::MouseLockEvent::notify;
 	newMap[std::make_pair(GLFW_MOUSE_BUTTON_RIGHT, false)] = InputEvents::MouseUnlockEvent::notify;
 	newMap[std::make_pair(GLFW_KEY_LEFT_ALT, true)] = InputEvents::MainMenuVisibilityToggleEvent::notify;
+	newMap[std::make_pair(GLFW_KEY_P, true)] = InputEvents::PlayGameEvent::notify;
+	newMap[std::make_pair(GLFW_KEY_O, true)] = InputEvents::StopGameEvent::notify;
 	InputMap iMap(std::move(newMap));
 
 	/*

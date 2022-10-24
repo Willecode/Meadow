@@ -10,7 +10,8 @@
 using namespace physx;
 PhysicsSystem::PhysicsSystem() : m_physicsEnabled(false), m_visibleColliders(false)
 {
-	InputEvents::PlayGameEvent::subscribe(std::bind(&PhysicsSystem::togglePhysics, this, std::placeholders::_1));
+	InputEvents::PlayGameEvent::subscribe(std::bind(&PhysicsSystem::physicsOn, this));
+	InputEvents::StopGameEvent::subscribe(std::bind(&PhysicsSystem::physicsOff, this));
 	InputEvents::ColliderVisibilityEvent::subscribe(std::bind(&PhysicsSystem::toggleColliderVisibility, this, std::placeholders::_1));
 }
 PhysicsSystem::~PhysicsSystem()
@@ -248,9 +249,14 @@ void PhysicsSystem::onEntityRemoved(Entity ent)
 	}
 }
 
-void PhysicsSystem::togglePhysics(bool f)
+void PhysicsSystem::physicsOn()
 {
-	m_physicsEnabled = f;
+	m_physicsEnabled = true;
+}
+
+void PhysicsSystem::physicsOff()
+{
+	m_physicsEnabled = false;
 }
 
 void PhysicsSystem::toggleColliderVisibility(bool f)

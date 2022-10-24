@@ -149,9 +149,9 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
             }
             if (ImGui::BeginMenu("Play")) {
                 if (ImGui::Button("On"))
-                    InputEvents::PlayGameEvent::notify(true);
+                    InputEvents::PlayGameEvent::notify();
                 if (ImGui::Button("Off"))
-                    InputEvents::PlayGameEvent::notify(false);
+                    InputEvents::StopGameEvent::notify();
 
                 ImGui::EndMenu();
             }

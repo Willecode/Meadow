@@ -14,7 +14,8 @@ protected:
 	void onEntityAdded(Entity ent) override;
 	void onEntityRemoved(Entity ent) override;
 private:
-	void togglePhysics(bool f);
+	void physicsOn();
+	void physicsOff();
 	void toggleColliderVisibility(bool f);
 private:
 	physx::PxDefaultErrorCallback  m_PxDefaultErrorCallback;

@@ -717,16 +717,31 @@ namespace InputEvents
 	class PlayGameEvent
 	{
 	public:
-		static void subscribe(std::function<void(bool)> f) {
+		static void subscribe(std::function<void()> f) {
 			m_handlers.push_back(f);
 		}
-		static void notify(bool flag) {
+		static void notify() {
 			for (auto h : m_handlers) {
-				h(flag);
+				h();
 			}
 		}
 	private:
-		inline static std::vector<std::function<void(bool)>> m_handlers;
+		inline static std::vector<std::function<void()>> m_handlers;
+	};
+
+	class StopGameEvent
+	{
+	public:
+		static void subscribe(std::function<void()> f) {
+			m_handlers.push_back(f);
+		}
+		static void notify() {
+			for (auto h : m_handlers) {
+				h();
+			}
+		}
+	private:
+		inline static std::vector<std::function<void()>> m_handlers;
 	};
 
 	class ColliderVisibilityEvent

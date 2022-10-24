@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\benchmarking\benchmarksystem.cpp" />
     <ClCompile Include="source\benchmarking\benchmarkutils.cpp" />
     <ClCompile Include="source\ecs\core\componenteventhandler.cpp" />
     <ClCompile Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.cpp" />
@@ -244,6 +245,9 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\benchmarking\benchmarksystem.h" />
+    <ClInclude Include="source\benchmarking\acomponent.h" />
+    <ClInclude Include="source\benchmarking\bcomponent.h" />
     <ClInclude Include="source\benchmarking\benchmarkutils.h" />
     <ClInclude Include="source\ecs\core\componenteventhandler.h" />
     <ClInclude Include="source\ecs\components\rigidbody.h" />

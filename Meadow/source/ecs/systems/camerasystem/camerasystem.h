@@ -21,7 +21,8 @@ private:
 	void cameraLock();
 	void cameraUnlock();
 	void setActiveCamera(Entity ent);
-	void useSceneCamera(bool f);
+	void sceneCameraTrue();
+	void sceneCameraFalse();
 	glm::vec3 rotateVecByQuat(const glm::vec3& v, const glm::quat& q);
 
 	float m_aspectRatio;

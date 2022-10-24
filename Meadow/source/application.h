@@ -25,13 +25,16 @@
 #include "ui/uidatascraper.h"
 #include "postprocessing/postprocessing.h"
 
-//ECS
+// ECS
 #include "ecs/systems/rendersystem.h"
 #include "ecs/systems/camerasystem/camerasystem.h"
 #include "ecs/systems/scenegraphsystem/scenegraphsystem.h"
 #include "ecs/systems/lightsystem.h"
 #include "ecs/systems/physicssystem.h"
 #include "ecs/core/componenteventhandler.h"
+
+// Benchmarking
+#include "benchmarking/benchmarksystem.h"
 
 class Application
 {
@@ -59,5 +62,6 @@ private:
 	std::shared_ptr<SceneGraphSystem> m_sceneGraphSystem;
 	std::shared_ptr<LightSystem> m_lightSystem;
 	std::shared_ptr<PhysicsSystem> m_physicsSystem;
+	std::shared_ptr<BenchmarkSystem> m_benchmarkSystem;
 };
 
