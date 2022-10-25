@@ -168,7 +168,7 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
         ImGui::Begin("Scene");
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
         if (ImGui::Button("Add node")) {
-            InputEvents::AddNodeEvent::notify(0);
+            InputEvents::AddNodeEvent::notify();
         }
         if (ImGui::Button("Parent to root")) {
             if (m_activeNode >= 0)

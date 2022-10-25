@@ -10,13 +10,15 @@ EntityManager::EntityManager()
 	// Create root node
 	createEntity();
 }
-Entity EntityManager::createEntity()
+Entity EntityManager::createEntity(std::string name)
 {
 	assert(m_livingEntityCount < MAX_ENTITIES && "Too many entities in existence.");
 
 	Entity id = m_availableEntities.front();
 	m_availableEntities.pop();
 	m_livingEntityCount++;
+
+	entityNames[id] = name;
 
 	InternalEvents::EntityCreatedEvent::notify(id);
 
@@ -44,4 +46,5 @@ Signature EntityManager::getSignature(Entity ent)
 
 	return m_signatures[ent];
 }
+
 

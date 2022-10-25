@@ -56,7 +56,7 @@ private:
 	*			   that it can represent the SceneNode in UI
 	*/
 	//void scrapeNode(const SceneGraph& node, EntityUI& uiNode, int uiElemId);
-	void scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiNode);
+	void scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiNode, const ECSCoordinator& ecs);
 	MaterialUI constructMaterialUI(Material*);
 	void constructComponentMap(const SceneGraph::Node& node, const ECSCoordinator& ecs);
 };

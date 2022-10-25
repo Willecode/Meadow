@@ -4,6 +4,7 @@
 
 ECSCoordinator::ECSCoordinator()
 {
+	using sig = void (ECSCoordinator::*)();
 	InputEvents::AddNodeEvent::subscribe(std::bind(&ECSCoordinator::createEntity, this));
 	InputEvents::DeleteEntityEvent::subscribe(std::bind(&ECSCoordinator::destroyEntity, this, std::placeholders::_1));
 }
@@ -16,12 +17,17 @@ void ECSCoordinator::init()
 	registerComponent<Transform>(); // All entities have transform
 }
 
-Entity ECSCoordinator::createEntity()
+Entity ECSCoordinator::createEntityNamed(std::string name)
 {
-	auto ent = m_entityManager->createEntity();
+	auto ent = m_entityManager->createEntity(name);
 	Transform t;
 	addComponent(ent, t);
 	return ent;
+}
+
+Entity ECSCoordinator::createEntity()
+{
+	return createEntityNamed("Entity");
 }
 
 void ECSCoordinator::destroyEntity(Entity entity)

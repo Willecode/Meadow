@@ -7,7 +7,7 @@ class ImportUtility
 public:
 	enum class FileType {
 		PNGJPG = 0,
-		OBJFBX
+		OBJFBXGLTF
 	};
 	static bool fileBrowserOpenFile(std::string& retFilename, FileType t);
 private:

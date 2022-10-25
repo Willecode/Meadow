@@ -8,6 +8,7 @@ class ECSCoordinator
 public:
 	ECSCoordinator();
 	void init();
+	Entity createEntityNamed(std::string name);
 	Entity createEntity();
 	void destroyEntity(Entity entity);
 	Signature getEntitySignature(Entity ent) const;
@@ -60,7 +61,14 @@ public:
 	void setSystemSignature(Signature signature) {
 		m_systemManager->setSignature<T>(signature);
 	}
-
+	std::array<std::string, MAX_ENTITIES>* getEntityNames() {
+		return &m_entityManager->entityNames;
+	}
+	std::string getEntityName(Entity ent) const {
+		if (ent >= MAX_ENTITIES)
+			return "Null entity";
+		return m_entityManager->entityNames[ent];
+	}
 private:
 	std::unique_ptr<ComponentManager> m_componentManager;
 	std::unique_ptr<EntityManager> m_entityManager;

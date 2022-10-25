@@ -257,16 +257,16 @@ namespace InputEvents
 	class AddNodeEvent
 	{
 	public:
-		static void subscribe(std::function<void(unsigned int)> f) {
+		static void subscribe(std::function<void()> f) {
 			m_handlers.push_back(f);
 		}
-		static void notify(unsigned int x) {
+		static void notify() {
 			for (auto h : m_handlers) {
-				h(x);
+				h();
 			}
 		}
 	private:
-		inline static std::vector<std::function<void(unsigned int)>> m_handlers;
+		inline static std::vector<std::function<void()>> m_handlers;
 	};
 	class DuplicateNodeEvent
 	{

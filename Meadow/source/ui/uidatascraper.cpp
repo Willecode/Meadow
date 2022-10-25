@@ -63,7 +63,7 @@ void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* 
 	//////////////////////////////////
 	//m_sceneState.activeNode = std::nullopt;
 	//for (auto const& child : graph.children)
-	scrapeSceneGraph(graph, m_sceneRoot);
+	scrapeSceneGraph(graph, m_sceneRoot, ecs);
 
 	//////////////////////////////////
 	// GET COMPONENTS
@@ -146,15 +146,15 @@ ComponentMapUI* UIDataScraper::getComponentMap()
 //	}
 //}
 
-void UIDataScraper::scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiNode)
+void UIDataScraper::scrapeSceneGraph(const SceneGraph::Node& node, EntityUI& uiNode, const ECSCoordinator& ecs)
 {
 	uiNode = EntityUI();
 	uiNode.id = node.entity;
-
+	uiNode.name = ecs.getEntityName(node.entity);
 	for (auto const& child : node.children) {
 		EntityUI uiChild;
 		uiNode.children.push_back(uiChild);
-		scrapeSceneGraph(child, uiNode.children.back());
+		scrapeSceneGraph(child, uiNode.children.back(), ecs);
 	}
 }
 

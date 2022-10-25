@@ -3,15 +3,19 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/pbrmaterial.h>
 #include <glm/gtx/matrix_decompose.hpp>
 #include "imageloader.h"
 #include "service_locator/loggerlocator.h"
 #include "resourcemanager.h"
 #include "assets/materials/PBRMaterial.h"
+
 #include "ecs/components/transform.h"
 #include "ecs/components/model3d.h"
+#include "ecs/components/light.h"
 
 #include <stdexcept>
+#include <unordered_map>
 /*
 TODO:
 Refactor/clean up this mess of a file
@@ -90,11 +94,13 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 }
 
-static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* ainode, const aiScene* aiscene, std::string directory, ResourceManager& resourceMan, std::map<int, int> aiMatToMeadowMatId)
+static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* ainode, const aiScene* aiscene,
+	std::string directory, ResourceManager& resourceMan, std::map<int, int> aiMatToMeadowMatId, std::unordered_map<std::string, Entity> &entMap,
+	bool fbx, bool rootnode)
 {
-	Entity ent = ecs->createEntity();;
+	Entity ent = ecs->createEntityNamed(ainode->mName.C_Str());;
 	InputEvents::SetNodeParentEvent::notify(ent, parentNodeId);
-	
+	entMap.insert({ ainode->mName.C_Str(), ent });
 	/*
 	* Set scenenode name
 	*/
@@ -105,9 +111,15 @@ static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* 
 	auto& t = ecs->getComponent<Transform>(ent);
 	glm::vec3 skew;
 	glm::vec4 perspective;
-	glm::mat4 transf = glm::scale(matAssimpToGlm(ainode->mTransformation), glm::vec3(1.0));
+	glm::mat4 transf = matAssimpToGlm(ainode->mTransformation);
+	
 	glm::decompose(transf, t.scale, t.orientation, t.position, skew, perspective);
-
+	if (fbx) {
+		if (!rootnode) {
+			t.scale *= 0.01;
+			t.position *= 0.01;
+		}
+	}
 	
 	/*
 	* If there are aimeshes, the scenenode will be given a new Mesh with x submeshes, x being the number of aimeshes
@@ -139,7 +151,7 @@ static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* 
 	//// then do the same for each of the ainode's children
 	for (unsigned int i = 0; i < ainode->mNumChildren; i++)
 	{
-		processNode(ent, ecs, ainode->mChildren[i], aiscene, directory, resourceMan, aiMatToMeadowMatId);
+		processNode(ent, ecs, ainode->mChildren[i], aiscene, directory, resourceMan, aiMatToMeadowMatId, entMap, fbx, false);
 	}
 	return;
 }
@@ -150,7 +162,20 @@ Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string
 	int texWidth, texHeight;
 	auto vecptrDiffuseMap = std::make_unique<std::vector<unsigned char>>();
 	aiString path;
-	aiReturn ret = aimat->GetTexture(type, 0, &path);
+	aiReturn ret;
+	if (type == aiTextureType_DIFFUSE_ROUGHNESS)
+		ret = aimat->GetTexture(AI_MATKEY_ROUGHNESS_TEXTURE, &path);
+	else if (type == aiTextureType_METALNESS)
+		ret = aimat->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &path);
+	else if (type == aiTextureType_DIFFUSE)
+		ret = aimat->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &path);
+	else if (type == aiTextureType_OPACITY)
+		ret = aimat->GetTexture(AI_MATKEY_TRANSMISSION_TEXTURE, &path);
+	else if (type == aiTextureType_AMBIENT_OCCLUSION)
+		ret = aimat->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &path); // Not sure if this works
+	else
+		ret = aimat->GetTexture(type, 0, &path);
+
 	if (ret != aiReturn_SUCCESS) {
 		return nullptr;
 	}
@@ -267,9 +292,29 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 	return true;
 }
 
+void importLights(const aiScene* scene, std::unordered_map<std::string, Entity> entMap, ECSCoordinator* ecs) {
+	for (unsigned int i = 0; i < scene->mNumLights; i++) {
+		Light l;
+		l.color.r = scene->mLights[i]->mColorDiffuse.r;
+		l.color.g = scene->mLights[i]->mColorDiffuse.g;
+		l.color.b = scene->mLights[i]->mColorDiffuse.b;
+		auto it = entMap.find(scene->mLights[i]->mName.C_Str());
+		if (it == entMap.end()) {
+			LoggerLocator::getLogger()->getLogger()->error("Problem importing lights from file");
+			break;
+		}
+		//ecs->addComponent<Light>(entMap[scene->mLights[i]->mName.C_Str()], l);
+		ecs->addComponent<Light>((* it).second, l);
+	}
+}
 void ModelImporting::objsFromFile(std::string path, ECSCoordinator* ecs)
 {
 	Assimp::Importer importer;
+
+	bool fbx = false;
+	std::size_t found = path.find(".fbx");
+	if (found != std::string::npos)
+		fbx = true;
 
 	/*
 	* When importing, triangulate, flip UVs and calculate tangent and bitangent vectors
@@ -297,11 +342,18 @@ void ModelImporting::objsFromFile(std::string path, ECSCoordinator* ecs)
 	std::map<int, int> aiMatToMeadowMatId;
 	bool success = processMaterials(aiMatToMeadowMatId, aiscene, directory, resourceMan);
 
+	// Mapping from aiNode name -> Entity
+	std::unordered_map<std::string, Entity> entMap;
+
 	/*
-	* If materials successfully imported, import the meshes
+	* If materials successfully imported, import other things
 	*/
-	if (success)
-		processNode(0, ecs, aiscene->mRootNode, aiscene, directory, resourceMan, aiMatToMeadowMatId);
+	if (success) {
+		processNode(0, ecs, aiscene->mRootNode, aiscene, directory, resourceMan, aiMatToMeadowMatId, entMap, fbx, true);
+		if (aiscene->HasLights())
+			importLights(aiscene, entMap, ecs);
+	}
+
 	return;
 }
 
