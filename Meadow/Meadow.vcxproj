@@ -211,6 +211,7 @@
     <ClCompile Include="source\resource_management\modelimporting.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\utils\imagemanipulation.cpp" />
     <ClCompile Include="source\utils\primitivecreation.cpp" />
     <ClCompile Include="source\windowmanager.cpp" />
     <ClCompile Include="source\assets\texture.cpp" />
@@ -303,6 +304,7 @@
     <ClInclude Include="source\resource_management\modelimporting.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="source\utils\imagemanipulation.h" />
     <ClInclude Include="source\utils\primitivecreation.h" />
     <ClInclude Include="source\shader\shaderuniformnames.h" />
     <ClInclude Include="source\stb\stb_image.h" />

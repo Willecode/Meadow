@@ -3,12 +3,15 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <assimp/pbrmaterial.h>
+//#include <assimp/pbrmaterial.h>
+#include <assimp/material.h>
+#include <assimp/GltfMaterial.h>
 #include <glm/gtx/matrix_decompose.hpp>
 #include "imageloader.h"
 #include "service_locator/loggerlocator.h"
 #include "resourcemanager.h"
 #include "assets/materials/PBRMaterial.h"
+#include "utils/imagemanipulation.h"
 
 #include "ecs/components/transform.h"
 #include "ecs/components/model3d.h"
@@ -96,7 +99,7 @@ static std::unique_ptr<SubMesh> processMesh(aiMesh* mesh, const aiScene* scene)
 
 static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* ainode, const aiScene* aiscene,
 	std::string directory, ResourceManager& resourceMan, std::map<int, int> aiMatToMeadowMatId, std::unordered_map<std::string, Entity> &entMap,
-	bool fbx, bool rootnode)
+	bool fbx, int hierarchyIndex)
 {
 	Entity ent = ecs->createEntityNamed(ainode->mName.C_Str());;
 	InputEvents::SetNodeParentEvent::notify(ent, parentNodeId);
@@ -115,10 +118,11 @@ static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* 
 	
 	glm::decompose(transf, t.scale, t.orientation, t.position, skew, perspective);
 	if (fbx) {
-		if (!rootnode) {
+		if (hierarchyIndex == 1) {
 			t.scale *= 0.01;
 			t.position *= 0.01;
 		}
+		hierarchyIndex++;
 	}
 	
 	/*
@@ -151,7 +155,7 @@ static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* 
 	//// then do the same for each of the ainode's children
 	for (unsigned int i = 0; i < ainode->mNumChildren; i++)
 	{
-		processNode(ent, ecs, ainode->mChildren[i], aiscene, directory, resourceMan, aiMatToMeadowMatId, entMap, fbx, false);
+		processNode(ent, ecs, ainode->mChildren[i], aiscene, directory, resourceMan, aiMatToMeadowMatId, entMap, fbx, hierarchyIndex);
 	}
 	return;
 }
@@ -163,12 +167,27 @@ Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string
 	auto vecptrDiffuseMap = std::make_unique<std::vector<unsigned char>>();
 	aiString path;
 	aiReturn ret;
-	if (type == aiTextureType_DIFFUSE_ROUGHNESS)
+	bool combinedMetRough = false;
+	if (type == aiTextureType_DIFFUSE_ROUGHNESS) {
 		ret = aimat->GetTexture(AI_MATKEY_ROUGHNESS_TEXTURE, &path);
-	else if (type == aiTextureType_METALNESS)
+		if (ret != aiReturn_SUCCESS) { 
+			ret = aimat->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &path); // Try for combined roughness metallic
+			combinedMetRough = true;
+		}
+	}
+	else if (type == aiTextureType_METALNESS){
 		ret = aimat->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &path);
-	else if (type == aiTextureType_DIFFUSE)
+		if (ret != aiReturn_SUCCESS) {
+			ret = aimat->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &path); // Try for combined roughness metallic
+			combinedMetRough = true;
+		}
+	}
+
+	else if (type == aiTextureType_DIFFUSE) {
 		ret = aimat->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &path);
+		if (ret != aiReturn_SUCCESS)
+			ret = aimat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+	}
 	else if (type == aiTextureType_OPACITY)
 		ret = aimat->GetTexture(AI_MATKEY_TRANSMISSION_TEXTURE, &path);
 	else if (type == aiTextureType_AMBIENT_OCCLUSION)
@@ -188,6 +207,24 @@ Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string
 			return nullptr;
 	}
 
+	// In case of joined roughness metallic, extract the relevant channel
+	if (combinedMetRough) {
+		if (type == aiTextureType_METALNESS) {
+			int texW = 0;
+			int texH = 0;
+			ImageManipulation::extractChannel(&(*vecptrDiffuseMap)[0], texWidth, texHeight, *vecptrDiffuseMap.get(), texW, texH, textureFormat, ImageManipulation::IMGChannel::B);
+			texWidth = texW;
+			texH = texHeight;
+		}
+		else if (type == aiTextureType_DIFFUSE_ROUGHNESS) {
+			int texW = 0;
+			int texH = 0;
+			ImageManipulation::extractChannel(&(*vecptrDiffuseMap)[0], texWidth, texHeight, *vecptrDiffuseMap.get(), texW, texH, textureFormat, ImageManipulation::IMGChannel::G);
+			texWidth = texW;
+			texH = texHeight;
+		}
+	}
+
 	/*
 	* Create new Texture
 	*/
@@ -203,6 +240,11 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 	ImageLoader imgLoader;
 	for (int i = 0; i < aiscene->mNumMaterials; i++) {
 		aiMaterial* aimat = aiscene->mMaterials[i];
+		// Debug
+		int normCount = aimat->GetTextureCount(aiTextureType_NORMALS);
+		int roughdiffcount1 = aimat->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS);
+		int roughdiffcount2 = aimat->GetTextureCount(aiTextureType_UNKNOWN);
+		// -----
 		LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Importing material: {}", aimat->GetName().C_Str());
 		/*
 		* Get colors
@@ -256,6 +298,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 				newMatPtr->setTexture(normalMap, Texture::TextureType::NORMAL_MAP);
 			}
 		}
+
 		/*
 		* Import rough map
 		*/
@@ -274,6 +317,8 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 				newMatPtr->setTexture(metalMap, Texture::TextureType::METALLIC_MAP);
 			}
 		}
+
+
 		/*
 		* Import ao map
 		*/
@@ -349,7 +394,7 @@ void ModelImporting::objsFromFile(std::string path, ECSCoordinator* ecs)
 	* If materials successfully imported, import other things
 	*/
 	if (success) {
-		processNode(0, ecs, aiscene->mRootNode, aiscene, directory, resourceMan, aiMatToMeadowMatId, entMap, fbx, true);
+		processNode(0, ecs, aiscene->mRootNode, aiscene, directory, resourceMan, aiMatToMeadowMatId, entMap, fbx, 0);
 		if (aiscene->HasLights())
 			importLights(aiscene, entMap, ecs);
 	}
