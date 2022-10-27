@@ -214,14 +214,16 @@ Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string
 			int texH = 0;
 			ImageManipulation::extractChannel(&(*vecptrDiffuseMap)[0], texWidth, texHeight, *vecptrDiffuseMap.get(), texW, texH, textureFormat, ImageManipulation::IMGChannel::B);
 			texWidth = texW;
-			texH = texHeight;
+			texHeight = texH;
+			textureFormat = Renderer::ImageFormat::R;
 		}
 		else if (type == aiTextureType_DIFFUSE_ROUGHNESS) {
 			int texW = 0;
 			int texH = 0;
 			ImageManipulation::extractChannel(&(*vecptrDiffuseMap)[0], texWidth, texHeight, *vecptrDiffuseMap.get(), texW, texH, textureFormat, ImageManipulation::IMGChannel::G);
 			texWidth = texW;
-			texH = texHeight;
+			texHeight = texH;
+			textureFormat = Renderer::ImageFormat::R;
 		}
 	}
 
