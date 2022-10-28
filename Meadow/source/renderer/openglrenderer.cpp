@@ -336,6 +336,7 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     else {
         glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatDestination), width, height, 0,
             m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
+        glGenerateMipmap(GL_TEXTURE_2D);
     }
     /*********************************/
 
