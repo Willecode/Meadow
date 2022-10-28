@@ -34,6 +34,7 @@ public:
 	void setProperty(std::string name, unsigned int value, bool expose = false);
 	void setProperty(std::string name, float value, bool expose = false);
 	void setProperty(std::string name, glm::vec3 value, bool expose = false);
+	void setProperty(std::string name, glm::vec4 value, bool expose = false);
 	void setProperty(std::string name, glm::mat4 value, bool expose = false);
 	void clearProperties();
 
@@ -45,6 +46,7 @@ public:
 	std::unordered_map<std::string, unsigned int>* getExposedPropertiesui();
 	std::unordered_map<std::string, float>* getExposedPropertiesf();
 	std::unordered_map<std::string, glm::vec3>* getExposedPropertiesv3();
+	std::unordered_map<std::string, glm::vec4>* getExposedPropertiesv4();
 	std::unordered_map<std::string, glm::mat4>* getExposedPropertiesm4();
 protected:
 
@@ -58,6 +60,7 @@ protected:
 	std::unordered_map<std::string, unsigned int> m_uintPropsHidden;
 	std::unordered_map<std::string, float>        m_floatPropsHidden;
 	std::unordered_map<std::string, glm::vec3>    m_vec3PropsHidden;
+	std::unordered_map<std::string, glm::vec4>    m_vec4PropsHidden;
 	std::unordered_map<std::string, glm::mat4>    m_mat4PropsHidden;
 
 	std::unordered_map<std::string, bool>         m_boolPropsExposed;
@@ -65,6 +68,7 @@ protected:
 	std::unordered_map<std::string, unsigned int> m_uintPropsExposed;
 	std::unordered_map<std::string, float>        m_floatPropsExposed;
 	std::unordered_map<std::string, glm::vec3>    m_vec3PropsExposed;
+	std::unordered_map<std::string, glm::vec4>    m_vec4PropsExposed;
 	std::unordered_map<std::string, glm::mat4>    m_mat4PropsExposed;
 
 	std::unordered_map<Texture::TextureType, Texture*> m_textures;

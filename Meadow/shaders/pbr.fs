@@ -14,7 +14,7 @@ uniform vec3 viewPos;
 struct Material {
     // In case of no relevant maps
     // ------------------------
-    vec3 albedo;
+    vec4 albedo;
     float metallic;
     float roughness;
     // ------------------------
@@ -29,6 +29,10 @@ struct Material {
     bool hasMetallicMap;
     bool hasRoughnessMap;
     bool hasAoMap;
+    // ------------------------
+    vec4 baseColorFactor;
+    float metallicFactor;
+    float roughnessFactor;
 };
 uniform Material material;
 
@@ -108,21 +112,21 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 // ----------------------------------------------------------------------------
 vec3 getAlbedo(){
     if (material.hasAlbedoMap)
-        return texture(material.albedoMap, TexCoords).rgb;
+        return texture(material.albedoMap, TexCoords).rgb * material.baseColorFactor.rgb;
     else
-        return material.albedo;
+        return material.albedo.rgb;
 }
 // ----------------------------------------------------------------------------
 float getMetallic(){
     if (material.hasMetallicMap)
-        return texture(material.metallicMap, TexCoords).r;
+        return texture(material.metallicMap, TexCoords).r * material.metallicFactor;
     else
         return material.metallic;
 }
 // ----------------------------------------------------------------------------
 float getRoughness(){
     if (material.hasRoughnessMap)
-        return texture(material.roughnessMap, TexCoords).r;
+        return texture(material.roughnessMap, TexCoords).r * material.roughnessFactor;
     else
         return material.roughness;
 }
@@ -133,15 +137,22 @@ float getAo(){
     else
         return 1;
 }
+float getOpacity(){
+    if (material.hasAlbedoMap)
+        return texture(material.albedoMap, TexCoords).a * material.baseColorFactor.a;
+    else
+        return 1;
+}
 
 void main()
 {	
     // Check for texture maps
     // -----------------------------
-    vec3 albedo     = getAlbedo();
-    float metallic  = getMetallic();
-    float roughness = getRoughness();
-    float ao        = getAo();
+    vec3 albedo      = getAlbedo();
+    float metallic   = getMetallic();
+    float roughness  = getRoughness();
+    float ao         = getAo();
+    float opacity    = getOpacity();
     // -----------------------------
 
     vec3 N = getNormalDir();
@@ -204,6 +215,9 @@ void main()
     // DEBUG
     // ------------
     //color = N;
+//    color.x = roughness;
+//    color.y = roughness;
+//    color.z = roughness;
     // ------------
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(color, opacity);
 }

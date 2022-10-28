@@ -1,12 +1,11 @@
 #include "PBRMaterial.h"
 
-std::array<Texture::TextureType, 6> PBRMaterial::textureInputs = {
+std::array<Texture::TextureType, 5> PBRMaterial::textureInputs = {
 	Texture::TextureType::ALBEDO_MAP,
 	Texture::TextureType::ROUGHNESS_MAP,
 	Texture::TextureType::METALLIC_MAP,
 	Texture::TextureType::NORMAL_MAP,
-	Texture::TextureType::AO_MAP,
-	Texture::TextureType::OPACITY_MAP
+	Texture::TextureType::AO_MAP
 };
 ShaderManager::ShaderType PBRMaterial::shaderType = ShaderManager::ShaderType::PBR;
 
@@ -21,6 +20,11 @@ void PBRMaterial::setDefault()
 	setProperty("material.albedo", MaterialConstants::DEFAULT_COLOR, true);
 	setProperty("material.metallic", 0.f, true);
 	setProperty("material.roughness", 0.5f, true);
+
+	// texture map factors
+	setProperty("material.baseColorFactor", glm::vec4(1.0f), true);
+	setProperty("material.metallicFactor", 1.0f, true);
+	setProperty("material.roughnessFactor", 1.0f, true);
 	for (int i = 0; i < textureInputs.size(); i++) {
 		m_textures[textureInputs[i]] = nullptr;
 	}

@@ -284,6 +284,17 @@ void OpenGLRenderer::setFloat3(const unsigned int& sdrId, const char* name, glm:
     }
 }
 
+void OpenGLRenderer::setFloat4(const unsigned int& sdrId, const char* name, glm::vec4 value)
+{
+    shader_prog_map::iterator it;
+    if (findInshaderProgMap(sdrId, it)) {
+        glUniform4f(glGetUniformLocation(it->second, name), value.r, value.g, value.b, value.a);
+#ifdef VERBOSE
+        LoggerLocator::getLogger()->getLogger()->info("set uniform {} in location {}", name, glGetUniformLocation(it->second, name));
+#endif // VERBOSE
+    }
+}
+
 void OpenGLRenderer::setMat4f(const unsigned int& sdrId, const char* name, glm::mat4 value)
 {
     shader_prog_map::iterator it;

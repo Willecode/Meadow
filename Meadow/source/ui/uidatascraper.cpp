@@ -163,6 +163,7 @@ MaterialUI UIDataScraper::constructMaterialUI(Material* mat)
 	MaterialUI newAss(mat->name, mat->getId());
 	newAss.propertiesf = mat->getExposedPropertiesf();
 	newAss.propertiesv3 = mat->getExposedPropertiesv3();
+	newAss.propertiesv4 = mat->getExposedPropertiesv4();
 	auto matTextures = mat->getTextures();
 	for (auto const& tex : matTextures) {
 		if (tex.second != nullptr) {

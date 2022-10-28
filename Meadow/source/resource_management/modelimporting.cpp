@@ -160,13 +160,14 @@ static void processNode(unsigned int parentNodeId, ECSCoordinator* ecs, aiNode* 
 	return;
 }
 
-Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string& directory, ResourceManager& resourceMan, Renderer::ImageFormat engineFormat) {
+Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string& directory, ResourceManager& resourceMan, std::map<std::string, Texture*>& importedTextures, Renderer::ImageFormat engineFormat) {
 	ImageLoader imgLoader;
 	Renderer::ImageFormat textureFormat;
 	int texWidth, texHeight;
 	auto vecptrDiffuseMap = std::make_unique<std::vector<unsigned char>>();
 	aiString path;
 	aiReturn ret;
+	std::string keystring;
 	bool combinedMetRough = false;
 	if (type == aiTextureType_DIFFUSE_ROUGHNESS) {
 		ret = aimat->GetTexture(AI_MATKEY_ROUGHNESS_TEXTURE, &path);
@@ -198,14 +199,31 @@ Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string
 	if (ret != aiReturn_SUCCESS) {
 		return nullptr;
 	}
-	else {
-		LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has a texture:{}", path.C_Str());
-		/*
-		* Load the texture file
-		*/
-		if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), texWidth, texHeight, textureFormat, *vecptrDiffuseMap.get()))
-			return nullptr;
+
+	LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Material has a texture:{}", path.C_Str());
+	auto it = importedTextures.find(path.C_Str());
+	if (it != importedTextures.end())
+		return it->second;
+	else if (combinedMetRough && type == aiTextureType_METALNESS) {
+		std::string newstr = path.C_Str();
+		it = importedTextures.find(newstr + "metallic");
+		if (it != importedTextures.end())
+			return it->second;
 	}
+	else if (combinedMetRough && type == aiTextureType_DIFFUSE_ROUGHNESS)
+	{
+		std::string newstr = path.C_Str();
+		it = importedTextures.find(newstr + "roughness");
+		if (it != importedTextures.end())
+			return it->second;
+	}
+	/*
+	* Load the texture file
+	*/
+	if (!imgLoader.loadImage(std::string(directory + "/" + path.C_Str()), texWidth, texHeight, textureFormat, *vecptrDiffuseMap.get()))
+		return nullptr;
+
+	keystring = path.C_Str();
 
 	// In case of joined roughness metallic, extract the relevant channel
 	if (combinedMetRough) {
@@ -216,6 +234,7 @@ Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string
 			texWidth = texW;
 			texHeight = texH;
 			textureFormat = Renderer::ImageFormat::R;
+			keystring += "metallic";
 		}
 		else if (type == aiTextureType_DIFFUSE_ROUGHNESS) {
 			int texW = 0;
@@ -224,6 +243,7 @@ Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string
 			texWidth = texW;
 			texHeight = texH;
 			textureFormat = Renderer::ImageFormat::R;
+			keystring += "roughness";
 		}
 	}
 
@@ -232,13 +252,16 @@ Texture* importTexture(aiTextureType type, aiMaterial* aimat,  const std::string
 	*/
 	auto newTex = std::make_unique<Texture>(std::move(vecptrDiffuseMap), texWidth, texHeight, textureFormat, engineFormat, path.C_Str());
 	unsigned int newTexId = resourceMan.storeTexture(std::move(newTex));
-	return resourceMan.getTexture(newTexId);
+	Texture* tex = resourceMan.getTexture(newTexId);
+	importedTextures.insert({keystring, tex });
+	return tex;
 }
 
 bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* aiscene, std::string directory, ResourceManager& resourceMan) {
 	/*
 	* Get materials
 	*/
+	std::map<std::string, Texture*> importedTextures;
 	ImageLoader imgLoader;
 	for (int i = 0; i < aiscene->mNumMaterials; i++) {
 		aiMaterial* aimat = aiscene->mMaterials[i];
@@ -249,12 +272,14 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		// -----
 		LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Importing material: {}", aimat->GetName().C_Str());
 		/*
-		* Get colors
+		* Get factors
 		*/
-		aiColor3D diffuse = aiColor3D(0.f);
-		aiColor3D specular = aiColor3D(0.f);
-		aimat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-		aimat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+		aiColor4D baseColorFactor;
+		float metallicFactor;
+		float roughnessFactor;
+		aimat->Get(AI_MATKEY_BASE_COLOR, baseColorFactor);
+		aimat->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor);
+		aimat->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughnessFactor);
 
 		/*
 		* Create new Meadow material
@@ -265,16 +290,17 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		//newMatPtr->defaultPhong();
 
 		/*
-		* Set colors
+		* Set factors
 		*/
-		newMatPtr->setProperty("material.diffuse", glm::vec3(diffuse.r, diffuse.g, diffuse.b), true);
-		newMatPtr->setProperty("material.specular", glm::vec3(diffuse.r, diffuse.g, diffuse.b), true);
+		newMatPtr->setProperty("material.baseColorFactor", glm::vec4(baseColorFactor.r, baseColorFactor.g, baseColorFactor.b, baseColorFactor.a), true);
+		newMatPtr->setProperty("material.metallicFactor", metallicFactor, true);
+		newMatPtr->setProperty("material.roughnessFactor", roughnessFactor, true);
 
 		/*
 		* Import diffuse map
 		*/
 		{
-			Texture* diffMap = importTexture(aiTextureType_DIFFUSE, aimat, directory, resourceMan, Renderer::ImageFormat::sRGBA);
+			Texture* diffMap = importTexture(aiTextureType_DIFFUSE, aimat, directory, resourceMan, importedTextures, Renderer::ImageFormat::sRGBA);
 			if (diffMap != nullptr) {
 				newMatPtr->setTexture(diffMap, Texture::TextureType::ALBEDO_MAP);
 			}
@@ -284,7 +310,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		* Import opac map
 		*/
 		{
-			Texture* opacMap = importTexture(aiTextureType_OPACITY, aimat, directory, resourceMan, Renderer::ImageFormat::R);
+			Texture* opacMap = importTexture(aiTextureType_OPACITY, aimat, directory, resourceMan, importedTextures, Renderer::ImageFormat::R);
 			if (opacMap != nullptr) {
 				newMatPtr->setTexture(opacMap, Texture::TextureType::OPACITY_MAP);
 
@@ -295,7 +321,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		* Import normal map
 		*/
 		{
-			Texture* normalMap = importTexture(aiTextureType_NORMALS, aimat, directory, resourceMan, Renderer::ImageFormat::RGB);
+			Texture* normalMap = importTexture(aiTextureType_NORMALS, aimat, directory, resourceMan, importedTextures, Renderer::ImageFormat::RGB);
 			if (normalMap != nullptr) {
 				newMatPtr->setTexture(normalMap, Texture::TextureType::NORMAL_MAP);
 			}
@@ -305,7 +331,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		* Import rough map
 		*/
 		{
-			Texture* roughMap = importTexture(aiTextureType_DIFFUSE_ROUGHNESS, aimat, directory, resourceMan, Renderer::ImageFormat::R);
+			Texture* roughMap = importTexture(aiTextureType_DIFFUSE_ROUGHNESS, aimat, directory, resourceMan, importedTextures, Renderer::ImageFormat::R);
 			if (roughMap != nullptr) {
 				newMatPtr->setTexture(roughMap, Texture::TextureType::ROUGHNESS_MAP);
 			}
@@ -314,7 +340,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		* Import metal map
 		*/
 		{
-			Texture* metalMap = importTexture(aiTextureType_METALNESS, aimat, directory, resourceMan, Renderer::ImageFormat::R);
+			Texture* metalMap = importTexture(aiTextureType_METALNESS, aimat, directory, resourceMan, importedTextures, Renderer::ImageFormat::R);
 			if (metalMap != nullptr) {
 				newMatPtr->setTexture(metalMap, Texture::TextureType::METALLIC_MAP);
 			}
@@ -325,7 +351,7 @@ bool processMaterials(std::map<int, int> &aiMatToMeadowMatId, const aiScene* ais
 		* Import ao map
 		*/
 		{
-			Texture* aoMap = importTexture(aiTextureType_AMBIENT_OCCLUSION, aimat, directory, resourceMan, Renderer::ImageFormat::R);
+			Texture* aoMap = importTexture(aiTextureType_AMBIENT_OCCLUSION, aimat, directory, resourceMan, importedTextures, Renderer::ImageFormat::R);
 			if (aoMap != nullptr) {
 				LoggerLocator::getLogger()->getLogger()->info("Modelimporting: Found ao map");
 				newMatPtr->setTexture(aoMap, Texture::TextureType::AO_MAP);

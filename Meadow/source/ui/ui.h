@@ -40,11 +40,13 @@ struct TextureUI : public AssetUI {
 struct MaterialUI : public AssetUI {
 	std::unordered_map<std::string, float>* propertiesf;
 	std::unordered_map<std::string, glm::vec3>* propertiesv3;
+	std::unordered_map<std::string, glm::vec4>* propertiesv4;
 	std::unordered_map <Texture::TextureType, unsigned int> textures;
 	MaterialUI(std::string name, const unsigned int id) :
 		AssetUI(name, Asset::AssetType::MATERIAL, id),
 		propertiesf(),
 		propertiesv3(),
+		propertiesv4(),
 		textures()
 	{}
 };

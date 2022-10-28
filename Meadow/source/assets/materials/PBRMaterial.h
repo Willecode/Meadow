@@ -10,7 +10,7 @@ public:
     std::unordered_map<Texture::TextureType, Texture*> getTextures() override;
     ShaderManager::ShaderType getShaderType() override;
 private:
-    static std::array<Texture::TextureType, 6> textureInputs;
+    static std::array<Texture::TextureType, 5> textureInputs;
     static ShaderManager::ShaderType shaderType;
 };
 

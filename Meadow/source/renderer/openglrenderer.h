@@ -43,6 +43,7 @@ public:
 	void setuInt   (const unsigned int &sdrId, const char* name, unsigned int value) override;
 	void setFloat (const unsigned int &sdrId, const char* name, float value) override;
 	void setFloat3(const unsigned int &sdrId, const char* name, glm::vec3 value) override;
+	void setFloat4(const unsigned int &sdrId, const char* name, glm::vec4 value) override;
 	void setMat4f (const unsigned int &sdrId, const char* name, glm::mat4 value) override;
 	
 	/*

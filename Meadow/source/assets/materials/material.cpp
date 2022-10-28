@@ -55,6 +55,8 @@ void Material::passToShader()
 		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_vec3PropsHidden)
 		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
+	for (auto prop : m_vec4PropsHidden)
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_mat4PropsHidden)
 		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 
@@ -67,6 +69,8 @@ void Material::passToShader()
 	for (auto prop : m_floatPropsExposed)
 		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_vec3PropsExposed)
+		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
+	for (auto prop : m_vec4PropsExposed)
 		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
 	for (auto prop : m_mat4PropsExposed)
 		sdrMan.setUniformDrawSpecific(prop.first, prop.second);
@@ -106,6 +110,13 @@ void Material::setProperty(std::string name, glm::vec3 value, bool expose)
 		m_vec3PropsExposed[name] = value;
 	else
 		m_vec3PropsHidden[name] = value;
+}
+void Material::setProperty(std::string name, glm::vec4 value, bool expose)
+{
+	if (expose)
+		m_vec4PropsExposed[name] = value;
+	else
+		m_vec4PropsHidden[name] = value;
 }
 void Material::setProperty(std::string name, glm::mat4 value, bool expose)
 {
@@ -147,6 +158,11 @@ std::unordered_map<std::string, float>* Material::getExposedPropertiesf()
 std::unordered_map<std::string, glm::vec3>* Material::getExposedPropertiesv3()
 {
 	return &m_vec3PropsExposed;
+}
+
+std::unordered_map<std::string, glm::vec4>* Material::getExposedPropertiesv4()
+{
+	return &m_vec4PropsExposed;
 }
 
 std::unordered_map<std::string, glm::mat4>* Material::getExposedPropertiesm4()

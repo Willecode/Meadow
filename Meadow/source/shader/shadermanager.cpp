@@ -140,6 +140,11 @@ void ShaderManager::setUniformDrawSpecific(std::string uName, glm::vec3 uValue)
 	m_vec3MapDraw[uName] = uValue;
 }
 
+void ShaderManager::setUniformDrawSpecific(std::string uName, glm::vec4 uValue)
+{
+	m_vec4MapDraw[uName] = uValue;
+}
+
 void ShaderManager::setUniformDrawSpecific(std::string uName, glm::mat4 uValue)
 {
 	m_mat4MapDraw[uName] = uValue;
@@ -170,6 +175,11 @@ void ShaderManager::setFrameUniform(std::string uName, glm::vec3 uValue)
 	m_vec3MapFrame[uName] = uValue;
 }
 
+void ShaderManager::setFrameUniform(std::string uName, glm::vec4 uValue)
+{
+	m_vec4MapFrame[uName] = uValue;
+}
+
 void ShaderManager::setFrameUniform(std::string uName, glm::mat4 uValue)
 {
 	m_mat4MapFrame[uName] = uValue;
@@ -187,6 +197,8 @@ void ShaderManager::forwardUniformsDrawSpecific()
 		RendererLocator::getRenderer()->setFloat(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_vec3MapDraw)
 		RendererLocator::getRenderer()->setFloat3(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+	for (auto uniform : m_vec4MapDraw)
+		RendererLocator::getRenderer()->setFloat4(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_mat4MapDraw)
 		RendererLocator::getRenderer()->setMat4f(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 }
@@ -203,6 +215,8 @@ void ShaderManager::forwardFrameUniforms()
 		RendererLocator::getRenderer()->setFloat(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_vec3MapFrame)
 		RendererLocator::getRenderer()->setFloat3(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
+	for (auto uniform : m_vec4MapFrame)
+		RendererLocator::getRenderer()->setFloat4(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 	for (auto uniform : m_mat4MapFrame)
 		RendererLocator::getRenderer()->setMat4f(m_currentShader->getId(), uniform.first.c_str(), uniform.second);
 }

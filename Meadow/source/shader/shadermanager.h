@@ -37,6 +37,7 @@ public:
 	void setUniformDrawSpecific(std::string uName, unsigned int uValue);
 	void setUniformDrawSpecific(std::string uName, float uValue);
 	void setUniformDrawSpecific(std::string uName, glm::vec3 uValue);
+	void setUniformDrawSpecific(std::string uName, glm::vec4 uValue);
 	void setUniformDrawSpecific(std::string uName, glm::mat4 uValue);
 
 	/*
@@ -47,6 +48,7 @@ public:
 	void setFrameUniform(std::string uName, unsigned int uValue);
 	void setFrameUniform(std::string uName, float uValue);
 	void setFrameUniform(std::string uName, glm::vec3 uValue);
+	void setFrameUniform(std::string uName, glm::vec4 uValue);
 	void setFrameUniform(std::string uName, glm::mat4 uValue);
 
 	void forwardUniformsDrawSpecific();
@@ -75,6 +77,7 @@ private:
 	std::unordered_map<std::string, unsigned int> m_uintMapDraw;
 	std::unordered_map<std::string, float>	      m_floatMapDraw;
 	std::unordered_map<std::string, glm::vec3>    m_vec3MapDraw;
+	std::unordered_map<std::string, glm::vec4>    m_vec4MapDraw;
 	std::unordered_map<std::string, glm::mat4>    m_mat4MapDraw;
 	/*
 	* Shader uniform maps for uniforms that should be forwarded once per frame
@@ -84,6 +87,7 @@ private:
 	std::unordered_map<std::string, unsigned int> m_uintMapFrame;
 	std::unordered_map<std::string, float>	      m_floatMapFrame;
 	std::unordered_map<std::string, glm::vec3>    m_vec3MapFrame;
+	std::unordered_map<std::string, glm::vec4>    m_vec4MapFrame;
 	std::unordered_map<std::string, glm::mat4>    m_mat4MapFrame;
 
 	/*

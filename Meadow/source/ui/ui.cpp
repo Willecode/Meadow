@@ -325,6 +325,11 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
                     ImGui::Text(prop.first.c_str());
                     ImGui::DragFloat3(prop.first.c_str(), &prop.second.r, 0.01);
                 }
+                for (auto& prop : *chosenMat->propertiesv4) {
+                    ImGui::Text(prop.first.c_str());
+                    ImGui::DragFloat4(prop.first.c_str(), &prop.second.r, 0.01);
+                }
+
             }
         }
 
