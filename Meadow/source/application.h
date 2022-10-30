@@ -31,6 +31,7 @@
 #include "ecs/systems/scenegraphsystem/scenegraphsystem.h"
 #include "ecs/systems/lightsystem.h"
 #include "ecs/systems/physicssystem.h"
+#include "ecs/systems/audiosystem.h"
 #include "ecs/core/componenteventhandler.h"
 
 // Benchmarking
@@ -63,5 +64,6 @@ private:
 	std::shared_ptr<LightSystem> m_lightSystem;
 	std::shared_ptr<PhysicsSystem> m_physicsSystem;
 	std::shared_ptr<BenchmarkSystem> m_benchmarkSystem;
+	std::shared_ptr<AudioSystem> m_audioSystem;
 };
 

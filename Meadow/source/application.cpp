@@ -93,6 +93,7 @@ Application::Application() :
     m_componentEventHandler.init(&m_ecs);
     createDefaultScene();
 
+    InputEvents::WindowBordersToggleEvent::notify();
 }
 
 void Application::run()
@@ -255,6 +256,8 @@ void Application::run()
         m_physicsSystem->update(deltatime);
         times[5] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
         
+        // Audio system
+        m_audioSystem->update(deltatime);
         // Benchmark system
         m_benchmarkSystem->update(deltatime);
         times[6] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
@@ -400,6 +403,14 @@ void Application::initSystems()
         m_ecs.setSystemSignature<BenchmarkSystem>(signature);
     }
     m_benchmarkSystem->init(&m_ecs);
+    // -------------------------------------------------------------
+    m_audioSystem = m_ecs.registerSystem<AudioSystem>();
+    {
+        Signature signature;
+        /*signature.set(m_ecs.getComponentType<AComponent>());*/
+        m_ecs.setSystemSignature<BenchmarkSystem>(signature);
+    }
+    m_audioSystem->init(&m_ecs);
 
 }
 
@@ -598,9 +609,9 @@ void Application::createDefaultScene()
         }
 
 
-        /*Entity entity = m_ecs.createEntity();
+        Entity entity = m_ecs.createEntity();
         Entity entity2 = m_ecs.createEntity();
-        Entity entity3 = m_ecs.createEntity();*/
+        Entity entity3 = m_ecs.createEntity();
         Entity entity4 = m_ecs.createEntity();
         Entity cameraEntity = m_ecs.createEntity();
 
@@ -627,10 +638,10 @@ void Application::createDefaultScene()
 
         }
         // Add light to entity2
-       /* {
+        {
             Light l;
             m_ecs.addComponent(entity2, l);
-        }*/
+        }
         // Add camera to camera entity
         {
             Camera c;
@@ -643,29 +654,29 @@ void Application::createDefaultScene()
             t.position = glm::vec3(0.f, 2.f, 10.f);
         }
         // Move entity 2 a bit
-        //{
-        //    auto& t = m_ecs.getComponent<Transform>(entity2);
-        //    t.position = glm::vec3(1.f);
-        //    //m_ecs.getComponent<Transform>(entity2).scale = glm::vec3(0.1f);
-        //}
+        {
+            auto& t = m_ecs.getComponent<Transform>(entity2);
+            t.position = glm::vec3(1.f);
+            //m_ecs.getComponent<Transform>(entity2).scale = glm::vec3(0.1f);
+        }
 
-        //// Move entity 1 up
-        //{
-        //    auto& t = m_ecs.getComponent<Transform>(entity);
-        //    t.position = glm::vec3(0.f, 10.f, 0.f);
-        //}
-        //
-        //// Move entity 3 up
-        //{
-        //    auto& t = m_ecs.getComponent<Transform>(entity3);
-        //    t.position = glm::vec3(0.f, 2.f, 0.f);
-        //}
+        // Move entity 1 up
+        {
+            auto& t = m_ecs.getComponent<Transform>(entity);
+            t.position = glm::vec3(0.f, 10.f, 0.f);
+        }
+        
+        // Move entity 3 up
+        {
+            auto& t = m_ecs.getComponent<Transform>(entity3);
+            t.position = glm::vec3(0.f, 2.f, 0.f);
+        }
 
         // Scale entity 4
-        /*{
+        {
             auto& t = m_ecs.getComponent<Transform>(entity4);
             t.scale = glm::vec3(5.f, 1.f, 5.f);
-        }*/
+        }
         // Add physics
         {
             //RigidBody r;
@@ -681,11 +692,12 @@ void Application::createDefaultScene()
             r3.type = RigidBody::RigidBodyType::TRIANGLEMESH;
             m_ecs.addComponent(entity4, r3);
         }
-
+        InputEvents::PlayGameEvent::notify();
         // Benchmarking
         //Benchmark::addEntities(1000, &m_ecs);
         //Benchmark::addBenchmarkComponents(1000, &m_ecs);
-        //Benchmark::addRigidBodySpheres(&m_ecs, mesh2, m_sceneGraphSystem.get());
+        Benchmark::addRigidBodySpheres(&m_ecs, mesh2, m_sceneGraphSystem.get());
+        //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/sponza/Main.1_Sponza/NewSponza_Main_glTF_002.gltf", &m_ecs);
 
     }
 #if 0

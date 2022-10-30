@@ -90,6 +90,9 @@ bool WindowManager::createWindow(std::string title)
     InputEvents::MouseLockEvent::subscribe(fml);
     InputEvents::MouseUnlockEvent::subscribe(fmu);
 
+    // make borderless
+    /*InputEvents::WindowBordersToggleEvent::notify();*/
+    
     /*
     * Initialization succesful
     */
