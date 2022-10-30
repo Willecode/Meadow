@@ -13,7 +13,7 @@ Skybox and some postprocessing showcasing.
 
 # About
 Meadow is a game engine with editor for Windows, it is an ongoing personal project for learning purposes. Right now can't be built on other machines. 3rd party Licenses and EULAs can be found under external/.
-- Audio Engine: FMOD Studio by Firelight Technologies Pty Ltd.
+- Audio engine: FMOD Studio by Firelight Technologies Pty Ltd.
 - Physics engine: PhysX by Nvidia
 
 # Features
