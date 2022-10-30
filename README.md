@@ -12,7 +12,9 @@ Demo from 9th of July 2022:
 Skybox and some postprocessing showcasing.
 
 # About
-Meadow is an interactive graphics software for Windows, it is an ongoing personal project for learning purposes. Right now can't be built on other machines.
+Meadow is a game engine with editor for Windows, it is an ongoing personal project for learning purposes. Right now can't be built on other machines. 3rd party Licenses and EULAs can be found under external/.
+- Audio Engine: FMOD Studio by Firelight Technologies Pty Ltd.
+- Physics engine: PhysX by Nvidia
 
 # Features
 - Original rendering engine, which uses OpenGL.
@@ -25,10 +27,10 @@ Meadow is an interactive graphics software for Windows, it is an ongoing persona
 - FPS camera
 
 # In the future
-- Cool shaders using normal maps and such
+- ~~Cool shaders using normal maps and such~~ ✓
 - ~~Translucent objects~~ ✓
 - Shadows
-- Basic collision and physics simulation
+- ~~Basic collision and physics simulation~~ ✓
 - Object selection by clicking an object in the 3D world
 - ~~Object highlighting, selection~~ ✓
 
