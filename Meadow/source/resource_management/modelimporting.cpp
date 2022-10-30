@@ -371,6 +371,12 @@ void importLights(const aiScene* scene, std::unordered_map<std::string, Entity> 
 		l.color.r = scene->mLights[i]->mColorDiffuse.r;
 		l.color.g = scene->mLights[i]->mColorDiffuse.g;
 		l.color.b = scene->mLights[i]->mColorDiffuse.b;
+		// If the light is low power, adjust it (really did this just for sponza scene)
+		if (l.color.r + l.color.g + l.color.b < 0.3) {
+			l.color.r = 241.f / 255.f * 10;
+			l.color.g = 235.f / 255.f * 10;
+			l.color.b = 200.f / 255.f * 10;
+		}
 		auto it = entMap.find(scene->mLights[i]->mName.C_Str());
 		if (it == entMap.end()) {
 			LoggerLocator::getLogger()->getLogger()->error("Problem importing lights from file");
