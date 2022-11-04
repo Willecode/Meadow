@@ -2,6 +2,8 @@
 #include "ecs/core/system.h"
 #include "ecs/core/ecscoordinator.h"
 #include <physx/PxPhysicsAPI.h>
+#include "collisioncallback.h"
+
 class PhysicsSystem : public System
 {
 public:
@@ -26,6 +28,7 @@ private:
 	physx::PxPvd*				   m_PxPvd;
 	physx::PxScene*				   m_PxScene;
 	physx::PxCooking*			   m_PxCooking;
+	CollisionCallback			   m_collisionCallback;
 
 	physx::PxMaterial* m_defaultMaterial;
 

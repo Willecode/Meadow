@@ -1,6 +1,6 @@
 #include "application.h"
 #include "renderer/renderingutils.h"
-
+#include "rbtouchfuncs.h"
 // ECS ----------------------
 #include "ecs/components/transform.h"
 #include "ecs/components/model3d.h"
@@ -17,6 +17,7 @@
 #include "resource_management/modelimporting.h"
 #include "assets/materials/PBRMaterial.h"
 #include "assets/materials/colormaterial.h"
+#include "assets/sound.h"
 //---------------------------
 // BENCHMARK ----------------
 #include "benchmarking/benchmarkutils.h"
@@ -189,6 +190,7 @@ void Application::run()
     // Benchmarking
     std::array<std::chrono::time_point<std::chrono::steady_clock>, 14> times;
     bool renderUI = true;
+    bool benchmark = false;
     // Update loop
     // -----------
     while (!windowMan.shouldClose())
@@ -336,15 +338,16 @@ void Application::run()
         InputEvents::EventQueue::processQueue();
 
         windowMan.swapBuffers();
+        if (benchmark) {
+            LoggerLocator::getLogger()->getLogger()->debug("Benchmark times:");
+            std::chrono::duration<double> diff = times.back() - times[0];
 
-        LoggerLocator::getLogger()->getLogger()->debug("Benchmark times:");
-        std::chrono::duration<double> diff = times.back() - times[0];
-
-        LoggerLocator::getLogger()->getLogger()->debug("Frame time: {}", diff.count());
-        LoggerLocator::getLogger()->getLogger()->debug("FPS: {}", 1.0f / diff.count());
-        for (int i = 1; i < times.size(); i++) {
-            std::chrono::duration<double> diff = times[i] - times[i-1];
-            LoggerLocator::getLogger()->getLogger()->debug("Time {}: {}", i, diff.count());
+            LoggerLocator::getLogger()->getLogger()->debug("Frame time: {}", diff.count());
+            LoggerLocator::getLogger()->getLogger()->debug("FPS: {}", 1.0f / diff.count());
+            for (int i = 1; i < times.size(); i++) {
+                std::chrono::duration<double> diff = times[i] - times[i-1];
+                LoggerLocator::getLogger()->getLogger()->debug("Time {}: {}", i, diff.count());
+            }
         }
     }
 
@@ -617,12 +620,12 @@ void Application::createDefaultScene()
 
         // Add model components to entities
         {
-            //{
-            //    Model3D m;
-            //    m.mesh = mesh;
-            //    m_ecs.addComponent(entity, m);
-            //    m_ecs.addComponent(entity3, m);
-            //}
+            {
+                Model3D m;
+                m.mesh = mesh;
+                //m_ecs.addComponent(entity, m);
+                m_ecs.addComponent(entity3, m);
+            }
             //
             //{
             //    Model3D m2;
@@ -677,12 +680,23 @@ void Application::createDefaultScene()
             auto& t = m_ecs.getComponent<Transform>(entity4);
             t.scale = glm::vec3(5.f, 1.f, 5.f);
         }
+
+        // Create some sounds
+        unsigned int soundId;
+        {
+            std::unique_ptr<Meadow::Sound> sound = std::make_unique<Meadow::Sound>("C:/dev/Meadow/data/sounds/collision.mp3", "collision sound");
+            soundId = manager.storeSound(std::move(sound));
+            m_audioSystem->createSound(soundId, manager.getSound(soundId)->path);
+        }
+
         // Add physics
         {
-            //RigidBody r;
-            //r.type = (RigidBody::RigidBodyType::DBOX);
+            RigidBody r;
+            r.type = (RigidBody::RigidBodyType::DBOX);
+            r.trackTouches = true;
+            r.onTouch = std::bind(TouchFuncs::playSound, soundId, std::placeholders::_1);
             //m_ecs.addComponent(entity, r);
-            //m_ecs.addComponent(entity3, r);
+            m_ecs.addComponent(entity3, r);
 
             //RigidBody r2;
             //r2.type = (RigidBody::RigidBodyType::SSPHERE);
@@ -692,12 +706,14 @@ void Application::createDefaultScene()
             r3.type = RigidBody::RigidBodyType::TRIANGLEMESH;
             m_ecs.addComponent(entity4, r3);
         }
-        InputEvents::PlayGameEvent::notify();
+        //InputEvents::PlayGameEvent::notify();
         // Benchmarking
         //Benchmark::addEntities(1000, &m_ecs);
         //Benchmark::addBenchmarkComponents(1000, &m_ecs);
-        Benchmark::addRigidBodySpheres(&m_ecs, mesh2, m_sceneGraphSystem.get());
+        //Benchmark::addRigidBodySpheres(&m_ecs, mesh2, m_sceneGraphSystem.get());
         //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/sponza/Main.1_Sponza/NewSponza_Main_glTF_002.gltf", &m_ecs);
+        
+
 
     }
 #if 0

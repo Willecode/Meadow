@@ -7,6 +7,8 @@
 #include "assets/materials/colormaterial.h"
 #include "shader/shadermanager.h"
 
+using Sound = Meadow::Sound;
+
 ResourceManager::ResourceManager()
 {
 	/*
@@ -55,6 +57,10 @@ unsigned int ResourceManager::generateUniqueId(Asset::AssetType type)
 	else if(type == Asset::AssetType::MATERIAL) {
 		m_matIdCtr++;
 		return m_matIdCtr;
+	}
+	else if (type == Asset::AssetType::SOUND) {
+		m_soundIdCtr++;
+		return m_soundIdCtr;
 	}
 }
 
@@ -244,6 +250,33 @@ Cubemap* ResourceManager::getcubemap(unsigned int texId)
 		return nullptr;
 	}
 	return it->second.get();
+}
+
+unsigned int ResourceManager::storeSound(std::unique_ptr<Sound> sound)
+{
+	if (sound == nullptr)
+		return 0;
+	unsigned int newId = generateUniqueId(Asset::AssetType::SOUND);
+	sound->setId(newId);
+	m_soundMap.insert({ newId, std::move(sound) });
+	return newId;
+}
+
+Sound* ResourceManager::getSound(unsigned int id)
+{
+	if (id == 0)
+		return nullptr;
+	auto it = m_soundMap.find(id);
+	if (it == m_soundMap.end()) {
+		LoggerLocator::getLogger()->getLogger()->info("Resource manager: couldn't get sound, id not found.\n");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+const ResourceManager::SoundMap* ResourceManager::getSoundMap()
+{
+	return &m_soundMap;
 }
 
 void ResourceManager::setSubmeshMaterialHandler(unsigned int meshid, unsigned int submeshid, unsigned int materialid)

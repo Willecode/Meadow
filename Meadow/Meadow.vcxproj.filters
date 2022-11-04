@@ -446,5 +446,14 @@
     <ClInclude Include="source\ecs\systems\audiosystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\assets\sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\rbtouchfuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\systems\collisioncallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

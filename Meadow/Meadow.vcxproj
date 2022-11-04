@@ -247,6 +247,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\assets\sound.h" />
     <ClInclude Include="source\ecs\systems\audiosystem.h" />
     <ClInclude Include="source\benchmarking\benchmarksystem.h" />
     <ClInclude Include="source\benchmarking\acomponent.h" />
@@ -255,6 +256,7 @@
     <ClInclude Include="source\ecs\core\componenteventhandler.h" />
     <ClInclude Include="source\ecs\components\rigidbody.h" />
     <ClInclude Include="source\ecs\core\internalevents.h" />
+    <ClInclude Include="source\ecs\systems\collisioncallback.h" />
     <ClInclude Include="source\ecs\systems\scenegraphsystem\scenegraphsystem.h" />
     <ClInclude Include="source\ecs\core\entitymanager.h" />
     <ClInclude Include="source\ecs\systems\camerasystem\camerasystem.h" />
@@ -273,6 +275,7 @@
     <ClInclude Include="source\assets\materials\colormaterial.h" />
     <ClInclude Include="source\ecs\core\componentarray.h" />
     <ClInclude Include="source\ecs\core\ecstypes.h" />
+    <ClInclude Include="source\rbtouchfuncs.h" />
     <ClInclude Include="source\shader\shaderuniformnamemap.h" />
     <ClInclude Include="source\assets\materials\material.h" />
     <ClInclude Include="source\assets\materials\PBRMaterial.h" />

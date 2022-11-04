@@ -10,7 +10,8 @@ public:
 		MESH2D,
 		SHADER,
 		MATERIAL,
-		CUBEMAP
+		CUBEMAP,
+		SOUND
 	};
 	std::string name;
 	bool exposeToUI;

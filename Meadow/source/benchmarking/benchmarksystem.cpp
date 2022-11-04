@@ -16,6 +16,6 @@ void BenchmarkSystem::update(float deltaT)
 
 		m_myVal += A.val;
 	}
-	LoggerLocator::getLogger()->getLogger()->debug("Benchmark system value: {}", m_myVal);
+	//LoggerLocator::getLogger()->getLogger()->debug("Benchmark system value: {}", m_myVal);
 	m_myVal = 0;
 }

@@ -1,5 +1,6 @@
 #pragma once
-
+#include <functional>
+#include "transform.h"
 struct RigidBody {
 	enum class RigidBodyType {
 		DBOX = 0,
@@ -11,5 +12,7 @@ struct RigidBody {
 		SSPHERE
 	};
 	RigidBodyType type;
-	RigidBody(): type(RigidBodyType::SBOX){}
+	std::function<void(Transform)> onTouch;
+	bool trackTouches;
+	RigidBody(): type(RigidBodyType::SBOX), trackTouches(false) {}
 };

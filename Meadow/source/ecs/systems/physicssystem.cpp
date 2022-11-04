@@ -7,8 +7,20 @@
 #include "shader/shadermanager.h"
 #include "utils/primitivecreation.h"
 #include <physx/extensions/PxRigidActorExt.h>
+
 using namespace physx;
-PhysicsSystem::PhysicsSystem() : m_physicsEnabled(false), m_visibleColliders(false)
+
+PxFilterFlags CollisionFilterShader(
+	PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+{
+	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+	pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+	return PxFilterFlag::eDEFAULT;
+}
+
+PhysicsSystem::PhysicsSystem() : m_physicsEnabled(false), m_visibleColliders(false), m_collisionCallback(nullptr)
 {
 	InputEvents::PlayGameEvent::subscribe(std::bind(&PhysicsSystem::physicsOn, this));
 	InputEvents::StopGameEvent::subscribe(std::bind(&PhysicsSystem::physicsOff, this));
@@ -27,7 +39,7 @@ PhysicsSystem::~PhysicsSystem()
 void PhysicsSystem::init(ECSCoordinator* ecs)
 {
 	m_ecs = ecs;
-
+	m_collisionCallback = CollisionCallback(m_ecs);
 	{
 		// Create submeshes for colliders
 		auto& resMan = ResourceManager::getInstance();
@@ -66,8 +78,12 @@ void PhysicsSystem::init(ECSCoordinator* ecs)
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	m_PxDefaultCpuDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = m_PxDefaultCpuDispatcher;
-	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+	sceneDesc.filterShader = CollisionFilterShader;
+	sceneDesc.simulationEventCallback = &m_collisionCallback;
 	m_PxScene = m_PxPhysics->createScene(sceneDesc);
+
+	// Scene collision callback
+	//m_PxScene->setSimulationEventCallback(&m_collisionCallback);
 
 	// Default material
 	m_defaultMaterial = m_PxPhysics->createMaterial(0.5f, 0.5f, 0.6f);
@@ -116,6 +132,14 @@ void PhysicsSystem::update(float deltaT)
 					t.orientation.w = act->getGlobalPose().q.w;
 
 					InternalEvents::MarkNodeTransformStaleEvent::notify(ent);
+
+					// Set collision flags
+					// DEBUG ------------------------------------
+					auto& rb = m_ecs->getComponent<RigidBody>(ent);
+					/*if (rb.trackTouches && rb.onTouch)
+						rb.onTouch();*/
+					//       ------------------------------------
+
 				}
 			}
 		}
