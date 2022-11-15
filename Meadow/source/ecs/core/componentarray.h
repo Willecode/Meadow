@@ -59,6 +59,14 @@ public:
 		}
 	}
 
+	std::vector<T*> getComponents() {
+		std::vector<T*> ret;
+		for (auto const& pair : m_entityToIndexMap) {
+			ret.push_back(&(m_componentArray[pair.second]));
+		}
+		return ret;
+	}
+
 private:
 	std::array<T, MAX_ENTITIES> m_componentArray{};
 	std::unordered_map<Entity, size_t> m_entityToIndexMap{};

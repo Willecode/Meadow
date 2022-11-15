@@ -7,6 +7,7 @@
 #include "ecs/components/rigidbody.h"
 #include "ecs/components/transform.h"
 #include "ecs/components/model3d.h"
+#include "ecs/components/light.h"
 #include "ecs/core/internalevents.h"
 #include <stdlib.h>
 
@@ -66,5 +67,13 @@ void Benchmark::addRigidBodySpheres(ECSCoordinator* ecs, Mesh* sphereMesh, Scene
 		RigidBody r;
 		r.type = RigidBody::RigidBodyType::DSPHERE;
 		ecs->addComponent<RigidBody>(ent, r); // Add rigidbody component
+	}
+}
+
+void Benchmark::adjustAllLights(ECSCoordinator* ecs)
+{
+	auto lightVec = ecs->getComponents<Light>();
+	for (auto& light : lightVec) {
+		light->color.r += 0.001;
 	}
 }

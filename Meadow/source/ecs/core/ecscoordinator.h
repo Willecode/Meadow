@@ -69,6 +69,11 @@ public:
 			return "Null entity";
 		return m_entityManager->entityNames[ent];
 	}
+	template<typename T>
+	std::vector<T*> getComponents()
+	{
+		return m_componentManager->getComponents<T>();
+	}
 private:
 	std::unique_ptr<ComponentManager> m_componentManager;
 	std::unique_ptr<EntityManager> m_entityManager;

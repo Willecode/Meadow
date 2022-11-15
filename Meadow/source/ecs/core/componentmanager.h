@@ -48,6 +48,11 @@ public:
 		return getComponentArray<T>()->getData(entity);
 	}
 
+	template<typename T>
+	std::vector<T*> getComponents()
+	{
+		return getComponentArray<T>()->getComponents();
+	}
 	void entityDestroyed(Entity entity);
 private:
 	std::unordered_map<const char*, ComponentType> m_componentTypes{};

@@ -6,4 +6,5 @@ namespace Benchmark {
 	void addEntities(const unsigned int& count, ECSCoordinator* ecs);
 	void addBenchmarkComponents(const unsigned int& count, ECSCoordinator* ecs);
 	void addRigidBodySpheres(ECSCoordinator* ecs, Mesh* sphereMesh, SceneGraphSystem* sceneSystem);
+	void adjustAllLights(ECSCoordinator* ecs);
 }
