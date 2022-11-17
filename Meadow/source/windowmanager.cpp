@@ -72,6 +72,8 @@ bool WindowManager::createWindow(std::string title)
     */
     glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);
 
+    glfwSwapInterval(0); // vsync off
+
     /*
     * Subscribe to windowclose event
     */

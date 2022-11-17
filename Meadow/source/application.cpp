@@ -189,7 +189,9 @@ void Application::run()
 
     // Benchmarking
     std::array<std::chrono::time_point<std::chrono::steady_clock>, 14> times;
-    bool renderUI = true;
+    std::chrono::time_point<std::chrono::steady_clock> currentClock;
+    std::chrono::time_point<std::chrono::steady_clock> lastFrameClock = std::chrono::steady_clock::now();
+    bool renderUI = false;
     bool benchmark = false;
     // Update loop
     // -----------
@@ -340,7 +342,9 @@ void Application::run()
         windowMan.swapBuffers();
         if (benchmark) {
             LoggerLocator::getLogger()->getLogger()->debug("Benchmark times:");
-            std::chrono::duration<double> diff = times.back() - times[0];
+            currentClock = std::chrono::steady_clock::now();
+            std::chrono::duration<double> diff = currentClock - lastFrameClock;
+            lastFrameClock = currentClock;
 
             LoggerLocator::getLogger()->getLogger()->debug("Frame time: {}", diff.count());
             LoggerLocator::getLogger()->getLogger()->debug("FPS: {}", 1.0f / diff.count());
@@ -708,10 +712,11 @@ void Application::createDefaultScene()
         }
         //InputEvents::PlayGameEvent::notify();
         // Benchmarking
-        //Benchmark::addEntities(1000, &m_ecs);
+        //Benchmark::addEntities(50000, &m_ecs);
         //Benchmark::addBenchmarkComponents(1000, &m_ecs);
         //Benchmark::addRigidBodySpheres(&m_ecs, mesh2, m_sceneGraphSystem.get());
-        //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/sponza/Main.1_Sponza/NewSponza_Main_glTF_002.gltf", &m_ecs);
+        ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/sponza/Main.1_Sponza/NewSponza_Main_glTF_002.gltf", &m_ecs);
+        ModelImporting::objsFromFile("D:/sponza_scene/PKG_A_Curtains/PKG_A_Curtains/NewSponza_Curtains_glTF.gltf", &m_ecs);
         
 
 
@@ -889,7 +894,7 @@ void Application::createDefaultScene()
     * import a model
     */
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/old-office-window/source/office window.fbx", m_scene.get(), 0);
-    ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
+    //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/gooby/only_LP_FIXING_MESH_FOR_BETTER_BAKING.obj", m_scene.get(), 0);
     //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/modular-lowpoly-medieval-environment/medieval_scene.fbx", m_scene.get(), 0);
 
     //m_scene->getNode(4)->scale = glm::vec3(0.1f);
