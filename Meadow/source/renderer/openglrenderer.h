@@ -50,7 +50,7 @@ public:
 	* Textures
 	*/
 	void create2DTexture(const unsigned int&, const unsigned int& width, const unsigned int& height,
-		ImageFormat formatSrc, ImageFormat formatDestination,  unsigned char* imgData) override;
+		ImageFormat formatSrc, ImageFormat formatDestination,  unsigned char* imgData, bool mipmap = true) override;
 	void create2DTextureMS(const unsigned int& id, const unsigned int& width, const unsigned int& height, ImageFormat format) override;
 	void bindTo2DSampler(const unsigned int& texId, const unsigned int& samplerId) override;
 	void bindTo2DSamplerMS(const unsigned int& texId, const unsigned int& samplerId) override;

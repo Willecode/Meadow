@@ -307,7 +307,7 @@ void OpenGLRenderer::setMat4f(const unsigned int& sdrId, const char* name, glm::
 }
 
 void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int& width, const unsigned int& height,
-    ImageFormat formatSrc, ImageFormat formatDestination, unsigned char* imgData)
+    ImageFormat formatSrc, ImageFormat formatDestination, unsigned char* imgData, bool mipmap)
 {
     auto it = m_texIdMap.find(id);
     if (it != m_texIdMap.end()) {
@@ -324,6 +324,9 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    if (mipmap) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    }
     
     /*********************************
     * note: this causes an access violation exception if format is GL_RGBA and provided data is in RGB format.
@@ -336,7 +339,8 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     else {
         glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatDestination), width, height, 0,
             m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        if (mipmap)
+            glGenerateMipmap(GL_TEXTURE_2D);
     }
     /*********************************/
 

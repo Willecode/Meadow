@@ -5,12 +5,14 @@ Texture::Texture(
 	unsigned int height,
 	Renderer::ImageFormat formatSource,
 	Renderer::ImageFormat formatInternal,
-	std::string name
+	std::string name,
+	bool mipmap
 ):
 	m_img(std::move(img)), m_imgWidth(width), m_imgHeight(height),
 	m_imgFormatSource(formatSource),
 	m_imgFormatInternal(formatInternal),
 	m_multisample(false),
+	m_mipmap(mipmap),
 	Asset(name)
 {
 }
@@ -32,7 +34,7 @@ void Texture::loadToGPU()
 	if (m_multisample)
 		RendererLocator::getRenderer()->create2DTextureMS(getId(), m_imgWidth, m_imgHeight, m_imgFormatInternal);
 	else
-		RendererLocator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormatSource, m_imgFormatInternal, imgData);
+		RendererLocator::getRenderer()->create2DTexture(getId(), m_imgWidth, m_imgHeight, m_imgFormatSource, m_imgFormatInternal, imgData, m_mipmap);
 }
 
 void Texture::bindToSampler(const unsigned int& samplerId)

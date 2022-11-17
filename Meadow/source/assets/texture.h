@@ -24,7 +24,7 @@ public:
 	* Constructor for textures with imported image data
 	*/
 	Texture(std::unique_ptr<std::vector<unsigned char>> img, unsigned int width, unsigned int height,
-		Renderer::ImageFormat formatSource, Renderer::ImageFormat formatInternal, std::string name = "Nameless texture");
+		Renderer::ImageFormat formatSource, Renderer::ImageFormat formatInternal, std::string name = "Nameless texture", bool mipmap = true);
 	
 	/*
 	* Use this constructor to create empty texture (no image data).
@@ -49,5 +49,6 @@ private:
 	Renderer::ImageFormat m_imgFormatSource;
 	Renderer::ImageFormat m_imgFormatInternal;
 	bool m_multisample;
+	bool m_mipmap;
 };
 
