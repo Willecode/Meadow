@@ -11,6 +11,8 @@ const std::unordered_map<Renderer::ImageFormat, GLenum> OpenGLRenderer::m_imgFor
     {ImageFormat::RGBA, GL_RGBA},
     {ImageFormat::sRGB, GL_SRGB},
     {ImageFormat::sRGBA, GL_SRGB_ALPHA},
+    {ImageFormat::DEPTH, GL_DEPTH_COMPONENT},
+    {ImageFormat::DEPTH16, GL_DEPTH_COMPONENT16},
     {ImageFormat::R, GL_RED} };
 
 const std::unordered_map<Renderer::TestingFuncs, GLuint> OpenGLRenderer::m_testingFuncMap =
@@ -56,7 +58,7 @@ bool OpenGLRenderer::initialize(WindowManager* windowMan)
         return true;
     }
     
-    glClearColor(1.f, 0.f, 0.f, 1.0f);
+    glClearColor(0.f, 0.f, 1.f, 1.0f);
 
     // Initial depth test config
     glEnable(GL_DEPTH_TEST);
@@ -327,18 +329,25 @@ void OpenGLRenderer::create2DTexture(const unsigned int& id, const unsigned int&
     if (mipmap) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     }
-    
+    GLenum pixelFmt = GL_UNSIGNED_BYTE;
+    if (formatDestination == ImageFormat::DEPTH || formatDestination == ImageFormat::DEPTH16) {
+        pixelFmt = GL_FLOAT; // If depth texture, use floats for pixel data
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+
+    }
     /*********************************
     * note: this causes an access violation exception if format is GL_RGBA and provided data is in RGB format.
     *       Also the textures may just glitch out if formats are not passed correctly...
     */
     if (imgData == nullptr) {
         glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatDestination), width, height, 0,
-            m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, NULL);
+            m_imgFormatMap.at(formatSrc), pixelFmt, NULL);
     }
     else {
         glTexImage2D(GL_TEXTURE_2D, 0, m_imgFormatMap.at(formatDestination), width, height, 0,
-            m_imgFormatMap.at(formatSrc), GL_UNSIGNED_BYTE, (GLvoid*)imgData);
+            m_imgFormatMap.at(formatSrc), pixelFmt, (GLvoid*)imgData);
         if (mipmap)
             glGenerateMipmap(GL_TEXTURE_2D);
     }
@@ -371,7 +380,7 @@ void OpenGLRenderer::bindTo2DSampler(const unsigned int& texId, const unsigned i
 {
     auto it = m_texIdMap.find(texId);
     if (it == m_texIdMap.end()) {
-        LoggerLocator::getLogger()->getLogger()->info("Renderer: can't bind texture: unknown texture id\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: can't bind texture: unknown texture id\n");
         return;
     }
     glActiveTexture(GL_TEXTURE0 + samplerId);
@@ -383,7 +392,7 @@ void OpenGLRenderer::bindTo2DSamplerMS(const unsigned int& texId, const unsigned
 {
     auto it = m_texIdMap.find(texId);
     if (it == m_texIdMap.end()) {
-        LoggerLocator::getLogger()->getLogger()->info("Renderer: can't bind MS texture: unknown texture id\n");
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: can't bind MS texture: unknown texture id\n");
         return;
     }
     glActiveTexture(GL_TEXTURE0 + samplerId);
@@ -503,6 +512,21 @@ void OpenGLRenderer::faceCulling(bool enable)
         glDisable(GL_CULL_FACE);
 }
 
+void OpenGLRenderer::cullFront()
+{
+    glCullFace(GL_FRONT);
+}
+
+void OpenGLRenderer::cullBack()
+{
+    glCullFace(GL_BACK);
+}
+
+void OpenGLRenderer::cullFrontAndBack()
+{
+    glCullFace(GL_FRONT_AND_BACK);
+}
+
 void OpenGLRenderer::createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height)
 {
     // Check fb already taken
@@ -539,6 +563,44 @@ void OpenGLRenderer::createFrameBuffer(int buffId, int texId, unsigned int width
     FrameBufferData fbData = {
         glbuffId, // Framebuffer Id
         rbo, // RBO id
+        width,
+        height,
+        false, // Multisampled?
+        0
+    };
+    m_fbIdMap.insert(std::pair<unsigned int, FrameBufferData>(buffId, fbData));
+}
+
+void OpenGLRenderer::createFrameBufferDepthMapOnly(int buffId, int texId, unsigned int width, unsigned int height)
+{
+    // Check fb already taken
+    auto it = m_fbIdMap.find(buffId);
+    if (it != m_fbIdMap.end()) {
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: framebuffer creation failed: framebuffer with id already exists\n");
+        return;
+    }
+
+    // Check that tex exists
+    auto it2 = m_texIdMap.find(texId);
+    if (it2 == m_texIdMap.end()) {
+        LoggerLocator::getLogger()->getLogger()->error("Renderer: framebuffer creation failed: nonexistent texid provided\n");
+        return;
+    }
+    GLuint oglTexId = it2->second;
+
+    // Create opengl fb
+    unsigned int glbuffId;
+    glGenFramebuffers(1, &glbuffId);
+    glBindFramebuffer(GL_FRAMEBUFFER, glbuffId);
+    // Attach depth map
+    //glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, oglTexId, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, oglTexId, 0);
+
+    glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+    //glReadBuffer(GL_NONE);
+    FrameBufferData fbData = {
+        glbuffId, // Framebuffer Id
+        0, // RBO id, dumb that this is required
         width,
         height,
         false, // Multisampled?

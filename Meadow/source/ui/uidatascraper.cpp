@@ -6,7 +6,7 @@
 UIDataScraper::UIDataScraper() : m_UIAssetMaps()
 {}
 
-void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* postproc, const ECSCoordinator& ecs)
+void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* postproc, const ECSCoordinator& ecs, ShadowMapSystem::DirectionalLight* dirLight)
 {
 	//////////////////////////////////
 	// ASSETS
@@ -80,6 +80,13 @@ void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* 
 	m_postprocFlags.sharpness = postproc->getSharpen();
 	m_postprocFlags.negative = postproc->getNegate();
 	m_postprocFlags.MSAA = postproc->getMSAA();
+
+	//////////////////////////////////
+	// DIRECTIONAL LIGHT
+	//////////////////////////////////
+	m_postprocFlags.shadowBias = &dirLight->shadowBias;
+	m_postprocFlags.dirLightDir = &dirLight->direction;
+	m_postprocFlags.dirLightColor = &dirLight->color;
 }
 
 EntityUI* UIDataScraper::getSceneGraph()
@@ -92,7 +99,7 @@ UIAssetMaps* UIDataScraper::getUIAssets()
 	return &m_UIAssetMaps;
 }
 
-PostprocessingFlags* UIDataScraper::getPostprocessingFlags()
+GraphicsFlags* UIDataScraper::getPostprocessingFlags()
 {
 	return &m_postprocFlags;
 }

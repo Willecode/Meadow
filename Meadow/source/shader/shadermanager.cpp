@@ -28,6 +28,7 @@ ShaderManager::ShaderManager() :
 	m_texSamplerMap.insert({ Texture::TextureType::METALLIC_MAP,  4 });
 	m_texSamplerMap.insert({ Texture::TextureType::ROUGHNESS_MAP, 5 });
 	m_texSamplerMap.insert({ Texture::TextureType::AO_MAP,		  6 });
+	m_texSamplerMap.insert({ Texture::TextureType::SHADOW_MAP,    7 });
 
 
 	/*
@@ -55,6 +56,7 @@ void ShaderManager::init()
 	auto screenQuadSdr = std::make_unique<Shader>(3, "shaders/2d.vs", "shaders/postprocessing.fs");
 	auto skyboxSdr = std::make_unique<Shader>(4, "shaders/skybox.vs", "shaders/skybox.fs");
 	auto colliderSdr = std::make_unique<Shader>(5, "shaders/object.vs", "shaders/collider.fs");
+	auto shadowMapSdr = std::make_unique<Shader>(6, "shaders/shadowmap.vs", "shaders/shadowmap.fs");
 
 	m_shaderMap.insert({ ShaderType::COLOR_ONLY,  std::move(colorSdr) });
 	m_shaderMap.insert({ ShaderType::DEPTH,	   std::move(depthSdr) });
@@ -62,6 +64,7 @@ void ShaderManager::init()
 	m_shaderMap.insert({ ShaderType::PBR,		   std::move(pbrSdr) });
 	m_shaderMap.insert({ ShaderType::SKYBOX,      std::move(skyboxSdr) });
 	m_shaderMap.insert({ ShaderType::COLLIDER,      std::move(colliderSdr) });
+	m_shaderMap.insert({ ShaderType::SHADOWMAP,      std::move(shadowMapSdr) });
 
 	m_cameraUnifDependantShaders.push_back(ShaderType::COLOR_ONLY);
 	//m_cameraUnifDependantShaders.push_back(ShaderType::DEPTH);

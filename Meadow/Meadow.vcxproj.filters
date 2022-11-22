@@ -195,19 +195,12 @@
     <ClCompile Include="source\ecs\systems\audiosystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\ecs\systems\shadowmapsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\object.vs" />
-    <None Include="shaders\coloronly.fs" />
-    <None Include="shaders\depth.fs" />
-    <None Include="shaders\2d.vs" />
-    <None Include="shaders\postprocessing.fs" />
-    <None Include="shaders\skybox.vs" />
-    <None Include="shaders\skybox.fs" />
-    <None Include="shaders\texwithlight.fs" />
     <None Include="source\deprecated\postprocessingmultisample.fs" />
-    <None Include="shaders\pbr.fs" />
-    <None Include="shaders\collider.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\Wood066_1K_Color.jpg">
@@ -453,6 +446,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ecs\systems\collisioncallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ecs\systems\shadowmapsystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

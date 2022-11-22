@@ -17,7 +17,8 @@ public:
 		AO_MAP,
 		OPACITY_MAP,
 		CUBE_MAP,
-		NORMAL_MAP
+		NORMAL_MAP,
+		SHADOW_MAP
 	};
 public:
 	/*
@@ -31,7 +32,7 @@ public:
 	* Used as attachments for framebuffers etc.
 	* High precision.
 	*/
-	Texture(unsigned int width, unsigned int height, bool multisample, std::string name = "Nameless texture", bool exposeToUI = false);
+	Texture(unsigned int width, unsigned int height, bool multisample, std::string name = "Nameless texture", bool exposeToUI = false, bool depthmap = false);
 
 	void loadToGPU(); // Generate buffers in graphics memory and push image texture data to them
 	void bindToSampler(const unsigned int& samplerId);

@@ -18,6 +18,7 @@
 #include "assets/materials/PBRMaterial.h"
 #include "assets/materials/colormaterial.h"
 #include "assets/sound.h"
+#include "shader/shaderuniformnamemap.h"
 //---------------------------
 // BENCHMARK ----------------
 #include "benchmarking/benchmarkutils.h"
@@ -140,6 +141,14 @@ void Application::run()
     m_renderer.bindFrameBuffer(1);
     if (!m_renderer.checkFrameBufferStatus())
         LoggerLocator::getLogger()->getLogger()->error("Application: MS framebuffer not complete");
+    /////////////////////////
+
+    std::unique_ptr<Texture> depthTexture = std::make_unique<Texture>(1024, 1024, false, "Shadowmap", false, true);
+    Texture* texDepth = manager.getTexture(manager.storeTexture(std::move(depthTexture)));
+    m_renderer.createFrameBufferDepthMapOnly(2, texDepth->getId(), texDepth->getWidth(), texDepth->getHeight());
+    m_renderer.bindFrameBuffer(2);
+    if (!m_renderer.checkFrameBufferStatus())
+        LoggerLocator::getLogger()->getLogger()->error("Application: Shadowmap framebuffer not complete");
 
     /*
     * Create screen quad
@@ -191,7 +200,7 @@ void Application::run()
     std::array<std::chrono::time_point<std::chrono::steady_clock>, 14> times;
     std::chrono::time_point<std::chrono::steady_clock> currentClock;
     std::chrono::time_point<std::chrono::steady_clock> lastFrameClock = std::chrono::steady_clock::now();
-    bool renderUI = false;
+    bool renderUI = true;
     bool benchmark = false;
     // Update loop
     // -----------
@@ -210,6 +219,31 @@ void Application::run()
         */
         windowMan.pollEvents();
         m_inputGather.pollInputs();
+
+        times[1] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        m_sceneGraphSystem->update();
+        times[2] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        m_lightSystem->update(deltatime);
+        times[3] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        m_cameraSystem->update(deltatime, m_inputGather);
+        times[4] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        m_physicsSystem->update(deltatime);
+        times[5] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        
+        RendererLocator::getRenderer()->bindFrameBuffer(2);
+        m_renderer.setViewportSize(1024, 1024);
+        m_renderer.clearBuffer(GL_DEPTH_BUFFER_BIT);
+        m_renderer.depthMask(true);
+        m_renderer.depthTesting(true);
+        RendererLocator::getRenderer()->faceCulling(true);
+        RendererLocator::getRenderer()->cullFront();
+        
+        m_shadowMapSystem->update(deltatime);
+        // Audio system
+        m_audioSystem->update(deltatime);
+        // Benchmark system
+        m_benchmarkSystem->update(deltatime);
+        times[6] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
         /*
         * Bind MSAA buffer or basic buffer
@@ -250,22 +284,6 @@ void Application::run()
         m_renderer.setStencilFunc(Renderer::TestingFuncs::EQUAL, 1, 0xFF);
         m_renderer.setStencilOp(Renderer::TestingActions::KEEP, Renderer::TestingActions::KEEP, Renderer::TestingActions::REPLACE);
 
-        times[1] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
-        m_sceneGraphSystem->update();
-        times[2] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
-        m_lightSystem->update(deltatime);
-        times[3] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
-        m_cameraSystem->update(deltatime, m_inputGather);
-        times[4] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
-        m_physicsSystem->update(deltatime);
-        times[5] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
-        
-        // Audio system
-        m_audioSystem->update(deltatime);
-        // Benchmark system
-        m_benchmarkSystem->update(deltatime);
-        times[6] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
-
         /*
         * Render skybox
         */
@@ -282,7 +300,14 @@ void Application::run()
         m_renderer.depthTesting(true);
         m_renderer.blending(true);
         m_renderer.depthMask(true);
+        RendererLocator::getRenderer()->cullBack();
         sdrMan.bindShader(ShaderManager::ShaderType::PBR);
+        ShaderUniformNameMap uniNames;
+        sdrMan.setFrameUniform(uniNames.getTexMapName(Texture::TextureType::SHADOW_MAP), sdrMan.getTexSamplerId(Texture::TextureType::SHADOW_MAP));
+        sdrMan.setUniformDrawSpecific(uniNames.getTexMapName(Texture::TextureType::SHADOW_MAP), sdrMan.getTexSamplerId(Texture::TextureType::SHADOW_MAP));
+        sdrMan.forwardFrameUniforms();
+        texDepth->bindToSampler(sdrMan.getTexSamplerId(Texture::TextureType::SHADOW_MAP));
+
         //m_scene->render();
         m_renderSystem->update(deltatime);
         times[8] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
@@ -328,7 +353,7 @@ void Application::run()
         * Render UI
         */
         if (renderUI)
-            m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing, m_ecs);
+            m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing, m_ecs, m_shadowMapSystem->getDirectonalLight());
         times[12] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
         if (renderUI)
             m_ui.renderInterface(m_UIScraper.getSceneGraph(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags(), m_UIScraper.getComponentMap());
@@ -415,9 +440,26 @@ void Application::initSystems()
     {
         Signature signature;
         /*signature.set(m_ecs.getComponentType<AComponent>());*/
-        m_ecs.setSystemSignature<BenchmarkSystem>(signature);
+        m_ecs.setSystemSignature<AudioSystem>(signature);
     }
     m_audioSystem->init(&m_ecs);
+    // -------------------------------------------------------------
+    // Create shadow map texture and framebuffer
+    //auto& manager = ResourceManager::getInstance();
+    //std::unique_ptr<Texture> depthTexture = std::make_unique<Texture>(1024, 1024, false, "Shadowmap", false, true);
+    //Texture* texDepth = manager.getTexture(manager.storeTexture(std::move(depthTexture)));
+    //m_renderer.createFrameBufferDepthMapOnly(2, texDepth->getId(), texDepth->getWidth(), texDepth->getHeight());
+    //m_renderer.bindFrameBuffer(2);
+    //if (!m_renderer.checkFrameBufferStatus())
+    //    LoggerLocator::getLogger()->getLogger()->error("Application: Shadowmap framebuffer not complete");
+    m_shadowMapSystem = m_ecs.registerSystem<ShadowMapSystem>();
+    {
+        Signature signature;
+        signature.set(m_ecs.getComponentType<Transform>());
+        signature.set(m_ecs.getComponentType<Model3D>());
+        m_ecs.setSystemSignature<ShadowMapSystem>(signature);
+    }
+    m_shadowMapSystem->init(&m_ecs);
 
 }
 
@@ -679,10 +721,10 @@ void Application::createDefaultScene()
             t.position = glm::vec3(0.f, 2.f, 0.f);
         }
 
-        // Scale entity 4
+         //Scale entity 4
         {
             auto& t = m_ecs.getComponent<Transform>(entity4);
-            t.scale = glm::vec3(5.f, 1.f, 5.f);
+            t.scale = glm::vec3(0.1f, 1.f, 0.1f);
         }
 
         // Create some sounds
@@ -715,8 +757,8 @@ void Application::createDefaultScene()
         //Benchmark::addEntities(50000, &m_ecs);
         //Benchmark::addBenchmarkComponents(1000, &m_ecs);
         //Benchmark::addRigidBodySpheres(&m_ecs, mesh2, m_sceneGraphSystem.get());
-        ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/sponza/Main.1_Sponza/NewSponza_Main_glTF_002.gltf", &m_ecs);
-        ModelImporting::objsFromFile("D:/sponza_scene/PKG_A_Curtains/PKG_A_Curtains/NewSponza_Curtains_glTF.gltf", &m_ecs);
+        //ModelImporting::objsFromFile("C:/dev/Meadow/data/3dmodels/sponza/Main.1_Sponza/NewSponza_Main_glTF_002.gltf", &m_ecs);
+        //ModelImporting::objsFromFile("D:/sponza_scene/PKG_A_Curtains/PKG_A_Curtains/NewSponza_Curtains_glTF.gltf", &m_ecs);
         
 
 

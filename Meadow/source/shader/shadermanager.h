@@ -17,7 +17,8 @@ public:
 		POSTPROCESS,
 		DEPTH,
 		SKYBOX,
-		COLLIDER
+		COLLIDER,
+		SHADOWMAP
 	};
 	static ShaderManager& getInstance();
 	ShaderManager(ShaderManager const&) = delete;

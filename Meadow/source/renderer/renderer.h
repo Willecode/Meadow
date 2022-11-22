@@ -81,7 +81,7 @@ public:
 	/*
 	* Textures
 	*/
-	enum class ImageFormat{RGB = 0, sRGB, RGB_HIGH_PRECISION, RGBA, sRGBA, R};
+	enum class ImageFormat{RGB = 0, sRGB, RGB_HIGH_PRECISION, RGBA, sRGBA, R, DEPTH, DEPTH16};
 	virtual void create2DTexture(const unsigned int& id, const unsigned int &width, const unsigned int &height,
 		ImageFormat formatSrc, ImageFormat formatDestination, unsigned char* imgData, bool mipmap = true) = 0;
 	virtual void create2DTextureMS(const unsigned int& id, const unsigned int& width, const unsigned int& height, ImageFormat format) = 0;
@@ -124,11 +124,15 @@ public:
 	* Face culling
 	*/
 	virtual void faceCulling(bool enable) = 0;
+	virtual void cullFront() = 0;
+	virtual void cullBack() = 0;
+	virtual void cullFrontAndBack() = 0;
 
 	/*
 	* Framebuffers
 	*/
 	virtual void createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height) = 0;
+	virtual void createFrameBufferDepthMapOnly(int buffId, int texId, unsigned int width, unsigned int height) = 0;
 	virtual void createFrameBufferMultisample(int buffId, int texId, unsigned int width, unsigned int height) = 0;
 	virtual void bindFrameBuffer(int buffId) = 0;
 	virtual void bindFrameBufferRead(int buffId) = 0;

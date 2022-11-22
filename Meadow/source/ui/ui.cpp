@@ -55,7 +55,7 @@ void UI::init(WindowManager* winMan)
     InputEvents::MouseMoveEvent::subscribe(mousefunc2);
 }
 
-void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags, const ComponentMapUI* componentMap)
+void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, GraphicsFlags* postprocFlags, const ComponentMapUI* componentMap)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -109,6 +109,12 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFl
                     InputEvents::PostprocGrayscaleEvent::notify(postprocFlags->grayscale);
                 if (ImGui::Checkbox("Negative", &postprocFlags->negative))
                     InputEvents::PostprocNegativeEvent::notify(postprocFlags->negative);
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Directional light")) {
+                ImGui::DragFloat3("Color", &((*postprocFlags->dirLightColor).x), 0.1f);
+                ImGui::DragFloat3("Direction", &((*postprocFlags->dirLightDir).x), 0.1f);
+                ImGui::DragFloat("Shadow bias", postprocFlags->shadowBias, 0.001f);
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Anti-aliasing")) {

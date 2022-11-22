@@ -241,11 +241,14 @@ struct CameraComponentUI : public IComponentUI {
 
 using ComponentMapUI = std::map<int, std::vector<std::unique_ptr<IComponentUI>>>;
 
-struct PostprocessingFlags {
+struct GraphicsFlags {
 	bool sharpness;
 	bool grayscale;
 	bool negative;
 	bool MSAA;
+	glm::vec3* dirLightDir;
+	glm::vec3* dirLightColor;
+	float* shadowBias;
 };
 
 /*
@@ -274,7 +277,7 @@ public:
 	/*
 	* Render UI
 	*/
-	void renderInterface(EntityUI* node, UIAssetMaps* uiAssets, PostprocessingFlags* postprocFlags, const ComponentMapUI* componentMap);
+	void renderInterface(EntityUI* node, UIAssetMaps* uiAssets, GraphicsFlags* postprocFlags, const ComponentMapUI* componentMap);
 
 private:
 	/*

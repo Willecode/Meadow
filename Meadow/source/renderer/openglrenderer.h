@@ -90,12 +90,16 @@ public:
 	* Face culling
 	*/
 	void faceCulling(bool enable) override;
+	void cullFront() override;
+	void cullBack() override;
+	void cullFrontAndBack() override;
 	
 	/*
 	* Framebuffers
 	*/
 	// Creates an fb with texId as color attachment, also attaches depth and stencil RBO
 	void createFrameBuffer(int buffId, int texId, unsigned int width, unsigned int height) override;
+	void createFrameBufferDepthMapOnly(int buffId, int texId, unsigned int width, unsigned int height) override;
 	void createFrameBufferMultisample(int buffId, int texId, unsigned int width, unsigned int height) override;
 	void bindFrameBuffer(int buffId) override;
 	void bindFrameBufferDraw(int buffId) override;

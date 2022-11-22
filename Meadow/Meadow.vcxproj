@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\ecs\systems\shadowmapsystem.cpp" />
     <ClCompile Include="source\ecs\systems\audiosystem.cpp" />
     <ClCompile Include="source\benchmarking\benchmarksystem.cpp" />
     <ClCompile Include="source\benchmarking\benchmarkutils.cpp" />
@@ -222,17 +223,7 @@
     <ClCompile Include="source\ecs\core\systemmanager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\2d.vs" />
-    <None Include="shaders\collider.fs" />
-    <None Include="shaders\depth.fs" />
-    <None Include="shaders\object.vs" />
-    <None Include="shaders\coloronly.fs" />
-    <None Include="shaders\pbr.fs" />
-    <None Include="shaders\postprocessing.fs" />
     <None Include="source\deprecated\postprocessingmultisample.fs" />
-    <None Include="shaders\skybox.fs" />
-    <None Include="shaders\skybox.vs" />
-    <None Include="shaders\texwithlight.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\black.png" />
@@ -247,6 +238,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\ecs\systems\shadowmapsystem.h" />
     <ClInclude Include="source\assets\sound.h" />
     <ClInclude Include="source\ecs\systems\audiosystem.h" />
     <ClInclude Include="source\benchmarking\benchmarksystem.h" />

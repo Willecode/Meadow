@@ -12,6 +12,7 @@ void RenderSystem::init(ECSCoordinator* ecs)
 void RenderSystem::update(float deltaT)
 {
 	RendererLocator::getRenderer()->faceCulling(true);
+
 	for (auto& ent : m_entities) {
 		Transform& trans = m_ecs->getComponent<Transform>(ent);
 		Model3D& model = m_ecs->getComponent<Model3D>(ent);

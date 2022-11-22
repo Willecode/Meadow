@@ -6,7 +6,8 @@ std::unordered_map<Texture::TextureType, std::string> ShaderUniformNameMap::m_te
 	{Texture::TextureType::METALLIC_MAP, ShaderUniformNames::MATERIAL_METALLICMAP},
 	{Texture::TextureType::ROUGHNESS_MAP, ShaderUniformNames::MATERIAL_ROUGHNESSMAP},
 	{Texture::TextureType::AO_MAP, ShaderUniformNames::MATERIAL_AOMAP},
-	{Texture::TextureType::OPACITY_MAP, ShaderUniformNames::MATERIAL_OPACITYMAP}
+	{Texture::TextureType::OPACITY_MAP, ShaderUniformNames::MATERIAL_OPACITYMAP},
+	{Texture::TextureType::SHADOW_MAP, ShaderUniformNames::SHADOW_MAP}
 };
 std::unordered_map<Texture::TextureType, std::string> ShaderUniformNameMap::m_hasTextureMaps = {
 	{Texture::TextureType::ALBEDO_MAP, ShaderUniformNames::MATERIAL_HAS_ALBEDOMAP},

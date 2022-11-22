@@ -38,8 +38,7 @@ void AudioSystem::init(ECSCoordinator* ecs)
 void AudioSystem::update(float deltaT)
 {
     for (auto& ent : m_entities) {
-        //auto audio = m_ecs->getComponent<Audio>(ent);
-        //if ()
+
     }
     if (m_system != NULL)
         m_system->update();

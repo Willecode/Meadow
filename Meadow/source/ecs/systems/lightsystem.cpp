@@ -2,6 +2,7 @@
 #include "ecs/components/transform.h"
 #include "ecs/components/light.h"
 #include "shader/shadermanager.h"
+#include "service_locator/rendererlocator.h"
 
 void LightSystem::init(ECSCoordinator* ecs)
 {
@@ -23,6 +24,12 @@ void LightSystem::update(float deltaT)
 			sdrMan.setFrameUniform(injectId("pointLights[].constant",  pointLightId), light.constant);
 			sdrMan.setFrameUniform(injectId("pointLights[].linear",    pointLightId), light.linear);
 			sdrMan.setFrameUniform(injectId("pointLights[].quadratic", pointLightId), light.quadratic);
+		}
+
+		if (light.lightType == LightType::DIRLIGHT) {
+			sdrMan.setFrameUniform(injectId("dirLight.color", pointLightId), light.color);
+			sdrMan.setFrameUniform(injectId("dirLight.direction", pointLightId), light.color);
+
 		}
 
 		pointLightId++;

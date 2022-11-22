@@ -5,6 +5,7 @@
 #include "ui/ui.h"
 #include "ecs/systems/scenegraphsystem/scenegraph.h"
 #include "ecs/core/ecscoordinator.h"
+#include "ecs/systems/shadowmapsystem.h"
 class UIDataScraper
 {
 private:
@@ -23,7 +24,7 @@ private:
 	/*
 	* Postprocessing flags for UI
 	*/
-	PostprocessingFlags m_postprocFlags;
+	GraphicsFlags m_postprocFlags;
 	
 
 public:
@@ -31,7 +32,7 @@ public:
 	/*
 	* Generate UI representation from back end data
 	*/
-	void update(const SceneGraph::Node& graph, const PostProcessing* postproc, const ECSCoordinator& ecs);
+	void update(const SceneGraph::Node& graph, const PostProcessing* postproc, const ECSCoordinator& ecs, ShadowMapSystem::DirectionalLight* dirLight);
 	/*
 	* Get UI scene graph
 	*/
@@ -43,7 +44,7 @@ public:
 	/*
 	* Get postproc flags
 	*/
-	PostprocessingFlags* getPostprocessingFlags();
+	GraphicsFlags* getPostprocessingFlags();
 	
 	ComponentMapUI* getComponentMap();
 private:

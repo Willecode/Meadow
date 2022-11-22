@@ -19,4 +19,6 @@ namespace ShaderUniformNames {
 	const std::string MATERIAL_HAS_ROUGHNESSMAP = "material.hasRoughnessMap";
 	const std::string MATERIAL_HAS_AOMAP = "material.hasAoMap";
 	const std::string MATERIAL_HAS_OPACITYMAP = "material.hasOpacityMap";
+
+	const std::string SHADOW_MAP = "shadowMap";
 }
