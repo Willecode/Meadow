@@ -87,6 +87,7 @@ void UIDataScraper::update(const SceneGraph::Node& graph, const PostProcessing* 
 	m_postprocFlags.shadowBias = &dirLight->shadowBias;
 	m_postprocFlags.dirLightDir = &dirLight->direction;
 	m_postprocFlags.dirLightColor = &dirLight->color;
+	m_postprocFlags.dirLightActivated = &dirLight->activated;
 }
 
 EntityUI* UIDataScraper::getSceneGraph()

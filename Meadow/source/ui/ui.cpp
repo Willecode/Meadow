@@ -115,6 +115,7 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, GraphicsFlags* p
                 ImGui::DragFloat3("Color", &((*postprocFlags->dirLightColor).x), 0.1f);
                 ImGui::DragFloat3("Direction", &((*postprocFlags->dirLightDir).x), 0.1f);
                 ImGui::DragFloat("Shadow bias", postprocFlags->shadowBias, 0.001f);
+                ImGui::Checkbox("On", postprocFlags->dirLightActivated);
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Anti-aliasing")) {

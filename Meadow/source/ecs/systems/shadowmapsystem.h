@@ -11,6 +11,7 @@ public:
 		glm::vec3 color;
 		glm::vec3 direction;
 		float shadowBias;
+		bool activated;
 	};
 	DirectionalLight* getDirectonalLight();
 private:

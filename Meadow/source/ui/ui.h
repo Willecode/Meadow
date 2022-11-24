@@ -249,6 +249,7 @@ struct GraphicsFlags {
 	glm::vec3* dirLightDir;
 	glm::vec3* dirLightColor;
 	float* shadowBias;
+	bool* dirLightActivated;
 };
 
 /*

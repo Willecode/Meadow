@@ -237,7 +237,6 @@ void Application::run()
         m_renderer.depthTesting(true);
         RendererLocator::getRenderer()->faceCulling(true);
         RendererLocator::getRenderer()->cullFront();
-        
         m_shadowMapSystem->update(deltatime);
         // Audio system
         m_audioSystem->update(deltatime);

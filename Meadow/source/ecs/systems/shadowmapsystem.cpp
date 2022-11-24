@@ -15,8 +15,11 @@ void ShadowMapSystem::init(ECSCoordinator* ecs)
 void ShadowMapSystem::update(float deltaT)
 {
 	ShaderManager& sdrMan = ShaderManager::getInstance();
-	sdrMan.bindShader(ShaderManager::ShaderType::SHADOWMAP);
+	sdrMan.setFrameUniform("dirLightActive", m_dirLight.activated);
+	if (!m_dirLight.activated)
+		return;
 
+	sdrMan.bindShader(ShaderManager::ShaderType::SHADOWMAP);
 	glm::mat4 depthProjectionMatrix = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 100.0f);
 	glm::mat4 depthViewMatrix = glm::lookAt(glm::vec3(0.f) - m_dirLight.direction, glm::vec3(0.f, 0.0f, 0.f), glm::vec3(0.f, 1.f, 0.f));
 	glm::mat4 depthVP = depthProjectionMatrix * depthViewMatrix;

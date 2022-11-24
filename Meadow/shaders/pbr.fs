@@ -60,6 +60,7 @@ uniform vec3 dirLightDir;
 uniform vec3 dirLightColor;
 uniform sampler2DShadow shadowMap;
 uniform float shadowBias;
+uniform bool dirLightActive;
 
 const float PI = 3.14159265359;
 
@@ -237,29 +238,33 @@ void main()
     /////////////////////
 
     ///////////////////// Directional light
-    vec3 L = normalize(-dirLightDir);
-    vec3 H = normalize(V + L);
-    //float distance = length(pointLights[i].position - fragPos);
-    //float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = dirLightColor; // dirLightColor
+    if (dirLightActive){
+        vec3 L = normalize(-dirLightDir);
+        vec3 H = normalize(V + L);
+        //float distance = length(pointLights[i].position - fragPos);
+        //float attenuation = 1.0 / (distance * distance);
+        vec3 radiance = dirLightColor; // dirLightColor
 
-    // Cook-Torrance BRDF
-    float NDF = DistributionGGX(N, H, roughness);   
-    float G   = GeometrySmith(N, V, L, roughness);      
-    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+        // Cook-Torrance BRDF
+        float NDF = DistributionGGX(N, H, roughness);   
+        float G   = GeometrySmith(N, V, L, roughness);      
+        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
            
-    vec3 numerator    = NDF * G * F; 
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
-    vec3 specular = numerator / denominator;
+        vec3 numerator    = NDF * G * F; 
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+        vec3 specular = numerator / denominator;
         
-    vec3 kS = F;
-    vec3 kD = vec3(1.0) - kS;
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS;
 
-    kD *= 1.0 - metallic;	  
+        kD *= 1.0 - metallic;	  
 
-    float NdotL = max(dot(N, L), 0.0);        
-    float visibility = getVisibility(); //dir light visibility
-    Lo += (kD * albedo / PI + specular) * radiance * NdotL * visibility;
+        float NdotL = max(dot(N, L), 0.0);      
+    
+        float visibility = getVisibility();
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL * visibility;
+    }
+    
     /////////////////////
 
     vec3 ambient = vec3(0.01) * albedo * ao;
