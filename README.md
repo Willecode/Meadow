@@ -29,7 +29,7 @@ Meadow is a game engine with editor for Windows, it is an ongoing personal proje
 # In the future
 - ~~Cool shaders using normal maps and such~~ ✓
 - ~~Translucent objects~~ ✓
-- Shadows
+- ~~Shadows~~ ✓
 - ~~Basic collision and physics simulation~~ ✓
 - Object selection by clicking an object in the 3D world
 - ~~Object highlighting, selection~~ ✓
