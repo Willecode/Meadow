@@ -28,6 +28,7 @@ private:
 	physx::PxPvd*				   m_PxPvd;
 	physx::PxScene*				   m_PxScene;
 	physx::PxCooking*			   m_PxCooking;
+	physx::PxCudaContextManager*   m_cudaContextManager;
 	CollisionCallback			   m_collisionCallback;
 
 	physx::PxMaterial* m_defaultMaterial;

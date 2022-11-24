@@ -73,6 +73,11 @@ void PhysicsSystem::init(ECSCoordinator* ecs)
 	if (!m_PxCooking)
 		throw("PxCreateCooking failed!");
 
+	// GPU acceleration
+	PxCudaContextManagerDesc cudaContextManagerDesc;
+	m_cudaContextManager = PxCreateCudaContextManager(*m_PxFoundation, cudaContextManagerDesc, PxGetProfilerCallback());
+
+
 	// Create PhysX scene
 	PxSceneDesc sceneDesc(m_PxPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
@@ -80,6 +85,9 @@ void PhysicsSystem::init(ECSCoordinator* ecs)
 	sceneDesc.cpuDispatcher = m_PxDefaultCpuDispatcher;
 	sceneDesc.filterShader = CollisionFilterShader;
 	sceneDesc.simulationEventCallback = &m_collisionCallback;
+	sceneDesc.cudaContextManager = m_cudaContextManager;
+	sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
+	sceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
 	m_PxScene = m_PxPhysics->createScene(sceneDesc);
 
 	// Scene collision callback
