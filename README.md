@@ -3,7 +3,7 @@
 
 [Older demo of the software on Youtube (August 2022)](https://youtu.be/NpmxBtYRNJU)
 
-![](https://github.com/Willecode/Meadow/blob/c1b37014e97ff206c5079712d8631b7ba411b30f/docs/sponza_shadows.jpg)
+![](https://github.com/Willecode/Meadow/blob/2f3d16061b2751f820f3c820808cdeb00bd1e5ef/docs/sponza_shadows.jpg)
 Sponza scene with a directional light and shadows.
 
 ![](https://github.com/Willecode/Meadow/blob/c1b37014e97ff206c5079712d8631b7ba411b30f/docs/gifs/goofy_demo10-5.gif)
