@@ -198,6 +198,9 @@
     <ClCompile Include="source\ecs\systems\shadowmapsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\benchmarking\csvfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="source\deprecated\postprocessingmultisample.fs" />
@@ -449,6 +452,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ecs\systems\shadowmapsystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\benchmarking\csvfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

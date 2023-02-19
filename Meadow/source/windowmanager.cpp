@@ -8,7 +8,7 @@ namespace WindowConf {
 }
 float WindowManager::width = WindowConf::DEFAULT_SCR_WIDTH;
 float WindowManager::height = WindowConf::DEFAULT_SCR_HEIGHT;
-WindowManager::WindowManager(): m_window(nullptr), m_borderless(false),
+WindowManager::WindowManager(): m_window(nullptr), m_borderless(true),
 m_maxWidth(WindowConf::DEFAULT_SCR_WIDTH), m_maxHeight(WindowConf::DEFAULT_SCR_HEIGHT)
 {
     InputEvents::WindowBordersToggleEvent::subscribe(std::bind(&WindowManager::toggleWindowBorders, this));

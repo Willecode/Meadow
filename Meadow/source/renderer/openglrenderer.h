@@ -134,6 +134,13 @@ public:
 	* Disable/Enable drawing on the color buffer
 	*/
 	void setColorMask(bool flag) override;
+
+	/*
+	* Benchmarking
+	*/
+	void startTimer(unsigned int& q1, unsigned int& q2) override; //waits for jobs to finish, starts timer
+	void endTimer(unsigned int q1, unsigned int q2, float& elapsedTimer) override;
+
 private:
 	struct MeshBufferData {
 		GLuint VAO;

@@ -162,6 +162,9 @@ void UI::renderInterface(EntityUI* node, UIAssetMaps* uiAssets, GraphicsFlags* p
 
                 ImGui::EndMenu();
             }
+            if (ImGui::Button("Benchmark!")) {
+                InputEvents::GPUBenchmarkEvent::notify();
+            }
             ImGui::EndMainMenuBar();
             
         }

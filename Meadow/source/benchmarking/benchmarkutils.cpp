@@ -36,11 +36,11 @@ void Benchmark::addBenchmarkComponents(const unsigned int& count, ECSCoordinator
 void Benchmark::addRigidBodySpheres(ECSCoordinator* ecs, Mesh* sphereMesh, SceneGraphSystem* sceneSystem)
 {
 	unsigned int wStart = 0;
-	unsigned int wEnd = 40;
+	unsigned int wEnd = 120;
 	float yCoord = 5; // Coords of the left bottom sphere
-	float xCoord = -20;
+	float xCoord = -40;
 
-	unsigned int rowAmount = 20;
+	unsigned int rowAmount = 40;
 
 	float gap = static_cast<float>((wEnd - wStart)) / static_cast<float>(rowAmount);
 	std::vector<Entity> ents;
@@ -68,6 +68,7 @@ void Benchmark::addRigidBodySpheres(ECSCoordinator* ecs, Mesh* sphereMesh, Scene
 		r.type = RigidBody::RigidBodyType::DSPHERE;
 		ecs->addComponent<RigidBody>(ent, r); // Add rigidbody component
 	}
+	LoggerLocator::getLogger()->getLogger()->info("Added {} rigidbodies", ents.size());
 }
 
 void Benchmark::adjustAllLights(ECSCoordinator* ecs)

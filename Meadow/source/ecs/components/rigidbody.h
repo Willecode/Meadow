@@ -14,5 +14,5 @@ struct RigidBody {
 	RigidBodyType type;
 	std::function<void(Transform)> onTouch;
 	bool trackTouches;
-	RigidBody(): type(RigidBodyType::SBOX), trackTouches(false) {}
+	RigidBody() : type(RigidBodyType::SBOX), trackTouches(false), onTouch([](auto t) {}) {}
 };

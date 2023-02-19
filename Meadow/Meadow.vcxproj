@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\benchmarking\csvfile.cpp" />
     <ClCompile Include="source\ecs\systems\shadowmapsystem.cpp" />
     <ClCompile Include="source\ecs\systems\audiosystem.cpp" />
     <ClCompile Include="source\benchmarking\benchmarksystem.cpp" />
@@ -238,6 +239,7 @@
     <Image Include="images\Wood066_1K_Color.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\benchmarking\csvfile.h" />
     <ClInclude Include="source\ecs\systems\shadowmapsystem.h" />
     <ClInclude Include="source\assets\sound.h" />
     <ClInclude Include="source\ecs\systems\audiosystem.h" />

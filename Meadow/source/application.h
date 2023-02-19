@@ -45,10 +45,18 @@ public:
 
 	Application();
 	void run();
+	void runGPUBenchmarked();
 private:
 	void initSystems();
 	void registerComponents();
 	void createDefaultScene();
+	
+	/*
+	* Benchmarking
+	*/
+	void doBenchmark();
+	bool mBenchmarkActive;
+
 	//std::unique_ptr<Scene> m_scene;
 	ECSCoordinator m_ecs;
 	InputGather m_inputGather;

@@ -166,5 +166,11 @@ public:
 	*/
 	virtual void setColorMask(bool flag) = 0;
 
+	/*
+	* Benchmarking
+	*/
+	virtual void startTimer(unsigned int& q1, unsigned int& q2) = 0; //waits for jobs to finish, starts timer
+	virtual void endTimer(unsigned int q1, unsigned int q2, float& elapsedTimer) = 0;
+
 };
 

@@ -12,7 +12,7 @@ public:
 	}
 	void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override
 	{
-		LoggerLocator::getLogger()->getLogger()->info("COLLISON TOUCH");
+		//LoggerLocator::getLogger()->getLogger()->info("COLLISON TOUCH");
 		Entity ent1 = (Entity)(pairHeader.actors[0]->userData);
 		Entity ent2 = (Entity)(pairHeader.actors[1]->userData);
 		auto& rb1 = m_ecs->getComponent<RigidBody>(ent1);

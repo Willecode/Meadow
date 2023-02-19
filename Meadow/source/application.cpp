@@ -22,6 +22,8 @@
 //---------------------------
 // BENCHMARK ----------------
 #include "benchmarking/benchmarkutils.h"
+#include "benchmarking/csvfile.h"
+#include "input/inputevents.h"
 //---------------------------
 
 
@@ -40,8 +42,14 @@ Application::Application() :
     m_renderSystem(nullptr),
     m_sceneGraphSystem(nullptr),
     m_lightSystem(nullptr),
-    m_physicsSystem(nullptr)
+    m_physicsSystem(nullptr),
+    mBenchmarkActive(false)
 {   
+    /*
+    * Subscribe to events
+    */
+    InputEvents::GPUBenchmarkEvent::subscribe(std::bind(&Application::doBenchmark, this));
+
 
     /*
     * Get a windowmanager instance
@@ -199,9 +207,18 @@ void Application::run()
     // Benchmarking
     std::array<std::chrono::time_point<std::chrono::steady_clock>, 14> times;
     std::chrono::time_point<std::chrono::steady_clock> currentClock;
-    std::chrono::time_point<std::chrono::steady_clock> lastFrameClock = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> lastFrameClock;
     bool renderUI = true;
     bool benchmark = false;
+    bool startbenchmark = false;
+    int framecounter = 0;
+    float frametimeAccum = 0;
+    float avgFPS = 0.f;
+    float lowestAVGfps = FLT_MAX;
+    bool firstBenchFrame = true;
+    unsigned int timerq1, timerq2;
+    CSVFile file;
+    file.writeFile("asdf;ghjk");
     // Update loop
     // -----------
     while (!windowMan.shouldClose())
@@ -275,7 +292,7 @@ void Application::run()
             sdrMan.bindShader(ShaderManager::ShaderType::PBR);
             RenderingUtils::maskMeshOutlines(m_sceneGraphSystem->getActiveNode(), m_ecs);
         }
-            
+        
         /*
         * Allow color rendering and disable rendering on stencil buffer's mask of 0's
         */
@@ -283,6 +300,8 @@ void Application::run()
         m_renderer.setStencilFunc(Renderer::TestingFuncs::EQUAL, 1, 0xFF);
         m_renderer.setStencilOp(Renderer::TestingActions::KEEP, Renderer::TestingActions::KEEP, Renderer::TestingActions::REPLACE);
 
+        float timerSkybox;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
         /*
         * Render skybox
         */
@@ -291,8 +310,11 @@ void Application::run()
         m_renderer.depthTesting(false);
         manager.getcubemap(skyboxId)->draw();
 
+        m_renderer.endTimer(timerq1, timerq2, timerSkybox);//GPU TIMER
         times[7] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
+        float timerScene;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
         /*
         * Render scene 
         */
@@ -311,6 +333,10 @@ void Application::run()
         m_renderSystem->update(deltatime);
         times[8] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
+        m_renderer.endTimer(timerq1, timerq2, timerScene);//GPU TIMER
+
+        float timerColliders;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
         /*
         * Render colliders
         */
@@ -320,6 +346,10 @@ void Application::run()
         m_physicsSystem->drawColliders();
         times[9] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
 
+        m_renderer.endTimer(timerq1, timerq2, timerColliders);//GPU TIMER
+
+        float timerBlit;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
         /*
         * If MSAA on then blit to intermediate frame buffer
         */
@@ -329,6 +359,7 @@ void Application::run()
             m_renderer.blitFramebuffer(texMS->getWidth(), texMS->getHeight());
         }
         times[10] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
+        m_renderer.endTimer(timerq1, timerq2, timerBlit);//GPU TIMER
 
 
         /*
@@ -339,6 +370,8 @@ void Application::run()
         m_renderer.bindFrameBufferDefault();
         m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
 
+        float timerPostprocessing;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
         /*
         * Do postprocessing pass
         */
@@ -347,7 +380,8 @@ void Application::run()
         sdrMan.forwardFrameUniforms();
         manager.getMesh2D(screenQuad)->draw();
         times[11] = std::chrono::steady_clock::now(); // TIME MEASURE --------------------------------------------------------
-
+        
+        m_renderer.endTimer(timerq1, timerq2, timerPostprocessing);//GPU TIMER
         /*
         * Render UI
         */
@@ -364,18 +398,345 @@ void Application::run()
         InputEvents::EventQueue::processQueue();
 
         windowMan.swapBuffers();
-        if (benchmark) {
-            LoggerLocator::getLogger()->getLogger()->debug("Benchmark times:");
-            currentClock = std::chrono::steady_clock::now();
-            std::chrono::duration<double> diff = currentClock - lastFrameClock;
-            lastFrameClock = currentClock;
-
-            LoggerLocator::getLogger()->getLogger()->debug("Frame time: {}", diff.count());
-            LoggerLocator::getLogger()->getLogger()->debug("FPS: {}", 1.0f / diff.count());
-            for (int i = 1; i < times.size(); i++) {
-                std::chrono::duration<double> diff = times[i] - times[i-1];
-                LoggerLocator::getLogger()->getLogger()->debug("Time {}: {}", i, diff.count());
+        if (firstBenchFrame) {
+            firstBenchFrame = false;
+            LoggerLocator::getLogger()->getLogger()->debug("GPU benchmarks: Skybox {} ; Scene {} ; Colliders {} ; Blit {} ; Postprocess {}", timerSkybox, timerScene, timerColliders, timerBlit, timerPostprocessing);
+        }
+        ///////////////////
+        // Benchmarking
+        ///////////////////
+        framecounter++;
+        if (startbenchmark == false && framecounter > 1000) {
+            startbenchmark = true;
+            framecounter = 0;
+        }
+        if (benchmark && startbenchmark) {
+            if (firstBenchFrame) {
+                firstBenchFrame = false;
+                lastFrameClock = std::chrono::steady_clock::now();
             }
+            else {
+                LoggerLocator::getLogger()->getLogger()->debug("Benchmark times:");
+                currentClock = std::chrono::steady_clock::now();
+                std::chrono::duration<double> diff = currentClock - lastFrameClock;
+                frametimeAccum += diff.count();
+                if (framecounter == 100) {
+                    avgFPS = 1.0f / (frametimeAccum / 100.f);
+                    frametimeAccum = 0;
+                    framecounter = 0;
+                    if (avgFPS < lowestAVGfps)
+                        lowestAVGfps = avgFPS;
+                }
+                lastFrameClock = currentClock;
+
+                LoggerLocator::getLogger()->getLogger()->debug("Frame time: {}", diff.count());
+                //LoggerLocator::getLogger()->getLogger()->debug("FPS: {}", 1.0f / diff.count());
+                LoggerLocator::getLogger()->getLogger()->debug("FPS average: {}", avgFPS);
+                LoggerLocator::getLogger()->getLogger()->debug("FPS average (lowest): {}", lowestAVGfps);
+                for (int i = 1; i < times.size(); i++) {
+                    std::chrono::duration<double> diff = times[i] - times[i - 1];
+                    LoggerLocator::getLogger()->getLogger()->debug("Time {}: {}", i, diff.count());
+                }
+            }
+            
+        }
+        ///////////////////
+
+    }
+
+}
+
+void Application::runGPUBenchmarked()
+{
+    float deltatime;
+    float time;
+    float lastFrameTime = 0.f;
+
+    ResourceManager& manager = ResourceManager::getInstance();
+    WindowManager& windowMan = WindowManager::getInstance();
+    ShaderManager& sdrMan = ShaderManager::getInstance();
+    /////////////////////////
+    // Intermediate fb to blit to
+    /////////////////////////
+    /*
+    * Create texture to store render
+    */
+    std::unique_ptr<Texture> texptr = std::make_unique<Texture>(windowMan.width, windowMan.height, false, "normal pass", false);
+    unsigned int texId = manager.storeTexture(std::move(texptr));
+    Texture* tex = manager.getTexture(texId);
+
+    /*
+    * Create framebuffer
+    */
+    m_renderer.createFrameBuffer(0, tex->getId(), tex->getWidth(), tex->getHeight());
+    m_renderer.bindFrameBuffer(0);
+    if (!m_renderer.checkFrameBufferStatus())
+        LoggerLocator::getLogger()->getLogger()->error("Application: framebuffer not complete");
+
+    /////////////////////////
+    // Multisampled fb
+    /////////////////////////
+    /*
+    * Create texture to store render
+    */
+    std::unique_ptr<Texture> texMSptr = std::make_unique<Texture>(windowMan.width, windowMan.height, true, "MS pass", false);
+    unsigned int texMSId = manager.storeTexture(std::move(texMSptr));
+    Texture* texMS = manager.getTexture(texMSId);
+    /*
+    * Create framebuffer
+    */
+    m_renderer.createFrameBufferMultisample(1, texMS->getId(), texMS->getWidth(), texMS->getHeight()); // think this again
+    m_renderer.bindFrameBuffer(1);
+    if (!m_renderer.checkFrameBufferStatus())
+        LoggerLocator::getLogger()->getLogger()->error("Application: MS framebuffer not complete");
+    /////////////////////////
+
+    std::unique_ptr<Texture> depthTexture = std::make_unique<Texture>(1024, 1024, false, "Shadowmap", false, true);
+    Texture* texDepth = manager.getTexture(manager.storeTexture(std::move(depthTexture)));
+    m_renderer.createFrameBufferDepthMapOnly(2, texDepth->getId(), texDepth->getWidth(), texDepth->getHeight());
+    m_renderer.bindFrameBuffer(2);
+    if (!m_renderer.checkFrameBufferStatus())
+        LoggerLocator::getLogger()->getLogger()->error("Application: Shadowmap framebuffer not complete");
+
+    /*
+    * Create screen quad
+    */
+    unsigned int screenQuad = manager.storeMesh2D(std::move(PrimitiveCreation::createScreenQuad()));
+    Mesh2D* quadptr = manager.getMesh2D(screenQuad);
+    manager.getMesh2D(screenQuad)->setTexture(tex);
+
+    /*
+    * Create Skybox
+    */
+    ImageLoader loader;
+    loader.flipOnLoad(false);
+    int width, height;
+    Renderer::ImageFormat fmt;
+
+    std::array<std::unique_ptr<std::vector<unsigned char>>, 6> texArr;
+
+    for (int i = 0; i < 6; i++) {
+        auto vecptr = std::make_unique<std::vector<unsigned char>>();
+
+        if (i == 0)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_rt.jpg", width, height, fmt, *vecptr.get());
+        if (i == 1)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_lf.jpg", width, height, fmt, *vecptr.get());
+        if (i == 2)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_up.jpg", width, height, fmt, *vecptr.get());
+        if (i == 3)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_dn.jpg", width, height, fmt, *vecptr.get());
+        if (i == 4)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_bk.jpg", width, height, fmt, *vecptr.get());
+        if (i == 5)
+            loader.loadImage("C:/dev/Meadow/data/images/cloudy/bluecloud_ft.jpg", width, height, fmt, *vecptr.get());
+
+        texArr[i] = std::move(vecptr);
+    }
+
+
+    auto skybox = std::make_unique<Cubemap>(std::move(texArr), width, height);
+    unsigned int skyboxId = manager.storecubemap(std::move(skybox));
+
+    /*
+    * Enable stencil testing
+    */
+    m_renderer.stencilTesting(true);
+    /*m_renderer.setStencilClearValue(1);*/
+
+    // Benchmarking
+    std::array<std::chrono::time_point<std::chrono::steady_clock>, 14> times;
+    std::chrono::time_point<std::chrono::steady_clock> currentClock;
+    std::chrono::time_point<std::chrono::steady_clock> lastFrameClock;
+    bool renderUI = true;
+    bool benchmark = true;
+    bool startbenchmark = false;
+    int framecounter = 0;
+    float frametimeAccum = 0;
+    float avgFPS = 0.f;
+    float lowestAVGfps = FLT_MAX;
+    bool firstBenchFrame = true;
+    unsigned int timerq1, timerq2;
+    unsigned int benchmarkFrame = 0;
+    CSVFile file;
+    std::vector<std::string> columns = { "Skybox", "Scene", "Colliders", "Blit", "Postprocessing" };
+    file.setColumns(columns);
+    // Update loop
+    // -----------
+    while (!windowMan.shouldClose())
+    {
+        if (mBenchmarkActive)
+            benchmarkFrame++;
+        /*
+        * Calculate deltatime
+        */
+        time = windowMan.getTime();
+        deltatime = time - lastFrameTime;
+        lastFrameTime = time;
+        /*
+        * Poll events
+        */
+        windowMan.pollEvents();
+        m_inputGather.pollInputs();
+
+        m_sceneGraphSystem->update();
+        m_lightSystem->update(deltatime);
+        m_cameraSystem->update(deltatime, m_inputGather);
+        m_physicsSystem->update(deltatime);
+
+        RendererLocator::getRenderer()->bindFrameBuffer(2);
+        m_renderer.setViewportSize(1024, 1024);
+        m_renderer.clearBuffer(GL_DEPTH_BUFFER_BIT);
+        m_renderer.depthMask(true);
+        m_renderer.depthTesting(true);
+        RendererLocator::getRenderer()->faceCulling(true);
+        RendererLocator::getRenderer()->cullFront();
+        m_shadowMapSystem->update(deltatime);
+        // Audio system
+        m_audioSystem->update(deltatime);
+        // Benchmark system
+        m_benchmarkSystem->update(deltatime);
+
+        /*
+        * Bind MSAA buffer or basic buffer
+        */
+        if (m_postProcessing.getMSAA())
+            m_renderer.bindFrameBuffer(1);
+        else
+            m_renderer.bindFrameBuffer(0);
+
+        /*
+        * Set renderer viewport dimensions to match the framebuffer
+        */
+        int fbWidth, fbHeight;
+        m_renderer.getFrameBufferDimensions(0, fbWidth, fbHeight);
+        m_renderer.setViewportSize(fbWidth, fbHeight);
+
+        /*
+        * Clear buffers
+        */
+        m_renderer.setStencilClearValue(1); // clear stencil buffer with ones
+        m_renderer.setStencilMask(1); // allow stencil buffer writing
+        m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
+
+        /*
+        * Render active node highlighting
+        */
+        if (m_sceneGraphSystem->getActiveNode() != NullEntity)
+        {
+            //m_shaderManager.setCurrentShader("phong");
+            sdrMan.bindShader(ShaderManager::ShaderType::PBR);
+            RenderingUtils::maskMeshOutlines(m_sceneGraphSystem->getActiveNode(), m_ecs);
+        }
+
+        /*
+        * Allow color rendering and disable rendering on stencil buffer's mask of 0's
+        */
+        m_renderer.setColorMask(true);
+        m_renderer.setStencilFunc(Renderer::TestingFuncs::EQUAL, 1, 0xFF);
+        m_renderer.setStencilOp(Renderer::TestingActions::KEEP, Renderer::TestingActions::KEEP, Renderer::TestingActions::REPLACE);
+
+        float timerSkybox;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
+        /*
+        * Render skybox
+        */
+        sdrMan.bindShader(ShaderManager::ShaderType::SKYBOX);
+        m_renderer.depthMask(false);
+        m_renderer.depthTesting(false);
+        manager.getcubemap(skyboxId)->draw();
+
+        m_renderer.endTimer(timerq1, timerq2, timerSkybox);//GPU TIMER
+
+        float timerScene;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
+        /*
+        * Render scene
+        */
+        m_renderer.depthTesting(true);
+        m_renderer.blending(true);
+        m_renderer.depthMask(true);
+        RendererLocator::getRenderer()->cullBack();
+        sdrMan.bindShader(ShaderManager::ShaderType::PBR);
+        ShaderUniformNameMap uniNames;
+        sdrMan.setFrameUniform(uniNames.getTexMapName(Texture::TextureType::SHADOW_MAP), sdrMan.getTexSamplerId(Texture::TextureType::SHADOW_MAP));
+        sdrMan.setUniformDrawSpecific(uniNames.getTexMapName(Texture::TextureType::SHADOW_MAP), sdrMan.getTexSamplerId(Texture::TextureType::SHADOW_MAP));
+        sdrMan.forwardFrameUniforms();
+        texDepth->bindToSampler(sdrMan.getTexSamplerId(Texture::TextureType::SHADOW_MAP));
+
+        //m_scene->render();
+        m_renderSystem->update(deltatime);
+
+        m_renderer.endTimer(timerq1, timerq2, timerScene);//GPU TIMER
+
+        float timerColliders;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
+        /*
+        * Render colliders
+        */
+        m_renderer.depthTesting(false);
+        m_renderer.wireframe(true);
+        sdrMan.bindShader(ShaderManager::ShaderType::COLLIDER);
+        m_physicsSystem->drawColliders();
+
+        m_renderer.endTimer(timerq1, timerq2, timerColliders);//GPU TIMER
+
+        float timerBlit;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
+        /*
+        * If MSAA on then blit to intermediate frame buffer
+        */
+        if (m_postProcessing.getMSAA()) {
+            m_renderer.bindFrameBufferRead(1);
+            m_renderer.bindFrameBufferDraw(0);
+            m_renderer.blitFramebuffer(texMS->getWidth(), texMS->getHeight());
+        }
+        m_renderer.endTimer(timerq1, timerq2, timerBlit);//GPU TIMER
+
+
+        /*
+        * Set default framebuffer to render on screen
+        */
+        m_renderer.depthTesting(false);
+        m_renderer.blending(false);
+        m_renderer.bindFrameBufferDefault();
+        m_renderer.clearBuffer(m_renderer.getColorBuffBit() | m_renderer.getDepthBuffBit() | m_renderer.getStencilBuffBit());
+
+        float timerPostprocessing;
+        m_renderer.startTimer(timerq1, timerq2);//GPU TIMER
+        /*
+        * Do postprocessing pass
+        */
+        sdrMan.bindShader(ShaderManager::ShaderType::POSTPROCESS);
+        m_renderer.setViewportSize(windowMan.width, windowMan.height);
+        sdrMan.forwardFrameUniforms();
+        manager.getMesh2D(screenQuad)->draw();
+
+        m_renderer.endTimer(timerq1, timerq2, timerPostprocessing);//GPU TIMER
+        /*
+        * Render UI
+        */
+        if (renderUI)
+            m_UIScraper.update(m_sceneGraphSystem->getSceneGraph(), &m_postProcessing, m_ecs, m_shadowMapSystem->getDirectonalLight());
+        if (renderUI)
+            m_ui.renderInterface(m_UIScraper.getSceneGraph(), m_UIScraper.getUIAssets(), m_UIScraper.getPostprocessingFlags(), m_UIScraper.getComponentMap());
+
+        /*
+        * Process event queue
+        */
+        InputEvents::EventQueue::processQueue();
+        windowMan.swapBuffers();
+
+        // Benchmarking
+        if (benchmarkFrame > 200 && mBenchmarkActive) {
+            mBenchmarkActive = false;
+            benchmarkFrame = 0;
+            file.writeFile("benchmarks.csv");
+        }
+        if (mBenchmarkActive) {
+            firstBenchFrame = false;
+            std::map<std::string, float> entry = { {"Skybox", timerSkybox}, {"Scene", timerScene}, {"Colliders", timerColliders}, {"Blit", timerBlit}, {"Postprocessing", timerPostprocessing} };
+            file.addEntry(benchmarkFrame, entry);
         }
     }
 
@@ -940,4 +1301,9 @@ void Application::createDefaultScene()
 
     //m_scene->getNode(4)->scale = glm::vec3(0.1f);
 #endif
+}
+
+void Application::doBenchmark()
+{
+    mBenchmarkActive = true;
 }

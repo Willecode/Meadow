@@ -816,6 +816,40 @@ void OpenGLRenderer::setColorMask(bool flag)
         glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 }
 
+void OpenGLRenderer::startTimer(unsigned int& q1, unsigned int& q2)
+{
+    unsigned int queryID[2];
+
+    glGenQueries(2, queryID);
+    q1 = queryID[0];
+    q2 = queryID[1];
+
+    glQueryCounter(queryID[0], GL_TIMESTAMP);
+}
+
+void OpenGLRenderer::endTimer(unsigned int q1, unsigned int q2, float& elapsedTimer)
+{
+    GLuint64 startTime, stopTime;
+
+    glQueryCounter(q2, GL_TIMESTAMP);
+
+    GLint stopTimerAvailable = 0;
+    while (!stopTimerAvailable) {
+        glGetQueryObjectiv(q2,
+            GL_QUERY_RESULT_AVAILABLE,
+            &stopTimerAvailable);
+    }
+
+    // get query results
+    glGetQueryObjectui64v(q1, GL_QUERY_RESULT, &startTime);
+    glGetQueryObjectui64v(q2, GL_QUERY_RESULT, &stopTime);
+
+    elapsedTimer = (stopTime - startTime) / 1000000.0;
+    unsigned int queries[2] = { q1, q2 };
+    glDeleteQueries(2, queries);
+
+}
+
 void OpenGLRenderer::drawMesh(int meshId)
 {
     auto it = m_meshBufferMap.find(meshId);
